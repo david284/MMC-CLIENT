@@ -65,7 +65,7 @@ import NodeVariableBitSingle from "components/modules/common/NodeVariableBitSing
 import NodeVariableSlider from "components/modules/common/NodeVariableSlider"
 import NodeVariableDual from "components/modules/common/NodeVariableDual"
 import NodeVariableSelect from "components/modules/common/NodeVariableSelect"
-import {parseNodeVariableLogic} from "components/modules/common/CommonLogicParsers.js";
+import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
 
 export default {
 
@@ -91,7 +91,7 @@ export default {
     function isVisible(item){
       var result = true
       if (item.visibilityLogic) {
-        result = parseNodeVariableLogic(item.visibilityLogic, store)
+        result = parseLogicElement(item.visibilityLogic, store)
       }
       console.log(`isVisible: ` + result + ' ' + item.type)
       return result

@@ -85,7 +85,7 @@
   import NodeVariableSelect from "components/modules/common/NodeVariableSelect"
   import NodeVariableSlider from "components/modules/common/NodeVariableSlider"
   import NodeVariableTabGroup from "components/modules/common/NodeVariableTabGroup"
-  import {parseNodeVariableLogic} from "components/modules/common/CommonLogicParsers.js";
+  import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
 
   export default {
     props: {
@@ -114,7 +114,7 @@
       function isVisible(item){
       var result = true
       if (item.visibilityLogic) {
-        result = parseNodeVariableLogic(item.visibilityLogic, store)
+        result = parseLogicElement(item.visibilityLogic, store)
       }
       console.log(`isVisible: ` + result + ' ' + item.type)
       return result

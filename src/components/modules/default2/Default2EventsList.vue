@@ -94,7 +94,7 @@
 <script setup>
 import {inject, onBeforeMount, computed, watch, ref} from "vue";
 import Default2EventVariables from "components/modules/default2/Default2EventVariables";
-import {parseEventVariableLogic} from "components/modules/common/CommonLogicParsers.js";
+import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
 
 const columns = [
   {name: 'eventIdentifier', field: 'eventIdentifier', required: true, label: 'EventId', align: 'left', sortable: true},
@@ -146,7 +146,7 @@ const getEventType = (eventIndex) =>{
   if (logic == undefined){
     return ""
   }
-  var isProduced = parseEventVariableLogic(eventIndex, logic, store)
+  var isProduced = parseLogicElement(logic, store, eventIndex)
   if (isProduced){
     return "produced"
   } else {

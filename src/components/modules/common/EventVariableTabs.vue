@@ -89,7 +89,7 @@
   import EventVariableSelect from "components/modules/common/EventVariableSelect"
   import EventVariableSlider from "components/modules/common/EventVariableSlider"
   import EventVariableTabGroup from "components/modules/common/EventVariableTabGroup"
-  import {parseEventVariableLogic} from "components/modules/common/CommonLogicParsers.js";
+  import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
 
   export default {
     props: {
@@ -117,7 +117,7 @@
       function isVisible(item){
         var result = true
         if (item.visibilityLogic) {
-          result = parseEventVariableLogic(store.state.selected_event_index, item.visibilityLogic, store)
+          result = parseLogicElement(item.visibilityLogic, store, store.state.selected_event_index)
         }
         console.log(`isVisible: ` + result + ' ' + item.type)
         return result

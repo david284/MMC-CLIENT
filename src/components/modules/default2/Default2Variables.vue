@@ -83,7 +83,7 @@ import NodeVariableRaw from "components/modules/common/NodeVariableRaw"
 import NodeVariableSelect from "components/modules/common/NodeVariableSelect"
 import NodeVariableSlider from "components/modules/common/NodeVariableSlider"
 import NodeVariableTabs from "components/modules/common/NodeVariableTabs"
-import {parseNodeVariableLogic} from "components/modules/common/CommonLogicParsers.js";
+import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
 
 export default {
   name: "DefaultVariables",
@@ -113,7 +113,7 @@ export default {
     function isVisible(item){
       var result = true
       if (item.visibilityLogic) {
-        result = parseNodeVariableLogic(item.visibilityLogic, store)
+        result = parseLogicElement(item.visibilityLogic, store)
       }
       console.log(`isVisible: ` + result + ' ' + item.type)
       return result
