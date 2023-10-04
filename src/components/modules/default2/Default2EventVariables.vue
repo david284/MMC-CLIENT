@@ -29,6 +29,15 @@
                             :displayTitle="item.displayTitle"
                             :displaySubTitle="item.displaySubTitle">
       </EventVariableBitSingle>
+      <EventVariableComplexSelect v-if="(item.type=='EventVariableComplexSelect') && (isVisible(item))"
+                        :nodeNumber="store.state.selected_node"
+                        :eventIndex = "store.state.selected_event_index"
+                        :eventVariableIndex= "item.eventVariableIndex"
+                        :bitMask = "item.bitMask"
+                        :displayTitle="item.displayTitle"
+                        :displaySubTitle="item.displaySubTitle"
+                        :options= "item.options">
+      </EventVariableComplexSelect>
       <EventVariableGroup v-if="(item.type=='EventVariableGroup') && (isVisible(item))"
                     :configuration = item>
       </EventVariableGroup>
@@ -90,6 +99,7 @@
 import {inject, onBeforeMount, ref} from "vue";
 import EventVariableBitArray from "components/modules/common/EventVariableBitArray"
 import EventVariableBitSingle from "components/modules/common/EventVariableBitSingle"
+import EventVariableComplexSelect from "components/modules/common/EventVariableComplexSelect"
 import EventVariableGroup from "components/modules/common/EventVariableGroup"
 import EventVariableNumber from "components/modules/common/EventVariableNumber"
 import EventVariableRaw from "components/modules/common/EventVariableRaw"
@@ -104,6 +114,7 @@ export default {
   components: {
     EventVariableBitArray,
     EventVariableBitSingle,
+    EventVariableComplexSelect,
     EventVariableGroup,
     EventVariableNumber,
     EventVariableRaw,
