@@ -1,11 +1,12 @@
 <template>
-  <q-card class="q-pa-md">
+  <q-card class="q-pm-none">
     <q-card-section>
       <div class="text-h6">{{ displayTitle }}</div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
     <q-select
       v-model="selectVariable"
       :options=items
+      popup-content-class="q-pm-none"
       map-options
       @update:model-value="update_variable"
     >
@@ -111,9 +112,9 @@ const process = (item) => {
   var value = store.state.nodes[store.state.selected_node].nodeVariables[nv]
   console.log(`EventVariableComplexSelect: nv value: ${value}`)
   var x = undefined
-  for (var i in item.array){
-    if (value == item.array[i].value){
-      var x = {"value": item.value, "label": item.array[i].label}
+  for (var i in item.complexOptions){
+    if (value == item.complexOptions[i].value){
+      var x = {"value": item.value, "label": item.complexOptions[i].label}
     }
   }
   console.log(`EventVariableComplexSelect: process: ${JSON.stringify(x)}`)
