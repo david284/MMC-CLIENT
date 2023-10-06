@@ -1,11 +1,12 @@
 <template>
-  <q-card class="q-pa-md">
+  <q-card class="q-pa-none">
     <q-card-section>
       <div class="text-h6">{{ displayTitle }}</div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
     <q-select
       v-model="selectVariable"
-      :options="options"
+      :options=items
+      popup-content-class="q-pm-none"
       map-options
       @update:model-value="update_variable"
     >
@@ -16,6 +17,7 @@
 
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
+import {overloadedLabel} from "components/modules/common/CommonLogicParsers.js";
 
 const props = defineProps({
   "nodeNumber": {
@@ -59,6 +61,7 @@ const label = props.name ? props.name : "Variable" + props.eventVariableIndex
 const store = inject('store')
 const selectVariable = ref()
 let eventIdentifier = store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].eventIdentifier
+var items = ref();
 
 const variableValue = computed(() =>{
   return store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].variables[props.eventVariableIndex]
@@ -70,7 +73,6 @@ watch(variableValue, () => {
 
 const update_variable = (newValue) => {
   console.log(`EventVariableSelect: newValue ${newValue.value}`);
-
   
   // get previous value
   let byteValue = variableValue.value
@@ -88,6 +90,20 @@ onMounted(() => {
   console.log(`EventVariableSelect: onMounted`)
   selectVariable.value = variableValue.value & props.bitMask
   console.log(`EventVariableSelect: props: ${JSON.stringify(props)}`)
+  items.value = []
+  for (var i in props.options){
+    console.log(`EventVariableComplexSelect: item: ${i}`)
+    if (props.options[i].overload != undefined) {   
+      var label = overloadedLabel(props.options[i].overload, store) 
+      if (label) {
+        var entry = {"value": props.options[i].value, "label": label}
+        items.value.push(entry)
+      }
+    } else if(props.options[i].label != undefined){
+      items.value.push(props.options[i])
+    }
+  }
+  console.log(`EventVariableSelect: items: ${JSON.stringify(items.value)}`)
 })
 
 

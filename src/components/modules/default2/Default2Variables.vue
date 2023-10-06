@@ -3,6 +3,7 @@
 
     <div v-for="item in nodeVariables" :key="item">
       <NodeVariableBitArray v-if="(item.type=='NodeVariableBitArray') && (isVisible(item))"
+                            :nodeNumber="store.state.selected_node"
                             :VariableIndex=item.nodeVariableIndex
                             :bitCollection = item.bitCollection
                             :displayTitle="item.displayTitle"

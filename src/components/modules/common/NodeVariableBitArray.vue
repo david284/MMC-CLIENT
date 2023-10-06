@@ -3,7 +3,7 @@
     <q-card-section>
       <div class="text-h6">{{ displayTitle }}</div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
-      <div v-for="item in bitCollection" :key="item">
+      <div v-for="item in newBitCollection" :key="item">
         <node-variable-bit
           :NodeNumber="store.state.selected_node"
           :VariableIndex=VariableIndex
@@ -18,11 +18,20 @@
 
 <script setup>
 import NodeVariableBit from "components/modules/common/NodeVariableBit"
+import {overloadedLabel} from "components/modules/common/CommonLogicParsers.js";
 
-import { inject, onMounted } from "vue";
+import { inject, onMounted, ref, computed, watch } from "vue";
 const store = inject('store')
+var items = ref();
+var newBitCollection = ref()
+
+
 
 const props = defineProps({
+  "nodeNumber": {
+    type: Number,
+    required: true
+  },
   "VariableIndex": {
     type: Number,
     required: true
@@ -40,10 +49,38 @@ const props = defineProps({
   }
 })
 
+const variables = computed(() =>{
+  return store.state.nodes[props.nodeNumber].nodeVariables
+})
+
+watch(variables, () => {
+  refeshArray();
+})
+
+
 onMounted(() => {
   console.log(`NodeVariableBitArray onMounted:`)
   console.log(`NodeVariableBitArray: props: ${JSON.stringify(props)}`)
+  refeshArray();
 })
+
+function refeshArray() {
+  newBitCollection.value = []
+  for (var i in props.bitCollection){
+    if (props.bitCollection[i].overload){
+      var label = overloadedLabel(props.bitCollection[i].overload, store) 
+      if (label) {
+        var entry = {"bitPosition": props.bitCollection[i].bitPosition, "label": label}
+        newBitCollection.value.push(entry)
+      }
+    } else 
+    if (props.bitCollection[i].label){
+      newBitCollection.value.push(props.bitCollection[i])
+    }
+  }
+}
+
+
 
 </script>
 

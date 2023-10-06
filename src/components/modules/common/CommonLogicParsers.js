@@ -1,3 +1,16 @@
+export function overloadedLabel (element, store) {
+  var result = null
+  if (element.nv){
+    var value = store.state.nodes[store.state.selected_node].nodeVariables[element.nv]
+    for (var i in element.labels){
+      if (value == element.labels[i].value){
+        result = element.labels[i].label
+      }
+    }
+  }
+  console.log('overloadedLabel: element ' + JSON.stringify(element) + ' result = ' + result)
+  return result
+}
 
 
 export function parseLogicElement (logic, store, argument3) {
