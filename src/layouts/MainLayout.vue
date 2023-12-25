@@ -89,6 +89,12 @@ const linksList = [
     icon: "mdi-alert",
     component: "CbusErrors",
   },
+  {
+    title: "System",
+    caption: "System",
+    icon: "mdi-cog-outline",
+    component: "system",
+  }
 ];
 
 import {defineComponent, ref, inject} from "vue";
@@ -100,11 +106,12 @@ import node from "components/Node.vue"
 import JSON from "components/json.vue"
 import CbusErrors from "components/CbusErrors.vue"
 import Elements from "components/Elements.vue"
+import system from "components/System.vue"
 
 export default defineComponent({
   name: "MainLayout",
   components: {
-    EssentialLink, Home, Nodes, JSON, events, settings, node, Elements, CbusErrors
+    EssentialLink, Home, Nodes, JSON, events, settings, node, Elements, CbusErrors, system
   },
 
   setup() {

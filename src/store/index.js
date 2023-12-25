@@ -199,6 +199,11 @@ const methods = {
     socket.emit('CLEAR_NODE_EVENTS',{
       "nodeId": nodeId
     })
+  },
+  STOP_SERVER(nodeId) {
+    socket.emit('STOP_SERVER')
+    console.log(`STOP SERVER`)
+    window.close()
   }
 }
 
