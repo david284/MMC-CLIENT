@@ -6,6 +6,7 @@ const host = window.location.hostname
 const port = "5552"
 
 const state = reactive({
+  version: {},
   nodes: {},
   events: {},
   cbus_errors: {},
@@ -204,6 +205,9 @@ const methods = {
     socket.emit('STOP_SERVER')
     console.log(`STOP SERVER`)
     window.close()
+  },
+  request_version(){
+    socket.emit('REQUEST_VERSION')
   }
 }
 
@@ -241,6 +245,7 @@ const socket = io(`http://${host}:${port}`)
 
 socket.on("connect", () => {
   console.log(`Socket Connect`)
+  socket.emit('REQUEST_VERSION')
   //socket.emit('QUERY_ALL_NODES')
 })
 
@@ -278,6 +283,11 @@ socket.on('dccSessions', function (data) {
 socket.on("dccError", (data) => {
   console.log(`RECEIVED DCC Error`)
   state.dcc_errors = data
+})
+
+socket.on("VERSION", (data) => {
+  console.log(`RECEIVED VERSION ` + JSON.stringify(data))
+  state.version = data
 })
 
 export default {

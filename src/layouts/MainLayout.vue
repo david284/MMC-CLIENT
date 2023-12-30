@@ -16,13 +16,12 @@
           <span class="page-sub-title">{{ store.state.layout.layoutDetails.subTitle }}</span>
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above side="left" bordered>
       <q-list>
-        <q-item-label header> Web FCU</q-item-label>
+        <q-item-label header> Quasar FCU</q-item-label>
 
         <EssentialLink
           v-for="link in essentialLinks"
