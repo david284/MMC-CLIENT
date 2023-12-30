@@ -1,6 +1,8 @@
-# Quasar App (quasar-fcu)
+# MMC-CLIENT
 
-A Quasar MERG Cbus FCU
+Module Management Console Client
+
+This is the web front end to the MMC-SERVER backend
 
 ## Install the dependencies
 
