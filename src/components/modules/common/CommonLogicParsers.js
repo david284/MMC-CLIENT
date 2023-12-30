@@ -16,7 +16,7 @@ export function overloadedLabel (element, store) {
 export function parseLogicElement (logic, store, argument3) {
   var result = true
 
-  //logic for event variables
+  //logic for event variable bits
   if (logic.evBit != undefined){
     if (argument3 != undefined){
       // in this logic case, argument3 is the event index
@@ -26,6 +26,15 @@ export function parseLogicElement (logic, store, argument3) {
       result = testCondition(value, logic)
       console.log(`parseLogicElement: evBit result = ` + result)
     } else { console.log(`parseLogicElement: ERROR: evBit - event index (argument3) not defined `) }
+  }
+
+  //logic for node variable bits
+  if (logic.nvBit != undefined){
+    // in this logic case, argument3 is the event index
+    var value = store.state.nodes[store.state.selected_node].nodeVariables[logic.nvBit.index]
+    value = (value & 2 ** logic.nvBit.bit) >> logic.nvBit.bit
+    result = testCondition(value, logic)
+    console.log(`parseLogicElement: nvBit result = ` + result)
   }
 
   // logic for node variables
