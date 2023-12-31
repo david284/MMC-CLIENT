@@ -151,6 +151,7 @@
     updateGroupList()
   })
 
+
   const moduleDescriptorFilename = computed(() => {
     return store.state.nodes[store.state.selected_node].moduleDescriptorFilename
   })
@@ -174,9 +175,21 @@
   const checkFileLoad = () => {
     console.log(`checkFileLoad`)
     if (loadFile_notification_raised != true) {
-      if ((moduleDescriptorFilename.value != undefined)  
-        && (store.state.nodes[store.state.selected_node].variableConfig == undefined)) {
-          $q.notify({
+      // module descriptor filename won't be created if there's no moduleName
+      if( store.state.nodes[store.state.selected_node].moduleName == 'Unknown'){
+        $q.notify({
+          message: 'module name unknown',
+          timeout: 0,
+          type: 'warning',
+          position: 'center',
+          actions: [ { label: 'Dismiss' } ]
+        })
+        loadFile_notification_raised = true;
+      } 
+      else if ((moduleDescriptorFilename.value != undefined)  
+        && (store.state.nodes[store.state.selected_node].variableConfig == undefined)) 
+      {
+        $q.notify({
           message: 'Failed to load module file ' + moduleDescriptorFilename.value,
           timeout: 0,
           type: 'warning',
@@ -184,10 +197,11 @@
           actions: [ { label: 'Dismiss' } ]
         })
         loadFile_notification_raised = true;
-        console.log(`LoadFile notification raised`)
       }
+      if (loadFile_notification_raised) { console.log(`LoadFile notification raised`) }
     }
   }
+  
 
   onMounted( () => {
     checkFileLoad()
