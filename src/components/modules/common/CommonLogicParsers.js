@@ -13,6 +13,11 @@ export function overloadedLabel (element, store) {
 }
 
 
+//
+// the 'logic' variable determines what logic case should be evaluated
+// The use of argument3 is depenadant on the specific logic case (as defined by the logic variable)
+// So check the individual logic cases to see if it's necessary, and what it should contain
+//
 export function parseLogicElement (logic, store, argument3) {
   var result = true
 
@@ -30,7 +35,6 @@ export function parseLogicElement (logic, store, argument3) {
 
   //logic for node variable bits
   if (logic.nvBit != undefined){
-    // in this logic case, argument3 is the event index
     var value = store.state.nodes[store.state.selected_node].nodeVariables[logic.nvBit.index]
     value = (value & 2 ** logic.nvBit.bit) >> logic.nvBit.bit
     result = testCondition(value, logic)
