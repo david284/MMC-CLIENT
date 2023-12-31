@@ -15,13 +15,12 @@
           <span class="page-title">{{ store.state.layout.layoutDetails.title }}</span>
           <span class="page-sub-title">{{ store.state.layout.layoutDetails.subTitle }}</span>
         </q-toolbar-title>
-
+        <div>Module Management Console</div>
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above side="left" bordered>
       <q-list>
-        <q-item-label header> Quasar FCU</q-item-label>
 
         <EssentialLink
           v-for="link in essentialLinks"
@@ -72,7 +71,7 @@ const linksList = [
   },
   {
     title: "Settings",
-    caption: "FCU Settings",
+    caption: "MMC Settings",
     icon: "mdi-cog-outline",
     component: "settings",
   },

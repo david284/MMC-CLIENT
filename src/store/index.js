@@ -19,7 +19,7 @@ const state = reactive({
   selected_node: 0,
   selected_event_index: 0,
   selected_service_index: 0,
-  title: "MERG Quasar FCU",
+  title: "MMC",
   debug: false,
   advanced: false,
   develop: false,
@@ -241,6 +241,18 @@ const getters = {
   }
 }
 
+const setters = {
+  event_name(eventIdentifier, eventName) {
+    if (eventIdentifier in state.layout.eventDetails === false) {
+      state.layout.eventDetails[eventIdentifier] = {}
+      state.layout.eventDetails[eventIdentifier].colour = "black"
+      state.layout.eventDetails[eventIdentifier].group = ""
+    }
+    state.layout.eventDetails[eventIdentifier].name = eventName
+    methods.update_layout()
+  }
+}
+
 const socket = io(`http://${host}:${port}`)
 
 socket.on("connect", () => {
@@ -293,5 +305,6 @@ socket.on("VERSION", (data) => {
 export default {
   state,
   methods,
-  getters
+  getters,
+  setters
 }

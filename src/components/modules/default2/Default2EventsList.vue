@@ -28,6 +28,7 @@
           <q-td key="eventIndex" :props="props">{{ props.row.eventIndex }}</q-td>
           <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td>
           <q-td key="edit" :props="props">
+            <q-btn outline rounded color="primary" label="Name" @click="showNameEventDialog(props.row.eventIdentifier)" no-caps/>
             <q-btn outline rounded color="primary" label="Edit" @click="editEvent(props.row.eventIndex)" no-caps/>
             <q-btn outline rounded color="negative" label="Delete"
                    @click="removeEvent(store.state.selected_node, props.row.eventIdentifier)" no-caps/>
@@ -83,6 +84,21 @@
       </q-card>
     </q-dialog>
 
+    <q-dialog v-model="nameEventDialog" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h4">edit event name</div>
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+            <q-input dense v-model="newEventName" autofocus />
+          </q-card-section>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn flat label="Accept" v-close-popup @click="nameEvent()"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
   </div>
   <div class="q-pa-sm row" v-if="store.state.debug">
     <p>
@@ -109,8 +125,11 @@ const columns = [
 const store = inject('store')
 const rows = ref([])
 const addEventDialog = ref(false)
+const nameEventDialog = ref(false)
+const newEventName = ref()
 const newNodeNumber = ref()
 const newEventNumber = ref()
+const eventIdentifier = ref()
 var eventType = ref()
 
 const nodeEvents = computed(() =>{
@@ -157,10 +176,16 @@ const getEventType = (eventIndex) =>{
 
 onBeforeMount(() => {
   //console.log(`DefaultEventList Mounted ${store.state.selected_node}`)
-//  store.methods.request_all_node_events(store.state.selected_node)
   refreshEvents()
   update_rows()
 })
+
+const showNameEventDialog = (eventId) => {
+  console.log(`nameEvent`)
+  eventIdentifier.value = eventId
+  newEventName.value = store.getters.event_name(eventId)
+  nameEventDialog.value = true;
+}
 
 const editEvent = (eventIndex) => {
   console.log(`editEvent`)
@@ -210,6 +235,11 @@ const createEvent = () => {
   store.methods.teach_event(store.state.selected_node, eventID, eventIndex, )
   // refresh event list
   store.methods.request_all_node_events(store.state.selected_node)
+}
+
+const nameEvent = () => {
+  store.setters.event_name(eventIdentifier.value, newEventName.value)
+  update_rows()
 }
 
 const getFreeEventIndex = () => {

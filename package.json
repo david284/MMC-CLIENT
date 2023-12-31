@@ -1,9 +1,9 @@
 {
-  "name": "quasar-fcu",
-  "version": "0.0.2",
-  "description": "A Quasar MERG Cbus FCU",
-  "productName": "Quasar App",
-  "author": "phillipsnj <nigeljphillips@yahoo.co.uk>",
+  "name": "MMC-CLIENT",
+  "version": "0.0.3",
+  "description": "Module Management Console Client",
+  "productName": "MMC",
+  "author": "David Ellis",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue ./",
