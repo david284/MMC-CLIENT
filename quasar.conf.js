@@ -140,9 +140,9 @@ module.exports = configure(function (ctx) {
       },
 
       manifest: {
-        name: `Quasar App`,
-        short_name: `Quasar App`,
-        description: `A Quasar MERG Cbus FCU`,
+        name: `MMC-CLIENT`,
+        short_name: `MMC`,
+        description: `Module Management Console Client`,
         display: "standalone",
         orientation: "portrait",
         background_color: "#ffffff",
@@ -205,7 +205,7 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: "quasar-fcu",
+        appId: "MMC-CLIENT",
       },
 
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
