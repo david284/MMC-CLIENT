@@ -1,11 +1,10 @@
 <template>
   <div class="q-pa-md row items-start q-gutter-md">
-    <q-card class="q-pa-md" style="max-width: 300px">
-      <q-card-section>
+
+    <q-card class="q-pa-xs" style="max-width: 300px">
+      <q-card-section class="q-pa-xs">
         <div class="text-h6">Event Details</div>
         <div class="text-subtitle2">Details to help identify the Event</div>
-      </q-card-section>
-      <q-card-section>
         <q-input
           class="q-pa-sm"
           outlined
@@ -36,42 +35,44 @@
         </q-select>
       </q-card-section>
     </q-card>
-    <q-card class="q-pa-md" style="max-width: 300px">
-      <q-card-section>
-        <div class="text-h6">Taught Events</div>
-        <div class="text-subtitle2">Nodes using this event</div>
-      </q-card-section>
-      <q-card-section>
-        {{ taughtNodes }}
-      </q-card-section>
-    </q-card>
+
     <q-card class="q-pa-xs" style="max-width: 300px">
-      <q-card-section>
-        <div class="text-h6">Teach Event</div>
-        <div class="text-subtitle2">Select a Node to teach Event too.</div>
-      </q-card-section>
       <q-card-section class="q-pa-xs">
+        <div class="text-h6">Teach Event</div>
+        <div class="text-subtitle2">To consumer nodes only</div>
         <q-select
           v-model="newNode"
-          :options="availableNodes"></q-select>
-        <div class="q-pa-md q-gutter-sm">
-        <q-btn color="negative"
-               label="Teach"
-               @click="teach_event()"
-               no-caps/>
+          :options="availableNodes">
+        </q-select>
+        <div class="q-pa-xs q-gutter-sm">
+          <q-btn color="negative"
+              label="Teach"
+              @click="teach_event()"
+              no-caps/>
         </div>
       </q-card-section>
-      <q-card-section>
-        {{ newNode }}
-        {{ availableNodes }}
+    </q-card>
+
+    <q-card class="q-pa-xs" style="max-width: 300px">
+      <q-card-section class="q-pa-xs">
+        <div class="text-h6">Taught Events</div>
+        <div class="text-subtitle2">Nodes using this event</div>
+        <q-table
+          flat bordered
+          dense
+          :rows="teRows"
+          :columns="teColumns"
+          row-key="number"
+          hide-header
+          :pagination="{rowsPerPage: 10}"
+        />
       </q-card-section>
     </q-card>
-    <q-card class="q-pa-md" style="max-width: 300px">
-      <q-card-section>
-        <div class="text-h6">Actions</div>
-        <div class="text-subtitle2">Generate Events</div>
-      </q-card-section>
-      <q-card-section>
+
+    <q-card class="q-pa-xs" style="max-width: 300px">
+      <q-card-section class="q-pa-xs">
+        <div class="text-h6">Generate event</div>
+        <div class="text-subtitle2">Send this event as ON or OFF</div>
         <div class="q-pa-md q-gutter-sm">
           <q-btn color="green" label="ON" @click="send_on()"/>
           <q-btn color="negative" label="OFF" @click="send_off()"/>
@@ -110,6 +111,13 @@ const newNode = ref()
 const availableNodes = ref([])
 const taughtNodes = ref([])
 const groupList = ref([])
+const teRows = ref([])
+
+const teColumns = [
+  {name: 'number', field: 'number', required: true, label: 'Number', align: 'left', sortable: true},
+  {name: 'name', field: 'name', required: true, label: 'Name', align: 'left', sortable: true},
+]
+
 
 const store = inject('store')
 
@@ -118,11 +126,13 @@ const eventDetails = computed(() => {
   return Object.values(store.state.layout.eventDetails)
 })
 
+
 watch(eventDetails, () => {
   console.log(`WATCH Node Details`)
   update_taught_nodes()
   updateGroupList()
 })
+
 
 const updateGroupList = () => {
   groupList.value = []
@@ -142,36 +152,50 @@ watch(nodeList, () => {
   //console.log(`WATCH Nodes`)
   update_taught_nodes()
   updateGroupList()
-  //taughtNodes.value = nodeList.value.find(o => o.storedEvents === props.eventIdentifier)
-  //availableNodes.value = nodeList.value.find(o => o.flim === true)
-  availableNodes.value = []
-  nodeList.value.forEach(node => {
-    //console.log(node)
-    if (node.flim == true) {
-      availableNodes.value.push(node.nodeNumber)
-    }
-  })
 })
 
 const update_taught_nodes = () => {
+  teRows.value = []
   taughtNodes.value = []
   nodeList.value.forEach(node => {
     if (Object.values(node.storedEvents).length > 0) {
       let events = Object.values(node.storedEvents)
       events.forEach(event => {
         if (event.eventIdentifier == props.eventIdentifier) {
-          //console.log(`Consumed Event ${props.eventIdentifier} ${event.node}`)
           taughtNodes.value.push(event.node)
+          var nodeName = store.state.layout.nodeDetails[node.nodeNumber].name
+          teRows.value.push({"number" : node.nodeNumber, "name" : nodeName})
         }
       })
     }
   })
+  update_available_nodes()
+}
+
+
+const update_available_nodes = () =>{
+  availableNodes.value = []
+  var nodeDetails = store.state.layout.nodeDetails
+  for (var nodeNumber in nodeDetails) {
+    // don't add node if event already taught to this node
+    var notAdded = true
+    for (var index in taughtNodes.value){
+      if (taughtNodes.value[index] == nodeNumber){
+        notAdded = false
+      }
+    }
+    if (notAdded){
+      // only add if consumer node
+      if (store.state.nodes[nodeNumber].consumer){
+        availableNodes.value.push(nodeNumber + ': ' + nodeDetails[nodeNumber].name)
+      }
+    }
+  }  
 }
 
 onMounted(() => {
   //console.log(`Event Details Mounted ${props.eventIdentifier})`)
   if (props.eventIdentifier in store.state.layout.eventDetails) {
-    //console.log(`Event Layout`)
     eventName.value = store.state.layout.eventDetails[props.eventIdentifier].name
     eventColour.value = store.state.layout.eventDetails[props.eventIdentifier].colour
     eventGroup.value = store.state.layout.eventDetails[props.eventIdentifier].group
@@ -184,21 +208,16 @@ onMounted(() => {
 
   update_taught_nodes()
   updateGroupList()
-  //taughtNodes.value = nodeList.value.find(o => o.event === props.eventIdentifier)
 
-  availableNodes.value = []
-  nodeList.value.forEach(node => {
-    //console.log(node)
-    if (node.flim == true) {
-      availableNodes.value.push(node.nodeNumber)
-    }
-  })
 })
 
 const teach_event = () => {
-  //console.log(`teach_event : ${newNode.value} : ${props.eventIdentifier}`)
+  console.log(`teach_event : ${newNode.value} : ${props.eventIdentifier}`)
   if (newNode.value != "") {
-    store.methods.teach_event(newNode.value, props.eventIdentifier, props.eventIndex)
+    // get node number from input value
+    var array = newNode.value.split(':')
+    console.log(`teach_event : ${array[0]} : ${props.eventIdentifier}`)
+    store.methods.teach_event(array[0], props.eventIdentifier, props.eventIndex)
   }
 
 }
