@@ -218,6 +218,7 @@ const teach_event = () => {
     var array = newNode.value.split(':')
     console.log(`teach_event : ${array[0]} : ${props.eventIdentifier}`)
     store.methods.teach_event(array[0], props.eventIdentifier, props.eventIndex)
+    newNode.value = undefined
   }
 
 }

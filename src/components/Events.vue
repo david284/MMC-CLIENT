@@ -24,15 +24,13 @@
         <q-space/>
         <q-btn color="negative" label="Clear Events" @click="store.methods.clear_events()" no-caps/>
       </template>
+
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="expand" auto-width>
             <q-btn size="sm" color="accent" round dense @click="props.expand = !props.expand"
                    :icon="props.expand ? 'remove' : 'add'"/>
           </q-td>
-          <!--          <q-td key="eventName" :props="props" :class="'text-'+event_colour(props.row.id)">
-                      <div class="text-pre-wrap"  >{{ event_name(props.row.id) }}</div>
-                    </q-td>-->
           <q-td key="eventName" :props="props" :class="'text-'+event_colour(props.row.id)">{{ props.row.name }}</q-td>
           <q-td key="group" :props="props" :class="'text-'+event_colour(props.row.id)">{{ props.row.group }}</q-td>
           <q-td key="eventIdentifier" :props="props" :class="'text-'+event_colour(props.row.id)">{{
@@ -53,12 +51,8 @@
           </q-td>
           <q-td key="type" :props="props" :class="'text-'+event_colour(props.row.id)">{{ props.row.type }}</q-td>
           <q-td key="count" :props="props" :class="'text-'+event_colour(props.row.id)">{{ props.row.count }}</q-td>
-
-          <!--          <q-td key="status" :props="props">
-                      <q-btn color="primary" flat rounded label="Edit"
-                             @click="editNode(props.row.nodeNumber, props.row.component)" no-caps/>
-                    </q-td>-->
         </q-tr>
+
         <q-tr v-show="props.expand" :props="props">
           <q-td colspan="100%">
             <event-details
@@ -86,14 +80,14 @@ import {computed, inject, ref, watch, onMounted} from "vue"
 
 const columns = [
   {name: 'expand', field: 'expand', required: true, label: 'Expand', align: 'left', sortable: false},
-  {name: 'eventName', field: 'name', required: true, label: 'Event Name', align: 'left', sortable: true},
-  {name: 'group', field: 'name', required: true, label: 'Group', align: 'left', sortable: true},
-  {name: 'eventIdentifier', field: 'id', required: true, label: 'Event Identifier', align: 'left', sortable: true},
-  {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node Number', align: 'left', sortable: true},
-  {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event Number', align: 'left', sortable: true},
-  {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},
-  {name: 'type', field: 'type', required: true, label: 'Type', align: 'left', sortable: true},
-  {name: 'count', field: 'count', required: true, label: 'Count', align: 'left', sortable: true}
+  {name: 'eventName', field: 'name', required: true, label: 'Event Name', align: 'left', sortable: false},
+  {name: 'group', field: 'name', required: true, label: 'Group', align: 'left', sortable: false},
+  {name: 'eventIdentifier', field: 'id', required: true, label: 'Event Identifier', align: 'left', sortable: false},
+  {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node Number', align: 'left', sortable: false},
+  {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event Number', align: 'left', sortable: false},
+  {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: false},
+  {name: 'type', field: 'type', required: true, label: 'Type', align: 'left', sortable: false},
+  {name: 'count', field: 'count', required: true, label: 'Count', align: 'left', sortable: false}
 ]
 const store = inject('store')
 const filter = ref('')
@@ -180,6 +174,11 @@ const event_group = (eventId) => {
 
 onMounted(() => {
   store.methods.refresh_events()
+  for (var node in store.state.nodes){
+    // refresh event list
+    console.log(`request Events for node ` + node)
+    store.methods.request_all_node_events(node)
+  }
 })
 
 </script>
