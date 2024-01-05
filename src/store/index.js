@@ -13,7 +13,8 @@ const state = reactive({
   dcc_sessions: {},
   dcc_errors: {},
   layout: {},
-  display_component: "home",
+  layouts_list: [],
+  display_component: "layout",
   events_component: "DefaultEventsList",
   services_component: "Default2NodeServicesList",
   selected_node: 0,
@@ -208,6 +209,9 @@ const methods = {
   },
   request_version(){
     socket.emit('REQUEST_VERSION')
+  },
+  request_layout_list(){
+    socket.emit('REQUEST_LAYOUTS_LIST')
   }
 }
 
@@ -258,7 +262,7 @@ const socket = io(`http://${host}:${port}`)
 socket.on("connect", () => {
   console.log(`Socket Connect`)
   socket.emit('REQUEST_VERSION')
-  //socket.emit('QUERY_ALL_NODES')
+  socket.emit('REQUEST_LAYOUTS_LIST')
 })
 
 socket.on("nodes", (data) => {
@@ -279,6 +283,11 @@ socket.on("events", (data) => {
 socket.on('layoutDetails', (data) => {
   console.log(`RECEIVED Layout Details`)
   state.layout = data;
+})
+
+socket.on('LAYOUTS_LIST', (data) => {
+  console.log(`RECEIVED Layouts list`)
+  state.layouts_list = data;
 })
 
 socket.on("cbusError", (data) => {
