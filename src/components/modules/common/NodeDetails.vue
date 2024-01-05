@@ -1,15 +1,11 @@
 <template>
   <div class="text-h6">
-    Node : {{ store.state.selected_node }} -
-    Type : {{ store.state.nodes[store.state.selected_node].moduleName }}
+    <div class="row">
+      <div class="col">Node number : {{ store.state.selected_node }}</div>
+      <div class="col">{{ store.state.layout.nodeDetails[store.state.selected_node].name }}</div>
+      <div class="col">Type : {{ store.state.nodes[store.state.selected_node].moduleName }}</div>
+    </div>
   </div>
-
-<!--
-  <div class="text-h8">
-    Component : {{ store.state.nodes[store.state.selected_node].component }} - 
-    Event Component : {{ store.state.events_component}}
-  </div>
- -->
  
 </template>
 
