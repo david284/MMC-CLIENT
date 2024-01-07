@@ -35,10 +35,37 @@
           dense
           :rows="teRows"
           :columns="teColumns"
-          row-key="number"
+          row-key="name"
           hide-header
           :pagination="{rowsPerPage: 10}"
-        />
+        >
+          <template #body-cell="props">
+            <q-td :props="props" >
+              <q-btn
+                flat
+                color="primary"
+                :label="props.value"
+                @click="onLayoutsClick(props.value)"
+              />
+            </q-td>
+          </template>
+
+        </q-table>          
+      </q-card-section>
+    </q-card>
+
+    <q-card class="q-pa-xs" style="max-width: 300px">
+      <q-card-section class="q-pa-xs">
+        <div class="text-h6">Change layout</div>
+        <q-input
+          class="q-pa-sm"
+          outlined
+          v-model="layoutName"
+          label="layout name"
+          maxlength="30"
+          >
+        </q-input>
+        <q-btn color="negative" label="change" @click="change_layout()" no-caps/>
       </q-card-section>
     </q-card>
 
@@ -50,6 +77,7 @@
 
 import {computed, inject, onBeforeMount, ref, watch} from "vue";
 
+const layoutName = ref('')
 const teRows = ref([])
 
 const teColumns = [
@@ -87,6 +115,16 @@ onBeforeMount(() => {
   store.methods.request_layout_list()
 })
 
+const onLayoutsClick = (row) => {
+          console.log('clicked on', row)
+          layoutName.value = row
+        }
+
+const change_layout = () => {
+  console.log(`Change layout`)
+  store.methods.change_layout(layoutName.value)
+  store.methods.request_layout_list()
+}
 
 
 

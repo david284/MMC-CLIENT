@@ -212,6 +212,10 @@ const methods = {
   },
   request_layout_list(){
     socket.emit('REQUEST_LAYOUTS_LIST')
+  },
+  change_layout(data){
+    console.log(`CHANGE_LAYOUT`)
+    socket.emit('CHANGE_LAYOUT', data)
   }
 }
 
