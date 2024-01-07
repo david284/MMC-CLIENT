@@ -13,7 +13,8 @@
         >
           <q-tab name="nodes" label="Nodes"/>
           <q-tab name="events" label="Events"/>
-          <q-tab name="settings" label="settings"/>
+          <q-tab name="layout" label="Layout"/>
+          <q-tab name="layouts" label="Layouts"/>
           <q-tab name="cbusErrors" label="Cbus Errors"/>
         </q-tabs>
         <q-tab-panels v-model="tab" animated>
@@ -32,12 +33,20 @@
             </pre>
           </q-tab-panel>
 
-          <q-tab-panel name="settings">
-            <div class="text-h6">Settings</div>
+          <q-tab-panel name="layout">
+            <div class="text-h6">Layout</div>
             <pre>
             {{ store.state.layout }}
             </pre>
           </q-tab-panel>
+
+          <q-tab-panel name="layouts">
+            <div class="text-h6">List of Layouts</div>
+            <pre>
+            {{ store.state.layouts_list }}
+            </pre>
+          </q-tab-panel>
+
           <q-tab-panel name="cbusErrors">
             <div class="text-h6">Cbus Errors</div>
             <pre>

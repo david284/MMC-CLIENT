@@ -36,7 +36,7 @@ export default defineComponent({
 
     component: {
       type: String,
-      default: "home",
+      default: "layout",
     },
 
     icon: {

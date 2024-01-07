@@ -13,7 +13,6 @@
 
         <q-toolbar-title>
           <span class="page-title">{{ store.state.layout.layoutDetails.title }}</span>
-          <span class="page-sub-title">{{ store.state.layout.layoutDetails.subTitle }}</span>
         </q-toolbar-title>
         <div>Module Management Console</div>
       </q-toolbar>
@@ -52,10 +51,10 @@ import EssentialLink from "components/EssentialLink.vue";
 
 const linksList = [
   {
-    title: "Home",
-    caption: "Home Page",
+    title: "Layout",
+    caption: "Layout Page",
     icon: "home",
-    component: "Home",
+    component: "Layout",
   },
   {
     title: "Nodes",
@@ -97,6 +96,7 @@ const linksList = [
 
 import {defineComponent, ref, inject} from "vue";
 import Home from "components/Home.vue"
+import Layout from "components/Layout.vue"
 import Nodes from "components/Nodes.vue"
 import events from "components/Events.vue"
 import settings from "components/Settings.vue"
@@ -109,7 +109,7 @@ import system from "components/System.vue"
 export default defineComponent({
   name: "MainLayout",
   components: {
-    EssentialLink, Home, Nodes, JSON, events, settings, node, Elements, CbusErrors, system
+    EssentialLink, Home, Layout, Nodes, JSON, events, settings, node, Elements, CbusErrors, system
   },
 
   setup() {
