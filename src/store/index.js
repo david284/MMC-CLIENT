@@ -8,6 +8,7 @@ const port = "5552"
 const state = reactive({
   version: {},
   nodes: {},
+  nodeTraffic: [],
   events: {},
   cbus_errors: {},
   dcc_sessions: {},
@@ -313,6 +314,14 @@ socket.on("dccError", (data) => {
 socket.on("VERSION", (data) => {
   console.log(`RECEIVED VERSION ` + JSON.stringify(data))
   state.version = data
+})
+
+socket.on("cbusTraffic", (data) => {
+  //console.log(`cbusTraffic ` + JSON.stringify(data))
+  state.nodeTraffic.push(data)
+  if (state.nodeTraffic.length > 10) {
+    state.nodeTraffic.shift()
+  }
 })
 
 export default {
