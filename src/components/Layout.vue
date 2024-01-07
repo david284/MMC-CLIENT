@@ -65,6 +65,7 @@
           maxlength="30"
           >
         </q-input>
+        <p>Click on the list of layouts to select an existing layout, or enter a name for a new layout, then click change</p>
         <q-btn color="negative" label="change" @click="change_layout()" no-caps/>
       </q-card-section>
     </q-card>
@@ -124,6 +125,7 @@ const change_layout = () => {
   console.log(`Change layout`)
   store.methods.change_layout(layoutName.value)
   store.methods.request_layout_list()
+  layoutName.value = ""
 }
 
 
