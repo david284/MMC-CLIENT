@@ -233,8 +233,7 @@ const createEvent = () => {
                + parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
   console.log(`createEvent - index ` + eventIndex + ` eventID ` + eventID)
   store.methods.teach_event(store.state.selected_node, eventID, eventIndex, )
-  // refresh event list
-  store.methods.request_all_node_events(store.state.selected_node)
+  // event list will be refreshed on acknowledge (WRACK, GRSP) from node
 }
 
 const nameEvent = () => {
