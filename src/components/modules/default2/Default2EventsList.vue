@@ -161,15 +161,17 @@ const update_rows = () => {
 
 
 const getEventType = (eventIndex) =>{
-  var logic = store.state.nodes[store.state.selected_node].variableConfig.producedEventLogic
-  if (logic == undefined){
-    return ""
-  }
-  var isProduced = parseLogicElement(logic, store, eventIndex)
-  if (isProduced){
-    return "produced"
-  } else {
-    return "consumed"
+  if(store.state.nodes[store.state.selected_node].variableConfig){
+    var logic = store.state.nodes[store.state.selected_node].variableConfig.producedEventLogic
+    if (logic == undefined){
+      return ""
+    }
+    var isProduced = parseLogicElement(logic, store, eventIndex)
+    if (isProduced){
+      return "produced"
+    } else {
+      return "consumed"
+    }
   }
 }
 
