@@ -14,7 +14,8 @@
           maxlength="30"
           @change="update_node">
         </q-input>
-        <q-select
+
+<!--         <q-select
           class="q-pa-sm"
           outlined
           v-model="nodeColour"
@@ -23,7 +24,8 @@
           maxlength="30"
           @update:model-value="update_node">
         </q-select>
-        <q-select
+ -->
+<!--         <q-select
           class="q-pa-sm"
           outlined
           use-input
@@ -34,6 +36,7 @@
           new-value-mode="add-unique"
           @update:model-value="update_node">
         </q-select>
+ -->
       </q-card-section>
     </q-card>
 

@@ -13,7 +13,8 @@
           maxlength="30"
           @change="update_event">
         </q-input>
-        <q-select
+
+<!--         <q-select
           class="q-pa-sm"
           outlined
           v-model="eventColour"
@@ -22,7 +23,8 @@
           maxlength="30"
           @update:model-value="update_event">
         </q-select>
-        <q-select
+ -->
+<!--         <q-select
           class="q-pa-sm"
           outlined
           use-input
@@ -33,6 +35,7 @@
           new-value-mode="add-unique"
           @update:model-value="update_event">
         </q-select>
+ -->
       </q-card-section>
     </q-card>
 

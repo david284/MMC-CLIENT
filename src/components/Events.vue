@@ -32,7 +32,7 @@
                    :icon="props.expand ? 'remove' : 'add'"/>
           </q-td>
           <q-td key="eventName" :props="props" :class="'text-'+event_colour(props.row.id)">{{ props.row.name }}</q-td>
-          <q-td key="group" :props="props" :class="'text-'+event_colour(props.row.id)">{{ props.row.group }}</q-td>
+          <!-- <q-td key="group" :props="props" :class="'text-'+event_colour(props.row.id)">{{ props.row.group }}</q-td> -->
           <q-td key="eventIdentifier" :props="props" :class="'text-'+event_colour(props.row.id)">{{
               props.row.id
             }}
@@ -81,7 +81,7 @@ import {computed, inject, ref, watch, onMounted} from "vue"
 const columns = [
   {name: 'expand', field: 'expand', required: true, label: 'Expand', align: 'left', sortable: false},
   {name: 'eventName', field: 'name', required: true, label: 'Event Name', align: 'left', sortable: false},
-  {name: 'group', field: 'name', required: true, label: 'Group', align: 'left', sortable: false},
+//  {name: 'group', field: 'name', required: true, label: 'Group', align: 'left', sortable: false},
   {name: 'eventIdentifier', field: 'id', required: true, label: 'Event Identifier', align: 'left', sortable: false},
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node Number', align: 'left', sortable: false},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event Number', align: 'left', sortable: false},

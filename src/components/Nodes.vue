@@ -29,9 +29,9 @@
           <q-tr :props="props">
             <q-td key="nodeNumber" :class="'text-'+nodeColour(props.row.nodeNumber)" :props="props">{{ props.row.nodeNumber }}</q-td>
             <q-td key="nodeName" :props="props">{{ props.row.nodeName }}</q-td>
-            <q-td key="group" :props="props">{{ props.row.group }}</q-td>
+            <!-- <q-td key="group" :props="props">{{ props.row.group }}</q-td> -->
             <q-td key="moduleName" :props="props">{{ props.row.moduleName }}</q-td>
-            <q-td key="component" :props="props">{{ props.row.component }}</q-td>
+            <!-- <q-td key="component" :props="props">{{ props.row.component }}</q-td> -->
             <q-td key="mode" :props="props">
               <q-chip color="white" text-color="amber" v-if="props.row.mode">Flim</q-chip>
               <q-chip color="white" text-color="green" v-else>Slim</q-chip>
@@ -64,9 +64,9 @@ import { useQuasar } from 'quasar'
 const columns = [
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node Number', align: 'left', sortable: true},
   {name: 'nodeName', field: 'nodeName', required: true, label: 'Node Name', align: 'left', sortable: true},
-  {name: 'group', field: 'group', required: true, label: 'Group', align: 'left', sortable: true},
+//  {name: 'group', field: 'group', required: true, label: 'Group', align: 'left', sortable: true},
   {name: 'moduleName', field: 'moduleName', required: true, label: 'Module Name', align: 'left', sortable: true},
-  {name: 'component', field: 'component', required: true, label: 'component', align: 'left', sortable: true},
+//  {name: 'component', field: 'component', required: true, label: 'component', align: 'left', sortable: true},
   {name: 'mode', field: 'mode', required: true, label: 'Mode', align: 'left', sortable: true},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
@@ -94,7 +94,7 @@ const update_rows = () => {
     let output = {}
     output['nodeNumber'] = node.nodeNumber
     output['nodeName'] = nodeName(node.nodeNumber)
-    output['group'] = nodeGroup(node.nodeNumber)
+//    output['group'] = nodeGroup(node.nodeNumber)
     output['moduleName'] = node.moduleName
     output['component'] = node.component
     output['status'] = node.status
