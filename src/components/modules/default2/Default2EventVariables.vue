@@ -84,6 +84,16 @@
                   :key="n">
     </EventVariableRaw>
   </div>
+
+  <div class="q-pa-xs row">
+    <p v-if="store.state.debug">
+      Debug: event variables<br>
+      <pre>
+        {{ store.state.nodes[store.state.selected_node].storedEvents[store.state.selected_event_index] }}
+      </pre>
+    </p>
+  </div>
+
 </template>
 
 <script>
