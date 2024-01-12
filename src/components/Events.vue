@@ -76,7 +76,7 @@
 <script setup>
 import EventDetails from "components/modules/common/EventDetails.vue"
 
-import {computed, inject, ref, watch, onMounted} from "vue"
+import {computed, inject, ref, watch, onBeforeMount, onMounted} from "vue"
 
 const columns = [
   {name: 'expand', field: 'expand', required: true, label: 'Expand', align: 'left', sortable: false},
@@ -171,6 +171,10 @@ const event_group = (eventId) => {
     return ""
   }
 }
+
+onBeforeMount(() => {
+  store.methods.QNN()
+})
 
 onMounted(() => {
   store.methods.refresh_events()
