@@ -190,7 +190,7 @@
         loadFile_notification_raised = true;
       } 
       else if ((moduleDescriptorFilename.value != undefined)  
-        && (store.state.nodes[store.state.selected_node].variableConfig == undefined)) 
+        && (store.state.nodeDescriptors[store.state.selected_node] == undefined)) 
       {
         $q.notify({
           message: 'Failed to load module file ' + moduleDescriptorFilename.value,
