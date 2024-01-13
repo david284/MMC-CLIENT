@@ -77,9 +77,9 @@ const methods = {
   update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue) {
     state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
     
-    console.log(`NVsetNeedsLearnMode : ` + JSON.stringify(state.nodes[nodeNumber].variableConfig.NVsetNeedsLearnMode))
-    if((state.nodes[nodeNumber].variableConfig)
-        && (state.nodes[nodeNumber].variableConfig.NVsetNeedsLearnMode)){
+    console.log(`NVsetNeedsLearnMode : ` + JSON.stringify(state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode))
+    if((state.nodeDescriptors[nodeNumber])
+        && (state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode)){
           console.log(`MAIN Update Node Variable in learn mode : `+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue)
           socket.emit('UPDATE_NODE_VARIABLE_IN_LEARN_MODE', {
         "nodeId": nodeNumber,

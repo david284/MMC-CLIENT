@@ -113,11 +113,10 @@ export default {
     const store = inject('store')
     const nodeVariables = ref()
     onBeforeMount(() => {
-      if (store.state.nodes[store.state.selected_node].variableConfig != undefined) {
-        if (store.state.nodes[store.state.selected_node].variableConfig.nodeVariables != undefined){
-          nodeVariables.value = store.state.nodes[store.state.selected_node].variableConfig.nodeVariables
-        }
+      if (store.state.nodeDescriptors[store.state.selected_node] != undefined){
+        nodeVariables.value = store.state.nodeDescriptors[store.state.selected_node].nodeVariables
       }
+
       store.methods.request_all_node_variables(store.state.selected_node, store.state.nodes[store.state.selected_node].parameters[6], 100, 1)
     })
 

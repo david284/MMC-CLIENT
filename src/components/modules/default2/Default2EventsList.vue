@@ -161,8 +161,8 @@ const update_rows = () => {
 
 
 const getEventType = (eventIndex) =>{
-  if(store.state.nodes[store.state.selected_node].variableConfig){
-    var logic = store.state.nodes[store.state.selected_node].variableConfig.producedEventLogic
+  if(store.state.nodeDescriptors[store.state.selected_node]){
+    var logic = store.state.nodeDescriptors[store.state.selected_node].producedEventLogic
     if (logic == undefined){
       return ""
     }

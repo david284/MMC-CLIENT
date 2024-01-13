@@ -130,10 +130,8 @@ export default {
     const Title = createTitle();
     onBeforeMount(() => {
       console.log('Default2EventVariables')
-      if (store.state.nodes[store.state.selected_node].variableConfig != undefined) {
-        if (store.state.nodes[store.state.selected_node].variableConfig.eventVariables != undefined){
-          eventVariables.value = store.state.nodes[store.state.selected_node].variableConfig.eventVariables
-        }
+      if (store.state.nodeDescriptors[store.state.selected_node] != undefined){
+        eventVariables.value = store.state.nodeDescriptors[store.state.selected_node].eventVariables
       }
       store.methods.request_all_event_variables(
         store.state.selected_node,

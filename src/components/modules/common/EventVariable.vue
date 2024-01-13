@@ -74,7 +74,6 @@ const eventVariableValue = computed(() => {
   return store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].variables[props.eventVariableIndex]
 })
 
-//store.state.nodes[store.state.selected_node].variableConfig.nodeVariables"
 
 watch(eventVariableValue, () => {
 eventValue.value = eventVariableValue.value
