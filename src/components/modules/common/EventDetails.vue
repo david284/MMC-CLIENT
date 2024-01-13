@@ -187,7 +187,7 @@ const update_available_nodes = () =>{
     for (var index in taughtNodes.value){
       if (taughtNodes.value[index] == nodeNumber){
         notAdded = false
-        console.log("update_available_nodes: event " + props.eventIdentifier + " already in node " + nodeNumber)
+//        console.log("update_available_nodes: event " + props.eventIdentifier + " already in node " + nodeNumber)
       }
     }
     if (notAdded){

@@ -115,21 +115,22 @@ watch(eventDetails, () => {
 })
 
 const update_events = () => {
-  //console.log(`Update Events`)
+  //  console.log(`Update Events`)
   let displayEventListLocal = []
-  for (const event of Object.values(store.state.events)) {
-    //console.log(`Update Event : ${event.id} - ${JSON.stringify(event)}`)
+  let events = store.state.events
+  // order keys
+  for (let key of Object.keys(events).sort()) {
     let output = {}
-    output['id'] = event.id
-    output['nodeNumber'] = event.nodeNumber
-    output['eventNumber'] = event.eventNumber
-    output['status'] = event.status
-    output['type'] = event.type
-    output['count'] = event.count
+    output['id'] = events[key].id
+    output['nodeNumber'] = events[key].nodeNumber
+    output['eventNumber'] = events[key].eventNumber
+    output['status'] = events[key].status
+    output['type'] = events[key].type
+    output['count'] = events[key].count
     //displayEventList[i].id = i.id
-    output['name'] = event_name(event.id)
-    output['colour'] = event_colour(event.id)
-    output['group'] = event_group(event.id)
+    output['name'] = event_name(events[key].id)
+    output['colour'] = event_colour(events[key].id)
+    output['group'] = event_group(events[key].id)
     /*if (event.id in store.state.layout.eventDetails) {
       output['name'] = store.state.layout.eventDetails[event.id].name
       output['colour'] = store.state.layout.eventDetails[event.id].colour
@@ -183,6 +184,7 @@ onMounted(() => {
     console.log(`request Events for node ` + node)
     store.methods.request_all_node_events(node)
   }
+
 })
 
 </script>
