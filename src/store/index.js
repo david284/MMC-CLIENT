@@ -8,6 +8,7 @@ const port = "5552"
 const state = reactive({
   version: {},
   nodes: {},
+  nodeDescriptors: {},
   nodeTraffic: [],
   events: {},
   cbus_errors: {},
@@ -270,22 +271,40 @@ socket.on("connect", () => {
   socket.emit('REQUEST_LAYOUTS_LIST')
 })
 
-socket.on("nodes", (data) => {
-  console.log(`RECEIVED Nodes Data`)
-  state.nodes = data
+socket.on("CBUS_ERRORS", (data) => {
+  console.log(`RECEIVED CBUS_ERRORS `)
+  state.cbus_errors = data
 })
 
-socket.on("node", (data) => {
-  console.log(`RECEIVED Node ${data.nodeNumber} Data`)
-  state.nodes[data.nodeNumber] = data
+socket.on("CBUS_NO_SUPPORT", (data) => {
+  console.log(`RECEIVED CBUS_NO_SUPPORT `)
 })
 
-socket.on("events", (data) => {
+socket.on("CBUS_TRAFFIC", (data) => {
+//  console.log(`RECEIVED CBUS_TRAFFIC`)
+  state.nodeTraffic.push(data)
+  if (state.nodeTraffic.length > 10) {
+    state.nodeTraffic.shift()
+  }
+})
+
+socket.on("DCC_ERROR", (data) => {
+  console.log(`RECEIVED DCC_ERROR`)
+  state.dcc_errors = data
+})
+
+socket.on('DCC_SESSIONS', function (data) {
+  console.log(`RECEIVED DCC_SESSIONS`)
+  // console.log(`CBUS Errors Received:${JSON.stringify(data)}`)
+  state.dcc_sessions = data;
+})
+
+socket.on("EVENTS", (data) => {
   console.log(`RECEIVED Events Data`)
   state.events = data
 })
 
-socket.on('layoutDetails', (data) => {
+socket.on('LAYOUT_DETAILS', (data) => {
   console.log(`RECEIVED Layout Details`)
   state.layout = data;
 })
@@ -295,9 +314,20 @@ socket.on('LAYOUTS_LIST', (data) => {
   state.layouts_list = data;
 })
 
-socket.on("cbusError", (data) => {
-  console.log(`RECEIVED CBus Error `)
-  state.cbus_errors = data
+socket.on("NODE", (data) => {
+  console.log(`RECEIVED NODE : ${data.nodeNumber} Data`)
+  state.nodes[data.nodeNumber] = data
+})
+
+socket.on("NODES", (data) => {
+  console.log(`RECEIVED NODES`)
+  state.nodes = data
+})
+
+socket.on("NODE_DESCRIPTOR", (data) => {
+  var nodeNumber = Object.keys(data)[0]   // get first key
+  console.log(`RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber)
+  state.nodeDescriptors[nodeNumber] = Object.values(data)[0]    // get first value
 })
 
 socket.on('dccSessions', function (data) {
@@ -306,22 +336,9 @@ socket.on('dccSessions', function (data) {
   state.dcc_sessions = data;
 })
 
-socket.on("dccError", (data) => {
-  console.log(`RECEIVED DCC Error`)
-  state.dcc_errors = data
-})
-
 socket.on("VERSION", (data) => {
   console.log(`RECEIVED VERSION ` + JSON.stringify(data))
   state.version = data
-})
-
-socket.on("cbusTraffic", (data) => {
-  //console.log(`cbusTraffic ` + JSON.stringify(data))
-  state.nodeTraffic.push(data)
-  if (state.nodeTraffic.length > 10) {
-    state.nodeTraffic.shift()
-  }
 })
 
 export default {

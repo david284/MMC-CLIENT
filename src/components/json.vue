@@ -11,19 +11,26 @@
           align="justify"
           narrow-indicator
         >
-          <q-tab name="nodes" label="Nodes"/>
+          <q-tab name="cbusErrors" label="Cbus Errors"/>
           <q-tab name="events" label="Events"/>
           <q-tab name="layout" label="Layout"/>
           <q-tab name="layouts" label="Layouts"/>
+          <q-tab name="nodes" label="Nodes"/>
+          <q-tab name="nodeDescriptors" label="Node Descriptors"/>
           <q-tab name="traffic" label="Traffic"/>
-          <q-tab name="cbusErrors" label="Cbus Errors"/>
         </q-tabs>
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="nodes">
             <div class="text-h6">Nodes</div>
-
             <pre>
               {{ store.state.nodes }}
+            </pre>
+          </q-tab-panel>
+
+          <q-tab-panel name="nodeDescriptors">
+            <div class="text-h6">Node Descriptors</div>
+            <pre>
+              {{ store.state.nodeDescriptors }}
             </pre>
           </q-tab-panel>
 
