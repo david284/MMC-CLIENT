@@ -10,7 +10,6 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-
         <q-toolbar-title>
           <span class="page-title">{{ store.state.layout.layoutDetails.title }}</span>
         </q-toolbar-title>
@@ -19,14 +18,23 @@
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above side="left" bordered>
-      <q-list>
 
+      <q-list>
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
           v-bind="link"
         />
       </q-list>
+
+      <q-list bordered class="q-pa-none q-ma-none">
+        <q-item class="q-pa-none q-ma-none" v-for="message in traffic" :key="message" clickable v-ripple>
+          <q-item-section class="q-pa-none q-ma-none">
+            <q-item-label class="q-pa-none q-ma-none">{{ message.direction + " " + message.json.encoded + " " + message.json.mnemonic }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+
     </q-drawer>
 
     <q-page-container class="main-page no-shadow">
@@ -116,9 +124,11 @@ export default defineComponent({
     const leftDrawerOpen = ref(false);
     const store = inject('store')
 
+    const traffic = store.state.nodeTraffic
+
     return {
       store,
-      essentialLinks: linksList,
+      essentialLinks: linksList, traffic,
       leftDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
