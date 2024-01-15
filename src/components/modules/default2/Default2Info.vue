@@ -133,6 +133,9 @@
       <q-card style="min-width: 350px">
         <q-card-section>
           <div class="text-h4">Module Descriptor Data</div>
+          <q-card-actions align="right" class="text-primary">
+            <q-btn flat label="Cancel" v-close-popup />
+          </q-card-actions>
           <p>
             {{ JSON.stringify(store.state.nodeDescriptors[store.state.selected_node], null, "  ") }}
           </p>
