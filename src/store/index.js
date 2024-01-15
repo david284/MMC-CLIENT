@@ -218,6 +218,10 @@ const methods = {
   change_layout(data){
     console.log(`CHANGE_LAYOUT`)
     socket.emit('CHANGE_LAYOUT', data)
+  },
+  import_module_descriptor(moduleDescriptor) {
+    console.log(`import_module_descriptor : ` + moduleDescriptor.moduleDescriptorName)
+    socket.emit('IMPORT_MODULE_DESCRIPTOR', moduleDescriptor)
   }
 }
 

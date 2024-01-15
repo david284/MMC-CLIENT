@@ -43,27 +43,19 @@
     <q-card class="q-pa-sm" style="max-width: 300px">
       <q-card-section>
         <div class="text-h6">Node Information</div>
-        <div class="text-subtitle2">Node Specific</div>
       </q-card-section>
       <q-card-section>
         <node-parameter Name="Node Number"
                         :Value="store.state.nodes[store.state.selected_node].nodeNumber">
         </node-parameter>
-        <node-parameter Name="Component"
-                        :Value="store.state.nodes[store.state.selected_node].component">
-        </node-parameter>
         <node-parameter Name="Events Currently Stored"
                         :Value="store.state.nodes[store.state.selected_node].eventCount">
-        </node-parameter>
-        <node-parameter Name="Filename"
-                        :Value="moduleDescriptorFilename">
         </node-parameter>
       </q-card-section>
     </q-card>
     <q-card class="q-pa-sm" style="max-width: 300px">
       <q-card-section>
         <div class="text-h6">Module Information</div>
-        <div class="text-subtitle2">Node Parameters</div>
       </q-card-section>
       <q-card-section>
         <node-parameter Name="Manufacturer"
@@ -93,13 +85,14 @@
         <node-parameter Name="Event Variables"
                         :Value="store.state.nodes[store.state.selected_node].parameters[5]">
         </node-parameter>
-
+        <node-parameter Name="Filename"
+                        :Value="moduleDescriptorFilename">
+        </node-parameter>
       </q-card-section>
     </q-card>
     <q-card class="q-pa-sm" style="max-width: 300px">
       <q-card-section>
         <div class="text-h6">Hardware Information</div>
-        <div class="text-subtitle2">Node Parameters</div>
       </q-card-section>
       <q-card-section>
         <node-parameter Name="CPU Name"
@@ -123,11 +116,14 @@
     <q-card class="q-pa-sm" style="max-width: 300px">
       <q-card-section>
         <div class="text-h6">Module Descriptor</div>
-        {{ moduleDescriptorFilename.substring(0, moduleDescriptorFilename.indexOf('.')) }}
+        {{ moduleDescriptorName }}
+        <div class="text-subtitle2" v-if="!moduleDescriptorValid">
+          <p class="text-negative">Module Descriptor not found</p>
+        </div>
       </q-card-section>
       <q-card-actions align="evenly" class="text-primary">
-        <q-btn color="positive" label="View" @click="showModuleDescriptorViewDialog()" no-caps/>
-        <q-btn color="positive" label="Download" @click="showModuleDescriptorDownloadDialog()" no-caps/>
+        <q-btn color="positive" :disabled="!moduleDescriptorValid" label="View" @click="showModuleDescriptorViewDialog()" no-caps/>
+        <q-btn color="positive" :disabled="!moduleDescriptorValid" label="Download" @click="showModuleDescriptorDownloadDialog()" no-caps/>
         <q-btn color="positive" label="Upload" @click="showModuleDescriptorUploadDialog()" no-caps/>
       </q-card-actions>
     </q-card>
@@ -162,14 +158,23 @@
 
     <q-dialog v-model="ModuleDescriptorUploadDialog" persistent>
       <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">File upload </div>
+          <div class="text-subtitle2">Select a file to upload for this type of module</div>
+          <div class="text-subtitle2">The filename can be anything, as it will be stored as {{ moduleDescriptorFilename }}</div>
+        </q-card-section>
         <q-file
-          v-model="file"
+          v-model="uploadFile"
           label="Pick one file"
           filled
           style="max-width: 300px"
         />
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Cancel" v-close-popup />
+        <q-card-section>
+          <div class="text-subtitle2">If this module descriptor already exists on the server, it will be overwritten  </div>
+        </q-card-section>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn flat label="Upload" v-close-popup  @click="actionUpload()" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -204,6 +209,8 @@
   const nodeGroup = ref('')
   const groupList = ref([])
   const $q = useQuasar()
+  const uploadFile = ref(null)
+  const moduleDescriptorValid = ref(false)
 
   const nodeDetails = computed(() => {
     //console.log(`Computed Events`)
@@ -218,6 +225,16 @@
 
   const moduleDescriptorFilename = computed(() => {
     return store.state.nodes[store.state.selected_node].moduleDescriptorFilename
+  })
+
+
+  const moduleDescriptorName = computed(() => {
+    var name = ''
+  
+    if (store.state.nodes[store.state.selected_node].moduleDescriptorFilename){
+      name = store.state.nodes[store.state.selected_node].moduleDescriptorFilename.split(".", 1)[0]
+    }
+    return name
   })
 
 
@@ -263,6 +280,11 @@
         loadFile_notification_raised = true;
       }
       if (loadFile_notification_raised) { console.log(`LoadFile notification raised`) }
+    }
+    if (store.state.nodeDescriptors[store.state.selected_node]) {
+      // descriptor exists
+      moduleDescriptorValid.value = true
+      console.log(`WATCH moduleDescriptorFilename ` + moduleDescriptorValid.value)
     }
   }
   
@@ -329,6 +351,27 @@
 
     element.click();
     document.body.removeChild(element);     
+  }
+
+  const actionUpload = () => {
+    var result = {}
+    if (uploadFile.value){
+      let reader = new FileReader();
+      reader.readAsText(uploadFile.value)
+      reader.onload = function() {
+        try{
+          result = JSON.parse(reader.result)
+          result["moduleDescriptorName"] = moduleDescriptorName.value
+          console.log(`actionUpload: ` + result.moduleDescriptorName)
+          store.methods.import_module_descriptor(result)
+        } catch(e){
+          console.log(`actionUpload: failed JSON parse`)
+        }
+      }
+      uploadFile.value=''
+    } else {
+      console.log(`actionUpload: uploadFile no value `)
+    }
   }
 
 </script>
