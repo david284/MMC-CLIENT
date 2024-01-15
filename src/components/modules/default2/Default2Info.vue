@@ -117,8 +117,66 @@
         </node-parameter>
       </q-card-section>
     </q-card>
-
   </div>
+
+  <div class=" row items-start q-gutter-md">
+    <q-card class="q-pa-sm" style="max-width: 300px">
+      <q-card-section>
+        <div class="text-h6">Module Descriptor</div>
+        {{ moduleDescriptorFilename.substring(0, moduleDescriptorFilename.indexOf('.')) }}
+      </q-card-section>
+      <q-card-actions align="evenly" class="text-primary">
+        <q-btn color="positive" label="View" @click="showModuleDescriptorViewDialog()" no-caps/>
+        <q-btn color="positive" label="Download" @click="showModuleDescriptorDownloadDialog()" no-caps/>
+        <q-btn color="positive" label="Upload" @click="showModuleDescriptorUploadDialog()" no-caps/>
+      </q-card-actions>
+    </q-card>
+  </div>
+
+  <q-dialog v-model="ModuleDescriptorViewDialog" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h4">Module Descriptor Data</div>
+          <p>
+            {{ JSON.stringify(store.state.nodeDescriptors[store.state.selected_node], null, "  ") }}
+          </p>
+        </q-card-section>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="ModuleDescriptorDownloadDialog" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">Download {{ moduleDescriptorFilename }} </div>
+        </q-card-section>
+        <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn flat label="Download" v-close-popup  @click="actionDownload(moduleDescriptorFilename)" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+
+    <q-dialog v-model="ModuleDescriptorUploadDialog" persistent>
+      <q-card style="min-width: 350px">
+        <q-file
+          v-model="file"
+          label="Pick one file"
+          filled
+          style="max-width: 300px"
+        />
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Cancel" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+
+
+
   <div class="q-pa-xs row">
     <p v-if="store.state.debug">
       Debug: Node JSON<br>
@@ -138,6 +196,9 @@
 
   const store = inject('store')
 
+  const ModuleDescriptorDownloadDialog = ref(false)
+  const ModuleDescriptorUploadDialog = ref(false)
+  const ModuleDescriptorViewDialog = ref(false)
   const nodeName = ref('')
   const nodeColour = ref('')
   const nodeGroup = ref('')
@@ -240,6 +301,34 @@
     store.state.layout.nodeDetails[store.state.selected_node].group = nodeGroup.value
     store.methods.update_layout()
 
+  }
+
+  const showModuleDescriptorViewDialog = () => {
+    console.log(`showModuleDescriptorViewDialog`)
+    ModuleDescriptorViewDialog.value = true
+  }
+
+  const showModuleDescriptorDownloadDialog = () => {
+    console.log(`showModuleDescriptorDownloadDialog`)
+    ModuleDescriptorDownloadDialog.value = true
+  }
+
+  const showModuleDescriptorUploadDialog = () => {
+    console.log(`showModuleDescriptorUploadDialog`)
+    ModuleDescriptorUploadDialog.value = true
+  }
+
+  const actionDownload = (filename) => {
+    let text = JSON.stringify(store.state.nodeDescriptors[store.state.selected_node], null, "  ")
+    let element = document.createElement('a');
+    element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+    document.body.removeChild(element);     
   }
 
 </script>
