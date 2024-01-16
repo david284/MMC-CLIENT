@@ -230,20 +230,30 @@
     return store.state.nodes[store.state.selected_node].moduleDescriptorFilename
   })
 
+  watch(moduleDescriptorFilename, () => {
+    console.log(`WATCH moduleDescriptorFilename`)
+    checkFileLoad()
+  })
+
 
   const moduleDescriptorName = computed(() => {
     var name = ''
-  
     if (store.state.nodes[store.state.selected_node].moduleDescriptorFilename){
       name = store.state.nodes[store.state.selected_node].moduleDescriptorFilename.split(".", 1)[0]
     }
     return name
   })
 
+  const nodeDescriptor = computed(() => {
+    return store.state.nodeDescriptors[store.state.selected_node]
+  })
 
-  watch(moduleDescriptorFilename, () => {
-    //console.log(`WATCH moduleDescriptorFilename`)
-    checkFileLoad()
+  watch(nodeDescriptor, () => {
+    if (store.state.nodeDescriptors[store.state.selected_node]) {
+      // descriptor exists
+      moduleDescriptorValid.value = true
+      console.log(`WATCH nodeDescriptor ` + moduleDescriptorValid.value)
+    }
   })
 
   const updateGroupList = () => {
@@ -371,7 +381,7 @@
           console.log(`actionUpload: failed JSON parse`)
         }
       }
-      uploadFile.value=''
+      uploadFile.value=null
     } else {
       console.log(`actionUpload: uploadFile no value `)
     }
