@@ -2,7 +2,7 @@
   <div>
     <!--    <div class="q-pa-md q-gutter-sm">
           <q-btn color="negative" label="Check Nodes" @click="store.methods.QNN()" no-caps/>
-        </div>-->
+    </div>-->
     <div>
       <q-table
         style="height: 350px"
@@ -17,31 +17,60 @@
         :virtual-scroll-sticky-size-start="48"
         @row-click="onRowClick"
       >
-          <q-tr :props="props">
-            <q-td key="nodeNumber" :class="'text-'+nodeColour(props.row.nodeNumber)" :props="props">{{ props.row.nodeNumber }}</q-td>
-            <q-td key="nodeName" :props="props">{{ props.row.nodeName }}</q-td>
-            <!-- <q-td key="group" :props="props">{{ props.row.group }}</q-td> -->
-            <q-td key="moduleName" :props="props">{{ props.row.moduleName }}</q-td>
-            <!-- <q-td key="component" :props="props">{{ props.row.component }}</q-td> -->
-            <q-td key="mode" :props="props">
-              <q-chip color="white" text-color="amber" v-if="props.row.mode">Flim</q-chip>
-              <q-chip color="white" text-color="green" v-else>Slim</q-chip>
-            </q-td>
-            <q-td key="status" :props="props">
-              <q-chip color="white" text-color="green" v-if="props.row.status">OK</q-chip>
-              <q-chip color="white" text-color="red" v-else>Error</q-chip>
-            </q-td>
-            <q-td key="actions" :props="props">
-              <q-btn color="primary" flat rounded label="Edit"
-                     @click="editNode(props.row.nodeNumber, props.row.component)" no-caps/>
-              <q-btn color="negative" flat rounded label="Delete"
-                     @click="deleteNode(props.row.nodeNumber)" no-caps/>
-            </q-td>
-          </q-tr>
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td key="nodeNumber" :class="'text-'+nodeColour(props.row.nodeNumber)" :props="props">{{ props.row.nodeNumber }}</q-td>
+          <q-td key="nodeName" :props="props">{{ props.row.nodeName }}</q-td>
+          <q-td key="moduleName" :props="props">{{ props.row.moduleName }}</q-td>
+          <q-td key="mode" :props="props">
+            <q-chip color="white" text-color="blue" v-if="props.row.mode">Flim</q-chip>
+            <q-chip color="white" text-color="red" v-else>Slim</q-chip>
+          </q-td>
+          <q-td key="status" :props="props">
+            <q-chip color="white" text-color="green" v-if="props.row.status">OK</q-chip>
+            <q-chip color="white" text-color="red" v-else>Error</q-chip>
+          </q-td>
+          <q-td key="actions">
+            <q-btn color="primary" size="md" flat label="Name"
+                    @click="showNameNodeDialog(props.row.nodeNumber)" no-caps/>
+            <q-btn color="primary" size="md" flat label="Events"
+                    @click="selectNode(props.row.nodeNumber)" no-caps/>
+            <q-btn color="primary" size="md" flat label="Edit"
+                    @click="editNode(props.row.nodeNumber, props.row.component)" no-caps/>
+            <q-btn color="negative" size="md" flat label="Delete"
+                    @click="deleteNode(props.row.nodeNumber)" no-caps/>
+            <q-btn color="primary" size="md" flat label="Add Event"
+                    @click="addEvent(props.row.nodeNumber)" no-caps/>
+          </q-td>
+        </q-tr>
+      </template>
       </q-table>
 
 
       <EventsListByNode v-if="(selected_node_valid == true)"></EventsListByNode>
+
+      <addEventDialog v-if="(showAddEventDialog == true)"
+        :showDialog=true>
+      </addEventDialog>
+
+
+      <q-dialog v-model="nameNodeDialog" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h4">Edit node name</div>
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+            <q-input dense v-model="newNodeName" autofocus />
+          </q-card-section>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn flat label="Accept" v-close-popup @click="nameNode()"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+
+
 
       <p v-if="store.state.debug">
         {{ Object.values(store.state.nodes) }}
@@ -54,8 +83,7 @@
 <script setup>
 import {inject, ref, onBeforeMount, computed, watch} from "vue";
 import { useQuasar } from 'quasar'
-import NodeParameter from "components/modules/common/NodeParameter"
-import Default2EventsList from "components/modules/default2/Default2EventsList";
+import addEventDialog from "components/modules/common/AddEventDialog"
 import EventsListByNode from "components/EventsListByNode"
 
 const columns = [
@@ -73,6 +101,10 @@ const store = inject('store')
 const filter = ref('')
 const rows = ref([])
 const selected_node_valid = ref(false)
+const showAddEventDialog = ref(false)
+const nameNodeDialog = ref(false)
+const newNodeName = ref()
+
 
 const nodeList = computed(() => {
   //console.log(`Computed Events`)
@@ -88,7 +120,7 @@ watch(nodeList, () => {
 const update_rows = () => {
   rows.value = []
   nodeList.value.forEach(node => {
-    //console.log(node)
+//    console.log(JSON.stringify(node))
     let output = {}
     output['nodeNumber'] = node.nodeNumber
     output['nodeName'] = nodeName(node.nodeNumber)
@@ -111,6 +143,12 @@ const onRowClick = (evt, row) => {
     console.log('clicked on node', row.nodeNumber)
 }
 
+const selectNode = (nodeNumber) => {
+  store.state.selected_node = nodeNumber
+    selected_node_valid.value = true
+    console.log('selected node', nodeNumber)
+}
+
 const editNode = (nodeId, component) => {
   store.state.selected_node = nodeId
   // will always want parameters, so update as soon as individual node id is known
@@ -120,6 +158,12 @@ const editNode = (nodeId, component) => {
 
 const deleteNode = (nodeId) => {
   store.methods.remove_node(nodeId)
+}
+
+const addEvent = (nodeNumber) => {
+  store.state.selected_node = nodeNumber
+  console.log('add event', nodeNumber)
+  showAddEventDialog.value = true
 }
 
 const nodeName = (nodeId) => {
@@ -138,13 +182,21 @@ const nodeColour = (nodeId) => {
   }
 }
 
-const nodeGroup = (nodeId) => {
-  if (nodeId in store.state.layout.nodeDetails) {
-    return store.state.layout.nodeDetails[nodeId].group
-  } else {
-    return ''
-  }
+const showNameNodeDialog = (nodeId) => {
+  console.log(`nameNode`)
+  store.state.selected_node = nodeId
+  newNodeName.value = store.state.layout.nodeDetails[nodeId].name
+  nameNodeDialog.value = true;
 }
+
+
+const nameNode = () => {
+  store.state.layout.nodeDetails[store.state.selected_node].name = newNodeName.value
+  update_rows()
+}
+
+
+
 
 onBeforeMount(() => {
   //console.log(`Node onBeforeMount`)

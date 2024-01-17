@@ -1,17 +1,6 @@
 <template>
   <div>
 
-<!--
-      <q-card class="q-pa-sm" style="max-width: 300px">
-
-       <q-card-section>
-        <NodeParameter Name="Node Number"
-                        :Value="nodeNumber">
-        </NodeParameter>
-      </q-card-section>
-    </q-card>
- -->
-
     <div class="full-width" >
     <q-table 
       style="height: 350px"
@@ -32,45 +21,50 @@
           <q-td key="eventNumber" :props="props">{{ props.row.eventNumber }}</q-td>
           <q-td key="eventIndex" :props="props">{{ props.row.eventIndex }}</q-td>
           <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td>
-          <q-td key="edit" :props="props">
-            <q-btn outline rounded color="primary" label="Name" @click="showNameEventDialog(props.row.eventIdentifier)" no-caps/>
-            <q-btn outline rounded color="primary" label="Edit" @click="editEvent(props.row.eventIndex)" no-caps/>
-            <q-btn outline rounded color="negative" label="Delete"
-                   @click="removeEvent(store.state.selected_node, props.row.eventIdentifier)" no-caps/>
+          <q-td key="actions" :props="props">
+            <q-btn flat size="md" color="primary" label="Name" @click="showNameEventDialog(props.row.eventIdentifier)" no-caps/>
+            <q-btn flat size="md" color="primary" label="Edit" @click="editEvent(props.row.eventIndex)" no-caps/>
+            <q-btn flat size="md" color="negative" label="Delete"
+              @click="removeEvent(store.state.selected_node, props.row.eventIdentifier)" no-caps/>
+              <q-btn flat size="md" color="primary" label="Test" @click="testEvent(props.row.eventIdentifier)" no-caps/>
           </q-td>
         </q-tr>
       </template>
     </q-table>
     </div>
 
+
+    <q-dialog v-model="nameEventDialog" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h4">Edit event name</div>
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+            <q-input dense v-model="newEventName" autofocus />
+          </q-card-section>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn flat label="Accept" v-close-popup @click="nameEvent()"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+
+
   </div>
 </template>
 
 <script setup>
 import {computed, inject, ref, watch, onBeforeMount, onMounted} from "vue"
-import NodeParameter from "components/modules/common/NodeParameter"
 import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
 
 const store = inject('store')
 
-/*
-const props = defineProps({
-  "nodeNumber": {
-    type: Number,
-    required: true
-  }
-})
-*/
-
 const rows = ref([])
-const addEventDialog = ref(false)
 const nameEventDialog = ref(false)
 const newEventName = ref()
-const newNodeNumber = ref()
-const newEventNumber = ref()
 const eventIdentifier = ref()
 var eventType = ref()
-
 
 const columns = [
   {name: 'eventIdentifier', field: 'eventIdentifier', required: true, label: 'EventId', align: 'left', sortable: true},
@@ -79,7 +73,7 @@ const columns = [
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event', align: 'left', sortable: true},
   {name: 'eventIndex', field: 'eventIndex', required: true, label: 'Event Index', align: 'left', sortable: true},
   {name: 'eventType', field: 'eventType', required: true, label: 'Event Type', align: 'left', sortable: true},
-  {name: 'edit', field: 'edit', required: true, label: 'Edit', align: 'left', sortable: true}
+  {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
 ]
 
 
@@ -89,6 +83,14 @@ const nodeEvents = computed(() =>{
 
 
 watch(nodeEvents, () => {
+  update_rows()
+})
+
+const selected_node = computed(() =>{
+  return store.state.selected_node
+})
+
+watch(selected_node, () => {
   update_rows()
 })
 
@@ -147,11 +149,40 @@ const refreshEvents = () => {
   });
 }
 
+const showNameEventDialog = (eventId) => {
+  console.log(`nameEvent`)
+  eventIdentifier.value = eventId
+  newEventName.value = store.getters.event_name(eventId)
+  nameEventDialog.value = true;
+}
+
+const nameEvent = () => {
+  store.setters.event_name(eventIdentifier.value, newEventName.value)
+  update_rows()
+}
+
+
+const editEvent = (eventIndex) => {
+  console.log(`editEvent`)
+  store.state.selected_event_index = eventIndex
+  store.methods.update_event_component("Default2EventVariables")
+}
+
+const removeEvent = (nodeId, eventIndex) => {
+  console.log(`removeEvent`)
+  store.methods.remove_event(nodeId, eventIndex)
+}
+
+
+const testEvent = (eventIdentifier) => {
+  console.log(`testEvent - eventIdentifier ` + eventIdentifier)
+}
+
 
 
 onBeforeMount(() => {
-//  refreshEvents()
-//  update_rows()
+  refreshEvents()
+  update_rows()
 })
 
 onMounted(() => {
