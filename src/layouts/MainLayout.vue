@@ -17,7 +17,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above side="left" bordered>
+    <q-drawer v-model="leftDrawerOpen" show-if-above side="left" :width="180" bordered>
 
       <q-list>
         <EssentialLink
@@ -65,6 +65,12 @@ const linksList = [
     component: "Layout",
   },
   {
+    title: "Main",
+    caption: "MERG Modules",
+    icon: "mdi-timeline-outline",
+    component: "NodePage",
+  },
+  {
     title: "Nodes",
     caption: "MERG Modules",
     icon: "mdi-timeline-outline",
@@ -108,6 +114,7 @@ import Layout from "components/Layout.vue"
 import Nodes from "components/Nodes.vue"
 import events from "components/Events.vue"
 import settings from "components/Settings.vue"
+import NodePage from "components/NodePage.vue"
 import node from "components/Node.vue"
 import JSON from "components/json.vue"
 import CbusErrors from "components/CbusErrors.vue"
@@ -117,7 +124,7 @@ import system from "components/System.vue"
 export default defineComponent({
   name: "MainLayout",
   components: {
-    EssentialLink, Home, Layout, Nodes, JSON, events, settings, node, Elements, CbusErrors, system
+    EssentialLink, Home, Layout, NodePage, Nodes, JSON, events, settings, node, Elements, CbusErrors, system
   },
 
   setup() {

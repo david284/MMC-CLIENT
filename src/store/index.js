@@ -16,7 +16,7 @@ const state = reactive({
   dcc_errors: {},
   layout: {},
   layouts_list: [],
-  display_component: "layout",
+  display_component: "NodePage",
   events_component: "DefaultEventsList",
   services_component: "Default2NodeServicesList",
   selected_node: 0,
