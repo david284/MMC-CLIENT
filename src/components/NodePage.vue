@@ -31,10 +31,10 @@
             <q-chip color="white" text-color="red" v-else>Error</q-chip>
           </q-td>
           <q-td key="actions">
+            <q-btn color="cyan-1" text-color="black" size="md" label="Events"
+                    @click="selectNode(props.row.nodeNumber)" no-caps/>
             <q-btn color="primary" size="md" flat label="Name"
                     @click="showNameNodeDialog(props.row.nodeNumber)" no-caps/>
-            <q-btn color="primary" size="md" flat label="Events"
-                    @click="selectNode(props.row.nodeNumber)" no-caps/>
             <q-btn color="primary" size="md" flat label="Edit"
                     @click="editNode(props.row.nodeNumber, props.row.component)" no-caps/>
             <q-btn color="negative" size="md" flat label="Delete"
