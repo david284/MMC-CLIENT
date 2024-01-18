@@ -145,8 +145,9 @@ const onRowClick = (evt, row) => {
 
 const selectNode = (nodeNumber) => {
   store.state.selected_node = nodeNumber
-    selected_node_valid.value = true
-    console.log('selected node', nodeNumber)
+  store.methods.request_all_node_events(store.state.selected_node)
+  selected_node_valid.value = true
+  console.log('selected node', nodeNumber)
 }
 
 const editNode = (nodeId, component) => {
