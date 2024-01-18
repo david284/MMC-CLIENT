@@ -1,6 +1,6 @@
 <template>
 
-    <q-dialog v-model='model' ref="dialogRef">
+    <q-dialog v-model='model'>
       <q-card style="min-width: 350px">
         <q-card-section>
           <div class="text-h4">Add new event</div>
