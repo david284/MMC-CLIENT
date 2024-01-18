@@ -22,7 +22,7 @@
           <q-td key="eventIndex" :props="props">{{ props.row.eventIndex }}</q-td>
           <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td>
           <q-td key="actions" :props="props">
-            <q-btn flat size="md" color="primary" label="Name" @click="showNameEventDialog(props.row.eventIdentifier)" no-caps/>
+            <q-btn flat size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
             <q-btn flat size="md" color="primary" label="Edit" @click="editEvent(props.row.eventIndex)" no-caps/>
             <q-btn flat size="md" color="negative" label="Delete" @click="removeEvent(props.row.eventIdentifier)" no-caps/>
             <q-btn flat size="md" color="primary" label="Test" @click="testEvent(props.row.nodeNumber, props.row.eventNumber)" no-caps/>
@@ -32,22 +32,10 @@
     </q-table>
     </div>
 
-
-    <q-dialog v-model="nameEventDialog" persistent>
-      <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h4">Edit event name</div>
-        </q-card-section>
-        <q-card-section class="q-pt-none">
-            <q-input dense v-model="newEventName" autofocus />
-          </q-card-section>
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Accept" v-close-popup @click="nameEvent()"/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
+    <nameEventDialog v-model='showNameEventDialog'
+        :eventIdentifier = selected_event_Identifier
+      />
+ 
     <sendEventDialog v-model='showSendEventDialog' 
       :nodeNumber = selected_event_node
       :eventNumber = selected_event_number
@@ -66,17 +54,18 @@ import {computed, inject, ref, watch, onBeforeMount, onMounted} from "vue"
 import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
 import sendEventDialog from "components/dialogs/SendEventDialog"
 import deleteEventDialog from "components/dialogs/DeleteEventDialog"
+import nameEventDialog from "components/dialogs/NameEventDialog"
 
 const store = inject('store')
 
 const rows = ref([])
-const nameEventDialog = ref(false)
+const showNameEventDialog = ref(false)
 const showSendEventDialog = ref(false)
 const showDeleteEventDialog = ref(false)
 const newEventName = ref()
-const selected_event_Identifier = ref()
-const selected_event_node = ref()
-const selected_event_number = ref()
+const selected_event_Identifier = ref("") // Dialog will complain if null
+const selected_event_node = ref(0) // Dialog will complain if null
+const selected_event_number = ref(0) // Dialog will complain if null
 var eventType = ref()
 
 const columns = [
@@ -106,6 +95,16 @@ const host_nodeNumber = computed(() =>{
 watch(host_nodeNumber, () => {
   update_rows()
 })
+
+const eventDetails = computed(() => {
+  return store.state.layout.eventDetails
+})
+
+watch(eventDetails, () => {
+//  console.log(`WATCH Nodes`)
+  update_rows()
+})
+
 
 
 const update_rows = () => {
@@ -162,16 +161,11 @@ const refreshEvents = () => {
   });
 }
 
-const showNameEventDialog = (eventIdentifier) => {
-  console.log(`nameEvent`)
+const clickEventName = (eventIdentifier) => {
+  console.log(`clickEventName ` + eventIdentifier)
   selected_event_Identifier.value = eventIdentifier
   newEventName.value = store.getters.event_name(eventIdentifier)
-  nameEventDialog.value = true;
-}
-
-const nameEvent = () => {
-  store.setters.event_name(selected_event_Identifier.value, newEventName.value)
-  update_rows()
+  showNameEventDialog.value = true;
 }
 
 

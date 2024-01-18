@@ -1,12 +1,12 @@
 <template>
 
-<q-dialog v-model="model" persistent>
+    <q-dialog v-model="model" persistent>
       <q-card style="min-width: 350px">
         <q-card-section>
-          <div class="text-h4">Edit node name</div>
+          <div class="text-h4">Edit event name</div>
         </q-card-section>
         <q-card-section class="q-pt-none">
-            <q-input dense v-model="newNodeName" autofocus />
+            <q-input dense v-model="newEventName" autofocus />
           </q-card-section>
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" v-close-popup />
@@ -20,15 +20,15 @@
 
 <script setup>
 
-import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
+import {inject, onUpdated, computed, watch, ref} from "vue";
 
 const store = inject('store')
 
-const newNodeName = ref()
+const newEventName = ref("")
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
-  nodeNumber: { type:Number, required: true }
+  eventIdentifier: { type:String, required: true }
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -40,15 +40,15 @@ const model = computed({
 
 
 const clickAccept = () => {
-  console.log("new node name: " + newNodeName.value)
-  store.setters.node_name(props.nodeNumber, newNodeName.value)
+  console.log("new event name: " + props.eventIdentifier + ' ' + newEventName.value)
+  store.setters.event_name(props.eventIdentifier, newEventName.value)
 }
 
 
 onUpdated(() => {
-  console.log("NameNodeDialog onUpdated")
-  if (store.state.layout.nodeDetails[props.nodeNumber]) {
-    newNodeName.value = store.state.layout.nodeDetails[props.nodeNumber].name
+  console.log("NameEventDialog onUpdated " + props.eventIdentifier)
+  if (store.state.layout.eventDetails[props.eventIdentifier]) {
+    newEventName.value = store.state.layout.eventDetails[props.eventIdentifier].name
   }
 })
 

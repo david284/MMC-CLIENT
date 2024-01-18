@@ -1,12 +1,11 @@
 <template>
 
-    <q-dialog v-model='model'>
-      <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h6">Event {{ props.nodeNumber }}:{{ props.eventNumber }}</div>
-        </q-card-section>
+  <q-dialog v-model='model'>
+    <q-card style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">Event {{ props.nodeNumber }}:{{ props.eventNumber }}</div>
+      </q-card-section>
 
-        <q-card class="q-pa-xs" style="max-width: 300px">
       <q-card-section class="q-pa-xs">
         <div class="text-h6">Generate event</div>
         <div class="text-subtitle2">Send this event as ON or OFF</div>
@@ -15,19 +14,12 @@
           <q-btn color="negative" label="OFF" v-close-popup @click="send_off()"/>
         </div>
       </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Cancel" v-close-popup/>
+      </q-card-actions>
     </q-card>
-
-
-
-
-
-
-
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+  </q-dialog>
 
 </template>
 
@@ -44,9 +36,6 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 
 const store = inject('store')
-const newNodeNumber = ref()
-const newEventNumber = ref()
-var eventType = ref()
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -72,9 +61,11 @@ const model = computed({
 
 
 onBeforeMount(() => {
+  console.log("SendEventDialog onBeforeMount")
 })
 
 onMounted(() => {
+  console.log("SendEventDialog onMounted")
 })
 
 const send_on = () => {
