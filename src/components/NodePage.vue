@@ -50,6 +50,9 @@
       <EventsListByNode v-if="(selected_node_valid == true)"></EventsListByNode>
 
       <addEventDialog v-model='showAddEventDialog' />
+      <deleteNodeDialog v-model='showDeleteNodeDialog'
+        :nodeNumber = store.state.selected_node
+      />
 
       <q-dialog v-model="nameNodeDialog" persistent>
       <q-card style="min-width: 350px">
@@ -79,6 +82,7 @@
 import {inject, ref, onBeforeMount, computed, watch} from "vue";
 import { useQuasar } from 'quasar'
 import addEventDialog from "components/dialogs/AddEventDialog"
+import deleteNodeDialog from "components/dialogs/DeleteNodeDialog"
 import EventsListByNode from "components/EventsListByNode"
 
 const columns = [
@@ -97,6 +101,7 @@ const filter = ref('')
 const rows = ref([])
 const selected_node_valid = ref(false)
 const showAddEventDialog = ref(false)
+const showDeleteNodeDialog = ref(false)
 const nameNodeDialog = ref(false)
 const newNodeName = ref()
 
@@ -152,14 +157,17 @@ const editNode = (nodeId, component) => {
   store.state.display_component = "node"
 }
 
-const deleteNode = (nodeId) => {
-  store.methods.remove_node(nodeId)
+const deleteNode = (nodeNumber) => {
+  store.state.selected_node = nodeNumber
+  showDeleteNodeDialog.value=true
+  console.log('selected node' + store.state.selected_node)
 }
 
 const addEvent = (nodeNumber) => {
   store.state.selected_node = nodeNumber
   console.log('add event', nodeNumber)
   showAddEventDialog.value = true
+  console.log('clicked on node', store.state.selected_node)
 }
 
 const nodeName = (nodeId) => {

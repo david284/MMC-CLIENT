@@ -24,9 +24,8 @@
           <q-td key="actions" :props="props">
             <q-btn flat size="md" color="primary" label="Name" @click="showNameEventDialog(props.row.eventIdentifier)" no-caps/>
             <q-btn flat size="md" color="primary" label="Edit" @click="editEvent(props.row.eventIndex)" no-caps/>
-            <q-btn flat size="md" color="negative" label="Delete"
-              @click="removeEvent(store.state.selected_node, props.row.eventIdentifier)" no-caps/>
-              <q-btn flat size="md" color="primary" label="Test" @click="testEvent(props.row.nodeNumber, props.row.eventNumber)" no-caps/>
+            <q-btn flat size="md" color="negative" label="Delete" @click="removeEvent(props.row.eventIdentifier)" no-caps/>
+            <q-btn flat size="md" color="primary" label="Test" @click="testEvent(props.row.nodeNumber, props.row.eventNumber)" no-caps/>
           </q-td>
         </q-tr>
       </template>
@@ -54,21 +53,28 @@
       :eventNumber = selected_event_number
     />
 
+    <deleteEventDialog v-model='showDeleteEventDialog' 
+      :nodeNumber = store.state.selected_node
+      :eventIdentifier = selected_event_Identifier
+    />
+
   </div>
 </template>
 
 <script setup>
 import {computed, inject, ref, watch, onBeforeMount, onMounted} from "vue"
 import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
-import sendEventDialog from "components/dialogs/sendEventDialog"
+import sendEventDialog from "components/dialogs/SendEventDialog"
+import deleteEventDialog from "components/dialogs/DeleteEventDialog"
 
 const store = inject('store')
 
 const rows = ref([])
 const nameEventDialog = ref(false)
 const showSendEventDialog = ref(false)
+const showDeleteEventDialog = ref(false)
 const newEventName = ref()
-const eventIdentifier = ref()
+const selected_event_Identifier = ref()
 const selected_event_node = ref()
 const selected_event_number = ref()
 var eventType = ref()
@@ -93,11 +99,11 @@ watch(nodeEvents, () => {
   update_rows()
 })
 
-const selected_node = computed(() =>{
+const host_nodeNumber = computed(() =>{
   return store.state.selected_node
 })
 
-watch(selected_node, () => {
+watch(host_nodeNumber, () => {
   update_rows()
 })
 
@@ -156,15 +162,15 @@ const refreshEvents = () => {
   });
 }
 
-const showNameEventDialog = (eventId) => {
+const showNameEventDialog = (eventIdentifier) => {
   console.log(`nameEvent`)
-  eventIdentifier.value = eventId
-  newEventName.value = store.getters.event_name(eventId)
+  selected_event_Identifier.value = eventIdentifier
+  newEventName.value = store.getters.event_name(eventIdentifier)
   nameEventDialog.value = true;
 }
 
 const nameEvent = () => {
-  store.setters.event_name(eventIdentifier.value, newEventName.value)
+  store.setters.event_name(selected_event_Identifier.value, newEventName.value)
   update_rows()
 }
 
@@ -175,9 +181,11 @@ const editEvent = (eventIndex) => {
   store.methods.update_event_component("Default2EventVariables")
 }
 
-const removeEvent = (nodeId, eventIndex) => {
+const removeEvent = (eventIndentifier) => {
   console.log(`removeEvent`)
-  store.methods.remove_event(nodeId, eventIndex)
+  showDeleteEventDialog.value = true
+  selected_event_Identifier.value = eventIndentifier
+//  store.methods.remove_event(nodeNumber, eventIndentifier)
 }
 
 

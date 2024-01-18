@@ -3,7 +3,7 @@
     <q-dialog v-model='model'>
       <q-card style="min-width: 350px">
         <q-card-section>
-          <div class="text-h4">Event {{ props.nodeNumber }}:{{ props.eventNumber }}</div>
+          <div class="text-h6">Event {{ props.nodeNumber }}:{{ props.eventNumber }}</div>
         </q-card-section>
 
         <q-card class="q-pa-xs" style="max-width: 300px">

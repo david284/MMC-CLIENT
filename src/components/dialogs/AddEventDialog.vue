@@ -3,7 +3,7 @@
     <q-dialog v-model='model'>
       <q-card style="min-width: 350px">
         <q-card-section>
-          <div class="text-h4">Add new event</div>
+          <div class="text-h6">Add new event</div>
           <div class="q-gutter-sm">
             <q-radio v-model="eventType" val='long' label="Long event" />
             <q-radio v-model="eventType" val='short' label="Short event" />
