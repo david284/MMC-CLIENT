@@ -257,6 +257,16 @@ const getters = {
       //console.log(`Event No Name ${JSON.stringify(eventId)}`)
       return ""
     }
+  },
+  node_name(nodeNumber){
+    if (nodeNumber in state.layout.nodeDetails === false){
+      state.layout.nodeDetails[nodeNumber] = {}
+      state.layout.nodeDetails[nodeNumber].name = nodeNumber
+      state.layout.nodeDetails[nodeNumber].colour = "black"
+      state.layout.nodeDetails[nodeNumber].group = ""
+    }
+    methods.update_layout()
+    return state.layout.nodeDetails[nodeNumber].name
   }
 }
 

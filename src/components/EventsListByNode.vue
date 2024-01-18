@@ -23,9 +23,14 @@
           <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td>
           <q-td key="actions" :props="props">
             <q-btn flat size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
-            <q-btn flat size="md" color="primary" label="Edit" @click="editEvent(props.row.eventIndex)" no-caps/>
-            <q-btn flat size="md" color="negative" label="Delete" @click="removeEvent(props.row.eventIdentifier)" no-caps/>
+            <q-btn color="primary" size="md" flat label="Variables"
+                     no-caps/>
+<!-- 
+                     <q-btn flat size="md" color="primary" label="Edit" @click="editEvent(props.row.eventIndex)" no-caps/>
+ -->
+            <q-btn flat size="md" color="primary" label="Teach" no-caps/>
             <q-btn flat size="md" color="primary" label="Test" @click="testEvent(props.row.nodeNumber, props.row.eventNumber)" no-caps/>
+            <q-btn flat size="md" color="negative" label="Delete" @click="removeEvent(props.row.eventIdentifier)" no-caps/>
           </q-td>
         </q-tr>
       </template>

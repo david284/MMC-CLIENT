@@ -34,12 +34,20 @@
                     @click="selectNode(props.row.nodeNumber)" no-caps/>
             <q-btn color="primary" size="md" flat label="Name"
                     @click="clickNameNode(props.row.nodeNumber)" no-caps/>
+
+            <q-btn color="primary" size="md" flat label="Parameters"
+              @click="clickParameters(props.row.nodeNumber)" no-caps/>
+
+            <q-btn color="primary" size="md" flat label="Variables"
+              @click="clickVariables(props.row.nodeNumber)" no-caps/>
+<!-- 
             <q-btn color="primary" size="md" flat label="Edit"
                     @click="editNode(props.row.nodeNumber, props.row.component)" no-caps/>
-            <q-btn color="negative" size="md" flat label="Delete"
-                    @click="deleteNode(props.row.nodeNumber)" no-caps/>
+ -->
             <q-btn color="primary" size="md" flat label="Add Event"
                     @click="addEvent(props.row.nodeNumber)" no-caps/>
+            <q-btn color="negative" size="md" flat label="Delete"
+                    @click="deleteNode(props.row.nodeNumber)" no-caps/>
           </q-td>
         </q-tr>
       </template>
@@ -59,6 +67,10 @@
         :nodeNumber = store.state.selected_node
       />
  
+       <nodeParametersDialog v-model='showNodeParametersDialog'
+        :nodeNumber = store.state.selected_node
+      />
+
       <p v-if="store.state.debug">
         {{ Object.values(store.state.nodes) }}
       </p>
@@ -73,6 +85,7 @@ import { useQuasar } from 'quasar'
 import addEventDialog from "components/dialogs/AddEventDialog"
 import deleteNodeDialog from "components/dialogs/DeleteNodeDialog"
 import nameNodeDialog from "components/dialogs/NameNodeDialog"
+import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
 import EventsListByNode from "components/EventsListByNode"
 
 const columns = [
@@ -93,6 +106,7 @@ const selected_node_valid = ref(false)
 const showAddEventDialog = ref(false)
 const showDeleteNodeDialog = ref(false)
 const showNameNodeDialog = ref(false)
+const showNodeParametersDialog = ref(false)
 
 const nodeList = computed(() => {
   return Object.values(store.state.nodes)
@@ -178,10 +192,22 @@ const nodeColour = (nodeId) => {
 }
 
 
-const clickNameNode = (nodeId) => {
+const clickNameNode = (nodeNumber) => {
   console.log(`clickNameNode`)
-  store.state.selected_node = nodeId
+  store.state.selected_node = nodeNumber
   showNameNodeDialog.value = true;
+}
+
+const clickParameters = (nodeNumber) => {
+  console.log(`clickParameters`)
+  store.state.selected_node = nodeNumber
+  store.methods.request_all_node_parameters(store.state.selected_node, 20, 100)
+  showNodeParametersDialog.value = true
+}
+
+const clickVariables = (nodeNumber) => {
+  console.log(`clickVariables`)
+  store.state.selected_node = nodeNumber
 }
 
 
