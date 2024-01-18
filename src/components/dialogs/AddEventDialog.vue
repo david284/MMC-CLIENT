@@ -70,14 +70,14 @@ const model = computed({
 
 
 onBeforeMount(() => {
-  console.log(`addEventDialog`)
+//  console.log(`AddEventDialog`)
   newNodeNumber.value = null
   newEventNumber.value = null
   eventType.value = null
 })
 
 onMounted(() => {
-  console.log(`addEventDialog`)
+//  console.log(`AddEventDialog`)
   newNodeNumber.value = null
   newEventNumber.value = null
   eventType.value = null

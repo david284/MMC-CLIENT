@@ -15,7 +15,6 @@
         virtual-scroll
         :rows-per-page-options="[0]"
         :virtual-scroll-sticky-size-start="48"
-        @row-click="onRowClick"
       >
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -34,7 +33,7 @@
             <q-btn color="cyan-1" text-color="black" size="md" label="Events"
                     @click="selectNode(props.row.nodeNumber)" no-caps/>
             <q-btn color="primary" size="md" flat label="Name"
-                    @click="showNameNodeDialog(props.row.nodeNumber)" no-caps/>
+                    @click="clickNameNode(props.row.nodeNumber)" no-caps/>
             <q-btn color="primary" size="md" flat label="Edit"
                     @click="editNode(props.row.nodeNumber, props.row.component)" no-caps/>
             <q-btn color="negative" size="md" flat label="Delete"
@@ -47,29 +46,19 @@
       </q-table>
 
 
-      <EventsListByNode v-if="(selected_node_valid == true)"></EventsListByNode>
+      <EventsListByNode v-if="(selected_node_valid == true)" />
+
 
       <addEventDialog v-model='showAddEventDialog' />
+
       <deleteNodeDialog v-model='showDeleteNodeDialog'
         :nodeNumber = store.state.selected_node
       />
 
-      <q-dialog v-model="nameNodeDialog" persistent>
-      <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h4">Edit node name</div>
-        </q-card-section>
-        <q-card-section class="q-pt-none">
-            <q-input dense v-model="newNodeName" autofocus />
-          </q-card-section>
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Accept" v-close-popup @click="nameNode()"/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-
+       <nameNodeDialog v-model='showNameNodeDialog'
+        :nodeNumber = store.state.selected_node
+      />
+ 
       <p v-if="store.state.debug">
         {{ Object.values(store.state.nodes) }}
       </p>
@@ -83,6 +72,7 @@ import {inject, ref, onBeforeMount, computed, watch} from "vue";
 import { useQuasar } from 'quasar'
 import addEventDialog from "components/dialogs/AddEventDialog"
 import deleteNodeDialog from "components/dialogs/DeleteNodeDialog"
+import nameNodeDialog from "components/dialogs/NameNodeDialog"
 import EventsListByNode from "components/EventsListByNode"
 
 const columns = [
@@ -102,16 +92,23 @@ const rows = ref([])
 const selected_node_valid = ref(false)
 const showAddEventDialog = ref(false)
 const showDeleteNodeDialog = ref(false)
-const nameNodeDialog = ref(false)
-const newNodeName = ref()
-
+const showNameNodeDialog = ref(false)
 
 const nodeList = computed(() => {
-  //console.log(`Computed Events`)
   return Object.values(store.state.nodes)
 })
 
 watch(nodeList, () => {
+//  console.log(`WATCH Nodes`)
+  update_rows()
+})
+
+
+const nodeDetails = computed(() => {
+  return store.state.layout.nodeDetails
+})
+
+watch(nodeDetails, () => {
 //  console.log(`WATCH Nodes`)
   update_rows()
 })
@@ -123,7 +120,7 @@ const update_rows = () => {
 //    console.log(JSON.stringify(node))
     let output = {}
     output['nodeNumber'] = node.nodeNumber
-    output['nodeName'] = nodeName(node.nodeNumber)
+    output['nodeName'] = getNodeName(node.nodeNumber)
 //    output['group'] = nodeGroup(node.nodeNumber)
     output['moduleName'] = node.moduleName
     output['component'] = node.component
@@ -135,12 +132,6 @@ const update_rows = () => {
 
 const checkNodes = () => {
   store.methods.QNN()
-}
-
-const onRowClick = (evt, row) => {
-    store.state.selected_node = row.nodeNumber
-    selected_node_valid.value = true
-    console.log('clicked on node', row.nodeNumber)
 }
 
 const selectNode = (nodeNumber) => {
@@ -170,11 +161,11 @@ const addEvent = (nodeNumber) => {
   console.log('clicked on node', store.state.selected_node)
 }
 
-const nodeName = (nodeId) => {
-  if (nodeId in store.state.layout.nodeDetails) {
-    return store.state.layout.nodeDetails[nodeId].name
+const getNodeName = (nodeNumber) => {
+  if (nodeNumber in store.state.layout.nodeDetails) {
+    return store.state.layout.nodeDetails[nodeNumber].name
   } else {
-    return nodeId.toString()+' - '+store.state.nodes[nodeId].moduleName
+    return nodeId.toString()+' - '+store.state.nodes[nodeNumber].moduleName
   }
 }
 
@@ -186,20 +177,12 @@ const nodeColour = (nodeId) => {
   }
 }
 
-const showNameNodeDialog = (nodeId) => {
-  console.log(`nameNode`)
+
+const clickNameNode = (nodeId) => {
+  console.log(`clickNameNode`)
   store.state.selected_node = nodeId
-  newNodeName.value = store.state.layout.nodeDetails[nodeId].name
-  nameNodeDialog.value = true;
+  showNameNodeDialog.value = true;
 }
-
-
-const nameNode = () => {
-  store.state.layout.nodeDetails[store.state.selected_node].name = newNodeName.value
-  update_rows()
-}
-
-
 
 
 onBeforeMount(() => {

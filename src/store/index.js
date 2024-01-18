@@ -264,7 +264,17 @@ const setters = {
     }
     state.layout.eventDetails[eventIdentifier].name = eventName
     methods.update_layout()
+  },
+  node_name(nodeNumber, nodeName){
+    if (nodeNumber in state.layout.nodeDetails === false){
+      state.layout.nodeDetails[nodeNumber] = {}
+      state.layout.nodeDetails[nodeNumber].colour = "black"
+      state.layout.nodeDetails[nodeNumber].group = ""
+    }
+    state.layout.nodeDetails[nodeNumber].name = nodeName
+    methods.update_layout()
   }
+
 }
 
 const socket = io(`http://${host}:${port}`)
