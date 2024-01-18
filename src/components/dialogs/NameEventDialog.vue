@@ -42,6 +42,7 @@ const model = computed({
 const clickAccept = () => {
   console.log("new event name: " + props.eventIdentifier + ' ' + newEventName.value)
   store.setters.event_name(props.eventIdentifier, newEventName.value)
+  newEventName.value = ""   // clear for next time
 }
 
 

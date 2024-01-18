@@ -232,7 +232,12 @@ const getters = {
       return state.layout.eventDetails[eventId].name
     } else {
       //console.log(`Event No Name ${JSON.stringify(eventId)}`)
+      state.layout.eventDetails[eventId] = {}
+      state.layout.eventDetails[eventId].name = eventId
+      state.layout.eventDetails[eventId].colour = "black"
+      state.layout.eventDetails[eventId].group = ""
       return JSON.stringify(eventId)
+      store.setters.event_name()
     }
   },
   event_colour(eventId) {
