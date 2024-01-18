@@ -208,6 +208,8 @@ const clickParameters = (nodeNumber) => {
 const clickVariables = (nodeNumber) => {
   console.log(`clickVariables`)
   store.state.selected_node = nodeNumber
+  store.state.display_component = "node"
+//  store.state.display_component = "nodeVariables"
 }
 
 

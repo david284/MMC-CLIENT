@@ -24,11 +24,11 @@
           <q-td key="actions" :props="props">
             <q-btn flat size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
             <q-btn color="primary" size="md" flat label="Variables"
-                     no-caps/>
+            @click="clickVariables(store.state.selected_node)" no-caps/>
 <!-- 
                      <q-btn flat size="md" color="primary" label="Edit" @click="editEvent(props.row.eventIndex)" no-caps/>
  -->
-            <q-btn flat size="md" color="primary" label="Teach" no-caps/>
+            <q-btn flat size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
             <q-btn flat size="md" color="primary" label="Test" @click="testEvent(props.row.nodeNumber, props.row.eventNumber)" no-caps/>
             <q-btn flat size="md" color="negative" label="Delete" @click="removeEvent(props.row.eventIdentifier)" no-caps/>
           </q-td>
@@ -38,8 +38,12 @@
     </div>
 
     <nameEventDialog v-model='showNameEventDialog'
-        :eventIdentifier = selected_event_Identifier
-      />
+      :eventIdentifier = selected_event_Identifier
+    />
+ 
+    <eventTeachDialog v-model='showEventTeachDialog'
+      :eventIdentifier = selected_event_Identifier
+    />
  
     <sendEventDialog v-model='showSendEventDialog' 
       :nodeNumber = selected_event_node
@@ -60,6 +64,7 @@ import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js
 import sendEventDialog from "components/dialogs/SendEventDialog"
 import deleteEventDialog from "components/dialogs/DeleteEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
+import eventTeachDialog from "components/dialogs/EventTeachDialog"
 
 const store = inject('store')
 
@@ -67,6 +72,7 @@ const rows = ref([])
 const showNameEventDialog = ref(false)
 const showSendEventDialog = ref(false)
 const showDeleteEventDialog = ref(false)
+const showEventTeachDialog = ref(false)
 const newEventName = ref()
 const selected_event_Identifier = ref("") // Dialog will complain if null
 const selected_event_node = ref(0) // Dialog will complain if null
@@ -195,6 +201,17 @@ const testEvent = (nodeNumber, eventNumber) => {
   showSendEventDialog.value = true
 }
 
+const clickVariables = () => {
+  console.log(`clickVariables`)
+  store.state.display_component = "node"
+//  store.state.display_component = "nodeVariables"
+}
+
+const clickTeach = (eventIndentifier) => {
+  console.log(`clickTeach`)
+  selected_event_Identifier.value = eventIndentifier
+  showEventTeachDialog.value = true
+}
 
 
 onBeforeMount(() => {
