@@ -26,7 +26,7 @@
             <q-btn flat size="md" color="primary" label="Edit" @click="editEvent(props.row.eventIndex)" no-caps/>
             <q-btn flat size="md" color="negative" label="Delete"
               @click="removeEvent(store.state.selected_node, props.row.eventIdentifier)" no-caps/>
-              <q-btn flat size="md" color="primary" label="Test" @click="testEvent(props.row.eventIdentifier)" no-caps/>
+              <q-btn flat size="md" color="primary" label="Test" @click="testEvent(props.row.nodeNumber, props.row.eventNumber)" no-caps/>
           </q-td>
         </q-tr>
       </template>
@@ -49,7 +49,10 @@
       </q-card>
     </q-dialog>
 
-
+    <sendEventDialog v-model='showSendEventDialog' 
+      :nodeNumber = selected_event_node
+      :eventNumber = selected_event_number
+    />
 
   </div>
 </template>
@@ -57,13 +60,17 @@
 <script setup>
 import {computed, inject, ref, watch, onBeforeMount, onMounted} from "vue"
 import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
+import sendEventDialog from "components/dialogs/sendEventDialog"
 
 const store = inject('store')
 
 const rows = ref([])
 const nameEventDialog = ref(false)
+const showSendEventDialog = ref(false)
 const newEventName = ref()
 const eventIdentifier = ref()
+const selected_event_node = ref()
+const selected_event_number = ref()
 var eventType = ref()
 
 const columns = [
@@ -174,8 +181,11 @@ const removeEvent = (nodeId, eventIndex) => {
 }
 
 
-const testEvent = (eventIdentifier) => {
-  console.log(`testEvent - eventIdentifier ` + eventIdentifier)
+const testEvent = (nodeNumber, eventNumber) => {
+  selected_event_node.value = nodeNumber
+  selected_event_number.value = eventNumber
+  console.log(`testEvent - eventIdentifier ` + selected_event_node.value + ' ' + selected_event_number.value)
+  showSendEventDialog.value = true
 }
 
 

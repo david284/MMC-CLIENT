@@ -49,8 +49,7 @@
 
       <EventsListByNode v-if="(selected_node_valid == true)"></EventsListByNode>
 
-      <addEventDialog2 v-model='showAddEventDialog'></addEventDialog2>
-      <!-- <DialogExample v-model='showAddEventDialog' /> -->
+      <addEventDialog v-model='showAddEventDialog' />
 
       <q-dialog v-model="nameNodeDialog" persistent>
       <q-card style="min-width: 350px">
@@ -79,10 +78,8 @@
 <script setup>
 import {inject, ref, onBeforeMount, computed, watch} from "vue";
 import { useQuasar } from 'quasar'
-import addEventDialog from "components/modules/common/AddEventDialog"
-import addEventDialog2 from "components/modules/common/AddEventDialog2"
+import addEventDialog from "components/dialogs/AddEventDialog"
 import EventsListByNode from "components/EventsListByNode"
-import DialogExample from "components/modules/common/DialogExampleOptionsAPI"
 
 const columns = [
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node Number', align: 'left', sortable: true},

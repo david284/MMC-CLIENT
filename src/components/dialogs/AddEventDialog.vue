@@ -41,7 +41,7 @@
           </q-card-section>
         </div>
         <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup @click="closeDialog()"/>
+          <q-btn flat label="Cancel" v-close-popup/>
           <q-btn flat label="Add Event" v-close-popup @click="createEvent()"/>
         </q-card-actions>
       </q-card>
@@ -56,17 +56,16 @@ const store = inject('store')
 const newNodeNumber = ref()
 const newEventNumber = ref()
 var eventType = ref()
-const dialogRef = ref(null);
 
 const props = defineProps({
-  showDialog: { type: Boolean, required: true }
+  modelValue: { type: Boolean, required: true }
 })
 
-const emit = defineEmits(['update:showDialog'])
+const emit = defineEmits(['update:modelValue'])
 
 const model = computed({
-      get() { return props.showDialog },
-      set(newValue) { emit('update:showDialog', newValue) }
+      get() { return props.modelValue },
+      set(newValue) { emit('update:modelValue', newValue) }
     })
 
 
@@ -84,10 +83,6 @@ onMounted(() => {
   eventType.value = null
 })
 
-const closeDialog = () => {
-  console.log(`closeDialog`)
-  dialogRef.value.hide()
-}
 
 const createEvent = () => {
   var eventIndex = getFreeEventIndex()

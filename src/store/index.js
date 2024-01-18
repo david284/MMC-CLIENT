@@ -52,7 +52,7 @@ const methods = {
     })
   },
   short_off_event(nodeNumber, eventNumber){
-    console.log(`ACOF ${nodeNumber} : ${eventNumber}`)
+    console.log(`ASOF ${nodeNumber} : ${eventNumber}`)
     socket.emit('ACCESSORY_SHORT_OFF', {
       "nodeNumber": 0,
       "deviceNumber": eventNumber
