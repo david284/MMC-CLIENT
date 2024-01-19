@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-banner class="bg-primary text-white dense" >
+    <q-banner style="min-height: 0;" class="bg-primary text-white dense no-margin no-padding" >
       Node list
     </q-banner>
         <!--    <div class="q-pa-md q-gutter-sm">
