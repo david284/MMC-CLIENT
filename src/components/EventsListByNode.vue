@@ -1,7 +1,9 @@
 <template>
   <div>
     <q-banner style="min-height: 0;" class="bg-primary text-white dense no-margin no-padding">
-      <div class="text-h6">Event list</div>
+      <div class="text-h6">
+        Event list for node :  {{ store.getters.node_name(store.state.selected_node) }}
+      </div>
     </q-banner>
 
     <div class="full-width" >
@@ -62,7 +64,16 @@
 </template>
 
 <script setup>
-import {computed, inject, ref, watch, onBeforeMount, onMounted} from "vue"
+
+/*/////////////////////////////////////////////////////////////////////////////////////
+
+This component uses store.state.selected_node, not a nodeNumber prop passed in
+This is becaue this componet is meant tobe driven from a nodelist, which will
+set the selected_node element
+
+/////////////////////////////////////////////////////////////////////////////////////*/
+
+import {computed, inject, ref, watch, onBeforeMount, onMounted, onUpdated} from "vue"
 import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
 import sendEventDialog from "components/dialogs/SendEventDialog"
 import deleteEventDialog from "components/dialogs/DeleteEventDialog"
@@ -81,6 +92,7 @@ const selected_event_Identifier = ref("") // Dialog will complain if null
 const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
 var eventType = ref()
+
 
 const columns = [
   {name: 'eventIdentifier', field: 'eventIdentifier', required: true, label: 'Identifier', align: 'left', sortable: true},
@@ -224,6 +236,10 @@ onBeforeMount(() => {
 
 onMounted(() => {
 })
+
+onUpdated(() => {
+})
+
 
 </script>
 
