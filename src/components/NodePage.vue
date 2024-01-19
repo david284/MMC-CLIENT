@@ -92,10 +92,10 @@ import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
 import EventsListByNode from "components/EventsListByNode"
 
 const columns = [
-  {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node Number', align: 'left', sortable: true},
-  {name: 'nodeName', field: 'nodeName', required: true, label: 'Node Name', align: 'left', sortable: true},
+  {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node number', align: 'left', sortable: true},
+  {name: 'nodeName', field: 'nodeName', required: true, label: 'Name', align: 'left', sortable: true},
 //  {name: 'group', field: 'group', required: true, label: 'Group', align: 'left', sortable: true},
-  {name: 'moduleName', field: 'moduleName', required: true, label: 'Module Name', align: 'left', sortable: true},
+  {name: 'moduleName', field: 'moduleName', required: true, label: 'Module name', align: 'left', sortable: true},
 //  {name: 'component', field: 'component', required: true, label: 'component', align: 'left', sortable: true},
   {name: 'mode', field: 'mode', required: true, label: 'Mode', align: 'left', sortable: true},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},

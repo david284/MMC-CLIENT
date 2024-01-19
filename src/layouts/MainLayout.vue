@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header class="bg-primary text-white">
+    <q-header style="min-height: 0;" class="bg-primary text-white no-margin no-padding">
       <q-toolbar>
         <q-btn
           flat
@@ -10,8 +10,10 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-        <q-toolbar-title>
-          <span class="page-title">{{ store.state.layout.layoutDetails.title }}</span>
+        <q-toolbar-title style="min-height: 0;" class="no-margin no-padding">
+          <span style="min-height: 0;" class="page-title no-margin no-padding">
+            {{ store.state.layout.layoutDetails.title }}
+          </span>
         </q-toolbar-title>
         <div>Module Management Console</div>
       </q-toolbar>
