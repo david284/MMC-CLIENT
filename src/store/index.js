@@ -265,7 +265,6 @@ const getters = {
       state.layout.nodeDetails[nodeNumber].colour = "black"
       state.layout.nodeDetails[nodeNumber].group = ""
     }
-    methods.update_layout()
     return state.layout.nodeDetails[nodeNumber].name
   }
 }

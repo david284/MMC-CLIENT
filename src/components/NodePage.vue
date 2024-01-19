@@ -66,6 +66,10 @@
         :nodeNumber = store.state.selected_node
       />
 
+      <nodeVariablesDialog v-model='showNodeVariablesDialog'
+        :nodeNumber = store.state.selected_node
+      />
+
       <p v-if="store.state.debug">
         {{ Object.values(store.state.nodes) }}
       </p>
@@ -81,6 +85,7 @@ import addEventDialog from "components/dialogs/AddEventDialog"
 import deleteNodeDialog from "components/dialogs/DeleteNodeDialog"
 import nameNodeDialog from "components/dialogs/NameNodeDialog"
 import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
+import nodeVariablesDialog from "components/dialogs/NodeVariablesDialog"
 import EventsListByNode from "components/EventsListByNode"
 
 const columns = [
@@ -102,6 +107,7 @@ const showAddEventDialog = ref(false)
 const showDeleteNodeDialog = ref(false)
 const showNameNodeDialog = ref(false)
 const showNodeParametersDialog = ref(false)
+const showNodeVariablesDialog = ref(false)
 const selected_nodeNumber = ref()
 
 const nodeList = computed(() => {
@@ -206,8 +212,7 @@ const clickParameters = (nodeNumber) => {
 const clickVariables = (nodeNumber) => {
   console.log(`clickVariables`)
   store.state.selected_node = nodeNumber
-  store.state.display_component = "node"
-//  store.state.display_component = "nodeVariables"
+  showNodeVariablesDialog.value = true
 }
 
 

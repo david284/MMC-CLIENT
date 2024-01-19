@@ -30,12 +30,9 @@
             <q-btn flat size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
             <q-btn color="primary" size="md" flat label="Variables"
             @click="clickVariables(store.state.selected_node)" no-caps/>
-<!-- 
-                     <q-btn flat size="md" color="primary" label="Edit" @click="editEvent(props.row.eventIndex)" no-caps/>
- -->
             <q-btn flat size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
-            <q-btn flat size="md" color="primary" label="Test" @click="testEvent(props.row.nodeNumber, props.row.eventNumber)" no-caps/>
-            <q-btn flat size="md" color="negative" label="Delete" @click="removeEvent(props.row.eventIdentifier)" no-caps/>
+            <q-btn flat size="md" color="primary" label="Test" @click="clickTest(props.row.nodeNumber, props.row.eventNumber)" no-caps/>
+            <q-btn flat size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier)" no-caps/>
           </q-td>
         </q-tr>
       </template>
@@ -59,6 +56,7 @@
       :nodeNumber = store.state.selected_node
       :eventIdentifier = selected_event_Identifier
     />
+
 
   </div>
 </template>
@@ -111,6 +109,7 @@ const nodeEvents = computed(() =>{
 
 
 watch(nodeEvents, () => {
+  console.log(`EventsListByNode WATCH nodeEvents`)
   update_rows()
 })
 
@@ -119,6 +118,7 @@ const host_nodeNumber = computed(() =>{
 })
 
 watch(host_nodeNumber, () => {
+  console.log(`EventsListByNode WATCH host_nodeNumber`)
   update_rows()
 })
 
@@ -127,14 +127,14 @@ const eventDetails = computed(() => {
 })
 
 watch(eventDetails, () => {
-//  console.log(`WATCH Nodes`)
+  console.log(`EventsListByNode WATCH eventDetails`)
   update_rows()
 })
 
 
 
 const update_rows = () => {
-  //console.log(`DefaultEventList Update Rows ${store.state.selected_node}`)
+  //console.log(`EventsListByNode Update Rows ${store.state.selected_node}`)
   rows.value = []
 
    nodeEvents.value.forEach(event => {
@@ -187,6 +187,25 @@ const refreshEvents = () => {
   });
 }
 
+onBeforeMount(() => {
+  console.log("EventsListByNode - onBeforeMount")
+  refreshEvents()
+  update_rows()
+})
+
+onMounted(() => {
+})
+
+onUpdated(() => {
+})
+
+
+/*/////////////////////////////////////////////////////////////////////////////
+
+Click event handlers
+
+/////////////////////////////////////////////////////////////////////////////*/
+
 const clickEventName = (eventIdentifier) => {
   console.log(`clickEventName ` + eventIdentifier)
   selected_event_Identifier.value = eventIdentifier
@@ -194,14 +213,7 @@ const clickEventName = (eventIdentifier) => {
   showNameEventDialog.value = true;
 }
 
-
-const editEvent = (eventIndex) => {
-  console.log(`editEvent`)
-  store.state.selected_event_index = eventIndex
-  store.methods.update_event_component("Default2EventVariables")
-}
-
-const removeEvent = (eventIndentifier) => {
+const clickDelete = (eventIndentifier) => {
   console.log(`removeEvent`)
   showDeleteEventDialog.value = true
   selected_event_Identifier.value = eventIndentifier
@@ -209,7 +221,7 @@ const removeEvent = (eventIndentifier) => {
 }
 
 
-const testEvent = (nodeNumber, eventNumber) => {
+const clickTest = (nodeNumber, eventNumber) => {
   selected_event_node.value = nodeNumber
   selected_event_number.value = eventNumber
   console.log(`testEvent - eventIdentifier ` + selected_event_node.value + ' ' + selected_event_number.value)
@@ -227,18 +239,6 @@ const clickTeach = (eventIndentifier) => {
   selected_event_Identifier.value = eventIndentifier
   showEventTeachDialog.value = true
 }
-
-
-onBeforeMount(() => {
-  refreshEvents()
-  update_rows()
-})
-
-onMounted(() => {
-})
-
-onUpdated(() => {
-})
 
 
 </script>
