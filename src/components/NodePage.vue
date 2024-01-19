@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-banner style="min-height: 0;" class="bg-primary text-white dense no-margin no-padding" >
-      Node list
+      <div class="text-h6">Node list</div>
     </q-banner>
         <!--    <div class="q-pa-md q-gutter-sm">
           <q-btn color="negative" label="Check Nodes" @click="store.methods.QNN()" no-caps/>

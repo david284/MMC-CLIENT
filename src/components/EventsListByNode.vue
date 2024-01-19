@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-banner style="min-height: 0;" class="bg-primary text-white dense no-margin no-padding">
-      Event list
+      <div class="text-h6">Event list</div>
     </q-banner>
 
     <div class="full-width" >
