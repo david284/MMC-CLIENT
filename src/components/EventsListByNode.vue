@@ -29,9 +29,9 @@
           <q-td key="actions" :props="props">
             <q-btn flat size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
             <q-btn color="primary" size="md" flat label="Variables"
-            @click="clickVariables(store.state.selected_node)" no-caps/>
+            @click="clickVariables(props.row.eventIndex, props.row.eventIdentifier)" no-caps/>
             <q-btn flat size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
-            <q-btn flat size="md" color="primary" label="Test" @click="clickTest(props.row.nodeNumber, props.row.eventNumber)" no-caps/>
+            <q-btn flat size="md" color="primary" label="Test" @click="clickTest(props.row.nodeNumber, props.row.eventNumber, props.row.eventindex)" no-caps/>
             <q-btn flat size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier)" no-caps/>
           </q-td>
         </q-tr>
@@ -57,6 +57,12 @@
       :eventIdentifier = selected_event_Identifier
     />
 
+    <eventVariablesDialog v-model='showEventVariablesDialog'
+        :nodeNumber = store.state.selected_node
+        :eventIndex = selected_event_index
+        :eventIdentifier = selected_event_Identifier
+      />
+
 
   </div>
 </template>
@@ -77,6 +83,7 @@ import sendEventDialog from "components/dialogs/SendEventDialog"
 import deleteEventDialog from "components/dialogs/DeleteEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
+import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 
 const store = inject('store')
 
@@ -85,10 +92,12 @@ const showNameEventDialog = ref(false)
 const showSendEventDialog = ref(false)
 const showDeleteEventDialog = ref(false)
 const showEventTeachDialog = ref(false)
+const showEventVariablesDialog = ref(false)
 const newEventName = ref()
 const selected_event_Identifier = ref("") // Dialog will complain if null
 const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
+const selected_event_index = ref(0) // Dialog will complain if null
 var eventType = ref()
 
 
@@ -221,17 +230,19 @@ const clickDelete = (eventIndentifier) => {
 }
 
 
-const clickTest = (nodeNumber, eventNumber) => {
+const clickTest = (nodeNumber, eventNumber, eventIndex) => {
   selected_event_node.value = nodeNumber
   selected_event_number.value = eventNumber
+  selected_event_index.value = eventIndex
   console.log(`testEvent - eventIdentifier ` + selected_event_node.value + ' ' + selected_event_number.value)
   showSendEventDialog.value = true
 }
 
-const clickVariables = () => {
-  console.log(`clickVariables`)
-  store.state.display_component = "node"
-//  store.state.display_component = "nodeVariables"
+const clickVariables = (eventIndex, eventIdentifier) => {
+  selected_event_index.value = eventIndex
+  selected_event_Identifier.value = eventIdentifier
+  console.log(`clickVariables - node, index ` + store.state.selected_node + ' ' + selected_event_index.value)
+  showEventVariablesDialog.value = true
 }
 
 const clickTeach = (eventIndentifier) => {

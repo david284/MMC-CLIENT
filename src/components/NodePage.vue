@@ -146,11 +146,6 @@ const update_rows = () => {
   })
 }
 
-const checkNodes = () => {
-  store.methods.QNN()
-}
-
-
 const clickEvents = (nodeNumber) => {
   store.state.selected_node = nodeNumber
   store.methods.request_all_node_events(store.state.selected_node)
