@@ -1,6 +1,6 @@
 <template>
 
-  <q-dialog v-model='model' persistent full-width> 
+  <q-dialog v-model='model' persistent full-width full-height> 
     <q-card class="q-pa-sm">
       <q-card-section>
         <div class="text-h6">Event Variables for event : {{ store.getters.event_name(props.eventIdentifier) }}</div>

@@ -1,6 +1,6 @@
 <template>
 
-  <q-dialog v-model='model' persistent full-width> 
+  <q-dialog v-model='model' persistent full-width full-height> 
     <q-card class="q-pa-sm">
       <q-card-section>
         <div class="text-h6">Node Variables for {{ store.getters.node_name(props.nodeNumber) }}</div>
