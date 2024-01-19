@@ -3,11 +3,8 @@
     <q-banner style="min-height: 0;" class="bg-primary text-white dense no-margin no-padding" >
       <div class="text-h6">Node list</div>
     </q-banner>
-        <!--    <div class="q-pa-md q-gutter-sm">
-          <q-btn color="negative" label="Check Nodes" @click="store.methods.QNN()" no-caps/>
-    </div>-->
     <div>
-      <q-table
+        <q-table
         style="height: 350px"
         :rows=rows
         bordered
@@ -19,10 +16,10 @@
         :rows-per-page-options="[0]"
         :virtual-scroll-sticky-size-start="48"
       >
-      <template v-slot:body="props">
-        <q-tr :props="props">
+      <template v-slot:body="props" >
+          <q-tr :props="props" :class="selected_nodeNumber==props.row.nodeNumber?'bg-blue-1':'bg-white'">
           <q-td key="nodeNumber" :class="'text-'+nodeColour(props.row.nodeNumber)" :props="props">{{ props.row.nodeNumber }}</q-td>
-          <q-td key="nodeName" :props="props">{{ props.row.nodeName }}</q-td>
+          <q-td key="nodeName" :props="props">{{ props.row.nodeName }} </q-td>
           <q-td key="moduleName" :props="props">{{ props.row.moduleName }}</q-td>
           <q-td key="mode" :props="props">
             <q-chip color="white" text-color="blue" v-if="props.row.mode">Flim</q-chip>
@@ -34,23 +31,18 @@
           </q-td>
           <q-td key="actions">
             <q-btn color="cyan-1" text-color="black" size="md" label="Events"
-                    @click="selectNode(props.row.nodeNumber)" no-caps/>
+              @click="clickEvents(props.row.nodeNumber)" no-caps/>
             <q-btn color="primary" size="md" flat label="Name"
-                    @click="clickNameNode(props.row.nodeNumber)" no-caps/>
-
+              @click="clickNameNode(props.row.nodeNumber)" no-caps/>
             <q-btn color="primary" size="md" flat label="Parameters"
               @click="clickParameters(props.row.nodeNumber)" no-caps/>
-
             <q-btn color="primary" size="md" flat label="Variables"
               @click="clickVariables(props.row.nodeNumber)" no-caps/>
-<!-- 
-            <q-btn color="primary" size="md" flat label="Edit"
-                    @click="editNode(props.row.nodeNumber, props.row.component)" no-caps/>
- -->
             <q-btn color="primary" size="md" flat label="Add Event"
-                    @click="addEvent(props.row.nodeNumber)" no-caps/>
+              @click="clickAddEvent(props.row.nodeNumber)" no-caps/>
             <q-btn color="negative" size="md" flat label="Delete"
-                    @click="deleteNode(props.row.nodeNumber)" no-caps/>
+              @click="clickDeleteNode(props.row.nodeNumber)" no-caps/>
+
           </q-td>
         </q-tr>
       </template>
@@ -110,6 +102,7 @@ const showAddEventDialog = ref(false)
 const showDeleteNodeDialog = ref(false)
 const showNameNodeDialog = ref(false)
 const showNodeParametersDialog = ref(false)
+const selected_nodeNumber = ref()
 
 const nodeList = computed(() => {
   return Object.values(store.state.nodes)
@@ -151,11 +144,13 @@ const checkNodes = () => {
   store.methods.QNN()
 }
 
-const selectNode = (nodeNumber) => {
+
+const clickEvents = (nodeNumber) => {
   store.state.selected_node = nodeNumber
   store.methods.request_all_node_events(store.state.selected_node)
   selected_node_valid.value = true
   console.log('selected node', nodeNumber)
+  selected_nodeNumber.value = nodeNumber
 }
 
 const editNode = (nodeId, component) => {
@@ -165,13 +160,13 @@ const editNode = (nodeId, component) => {
   store.state.display_component = "node"
 }
 
-const deleteNode = (nodeNumber) => {
+const clickDeleteNode = (nodeNumber) => {
   store.state.selected_node = nodeNumber
   showDeleteNodeDialog.value=true
   console.log('selected node' + store.state.selected_node)
 }
 
-const addEvent = (nodeNumber) => {
+const clickAddEvent = (nodeNumber) => {
   store.state.selected_node = nodeNumber
   console.log('add event', nodeNumber)
   showAddEventDialog.value = true
