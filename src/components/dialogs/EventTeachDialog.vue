@@ -1,6 +1,6 @@
 <template>
 
-  <q-dialog v-model='model'>
+  <q-dialog v-model='model' persistent>
     <q-card style="min-width: 350px">
       <q-card-section>
         <div class="text-h6">Event Teach</div>

@@ -1,6 +1,6 @@
 <!-- Example ChildDialog -->
 <template>
-  <q-dialog v-model='model'>
+  <q-dialog v-model='model' persistent>
     <q-card
       style='max-width: 400px; width:100%; max-height: 300px; height:100%;'>
       <q-card-section class='row items-center no-wrap'>

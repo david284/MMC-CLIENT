@@ -1,19 +1,6 @@
 <template>
 
-<!--     <q-dialog v-model='model'>
-      <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h6">Are you sure you want to delete this node?</div>
-        </q-card-section>
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Yes" v-close-popup @click="deleteNode()"/>
-          <q-btn flat label="Cancel" v-close-popup/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
- -->
-
-  <q-dialog v-model='model'> 
+  <q-dialog v-model='model' persistent> 
     <q-card class="q-pa-sm" style="max-width: 500px">
       <q-card-section>
         <div class="text-h6">Parameter Information for {{ store.getters.node_name(store.state.selected_node) }}</div>

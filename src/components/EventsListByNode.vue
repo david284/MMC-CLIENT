@@ -1,5 +1,8 @@
 <template>
   <div>
+    <q-banner class="bg-primary text-white dense">
+      Event list
+    </q-banner>
 
     <div class="full-width" >
     <q-table 

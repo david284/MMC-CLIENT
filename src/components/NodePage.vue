@@ -1,6 +1,9 @@
 <template>
   <div>
-    <!--    <div class="q-pa-md q-gutter-sm">
+    <q-banner class="bg-primary text-white dense" >
+      Node list
+    </q-banner>
+        <!--    <div class="q-pa-md q-gutter-sm">
           <q-btn color="negative" label="Check Nodes" @click="store.methods.QNN()" no-caps/>
     </div>-->
     <div>
@@ -221,5 +224,6 @@ onBeforeMount(() => {
 </script>
 
 <style scoped>
+
 
 </style>
