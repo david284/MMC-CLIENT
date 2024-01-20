@@ -1,7 +1,7 @@
 <template>
 
   <q-dialog v-model='model' persistent> 
-    <q-card class="q-pa-sm" style="max-width: 500px">
+    <q-card class="q-pa-md">
       <q-card-section>
         <div class="text-h6">Parameter Information for {{ store.getters.node_name(store.state.selected_node) }}</div>
       </q-card-section>
@@ -40,9 +40,6 @@
         <node-parameter Name="Event Variables"
                         :Value="store.state.nodes[store.state.selected_node].parameters[5]">
         </node-parameter>
-        <node-parameter Name="Filename"
-                        :Value="moduleDescriptorFilename">
-        </node-parameter>
         <node-parameter Name="CPU Name"
                         :Value="store.state.nodes[store.state.selected_node].cpuName">
         </node-parameter>
@@ -55,6 +52,9 @@
         </node-parameter>
         <node-parameter Name="Beta Version"
                         :Value="store.state.nodes[store.state.selected_node].parameters[20]">
+        </node-parameter>
+        <node-parameter Name="Module Descriptor Filename"
+                        :Value="moduleDescriptorFilename">
         </node-parameter>
       </q-card-section>
       <q-card-actions align="right" class="text-primary">
@@ -89,9 +89,13 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const model = computed({
-      get() { return props.modelValue },
-      set(newValue) { emit('update:modelValue', newValue) }
-    })
+  get() { return props.modelValue },
+  set(newValue) { emit('update:modelValue', newValue) }
+})
+
+const moduleDescriptorFilename = computed(() => {
+  return store.state.nodes[store.state.selected_node].moduleDescriptorFilename
+})
 
 
 

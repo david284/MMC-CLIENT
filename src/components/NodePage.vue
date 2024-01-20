@@ -29,6 +29,7 @@
             <q-chip color="white" text-color="green" v-if="props.row.status">OK</q-chip>
             <q-chip color="white" text-color="red" v-else>Error</q-chip>
           </q-td>
+          <q-td key="events" :props="props">{{ props.row.events }}</q-td>
           <q-td key="actions">
             <q-btn color="cyan-1" text-color="black" size="md" label="Events"
               @click="clickEvents(props.row.nodeNumber)" no-caps/>
@@ -96,6 +97,7 @@ const columns = [
 //  {name: 'component', field: 'component', required: true, label: 'component', align: 'left', sortable: true},
   {name: 'mode', field: 'mode', required: true, label: 'Mode', align: 'left', sortable: true},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},
+  {name: 'events', field: 'events', required: true, label: 'Events', align: 'left', sortable: false},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
@@ -142,6 +144,7 @@ const update_rows = () => {
     output['component'] = node.component
     output['status'] = node.status
     output['mode'] = node.flim
+    output['events'] = node.eventCount
     rows.value.push(output)
   })
 }
