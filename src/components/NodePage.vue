@@ -71,6 +71,10 @@
         :nodeNumber = store.state.selected_node
       />
 
+      <parametersLoadingDialog v-model='showParametersLoadingDialog'
+        :nodeNumber = store.state.selected_node
+      />
+
       <p v-if="store.state.debug">
         {{ Object.values(store.state.nodes) }}
       </p>
@@ -81,13 +85,13 @@
 
 <script setup>
 import {inject, ref, onBeforeMount, computed, watch} from "vue";
-import { useQuasar } from 'quasar'
+import EventsListByNode from "components/EventsListByNode"
 import addEventDialog from "components/dialogs/AddEventDialog"
 import deleteNodeDialog from "components/dialogs/DeleteNodeDialog"
 import nameNodeDialog from "components/dialogs/NameNodeDialog"
 import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
 import nodeVariablesDialog from "components/dialogs/NodeVariablesDialog"
-import EventsListByNode from "components/EventsListByNode"
+import parametersLoadingDialog from "components/dialogs/parametersLoadingDialog"
 
 const columns = [
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node number', align: 'left', sortable: true},
@@ -111,6 +115,7 @@ const showNameNodeDialog = ref(false)
 const showNodeParametersDialog = ref(false)
 const showNodeVariablesDialog = ref(false)
 const selected_nodeNumber = ref()
+const showParametersLoadingDialog = ref(false)
 
 const nodeList = computed(() => {
   return Object.values(store.state.nodes)
@@ -231,7 +236,13 @@ const clickVariables = (nodeNumber) => {
   checkNodeParameters(nodeNumber)
   console.log(`clickVariables`)
   store.state.selected_node = nodeNumber
-  showNodeVariablesDialog.value = true
+  if(store.state.nodes[nodeNumber].parameters[9]) {
+    // parameters loaded, so showNodeVariablesDialog
+    showNodeVariablesDialog.value = true
+  } else {
+    // parameters not loaded, so showParametersLoadingDialog
+    showParametersLoadingDialog.value = true
+  }
 }
 
 

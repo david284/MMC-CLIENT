@@ -7,7 +7,7 @@
       </q-card-section>
 
       <div class="q-pa-xs row">
-        <div v-for="item in nodeVariables" :key="item">
+        <div v-for="item in nodeVariablesDescriptor" :key="item">
           <NodeVariableBitArray v-if="(item.type=='NodeVariableBitArray') && (isVisible(item))"
                                 :nodeNumber="props.nodeNumber"
                                 :VariableIndex=item.nodeVariableIndex
@@ -121,7 +121,7 @@ const props = defineProps({
   nodeNumber: {type: Number, required: true }
 })
 
-const nodeVariables = ref()
+const nodeVariablesDescriptor = ref()
 const showRawVariables = ref(false)
 
 const emit = defineEmits(['update:modelValue'])
@@ -131,9 +131,6 @@ const model = computed({
       set(newValue) { emit('update:modelValue', newValue) }
     })
 
-watch(props.nodeNumber, () => {
-  console.log('NodeVariableDialog - watch nodeNumber')
-})
 
 const isVisible = (item) =>{
       var result = true
@@ -144,6 +141,14 @@ const isVisible = (item) =>{
       return result
     }
 
+    
+const update_nodeVariablesDescriptor = () => {
+  if (props.nodeNumber){
+    if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
+        nodeVariablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariables
+      }
+  }
+}
 
 onBeforeMount(() => {
 })
@@ -154,14 +159,11 @@ onMounted(() => {
 
 onUpdated(() => {
   console.log('NodeVariableDialog onUpdated')
+  nodeVariablesDescriptor.value = null
   if (props.nodeNumber){
     console.log('NodeVariableDialog onUpdated - nodeNumber ' + props.nodeNumber)
-  }
-  if (props.nodeNumber){
-    if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
-        nodeVariables.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariables
-      }
-      store.methods.request_all_node_variables(props.nodeNumber, store.state.nodes[props.nodeNumber].parameters[6], 100, 1)
+    update_nodeVariablesDescriptor()
+    store.methods.request_all_node_variables(props.nodeNumber, store.state.nodes[props.nodeNumber].parameters[6], 100, 1)
   }
 })
 
