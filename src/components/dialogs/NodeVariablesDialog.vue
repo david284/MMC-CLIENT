@@ -70,11 +70,8 @@
       </div>
 
       <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Close" v-close-popup/>
-      </q-card-actions>
-
-      <q-card-actions align="left" class="text-primary">
         <q-btn flat label="Toggle raw view" @click="clickToggleRaw()"/>
+        <q-btn flat label="Close" v-close-popup/>
       </q-card-actions>
 
       <div class="q-pa-none row" v-if="showRawVariables">

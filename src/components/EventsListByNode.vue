@@ -25,7 +25,7 @@
           <q-td key="nodeNumber" :props="props">{{ props.row.nodeNumber }}</q-td>
           <q-td key="eventNumber" :props="props">{{ props.row.eventNumber }}</q-td>
           <q-td key="eventIndex" :props="props">{{ props.row.eventIndex }}</q-td>
-          <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td>
+          <!-- <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td> -->
           <q-td key="actions" :props="props">
             <q-btn flat size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
             <q-btn color="primary" size="md" flat label="Variables"
@@ -107,7 +107,7 @@ const columns = [
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Event node', align: 'left', sortable: true},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event number', align: 'left', sortable: true},
   {name: 'eventIndex', field: 'eventIndex', required: true, label: 'Event index', align: 'left', sortable: true},
-  {name: 'eventType', field: 'eventType', required: true, label: 'Event type', align: 'left', sortable: true},
+  // {name: 'eventType', field: 'eventType', required: true, label: 'Event type', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
 ]
 
