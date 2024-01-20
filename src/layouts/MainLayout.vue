@@ -19,7 +19,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above side="left" :width="180" bordered>
+    <q-drawer v-model="leftDrawerOpen" show-if-above side="left" :width="200" bordered>
 
       <q-list>
         <EssentialLink
@@ -29,11 +29,9 @@
         />
       </q-list>
 
-      <q-list bordered class="q-pa-none q-ma-none">
-        <q-item class="q-pa-none q-ma-none" v-for="message in traffic" :key="message" clickable v-ripple>
-          <q-item-section class="q-pa-none q-ma-none">
-            <q-item-label class="q-pa-none q-ma-none">{{ message.direction + " " + message.json.encoded + " " + message.json.mnemonic }}</q-item-label>
-          </q-item-section>
+      <q-list bordered >
+        <q-item v-for="message in traffic" :key="message" clickable v-ripple>
+            <q-item-label class="q-pa-none q-ma-none text-caption">{{ message.direction + " " + message.json.encoded + " " + message.json.mnemonic }}</q-item-label>
         </q-item>
       </q-list>
 
@@ -73,22 +71,10 @@ const linksList = [
     component: "NodePage",
   },
   {
-    title: "Nodes",
-    caption: "MERG Modules",
-    icon: "mdi-timeline-outline",
-    component: "Nodes",
-  },
-  {
     title: "Events",
     caption: "Captured Events",
     icon: "mdi-gesture-double-tap",
     component: "events",
-  },
-  {
-    title: "Settings",
-    caption: "MMC Settings",
-    icon: "mdi-cog-outline",
-    component: "settings",
   },
   {
     title: "JSON",
