@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--    <div class="q-pa-md q-gutter-sm">
-          <q-btn color="negative" label="Check Nodes" @click="store.methods.QNN()" no-caps/>
+          <q-btn color="negative" label="Check Nodes" @click="store.methods.query_all_nodes()" no-caps/>
         </div>-->
     <div>
       <q-table

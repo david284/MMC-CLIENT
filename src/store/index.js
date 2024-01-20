@@ -139,7 +139,7 @@ const methods = {
   update_services_component(component) {
     state.services_component = component
   },
-  QNN() {
+  query_all_nodes() {
     console.log(`QUERY_ALL_NODES`)
     socket.emit('QUERY_ALL_NODES')
   },

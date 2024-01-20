@@ -174,7 +174,7 @@ const event_group = (eventId) => {
 }
 
 onBeforeMount(() => {
-  store.methods.QNN()
+  store.methods.query_all_nodes()
 })
 
 onMounted(() => {

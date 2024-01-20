@@ -146,34 +146,6 @@ const update_rows = () => {
   })
 }
 
-const clickEvents = (nodeNumber) => {
-  store.state.selected_node = nodeNumber
-  store.methods.request_all_node_events(store.state.selected_node)
-  selected_node_valid.value = true
-  console.log('selected node', nodeNumber)
-  selected_nodeNumber.value = nodeNumber
-}
-
-const editNode = (nodeId, component) => {
-  store.state.selected_node = nodeId
-  // will always want parameters, so update as soon as individual node id is known
-  store.methods.request_all_node_parameters(store.state.selected_node, 20, 100)
-  store.state.display_component = "node"
-}
-
-const clickDeleteNode = (nodeNumber) => {
-  store.state.selected_node = nodeNumber
-  showDeleteNodeDialog.value=true
-  console.log('selected node' + store.state.selected_node)
-}
-
-const clickAddEvent = (nodeNumber) => {
-  store.state.selected_node = nodeNumber
-  console.log('add event', nodeNumber)
-  showAddEventDialog.value = true
-  console.log('clicked on node', store.state.selected_node)
-}
-
 const getNodeName = (nodeNumber) => {
   if (nodeNumber in store.state.layout.nodeDetails) {
     return store.state.layout.nodeDetails[nodeNumber].name
@@ -191,30 +163,74 @@ const nodeColour = (nodeId) => {
 }
 
 
+onBeforeMount(() => {
+  //console.log(`Node onBeforeMount`)
+  store.methods.query_all_nodes()
+})
+
+
+const checkNodeParameters = (nodeNumber) => {
+  // param9 - cpu type to check if parameters have been fully retrieved
+  if(store.state.nodes[nodeNumber].parameters[9]){
+    console.log("parameters exist")
+  } else {
+    console.log("need to read parameters")
+    store.methods.request_all_node_parameters(nodeNumber, 20, 100)
+  }
+}
+
+/*/////////////////////////////////////////////////////////////////////////////
+
+Click event handlers
+
+/////////////////////////////////////////////////////////////////////////////*/
+
+
+const clickAddEvent = (nodeNumber) => {
+  checkNodeParameters(nodeNumber)
+  store.state.selected_node = nodeNumber
+  console.log('add event', nodeNumber)
+  showAddEventDialog.value = true
+  console.log('clicked on node', store.state.selected_node)
+}
+
+const clickDeleteNode = (nodeNumber) => {
+  checkNodeParameters(nodeNumber)
+  store.state.selected_node = nodeNumber
+  showDeleteNodeDialog.value=true
+  console.log('selected node' + store.state.selected_node)
+}
+
+const clickEvents = (nodeNumber) => {
+  checkNodeParameters(nodeNumber)
+  store.state.selected_node = nodeNumber
+  store.methods.request_all_node_events(store.state.selected_node)
+  selected_node_valid.value = true
+  console.log('selected node', nodeNumber)
+  selected_nodeNumber.value = nodeNumber
+}
+
 const clickNameNode = (nodeNumber) => {
+  checkNodeParameters(nodeNumber)
   console.log(`clickNameNode`)
   store.state.selected_node = nodeNumber
   showNameNodeDialog.value = true;
 }
 
 const clickParameters = (nodeNumber) => {
+  checkNodeParameters(nodeNumber)
   console.log(`clickParameters`)
   store.state.selected_node = nodeNumber
-  store.methods.request_all_node_parameters(store.state.selected_node, 20, 100)
   showNodeParametersDialog.value = true
 }
 
 const clickVariables = (nodeNumber) => {
+  checkNodeParameters(nodeNumber)
   console.log(`clickVariables`)
   store.state.selected_node = nodeNumber
   showNodeVariablesDialog.value = true
 }
 
-
-onBeforeMount(() => {
-  //console.log(`Node onBeforeMount`)
-  store.methods.QNN()
-})
 
 </script>
 
