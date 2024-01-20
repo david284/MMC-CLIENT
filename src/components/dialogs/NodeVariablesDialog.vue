@@ -43,6 +43,7 @@
           <NodeVariableSelect v-if="(item.type=='NodeVariableSelect') && (isVisible(item))"
                               :nodeVariableIndex="item.nodeVariableIndex"
                               :nodeNumber="props.nodeNumber"
+                              :bitMask = "item.bitMask"
                               :displayTitle="item.displayTitle"
                               :displaySubTitle="item.displaySubTitle"
                               :options="item.options">

@@ -215,7 +215,7 @@ const clickEvents = (nodeNumber) => {
   store.methods.request_all_node_events(store.state.selected_node)
   selected_node_valid.value = true
   console.log('selected node', nodeNumber)
-  selected_nodeNumber.value = nodeNumber
+  selected_nodeNumber.value = nodeNumber    // used to highlight row
 }
 
 const clickNameNode = (nodeNumber) => {

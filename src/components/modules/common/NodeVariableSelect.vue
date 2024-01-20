@@ -4,7 +4,7 @@
       <div class="text-h6">{{ displayTitle }}</div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
     <q-select
-      v-model="variable"
+      v-model="selectValue"
       :options="options"
       map-options
       @update:model-value="update_variable"
@@ -57,27 +57,28 @@ const props = defineProps({
 
 const label = props.name ? props.name : "Variable" + props.nodeVariableIndex
 const store = inject('store')
-const variable = ref()
+const selectValue = ref()
 
-const variableValue = computed(() =>{
+const nodeVariable = computed(() =>{
   return store.state.nodes[props.nodeNumber].nodeVariables[props.nodeVariableIndex]
 })
 
-watch(variableValue, () => {
-  variable.value = variableValue.value & props.bitMask
+watch(nodeVariable, () => {
+  selectValue.value = nodeVariable.value & props.bitMask
+  console.log(`NodeVariableSelect watch variableValue ` + selectValue.value + ' bitMask ' + props.bitMask)
 })
 
 const update_variable = (newValue) => {
   console.log(`NodeVariableSelect update_variable ${newValue.value}`)
 
   // get previous value
-  let byteValue = variableValue.value
+  let byteValue = nodeVariable.value
   //set bits, but only if they match bits in the bitmask
   byteValue = byteValue | (newValue.value & props.bitMask)							// set bit by 'or-ing' bit value
   // clear bits, but only if they match bits in the bitmask
   byteValue = byteValue & (newValue.value | ~props.bitMask)							// clear bit by 'and-ing' inverse bit value
 
-  console.log(`EventVariableSelect: byteValue ${byteValue}`);
+  console.log(`NodeVariableSelect: byteValue ${byteValue}`);
   
 
   store.methods.update_node_variable(props.nodeNumber, props.nodeVariableIndex, byteValue)
@@ -86,7 +87,7 @@ const update_variable = (newValue) => {
 
 onMounted(() => {
   console.log(`NodeVariableSelect: onMounted`)
-  variable.value = variableValue.value & props.bitMask
+  selectValue.value = nodeVariable.value & props.bitMask
   console.log(`NodeVariableSelect: props: ${JSON.stringify(props)}`)
 })
 

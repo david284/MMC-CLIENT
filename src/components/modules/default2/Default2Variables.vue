@@ -39,7 +39,8 @@
                           :nodeNumber="store.state.selected_node"
                           :displayTitle="item.displayTitle"
                           :displaySubTitle="item.displaySubTitle"
-                          :options="item.options">
+                          :options="item.options"
+                          :bitMask="item.bitMask">
       </NodeVariableSelect>
       <node-variable-slider v-if="(item.type=='NodeVariableSlider') && (isVisible(item))"
                             :node-number="store.state.selected_node"
