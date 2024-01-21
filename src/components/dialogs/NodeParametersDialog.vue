@@ -3,55 +3,55 @@
   <q-dialog v-model='model' persistent> 
     <q-card class="q-pa-md">
       <q-card-section>
-        <div class="text-h6">Parameter Information for {{ store.getters.node_name(store.state.selected_node) }}</div>
+        <div class="text-h6">Parameter Information for {{ store.getters.node_name(props.nodeNumber) }}</div>
       </q-card-section>
 
        <q-card-section>
         <node-parameter Name="Node Number"
-                        :Value="store.state.nodes[store.state.selected_node].nodeNumber">
+                        :Value="store.state.nodes[props.nodeNumber].nodeNumber">
         </node-parameter>
         <node-parameter Name="Events Currently Stored"
-                        :Value="store.state.nodes[store.state.selected_node].eventCount">
+                        :Value="store.state.nodes[props.nodeNumber].eventCount">
         </node-parameter>
         <node-parameter Name="Manufacturer"
-                        :Value="store.state.nodes[store.state.selected_node].moduleManufacturerName">
+                        :Value="store.state.nodes[props.nodeNumber].moduleManufacturerName">
         </node-parameter>
         <node-parameter Name="Module"
-                        :Value="store.state.nodes[store.state.selected_node].moduleName">
+                        :Value="store.state.nodes[props.nodeNumber].moduleName">
         </node-parameter>
         <node-parameter Name="Module Identifier"
-                        :Value="store.state.nodes[store.state.selected_node].moduleIdentifier">
+                        :Value="store.state.nodes[props.nodeNumber].moduleIdentifier">
         </node-parameter>
         <node-parameter Name="Producer"
-                        :Value="store.state.nodes[store.state.selected_node].producer">
+                        :Value="store.state.nodes[props.nodeNumber].producer">
         </node-parameter>
         <node-parameter Name="Consumer"
-                        :Value="store.state.nodes[store.state.selected_node].consumer">
+                        :Value="store.state.nodes[props.nodeNumber].consumer">
         </node-parameter>
         <node-parameter Name="Consume own Events"
-                        :Value="store.state.nodes[store.state.selected_node].coe">
+                        :Value="store.state.nodes[props.nodeNumber].coe">
         </node-parameter>
         <node-parameter Name="Node Variables"
-                        :Value="store.state.nodes[store.state.selected_node].parameters[6]">
+                        :Value="store.state.nodes[props.nodeNumber].parameters[6]">
         </node-parameter>
         <node-parameter Name="Events Supported"
-                        :Value="store.state.nodes[store.state.selected_node].parameters[4]">
+                        :Value="store.state.nodes[props.nodeNumber].parameters[4]">
         </node-parameter>
         <node-parameter Name="Event Variables"
-                        :Value="store.state.nodes[store.state.selected_node].parameters[5]">
+                        :Value="store.state.nodes[props.nodeNumber].parameters[5]">
         </node-parameter>
         <node-parameter Name="CPU Name"
-                        :Value="store.state.nodes[store.state.selected_node].cpuName">
+                        :Value="store.state.nodes[props.nodeNumber].cpuName">
         </node-parameter>
         <node-parameter Name="Interface"
-                        :Value="store.state.nodes[store.state.selected_node].interfaceName">
+                        :Value="store.state.nodes[props.nodeNumber].interfaceName">
         </node-parameter>
         <node-parameter Name="Firmware Version"
-                        :Value="store.state.nodes[store.state.selected_node].parameters[7] +
-							String.fromCharCode(store.state.nodes[store.state.selected_node].parameters[2])">
+                        :Value="store.state.nodes[props.nodeNumber].parameters[7] +
+							String.fromCharCode(store.state.nodes[props.nodeNumber].parameters[2])">
         </node-parameter>
         <node-parameter Name="Beta Version"
-                        :Value="store.state.nodes[store.state.selected_node].parameters[20]">
+                        :Value="store.state.nodes[props.nodeNumber].parameters[20]">
         </node-parameter>
         <node-parameter Name="Module Descriptor Filename"
                         :Value="moduleDescriptorFilename">
@@ -94,7 +94,7 @@ const model = computed({
 })
 
 const moduleDescriptorFilename = computed(() => {
-  return store.state.nodes[store.state.selected_node].moduleDescriptorFilename
+  return store.state.nodes[props.nodeNumber].moduleDescriptorFilename
 })
 
 

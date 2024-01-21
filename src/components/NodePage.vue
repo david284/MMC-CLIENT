@@ -187,6 +187,16 @@ const checkNodeParameters = (nodeNumber) => {
   }
 }
 
+
+const select_node_row = (nodeNumber) => {
+  store.state.selected_node = nodeNumber
+  store.methods.request_all_node_events(store.state.selected_node)
+  selected_nodeNumber.value = nodeNumber    // used to highlight row
+  selected_node_valid.value = true 
+  console.log('####### node row ', store.state.selected_node + " selected")
+}
+
+
 /*/////////////////////////////////////////////////////////////////////////////
 
 Click event handlers
@@ -196,7 +206,7 @@ Click event handlers
 
 const clickAddEvent = (nodeNumber) => {
   checkNodeParameters(nodeNumber)
-  store.state.selected_node = nodeNumber
+  select_node_row(nodeNumber)
   console.log('add event', nodeNumber)
   showAddEventDialog.value = true
   console.log('clicked on node', store.state.selected_node)
@@ -204,38 +214,36 @@ const clickAddEvent = (nodeNumber) => {
 
 const clickDeleteNode = (nodeNumber) => {
   checkNodeParameters(nodeNumber)
-  store.state.selected_node = nodeNumber
+  select_node_row(nodeNumber)
   showDeleteNodeDialog.value=true
   console.log('selected node' + store.state.selected_node)
 }
 
 const clickEvents = (nodeNumber) => {
   checkNodeParameters(nodeNumber)
-  store.state.selected_node = nodeNumber
-  store.methods.request_all_node_events(store.state.selected_node)
-  selected_node_valid.value = true
+  select_node_row(nodeNumber)
   console.log('selected node', nodeNumber)
-  selected_nodeNumber.value = nodeNumber    // used to highlight row
 }
 
 const clickNameNode = (nodeNumber) => {
   checkNodeParameters(nodeNumber)
+  select_node_row(nodeNumber)
   console.log(`clickNameNode`)
-  store.state.selected_node = nodeNumber
   showNameNodeDialog.value = true;
 }
 
 const clickParameters = (nodeNumber) => {
   checkNodeParameters(nodeNumber)
+  select_node_row(nodeNumber)
   console.log(`clickParameters`)
-  store.state.selected_node = nodeNumber
   showNodeParametersDialog.value = true
 }
 
+
 const clickVariables = (nodeNumber) => {
   checkNodeParameters(nodeNumber)
+  select_node_row(nodeNumber)
   console.log(`clickVariables`)
-  store.state.selected_node = nodeNumber
   if(store.state.nodes[nodeNumber].parameters[9]) {
     // parameters loaded, so showNodeVariablesDialog
     showNodeVariablesDialog.value = true
