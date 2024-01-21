@@ -2,7 +2,7 @@
   <div>
     <q-banner style="min-height: 0;" class="bg-primary text-white dense no-margin no-padding">
       <div class="text-h6">
-        Event list for node :  {{ store.getters.node_name(store.state.selected_node) }}
+        Stored Events for node :  {{ store.getters.node_name(store.state.selected_node) }}
       </div>
     </q-banner>
 

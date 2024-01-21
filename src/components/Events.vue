@@ -12,7 +12,7 @@
       :virtual-scroll-sticky-size-start="48"
     >
       <template v-slot:top="">
-        <div class="col-2 q-table__title text-h4">Events</div>
+        <div class="col-2 q-table__title text-h4">Bus Events</div>
         <q-space/>
         <q-input outlined dense debounce="300" v-model="filter" placeholder="Search">
           <template v-slot:append>

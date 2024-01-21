@@ -71,7 +71,7 @@ const linksList = [
     component: "NodePage",
   },
   {
-    title: "Events",
+    title: "Bus Events",
     caption: "Captured Events",
     icon: "mdi-gesture-double-tap",
     component: "events",
