@@ -121,6 +121,16 @@ watch(nodeEvents, () => {
 })
 
 
+// need to know if new event selected or new events added
+const busEvents = computed(() =>{
+  return Object.values(store.state.events)
+})
+watch(busEvents, () => {
+  console.log(`EventsListByNode WATCH busEvents`)
+  update_rows()
+})
+
+
 // need to know if event name changes
 const eventDetails = computed(() => {
   return store.state.layout.eventDetails
