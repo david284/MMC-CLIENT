@@ -4,6 +4,9 @@
     <q-card class="q-pa-sm">
       <q-card-section>
         <div class="text-h6">Node Variables for {{ store.getters.node_name(props.nodeNumber) }}</div>
+        <div class="text-h6" v-if="showDescriptorWarning">
+          *** Descriptor not loaded for this node ***
+        </div>
       </q-card-section>
 
       <div class="q-pa-xs row">
@@ -117,15 +120,16 @@ import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js
 
 const $q = useQuasar()
 const store = inject('store')
+const showDescriptorWarning = ref(false)
+const nodeVariablesDescriptor = ref()
+const showRawVariables = ref(false)
+var loadFile_notification_raised = false    // used by checkFileLoad
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
   nodeNumber: {type: Number, required: true }
 })
 
-const nodeVariablesDescriptor = ref()
-const showRawVariables = ref(false)
-var loadFile_notification_raised = false    // used by checkFileLoad
 
 const emit = defineEmits(['update:modelValue'])
 
@@ -149,9 +153,11 @@ const update_nodeVariablesDescriptor = () => {
   if (props.nodeNumber){
     if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
         nodeVariablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariables
+        showDescriptorWarning.value = false
       } else{
         nodeVariablesDescriptor.value = {}
         showRawVariables.value = true
+        showDescriptorWarning.value = true
     }
   }
 }

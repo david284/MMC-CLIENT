@@ -4,6 +4,9 @@
     <q-card class="q-pa-sm">
       <q-card-section>
         <div class="text-h6">Event Variables for event : {{ store.getters.event_name(props.eventIdentifier) }}</div>
+        <div class="text-h6" v-if="showDescriptorWarning">
+          *** Descriptor not loaded for this node ***
+        </div>
       </q-card-section>
 
 
@@ -124,6 +127,7 @@ const $q = useQuasar()
 const store = inject('store')
 const eventVariables = ref()
 const showRawVariables = ref(false)
+const showDescriptorWarning = ref(false)
 var loadFile_notification_raised = false    // used by checkFileLoad
 
 
@@ -169,9 +173,11 @@ onUpdated(() => {
     console.log('NodeVariableDialog onUpdated - nodeNumber ' + props.nodeNumber)
     if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
       eventVariables.value = store.state.nodeDescriptors[props.nodeNumber].eventVariables
+      showDescriptorWarning.value = false
     } else {
       eventVariables.value = {}
       showRawVariables.value = true
+      showDescriptorWarning.value = true
     }
     store.methods.request_all_event_variables(
       props.nodeNumber,
