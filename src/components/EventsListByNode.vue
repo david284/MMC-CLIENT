@@ -1,8 +1,8 @@
 <template>
   <div>
-    <q-banner style="min-height: 0;" class="bg-primary text-white dense no-margin no-padding">
+    <q-banner style="min-height: 0;" class="bg-primary text-white dense no-padding">
       <div class="text-h6">
-        Stored Events for node :  {{ store.getters.node_name(store.state.selected_node) }}
+        Events for node :  {{ store.getters.node_name(store.state.selected_node) }}
       </div>
     </q-banner>
 
@@ -28,7 +28,7 @@
           <!-- <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td> -->
           <q-td key="actions" :props="props">
             <q-btn flat size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
-            <q-btn color="primary" size="md" flat label="Variables"
+            <q-btn :disabled="!props.row.storedEvent" color="primary" size="md" flat label="Variables"
             @click="clickVariables(props.row.eventIndex, props.row.eventIdentifier)" no-caps/>
             <q-btn flat size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
             <q-btn flat size="md" color="primary" label="Test" @click="clickTest(props.row.nodeNumber, props.row.eventNumber, props.row.eventindex)" no-caps/>
@@ -136,7 +136,8 @@ const update_rows = () => {
   //console.log(`EventsListByNode Update Rows ${store.state.selected_node}`)
   rows.value = []
 
-   nodeEvents.value.forEach(event => {
+  // do stored events for this node first.....
+  nodeEvents.value.forEach(event => {
     var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
     let output = {}
     output['eventIdentifier'] = event.eventIdentifier
@@ -145,8 +146,33 @@ const update_rows = () => {
     output['nodeNumber'] = eventNodeNumber
     output['eventNumber'] = parseInt(event.eventIdentifier.substr(4, 4), 16)
     output['eventType'] = getEventType(event.eventIndex)
+    output['storedEvent'] = true
     rows.value.push(output)
   })
+
+  // now add bus events... but not if already in the list
+  var busEvents = Object.values(store.state.events) 
+  busEvents.forEach(busEvent => {
+    if (busEvent.nodeNumber == store.state.selected_node){
+      // lets see if it's already in the stored events...
+      var alreadyInList = false
+      nodeEvents.value.forEach(event => {
+        if(busEvent.id == event.eventIdentifier){
+          alreadyInList = true
+        }
+      })
+      if (alreadyInList == false){
+        let output = {}
+        output['eventIdentifier'] = busEvent.id
+        output['eventName'] = store.getters.event_name(busEvent.id)
+        output['nodeNumber'] = busEvent.nodeNumber
+        output['eventNumber'] = busEvent.eventNumber
+        output['storedEvent'] = false
+        rows.value.push(output)
+      }
+    }
+  })
+
   // sort rows by eventIdentifier, not eventIndex
   rows.value.sort(function(a, b){return (a.eventIdentifier < b.eventIdentifier)? -1 : 1;});
 }
