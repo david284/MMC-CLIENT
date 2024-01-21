@@ -111,30 +111,20 @@ const columns = [
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
 ]
 
-
+// need to know if new event selected or new events added
 const nodeEvents = computed(() =>{
   return Object.values(store.state.nodes[store.state.selected_node].storedEvents)
 })
-
-
 watch(nodeEvents, () => {
   console.log(`EventsListByNode WATCH nodeEvents`)
   update_rows()
 })
 
-const host_nodeNumber = computed(() =>{
-  return store.state.selected_node
-})
 
-watch(host_nodeNumber, () => {
-  console.log(`EventsListByNode WATCH host_nodeNumber`)
-  update_rows()
-})
-
+// need to know if event name changes
 const eventDetails = computed(() => {
   return store.state.layout.eventDetails
 })
-
 watch(eventDetails, () => {
   console.log(`EventsListByNode WATCH eventDetails`)
   update_rows()
