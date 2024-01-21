@@ -1,9 +1,12 @@
 <template>
   <div>
-    <q-banner style="min-height: 0;" class="bg-primary text-white dense no-padding">
+    <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
       <div class="text-h6">
         Events for node :  {{ store.getters.node_name(store.state.selected_node) }}
       </div>
+      <template v-slot:action>
+        <q-btn flat color="white" label="Refresh" @click="clickRefresh()"/>
+      </template>
     </q-banner>
 
     <div class="full-width" >
@@ -253,6 +256,11 @@ const clickDelete = (eventIndentifier) => {
   showDeleteEventDialog.value = true
   selected_event_Identifier.value = eventIndentifier
 //  store.methods.remove_event(nodeNumber, eventIndentifier)
+}
+
+
+const clickRefresh = () => {
+  refreshEvents()
 }
 
 

@@ -1,7 +1,10 @@
 <template>
   <div>
-    <q-banner style="min-height: 0;" class="bg-primary text-white dense no-margin no-padding" >
+    <q-banner  inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin no-padding" >
       <div class="text-h6">Node list</div>
+      <template v-slot:action>
+        <q-btn flat color="white" label="Refresh" @click="clickRefresh()"/>
+      </template>
     </q-banner>
     <div>
         <q-table
@@ -240,6 +243,10 @@ const clickParameters = (nodeNumber) => {
   select_node_row(nodeNumber)
   console.log(`clickParameters`)
   showNodeParametersDialog.value = true
+}
+
+const clickRefresh = () => {
+  store.methods.query_all_nodes()
 }
 
 
