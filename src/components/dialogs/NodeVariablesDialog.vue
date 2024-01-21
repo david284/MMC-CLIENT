@@ -7,6 +7,9 @@
         <div class="text-h6" v-if="showDescriptorWarning">
           *** Descriptor not loaded for this node ***
         </div>
+        <div class="text-h6" v-if="showNoVariablesMessage">
+          this node has no variables to display
+        </div>
       </q-card-section>
 
       <div class="q-pa-xs row">
@@ -123,7 +126,8 @@ const store = inject('store')
 const showDescriptorWarning = ref(false)
 const nodeVariablesDescriptor = ref()
 const showRawVariables = ref(false)
-var loadFile_notification_raised = false    // used by checkFileLoad
+const showNoVariablesMessage = ref(false)
+var loadFile_notification_raised = {}    // used by checkFileLoad
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -176,7 +180,12 @@ onUpdated(() => {
     console.log('NodeVariableDialog onUpdated - nodeNumber ' + props.nodeNumber)
     update_nodeVariablesDescriptor()
     checkFileLoad()
-    store.methods.request_all_node_variables(props.nodeNumber, store.state.nodes[props.nodeNumber].parameters[6], 100, 1)
+    if (store.state.nodes[props.nodeNumber].parameters[6] == 0){
+      showNoVariablesMessage.value = true
+    }else{
+      showNoVariablesMessage.value = false
+      store.methods.request_all_node_variables(props.nodeNumber, store.state.nodes[props.nodeNumber].parameters[6], 100, 1)
+    }
   }
 })
 
@@ -184,7 +193,7 @@ onUpdated(() => {
 // raise notification if nodeDescriptor file not present
 const checkFileLoad = () => {
   console.log(`checkFileLoad`)
-  if (loadFile_notification_raised != true) {
+  if (loadFile_notification_raised[props.nodeNumber] == undefined) {
     // module descriptor filename won't be created if there's no moduleName
     if( store.state.nodes[props.nodeNumber].moduleName == 'Unknown'){
       $q.notify({
@@ -206,9 +215,9 @@ const checkFileLoad = () => {
         position: 'center',
         actions: [ { label: 'Dismiss' } ]
       })
-      loadFile_notification_raised = true;
+      loadFile_notification_raised[props.nodeNumber]=true;
     }
-    if (loadFile_notification_raised) {
+    if (loadFile_notification_raised[props.nodeNumber]) {
        console.log(`checkLoadFile notification raised`) 
     }
   }
