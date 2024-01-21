@@ -189,11 +189,13 @@ const checkNodeParameters = (nodeNumber) => {
 
 
 const select_node_row = (nodeNumber) => {
-  store.state.selected_node = nodeNumber
-  store.methods.request_all_node_events(store.state.selected_node)
-  selected_nodeNumber.value = nodeNumber    // used to highlight row
-  selected_node_valid.value = true 
-  console.log('####### node row ', store.state.selected_node + " selected")
+  if (store.state.selected_node != nodeNumber) {
+    store.state.selected_node = nodeNumber
+    store.methods.request_all_node_events(store.state.selected_node)
+    selected_nodeNumber.value = nodeNumber    // used to highlight row
+    selected_node_valid.value = true 
+    console.log('####### node row ', store.state.selected_node + " selected")
+  }
 }
 
 
