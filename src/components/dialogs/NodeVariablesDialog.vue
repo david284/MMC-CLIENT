@@ -34,7 +34,7 @@
                             :displayTitle="item.displayTitle"
                             :displaySubTitle="item.displaySubTitle">
           </NodeVariableDual>
-          <NodeVariableGroup v-if="(item.type=='group') && (isVisible(item))"
+          <NodeVariableGroup v-if="(item.type=='NodeVariableGroup') && (isVisible(item))"
                         :configuration = item>
           </NodeVariableGroup>
           <NodeVariableNumber v-if="(item.type=='NodeVariableNumber') && (isVisible(item))"

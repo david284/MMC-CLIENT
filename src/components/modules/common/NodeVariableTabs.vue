@@ -62,7 +62,7 @@
                                   :startBit = "item.startBit"
                                   :endBit = "item.endBit">
               </node-variable-slider>
-              <NodeVariableTabGroup v-if="(item.type=='group') && (isVisible(item))"
+              <NodeVariableTabGroup v-if="(item.type=='NodeVariableGroup') && (isVisible(item))"
                       :configuration = item>
               </NodeVariableTabGroup>
 
