@@ -151,6 +151,7 @@ const update_nodeVariablesDescriptor = () => {
         nodeVariablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariables
       } else{
         nodeVariablesDescriptor.value = {}
+        showRawVariables.value = true
     }
   }
 }
@@ -199,7 +200,6 @@ const checkFileLoad = () => {
         position: 'center',
         actions: [ { label: 'Dismiss' } ]
       })
-      showRawVariables.value = true
       loadFile_notification_raised = true;
     }
     if (loadFile_notification_raised) {

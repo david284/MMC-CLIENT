@@ -73,7 +73,7 @@
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Toggle raw view" @click="clickToggleRaw()"/>
-        <q-btn flat label="Close" v-close-popup/>
+        <q-btn flat label="Close" v-close-popup @click="clickClose()"/>
       </q-card-actions>
 
       <div class="q-pa-none row" v-if="showRawVariables">
@@ -108,6 +108,7 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
+import { useQuasar } from 'quasar'
 import EventVariableBitArray from "components/modules/common/EventVariableBitArray"
 import EventVariableBitSingle from "components/modules/common/EventVariableBitSingle"
 import EventVariableGroup from "components/modules/common/EventVariableGroup"
@@ -119,9 +120,11 @@ import EventVariableTabs from "components/modules/common/EventVariableTabs"
 import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
 
 
+const $q = useQuasar()
 const store = inject('store')
 const eventVariables = ref()
 const showRawVariables = ref(false)
+var loadFile_notification_raised = false    // used by checkFileLoad
 
 
 const props = defineProps({
@@ -164,9 +167,11 @@ onUpdated(() => {
   console.log('EventVariablesDialog onUpdated')
   if (props.nodeNumber){
     console.log('NodeVariableDialog onUpdated - nodeNumber ' + props.nodeNumber)
-    
     if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
       eventVariables.value = store.state.nodeDescriptors[props.nodeNumber].eventVariables
+    } else {
+      eventVariables.value = {}
+      showRawVariables.value = true
     }
     store.methods.request_all_event_variables(
       props.nodeNumber,
@@ -174,8 +179,58 @@ onUpdated(() => {
       100,
       store.state.nodes[props.nodeNumber].parameters[5]
     )
+    checkFileLoad()
   }
 })
+
+// raise notification if nodeDescriptor file not present
+const checkFileLoad = () => {
+  console.log(`checkFileLoad`)
+  if (loadFile_notification_raised != true) {
+    // module descriptor filename won't be created if there's no moduleName
+    if( store.state.nodes[props.nodeNumber].moduleName == 'Unknown'){
+      $q.notify({
+        message: 'module name unknown',
+        timeout: 0,
+        type: 'warning',
+        position: 'center',
+        actions: [ { label: 'Dismiss' } ]
+      })
+      loadFile_notification_raised = true;
+    } 
+    else if ((store.state.nodes[props.nodeNumber].moduleDescriptorFilename != undefined)  
+      && (store.state.nodeDescriptors[props.nodeNumber] == undefined)) 
+    {
+      $q.notify({
+        message: 'Failed to load module file ' + store.state.nodes[props.nodeNumber].moduleDescriptorFilename,
+        timeout: 0,
+        type: 'warning',
+        position: 'center',
+        actions: [ { label: 'Dismiss' } ]
+      })
+      loadFile_notification_raised = true;
+    }
+    if (loadFile_notification_raised) {
+       console.log(`checkLoadFile notification raised`) 
+    }
+  }
+}
+  
+
+
+
+/*/////////////////////////////////////////////////////////////////////////////
+
+Click event handlers
+
+/////////////////////////////////////////////////////////////////////////////*/
+
+const clickClose = () => {
+  console.log(`EventVariablesDialog clickClose`)
+  showRawVariables.value = false
+//  loadFile_notification_raised = false
+  eventVariables.value={}
+}
 
 const clickToggleRaw = () => {
   console.log(`EventVariablesDialog clickToggleRaw`)
