@@ -92,7 +92,6 @@ import nameNodeDialog from "components/dialogs/NameNodeDialog"
 import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
 import nodeVariablesDialog from "components/dialogs/NodeVariablesDialog"
 import parametersLoadingDialog from "components/dialogs/parametersLoadingDialog"
-import {getEventCount} from "components/functions/EventListFunction.js"
 
 
 const columns = [
@@ -103,7 +102,7 @@ const columns = [
 //  {name: 'component', field: 'component', required: true, label: 'component', align: 'left', sortable: true},
   {name: 'mode', field: 'mode', required: true, label: 'Mode', align: 'left', sortable: true},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},
-  {name: 'events', field: 'events', required: true, label: 'Events', align: 'left', sortable: false},
+  {name: 'events', field: 'events', required: true, label: 'Stored Events', align: 'left', sortable: false},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
@@ -151,7 +150,7 @@ const update_rows = () => {
     output['component'] = node.component
     output['status'] = node.status
     output['mode'] = node.flim
-    output['events'] =   getEventCount(node.nodeNumber, store.state)
+    output['events'] = node.eventCount
     rows.value.push(output)
   })
 }

@@ -3,21 +3,19 @@ import {inject} from "vue";
 
 const name = "EventListFunction"
 
-export function  getEventCount (nodeNumber, state) {
+export function  getEventCount (nodeNumber, store) {
   console.log (name + " getEventList " + nodeNumber)
-//  console.log (name + " getEventList " + nodeNumber + JSON.stringify(state))
-  var count = Object.keys(geteventslist(nodeNumber, state)).length
+  var count = Object.keys(geteventslist(nodeNumber, store)).length
   console.log (name + " getEventList - count " + count)
   return count
 }
 
 
-const geteventslist = (nodeNumber, state) => {
-  //console.log(`EventsListByNode Update Rows ${state.selected_node}`)
+const geteventslist = (nodeNumber, store) => {
   var eventsList = []
 
   // do stored events for this node first.....
-  var storedEvents = Object.values(state.nodes[nodeNumber].storedEvents) 
+  var storedEvents = Object.values(store.state.nodes[nodeNumber].storedEvents) 
   storedEvents.forEach(event => {
     var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
     let output = {}
@@ -32,7 +30,7 @@ const geteventslist = (nodeNumber, state) => {
   })
 
   // now add bus events... but not if already in the list
-  var busEvents = Object.values(state.events) 
+  var busEvents = Object.values(store.state.events) 
   busEvents.forEach(busEvent => {
     if (busEvent.nodeNumber == nodeNumber){
       // lets see if it's already in the stored events...
