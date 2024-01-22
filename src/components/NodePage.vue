@@ -53,7 +53,10 @@
       </q-table>
 
 
-      <EventsListByNode v-if="(selected_node_valid == true)" />
+      <EventsListByNode v-if="(selected_node_valid == true)"
+        :nodeNumber = store.state.selected_node
+      />
+
 
 
       <addEventDialog v-model='showAddEventDialog' />
@@ -110,6 +113,7 @@ const columns = [
 ]
 
 const store = inject('store')
+const name = "NodePage"
 const filter = ref('')
 const rows = ref([])
 const selected_node_valid = ref(false)
@@ -194,11 +198,12 @@ const checkNodeParameters = (nodeNumber) => {
 
 const select_node_row = (nodeNumber) => {
   if (store.state.selected_node != nodeNumber) {
+    console.log(name + ': request_all_node_events')
     store.state.selected_node = nodeNumber
     store.methods.request_all_node_events(store.state.selected_node)
     selected_nodeNumber.value = nodeNumber    // used to highlight row
     selected_node_valid.value = true 
-    console.log('####### node row ', store.state.selected_node + " selected")
+    console.log(name + ': node row ', store.state.selected_node + " selected")
   }
 }
 
@@ -261,7 +266,12 @@ const clickVariables = (nodeNumber) => {
   select_node_row(nodeNumber)
   console.log(`clickVariables`)
   if(store.state.nodes[nodeNumber].parameters[9]) {
-    // parameters loaded, so showNodeVariablesDialog
+    // parameters loaded, so read variables & showNodeVariablesDialog
+    store.methods.request_all_node_variables(
+      nodeNumber, 
+      store.state.nodes[nodeNumber].parameters[6], 
+      100, 
+      1)
     showNodeVariablesDialog.value = true
   } else {
     // parameters not loaded, so showParametersLoadingDialog

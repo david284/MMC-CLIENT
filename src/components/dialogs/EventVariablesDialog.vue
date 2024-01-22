@@ -179,12 +179,6 @@ onUpdated(() => {
       showRawVariables.value = true
       showDescriptorWarning.value = true
     }
-    store.methods.request_all_event_variables(
-      props.nodeNumber,
-      props.eventIndex,
-      100,
-      store.state.nodes[props.nodeNumber].parameters[5]
-    )
     checkFileLoad()
   }
 })
@@ -234,7 +228,6 @@ Click event handlers
 const clickClose = () => {
   console.log(`EventVariablesDialog clickClose`)
   showRawVariables.value = false
-//  loadFile_notification_raised = false
   eventVariables.value={}
 }
 

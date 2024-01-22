@@ -89,7 +89,7 @@ import eventTeachDialog from "components/dialogs/EventTeachDialog"
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 
 const store = inject('store')
-
+const name = "EventsListByNode"
 const rows = ref([])
 const showNameEventDialog = ref(false)
 const showSendEventDialog = ref(false)
@@ -103,6 +103,9 @@ const selected_event_number = ref(0) // Dialog will complain if null
 const selected_event_index = ref(0) // Dialog will complain if null
 var eventType = ref()
 
+const props = defineProps({
+  nodeNumber: {type: Number, required: true }
+})
 
 const columns = [
   {name: 'eventIdentifier', field: 'eventIdentifier', required: true, label: 'Identifier', align: 'left', sortable: true},
@@ -114,7 +117,17 @@ const columns = [
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
 ]
 
-// need to know if new event selected or new events added
+// need to know if selected node changed
+const selected_node = computed(() =>{
+  return store.state.selected_node
+})
+watch(selected_node, () => {
+  console.log(`EventsListByNode WATCH selected_node`)
+  update_rows()
+})
+
+
+// need to know if new events added
 const nodeEvents = computed(() =>{
   return Object.values(store.state.nodes[store.state.selected_node].storedEvents)
 })
@@ -124,7 +137,7 @@ watch(nodeEvents, () => {
 })
 
 
-// need to know if new event selected or new events added
+// need to know if new bus events received
 const busEvents = computed(() =>{
   return Object.values(store.state.events)
 })
@@ -144,13 +157,13 @@ watch(eventDetails, () => {
 })
 
 
-
 const update_rows = () => {
-  //console.log(`EventsListByNode Update Rows ${store.state.selected_node}`)
+  console.log('###### ' + name + ': update_rows ' + store.state.selected_node)
   rows.value = []
 
   // do stored events for this node first.....
-  nodeEvents.value.forEach(event => {
+  var storedEvents = Object.values(store.state.nodes[store.state.selected_node].storedEvents) 
+  storedEvents.forEach(event => {
     var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
     let output = {}
     output['eventIdentifier'] = event.eventIdentifier
@@ -169,7 +182,7 @@ const update_rows = () => {
     if (busEvent.nodeNumber == store.state.selected_node){
       // lets see if it's already in the stored events...
       var alreadyInList = false
-      nodeEvents.value.forEach(event => {
+      storedEvents.forEach(event => {
         if(busEvent.id == event.eventIdentifier){
           alreadyInList = true
         }
@@ -206,28 +219,20 @@ const getEventType = (eventIndex) =>{
   }
 }
 
-const refreshEvents = () => {
+
+const readEventVariables = (eventIndex) => {
   // refresh event list
-  console.log(`refresh Events`)
-  store.methods.request_all_node_events(store.state.selected_node)
-  var timeout = 0
-  nodeEvents.value.forEach(event => {
-    timeout += 100
-    setTimeout(()=>{
-        store.methods.request_all_event_variables(
-          store.state.selected_node,
-          event.eventIndex,
-          100,
-          store.state.nodes[store.state.selected_node].parameters[5]
-        );
-			} , timeout
-    );
-  });
+  console.log(name + ` readEventVariables - eventIndex ` + eventIndex)
+  store.methods.request_all_event_variables(
+    store.state.selected_node,
+    eventIndex,
+    100,
+    store.state.nodes[store.state.selected_node].parameters[5]
+  );
 }
 
 onBeforeMount(() => {
   console.log("EventsListByNode - onBeforeMount")
-  refreshEvents()
   update_rows()
 })
 
@@ -255,12 +260,12 @@ const clickDelete = (eventIndentifier) => {
   console.log(`removeEvent`)
   showDeleteEventDialog.value = true
   selected_event_Identifier.value = eventIndentifier
-//  store.methods.remove_event(nodeNumber, eventIndentifier)
+  store.methods.remove_event(nodeNumber, eventIndentifier)
 }
 
 
 const clickRefresh = () => {
-  refreshEvents()
+  update_rows()
 }
 
 
@@ -273,6 +278,7 @@ const clickTest = (nodeNumber, eventNumber, eventIndex) => {
 }
 
 const clickVariables = (eventIndex, eventIdentifier) => {
+  readEventVariables(eventIndex)
   selected_event_index.value = eventIndex
   selected_event_Identifier.value = eventIdentifier
   console.log(`clickVariables - node, index ` + store.state.selected_node + ' ' + selected_event_index.value)

@@ -104,6 +104,15 @@
 
 </template>
 
+/*/////////////////////////////////////////////////////////////////////////////
+
+Note this dialog expects the node variables to be populated before being called
+This is because the dialog is expected to be created when the parent page is loaded,
+and then only made visible when this dialog is selected for a specific node
+- only then can the variables be populated, not when initially created
+
+/////////////////////////////////////////////////////////////////////////////*/
+
 
 <script setup>
 
@@ -184,7 +193,6 @@ onUpdated(() => {
       showNoVariablesMessage.value = true
     }else{
       showNoVariablesMessage.value = false
-      store.methods.request_all_node_variables(props.nodeNumber, store.state.nodes[props.nodeNumber].parameters[6], 100, 1)
     }
   }
 })
