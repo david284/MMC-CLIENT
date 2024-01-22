@@ -211,11 +211,17 @@ Click event handlers
 
 
 const clickAddEvent = (nodeNumber) => {
+  console.log('clicked on node', store.state.selected_node)
   checkNodeParameters(nodeNumber)
   select_node_row(nodeNumber)
   console.log('add event', nodeNumber)
-  showAddEventDialog.value = true
-  console.log('clicked on node', store.state.selected_node)
+  if(store.state.nodes[nodeNumber].parameters[9]) {
+    // parameters loaded, so showAddEventDialog
+    showAddEventDialog.value = true
+  } else {
+    // parameters not loaded, so showParametersLoadingDialog
+    showParametersLoadingDialog.value = true
+  }
 }
 
 const clickDeleteNode = (nodeNumber) => {
