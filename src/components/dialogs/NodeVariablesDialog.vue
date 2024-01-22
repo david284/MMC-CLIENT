@@ -2,8 +2,16 @@
 
   <q-dialog v-model='model' persistent full-width full-height> 
     <q-card class="q-pa-sm">
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+      <div class="text-h6">
+        Node Variables for node :  {{ store.getters.node_name(store.state.selected_node) }}
+      </div>
+      <template v-slot:action>
+        <q-btn color="cyan-1" size="sm" text-color="black" 
+          label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
+      </template>
+    </q-banner>
       <q-card-section>
-        <div class="text-h6">Node Variables for {{ store.getters.node_name(props.nodeNumber) }}</div>
         <div class="text-h6" v-if="showDescriptorWarning">
           *** Descriptor not loaded for this node ***
         </div>
@@ -101,6 +109,7 @@
     </q-card>
   </q-dialog>
 
+  <manageModuleDescriptorsDialog v-model='showManageModuleDescriptorsDialog'/>
 
 </template>
 
@@ -129,13 +138,16 @@ import NodeVariableSelect from "components/modules/common/NodeVariableSelect"
 import NodeVariableSlider from "components/modules/common/NodeVariableSlider"
 import NodeVariableTabs from "components/modules/common/NodeVariableTabs"
 import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
+import manageModuleDescriptorsDialog from "components/dialogs/ManageModuleDescriptorsDialog";
 
 const $q = useQuasar()
 const store = inject('store')
+const name = "NodevariablesDialog"
 const showDescriptorWarning = ref(false)
 const nodeVariablesDescriptor = ref()
 const showRawVariables = ref(false)
 const showNoVariablesMessage = ref(false)
+const showManageModuleDescriptorsDialog = ref(false)
 var loadFile_notification_raised = {}    // used by checkFileLoad
 
 const props = defineProps({
@@ -239,14 +251,14 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 const clickClose = () => {
-  console.log(`EventVariablesDialog clickClose`)
+  console.log(name + `: clickClose`)
   showRawVariables.value = false
 //  loadFile_notification_raised = false
   nodeVariablesDescriptor.value={}
 }
 
 const clickToggleRaw = () => {
-  console.log(`EventVariablesDialog clickToggleRaw`)
+  console.log(name + `: clickToggleRaw`)
   if (showRawVariables.value){
     showRawVariables.value = false
   } else {
@@ -254,6 +266,10 @@ const clickToggleRaw = () => {
   }
 }
 
+const clickUpdateModuleDescriptor = () => {
+  console.log(name + `: clickUpdateModuleDescriptor`)
+  showManageModuleDescriptorsDialog.value = true
+}
 
 
 </script>

@@ -15,7 +15,15 @@
             {{ store.state.layout.layoutDetails.title }}
           </span>
         </q-toolbar-title>
-        <div>Module Management Console</div>
+
+<!-- 
+        <q-btn flat size="md" 
+            label="Manage Module Descriptors" 
+            @click="clickMMD()" 
+            no-caps/>
+ -->
+
+        <div class="text-h5">Module Management Console</div>
       </q-toolbar>
     </q-header>
 
@@ -52,6 +60,9 @@
       </q-page>
     </q-page-container>
   </q-layout>
+
+  <DialogExampleCompositionAPI v-model='showManageModuleDescriptorsDialog' />
+
 </template>
 
 <script>
@@ -96,6 +107,7 @@ const linksList = [
   }
 ];
 
+
 import {defineComponent, ref, inject} from "vue";
 import Home from "components/Home.vue"
 import Layout from "components/Layout.vue"
@@ -108,29 +120,41 @@ import JSON from "components/json.vue"
 import CbusErrors from "components/CbusErrors.vue"
 import Elements from "components/Elements.vue"
 import system from "components/System.vue"
+import DialogExampleCompositionAPI from "components/dialogs/DialogExampleCompositionAPI";
 
 export default defineComponent({
-  name: "MainLayout",
   components: {
-    EssentialLink, Home, Layout, NodePage, Nodes, JSON, events, settings, node, Elements, CbusErrors, system
+    DialogExampleCompositionAPI, EssentialLink, Home, Layout, NodePage, Nodes, JSON, events, settings, node, Elements, CbusErrors, system
   },
 
   setup() {
+    const name = "MainLayout"
     const leftDrawerOpen = ref(false);
     const store = inject('store')
+    const showManageModuleDescriptorsDialog = ref(false)
 
     const traffic = store.state.nodeTraffic
+
+    function clickMMD () {
+      console.log(name +`: clickMMD `)
+      showManageModuleDescriptorsDialog.value=true
+    }
+
 
     return {
       store,
       essentialLinks: linksList, traffic,
       leftDrawerOpen,
+      clickMMD,
+      showManageModuleDescriptorsDialog,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
     };
   },
 });
+
+
 </script>
 
 <style scoped>
