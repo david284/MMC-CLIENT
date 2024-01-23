@@ -8,7 +8,7 @@
           JSON Dialog
         </div>
         <template v-slot:action>
-          <q-btn flat color="white" size="sm" label="Close" v-close-popup/>
+          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
         </template>
       </q-banner>
 

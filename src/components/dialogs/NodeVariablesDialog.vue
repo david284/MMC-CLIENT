@@ -9,6 +9,7 @@
       <template v-slot:action>
         <q-btn color="cyan-1" size="sm" text-color="black" 
           label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
+          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
       </template>
     </q-banner>
       <q-card-section>

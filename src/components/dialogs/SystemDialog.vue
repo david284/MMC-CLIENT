@@ -7,6 +7,9 @@
         <div class="text-h6">
           Manage Layout
         </div>
+        <template v-slot:action>
+          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+        </template>
       </q-banner>
 
       <q-card class="q-pa-md" flat bordered>

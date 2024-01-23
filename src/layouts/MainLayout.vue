@@ -9,21 +9,23 @@
             <q-item clickable @click="clickLayout()">
               <q-item-section>Layout</q-item-section>
             </q-item>
-            <q-item clickable>
+            <q-item clickable @click="clickBusEvents()">
               <q-item-section>Bus events</q-item-section>
             </q-item>
             <q-item clickable @click="clickJson()">
               <q-item-section>JSON</q-item-section>
             </q-item>
-            <q-item clickable>
+            <q-item clickable @click="clickCbusErrors()">
               <q-item-section>CBUS errors</q-item-section>
             </q-item>
             <q-item clickable @click="clickSystem()">
               <q-item-section>System</q-item-section>
             </q-item>
+<!-- 
             <q-item clickable>
               <q-item-section>Help &amp; Feedback</q-item-section>
             </q-item>
+ -->
           </q-list>
         </q-menu>
       </q-btn>
@@ -80,6 +82,8 @@
   </q-layout>
 
 
+  <busEventsDialog v-model='showBusEventsDialog' />
+  <cbusErrorsDialog v-model='showCbusErrorsDialog' />
   <jsonDialog v-model='showJsonDialog' />
   <layoutDialog v-model='showLayoutDialog' />
   <systemDialog v-model='showSystemDialog' />
@@ -124,24 +128,38 @@ import JSON from "components/json.vue"
 import CbusErrors from "components/CbusErrors.vue"
 import Elements from "components/Elements.vue"
 import system from "components/System.vue"
+import busEventsDialog from "components/dialogs/BusEventsDialog";
+import cbusErrorsDialog from "components/dialogs/CbusErrorsDialog";
 import jsonDialog from "components/dialogs/JsonDialog";
 import layoutDialog from "components/dialogs/LayoutDialog";
 import systemDialog from "components/dialogs/SystemDialog";
 
 export default defineComponent({
   components: {
-    jsonDialog, layoutDialog, systemDialog, EssentialLink, Home, Layout, NodePage, Nodes, JSON, events, settings, node, Elements, CbusErrors, system
+    busEventsDialog, cbusErrorsDialog, jsonDialog, layoutDialog, systemDialog, EssentialLink, Home, Layout, NodePage, Nodes, JSON, events, settings, node, Elements, CbusErrors, system
   },
 
   setup() {
     const name = "MainLayout"
     const leftDrawerOpen = ref(false);
     const store = inject('store')
+    const showBusEventsDialog = ref(false)
+    const showCbusErrorsDialog = ref(false)
     const showJsonDialog = ref(false)
     const showLayoutDialog = ref(false)
     const showSystemDialog = ref(false)
 
     const traffic = store.state.nodeTraffic
+
+    function clickCbusErrors () {
+      console.log(name + ': clickCbusErrors')
+      showCbusErrorsDialog.value = true
+    }
+
+    function clickBusEvents () {
+      console.log(name + ': clickBusEvents')
+      showBusEventsDialog.value = true
+    }
 
     function clickJson () {
       console.log(name + ': clickJson')
@@ -162,9 +180,13 @@ export default defineComponent({
       store,
       essentialLinks: linksList, traffic,
       leftDrawerOpen,
+      clickBusEvents,
+      clickCbusErrors,
       clickJson,
       clickLayout,
       clickSystem,
+      showBusEventsDialog,
+      showCbusErrorsDialog,
       showJsonDialog,
       showLayoutDialog,
       showSystemDialog,
