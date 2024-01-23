@@ -26,9 +26,7 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 
 const store = inject('store')
-const newNodeNumber = ref()
-const newEventNumber = ref()
-var eventType = ref()
+const name = "DialogExampleCompositionAPI"
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true }
@@ -40,6 +38,11 @@ const model = computed({
       get() { return props.modelValue },
       set(newValue) { emit('update:modelValue', newValue) }
     })
+
+// model changes when Dialog opened & closed
+watch(model, () => {
+  console.log(name + `: WATCH model`)
+})
 
 
 onBeforeMount(() => {

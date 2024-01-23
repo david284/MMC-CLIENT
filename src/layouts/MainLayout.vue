@@ -2,17 +2,35 @@
   <q-layout view="hHh lpR fFf">
     <q-header style="min-height: 0;" class="bg-primary text-white no-margin no-padding">
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
-        <q-toolbar-title style="min-height: 0;" class="no-margin no-padding">
-          <span style="min-height: 0;" class="page-title no-margin no-padding">
-            {{ store.state.layout.layoutDetails.title }}
+
+        <q-btn flat dense icon="menu">
+        <q-menu auto-close>
+          <q-list style="min-width: 100px">
+            <q-item clickable @click="clickLayout()">
+              <q-item-section>Layout</q-item-section>
+            </q-item>
+            <q-item clickable>
+              <q-item-section>Bus events</q-item-section>
+            </q-item>
+            <q-item clickable>
+              <q-item-section>JSON objects</q-item-section>
+            </q-item>
+            <q-item clickable>
+              <q-item-section>CBUS errors</q-item-section>
+            </q-item>
+            <q-item clickable>
+              <q-item-section>System</q-item-section>
+            </q-item>
+            <q-item clickable>
+              <q-item-section>Help &amp; Feedback</q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </q-btn>
+
+        <q-toolbar-title style="min-height: 0;" class="no-margin no-padding  text-h6">
+          <span style="min-height: 0;" class="page-title no-margin no-padding text-h6">
+            Module Management Console
           </span>
         </q-toolbar-title>
 
@@ -23,11 +41,17 @@
             no-caps/>
  -->
 
-        <div class="text-h5">Module Management Console</div>
+        <div class="text-h5">{{ store.state.layout.layoutDetails.title }}</div>
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above side="left" :width="200" bordered>
+      <q-card>
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+        <div class="text-h6">
+        Bus traffic
+      </div>
+      </q-banner>
 
       <q-list>
         <EssentialLink
@@ -42,6 +66,7 @@
             <q-item-label class="q-pa-none q-ma-none text-caption">{{ message.direction + " " + message.json.encoded + " " + message.json.mnemonic }}</q-item-label>
         </q-item>
       </q-list>
+    </q-card>
 
     </q-drawer>
 
@@ -62,6 +87,9 @@
   </q-layout>
 
   <DialogExampleCompositionAPI v-model='showManageModuleDescriptorsDialog' />
+
+  <layoutDialog v-model='showLayoutDialog' />
+
 
 </template>
 
@@ -121,10 +149,11 @@ import CbusErrors from "components/CbusErrors.vue"
 import Elements from "components/Elements.vue"
 import system from "components/System.vue"
 import DialogExampleCompositionAPI from "components/dialogs/DialogExampleCompositionAPI";
+import layoutDialog from "components/dialogs/LayoutDialog";
 
 export default defineComponent({
   components: {
-    DialogExampleCompositionAPI, EssentialLink, Home, Layout, NodePage, Nodes, JSON, events, settings, node, Elements, CbusErrors, system
+    DialogExampleCompositionAPI, layoutDialog, EssentialLink, Home, Layout, NodePage, Nodes, JSON, events, settings, node, Elements, CbusErrors, system
   },
 
   setup() {
@@ -132,6 +161,7 @@ export default defineComponent({
     const leftDrawerOpen = ref(false);
     const store = inject('store')
     const showManageModuleDescriptorsDialog = ref(false)
+    const showLayoutDialog = ref(false)
 
     const traffic = store.state.nodeTraffic
 
@@ -140,19 +170,28 @@ export default defineComponent({
       showManageModuleDescriptorsDialog.value=true
     }
 
+    function clickLayout () {
+      console.log(name + ': clickLayout')
+      showLayoutDialog.value = true
+    }
 
     return {
       store,
       essentialLinks: linksList, traffic,
       leftDrawerOpen,
       clickMMD,
+      clickLayout,
       showManageModuleDescriptorsDialog,
+      showLayoutDialog,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
     };
   },
 });
+
+
+
 
 
 </script>

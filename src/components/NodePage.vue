@@ -3,7 +3,7 @@
     <q-banner  inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin no-padding" >
       <div class="text-h6">Node list</div>
       <template v-slot:action>
-        <q-btn flat color="white" label="Refresh" @click="clickRefresh()"/>
+        <q-btn flat color="white" size="sm" label="Refresh" @click="clickRefresh()"/>
       </template>
     </q-banner>
     <div>
