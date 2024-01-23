@@ -202,7 +202,7 @@ onMounted(() => {
 
 onUpdated(() => {
   console.log(name + ': onUpdated')
-  if (props.nodeNumber){
+  if ((props.nodeNumber) && (props.eventIndex)){
     console.log(name + ': onUpdated - nodeNumber ' + props.nodeNumber)
     if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
       variablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].eventVariables
