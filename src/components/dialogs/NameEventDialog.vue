@@ -7,6 +7,9 @@
           <div class="text-h6">
             Edit name for event :  {{ store.getters.event_name(props.eventIdentifier) }}
           </div>
+          <template v-slot:action>
+            <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+          </template>
         </q-banner>
 
         <q-card-section class="q-pt-none">

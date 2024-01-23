@@ -1,11 +1,19 @@
 <template>
   <q-dialog v-model='model' persistent>
     <q-card style="min-width: 300px">
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+        <div class="text-h6">
+          Module Descriptor
+        </div>
+        <template v-slot:action>
+          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+        </template>
+      </q-banner>
+
 
       <div class=" row items-start q-gutter-md">
         <q-card class="q-pa-sm">
           <q-card-section>
-            <div class="text-h6">Module Descriptor</div>
             {{ moduleDescriptorName }}
             <div class="text-subtitle2" v-if="!moduleDescriptorValid">
               <p class="text-negative">Module Descriptor not found</p>

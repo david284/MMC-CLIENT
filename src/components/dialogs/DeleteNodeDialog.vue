@@ -7,6 +7,9 @@
           <div class="text-h6">
             Delete for node {{ store.getters.node_name(store.state.selected_node) }}
           </div>
+          <template v-slot:action>
+            <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+          </template>
         </q-banner>
 
         <q-card-section>

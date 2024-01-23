@@ -6,7 +6,12 @@
         <div class="text-h6">
           Edit name for node :  {{ nodeNumber }}
         </div>
+        <template v-slot:action>
+          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+        </template>
       </q-banner>
+
+
       <q-card-section class="q-pt-none">
           <q-input dense v-model="newNodeName" autofocus />
         </q-card-section>

@@ -6,6 +6,9 @@
         <div class="text-h6">
           Parameter Information for {{ store.getters.node_name(props.nodeNumber) }}
         </div>
+        <template v-slot:action>
+          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+        </template>
       </q-banner>
 
        <q-card-section>
