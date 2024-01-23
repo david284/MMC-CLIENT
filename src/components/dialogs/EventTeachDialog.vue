@@ -2,9 +2,12 @@
 
   <q-dialog v-model='model' persistent>
     <q-card style="min-width: 350px">
-      <q-card-section>
-        <div class="text-h6">Event Teach</div>
-      </q-card-section>
+
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+        <div class="text-h6">
+          Teach event :  {{ store.getters.event_name(props.eventIdentifier) }}
+        </div>
+      </q-banner>
 
       <div class="q-pa-md row items-start q-gutter-md">
          

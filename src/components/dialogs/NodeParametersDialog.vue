@@ -1,10 +1,12 @@
 <template>
 
   <q-dialog v-model='model' persistent> 
-    <q-card class="q-pa-md">
-      <q-card-section>
-        <div class="text-h6">Parameter Information for {{ store.getters.node_name(props.nodeNumber) }}</div>
-      </q-card-section>
+    <q-card class="q-pa-md" style="min-width: 500px">
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+        <div class="text-h6">
+          Parameter Information for {{ store.getters.node_name(props.nodeNumber) }}
+        </div>
+      </q-banner>
 
        <q-card-section>
         <node-parameter Name="Node Number"

@@ -2,6 +2,13 @@
 
     <q-dialog v-model='model' persistent>
       <q-card style="min-width: 350px">
+
+        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+          <div class="text-h6">
+            Delete for node {{ store.getters.node_name(store.state.selected_node) }}
+          </div>
+        </q-banner>
+
         <q-card-section>
           <div class="text-h6">Are you sure you want to delete this node?</div>
         </q-card-section>

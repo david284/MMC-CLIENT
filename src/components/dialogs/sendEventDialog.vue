@@ -2,11 +2,18 @@
 
   <q-dialog v-model='model' persistent>
     <q-card style="min-width: 350px">
+
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+        <div class="text-h6">
+          Test event :  {{ store.getters.event_name(props.eventIdentifier) }}
+        </div>
+      </q-banner>
+
       <q-card-section>
         <div class="text-h6">Event {{ props.nodeNumber }}:{{ props.eventNumber }}</div>
       </q-card-section>
 
-      <q-card-section class="q-pa-xs">
+      <q-card-section class="q-pa-md">
         <div class="text-h6">Generate event</div>
         <div class="text-subtitle2">Send this event as ON or OFF</div>
         <div class="q-pa-md q-gutter-sm">
@@ -36,6 +43,7 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 
 const store = inject('store')
+const name = "SendEventDialog"
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -46,7 +54,9 @@ const props = defineProps({
   "nodeNumber": {
     type: Number,
     required: true
-  }
+  },
+  eventIdentifier: { type:String, required: true }
+
 })
 
 
@@ -58,6 +68,11 @@ const model = computed({
       get() { return props.modelValue },
       set(newValue) { emit('update:modelValue', newValue) }
     })
+
+watch(model, () => {
+  console.log(name + `: WATCH model`)
+})
+
 
 
 onBeforeMount(() => {

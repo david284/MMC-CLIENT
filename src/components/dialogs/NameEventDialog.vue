@@ -2,18 +2,25 @@
 
     <q-dialog v-model="model" persistent>
       <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h4">Edit event name</div>
-        </q-card-section>
+
+        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+          <div class="text-h6">
+            Edit name for event :  {{ store.getters.event_name(props.eventIdentifier) }}
+          </div>
+        </q-banner>
+
         <q-card-section class="q-pt-none">
-            <q-input dense v-model="newEventName" autofocus />
-          </q-card-section>
+          <div class="text-h6">Event name</div>
+          <q-input dense v-model="newEventName" autofocus />
+        </q-card-section>
+
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Accept" v-close-popup @click="clickAccept()"/>
           <q-btn flat label="Cancel" v-close-popup />
         </q-card-actions>
-      </q-card>
-    </q-dialog>
+
+    </q-card>
+  </q-dialog>
 
 </template>
 

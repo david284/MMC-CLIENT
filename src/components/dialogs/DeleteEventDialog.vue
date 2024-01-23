@@ -2,6 +2,13 @@
 
     <q-dialog v-model='model' persistent>
       <q-card style="min-width: 350px">
+
+        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+          <div class="text-h6">
+            Delete event :  {{ store.getters.event_name(props.eventIdentifier) }}
+          </div>
+        </q-banner>
+
         <q-card-section>
           <div class="text-h6">Are you sure you want to delete this event?</div>
         </q-card-section>

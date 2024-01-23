@@ -53,6 +53,7 @@
     <sendEventDialog v-model='showSendEventDialog' 
       :nodeNumber = selected_event_node
       :eventNumber = selected_event_number
+      :eventIdentifier = selected_event_Identifier
     />
 
     <deleteEventDialog v-model='showDeleteEventDialog' 
@@ -82,7 +83,7 @@ set the selected_node element
 
 import {computed, inject, ref, watch, onBeforeMount, onMounted, onUpdated} from "vue"
 import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
-import sendEventDialog from "components/dialogs/SendEventDialog"
+import sendEventDialog from "components/dialogs/sendEventDialog"
 import deleteEventDialog from "components/dialogs/DeleteEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
@@ -260,7 +261,6 @@ const clickDelete = (eventIndentifier) => {
   console.log(name + `: clickDelete`)
   showDeleteEventDialog.value = true
   selected_event_Identifier.value = eventIndentifier
-  store.methods.remove_event(nodeNumber, eventIndentifier)
 }
 
 

@@ -2,14 +2,19 @@
 
   <q-dialog v-model='model' persistent>
     <q-card style="min-width: 350px">
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+        <div class="text-h6">
+          Add event for node {{ store.getters.node_name(store.state.selected_node) }}
+        </div>
+      </q-banner>
+
       <q-card-section>
-      <div class="text-h4" v-if="(addEventEnabled == false)">
+      <div class="text-h6" v-if="(addEventEnabled == false)">
         This module does not support any stored events
       </div>
       </q-card-section>
       <div v-if="(addEventEnabled)">
       <q-card-section>
-        <div class="text-h6">Add new event</div>
         <div class="q-gutter-sm">
           <q-radio v-model="eventType" val='long' label="Long event" />
           <q-radio v-model="eventType" val='short' label="Short event" />
