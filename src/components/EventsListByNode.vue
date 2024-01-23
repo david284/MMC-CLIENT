@@ -83,7 +83,7 @@ set the selected_node element
 
 import {computed, inject, ref, watch, onBeforeMount, onMounted, onUpdated} from "vue"
 import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
-import sendEventDialog from "components/dialogs/sendEventDialog"
+import sendEventDialog from "components/dialogs/SendEventDialog"
 import deleteEventDialog from "components/dialogs/DeleteEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"

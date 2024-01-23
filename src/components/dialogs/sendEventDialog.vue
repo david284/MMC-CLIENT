@@ -28,6 +28,7 @@
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Cancel" v-close-popup/>
       </q-card-actions>
+
     </q-card>
   </q-dialog>
 
@@ -63,8 +64,6 @@ const props = defineProps({
 })
 
 
-
-
 const emit = defineEmits(['update:modelValue'])
 
 const model = computed({
@@ -75,7 +74,6 @@ const model = computed({
 watch(model, () => {
   console.log(name + `: WATCH model`)
 })
-
 
 
 onBeforeMount(() => {
@@ -103,7 +101,6 @@ const send_off = () => {
     store.methods.long_off_event(props.nodeNumber, props.eventNumber)
   }
 }
-
 
 
 </script>
