@@ -18,7 +18,7 @@
             <q-item clickable>
               <q-item-section>CBUS errors</q-item-section>
             </q-item>
-            <q-item clickable>
+            <q-item clickable @click="clickSystem()">
               <q-item-section>System</q-item-section>
             </q-item>
             <q-item clickable>
@@ -89,6 +89,7 @@
   <DialogExampleCompositionAPI v-model='showManageModuleDescriptorsDialog' />
 
   <layoutDialog v-model='showLayoutDialog' />
+  <systemDialog v-model='showSystemDialog' />
 
 
 </template>
@@ -97,12 +98,6 @@
 import EssentialLink from "components/EssentialLink.vue";
 
 const linksList = [
-  {
-    title: "Layout",
-    caption: "Layout Page",
-    icon: "home",
-    component: "Layout",
-  },
   {
     title: "Main",
     caption: "MERG Modules",
@@ -126,12 +121,6 @@ const linksList = [
     caption: "Cbus Errors",
     icon: "mdi-alert",
     component: "CbusErrors",
-  },
-  {
-    title: "System",
-    caption: "System",
-    icon: "mdi-cog-outline",
-    component: "system",
   }
 ];
 
@@ -150,10 +139,11 @@ import Elements from "components/Elements.vue"
 import system from "components/System.vue"
 import DialogExampleCompositionAPI from "components/dialogs/DialogExampleCompositionAPI";
 import layoutDialog from "components/dialogs/LayoutDialog";
+import systemDialog from "components/dialogs/SystemDialog";
 
 export default defineComponent({
   components: {
-    DialogExampleCompositionAPI, layoutDialog, EssentialLink, Home, Layout, NodePage, Nodes, JSON, events, settings, node, Elements, CbusErrors, system
+    DialogExampleCompositionAPI, layoutDialog, systemDialog, EssentialLink, Home, Layout, NodePage, Nodes, JSON, events, settings, node, Elements, CbusErrors, system
   },
 
   setup() {
@@ -162,6 +152,7 @@ export default defineComponent({
     const store = inject('store')
     const showManageModuleDescriptorsDialog = ref(false)
     const showLayoutDialog = ref(false)
+    const showSystemDialog = ref(false)
 
     const traffic = store.state.nodeTraffic
 
@@ -175,14 +166,21 @@ export default defineComponent({
       showLayoutDialog.value = true
     }
 
+    function clickSystem () {
+      console.log(name + ': clickSystem')
+      showSystemDialog.value = true
+    }
+
     return {
       store,
       essentialLinks: linksList, traffic,
       leftDrawerOpen,
       clickMMD,
       clickLayout,
+      clickSystem,
       showManageModuleDescriptorsDialog,
       showLayoutDialog,
+      showSystemDialog,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
