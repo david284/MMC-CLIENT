@@ -1,7 +1,7 @@
 <template>
 
   <q-dialog v-model='model' persistent full-width full-height> 
-    <q-card class="q-pa-sm">
+    <q-card>
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
       <div class="text-h6">
         Node Variables for node :  {{ store.getters.node_name(store.state.selected_node) }}

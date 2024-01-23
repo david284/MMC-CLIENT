@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model='model' persistent>
-    <q-card class="q-pa-sm" style="min-width: 300px">
+    <q-card style="min-width: 300px">
 
       <div class=" row items-start q-gutter-md">
         <q-card class="q-pa-sm">

@@ -1,7 +1,7 @@
 <template>
 
   <q-dialog v-model='model' persistent> 
-    <q-card class="q-pa-md" style="min-width: 500px">
+    <q-card style="min-width: 500px">
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
           Parameter Information for {{ store.getters.node_name(props.nodeNumber) }}
@@ -60,7 +60,7 @@
         </node-parameter>
       </q-card-section>
       <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup/>
+          <q-btn flat label="Close" v-close-popup/>
         </q-card-actions>
     </q-card>
   </q-dialog>
