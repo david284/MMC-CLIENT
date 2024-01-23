@@ -48,6 +48,7 @@
       </div>
       </q-banner>
 
+<!-- 
       <q-list>
         <EssentialLink
           v-for="link in essentialLinks"
@@ -55,6 +56,7 @@
           v-bind="link"
         />
       </q-list>
+ -->
 
       <q-list bordered >
         <q-item v-for="message in traffic" :key="message" clickable v-ripple>
@@ -95,24 +97,6 @@
 import EssentialLink from "components/EssentialLink.vue";
 
 const linksList = [
-  {
-    title: "Main",
-    caption: "MERG Modules",
-    icon: "mdi-timeline-outline",
-    component: "NodePage",
-  },
-  {
-    title: "Bus Events",
-    caption: "Captured Events",
-    icon: "mdi-gesture-double-tap",
-    component: "events",
-  },
-  {
-    title: "Cbus Errors",
-    caption: "Cbus Errors",
-    icon: "mdi-alert",
-    component: "CbusErrors",
-  }
 ];
 
 
