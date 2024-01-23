@@ -12,8 +12,8 @@
             <q-item clickable>
               <q-item-section>Bus events</q-item-section>
             </q-item>
-            <q-item clickable>
-              <q-item-section>JSON objects</q-item-section>
+            <q-item clickable @click="clickJson()">
+              <q-item-section>JSON</q-item-section>
             </q-item>
             <q-item clickable>
               <q-item-section>CBUS errors</q-item-section>
@@ -33,13 +33,6 @@
             Module Management Console
           </span>
         </q-toolbar-title>
-
-<!-- 
-        <q-btn flat size="md" 
-            label="Manage Module Descriptors" 
-            @click="clickMMD()" 
-            no-caps/>
- -->
 
         <div class="text-h5">{{ store.state.layout.layoutDetails.title }}</div>
       </q-toolbar>
@@ -86,8 +79,8 @@
     </q-page-container>
   </q-layout>
 
-  <DialogExampleCompositionAPI v-model='showManageModuleDescriptorsDialog' />
 
+  <jsonDialog v-model='showJsonDialog' />
   <layoutDialog v-model='showLayoutDialog' />
   <systemDialog v-model='showSystemDialog' />
 
@@ -111,12 +104,6 @@ const linksList = [
     component: "events",
   },
   {
-    title: "JSON",
-    caption: "Store Details",
-    icon: "mdi-database",
-    component: "JSON",
-  },
-  {
     title: "Cbus Errors",
     caption: "Cbus Errors",
     icon: "mdi-alert",
@@ -137,28 +124,28 @@ import JSON from "components/json.vue"
 import CbusErrors from "components/CbusErrors.vue"
 import Elements from "components/Elements.vue"
 import system from "components/System.vue"
-import DialogExampleCompositionAPI from "components/dialogs/DialogExampleCompositionAPI";
+import jsonDialog from "components/dialogs/JsonDialog";
 import layoutDialog from "components/dialogs/LayoutDialog";
 import systemDialog from "components/dialogs/SystemDialog";
 
 export default defineComponent({
   components: {
-    DialogExampleCompositionAPI, layoutDialog, systemDialog, EssentialLink, Home, Layout, NodePage, Nodes, JSON, events, settings, node, Elements, CbusErrors, system
+    jsonDialog, layoutDialog, systemDialog, EssentialLink, Home, Layout, NodePage, Nodes, JSON, events, settings, node, Elements, CbusErrors, system
   },
 
   setup() {
     const name = "MainLayout"
     const leftDrawerOpen = ref(false);
     const store = inject('store')
-    const showManageModuleDescriptorsDialog = ref(false)
+    const showJsonDialog = ref(false)
     const showLayoutDialog = ref(false)
     const showSystemDialog = ref(false)
 
     const traffic = store.state.nodeTraffic
 
-    function clickMMD () {
-      console.log(name +`: clickMMD `)
-      showManageModuleDescriptorsDialog.value=true
+    function clickJson () {
+      console.log(name + ': clickJson')
+      showJsonDialog.value = true
     }
 
     function clickLayout () {
@@ -175,10 +162,10 @@ export default defineComponent({
       store,
       essentialLinks: linksList, traffic,
       leftDrawerOpen,
-      clickMMD,
+      clickJson,
       clickLayout,
       clickSystem,
-      showManageModuleDescriptorsDialog,
+      showJsonDialog,
       showLayoutDialog,
       showSystemDialog,
       toggleLeftDrawer() {
