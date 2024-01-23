@@ -130,7 +130,7 @@ const nodeList = computed(() => {
 })
 
 watch(nodeList, () => {
-//  console.log(`WATCH Nodes`)
+//  console.log(name + `: WATCH Nodes`)
   update_rows()
 })
 
@@ -140,7 +140,7 @@ const nodeDetails = computed(() => {
 })
 
 watch(nodeDetails, () => {
-//  console.log(`WATCH Nodes`)
+//  console.log(name + `: WATCH Nodes`)
   update_rows()
 })
 
@@ -148,7 +148,7 @@ watch(nodeDetails, () => {
 const update_rows = () => {
   rows.value = []
   nodeList.value.forEach(node => {
-//    console.log(JSON.stringify(node))
+//    console.log(name + ': ' + JSON.stringify(node))
     let output = {}
     output['nodeNumber'] = node.nodeNumber
     output['nodeName'] = getNodeName(node.nodeNumber)
@@ -180,7 +180,7 @@ const nodeColour = (nodeId) => {
 
 
 onBeforeMount(() => {
-  //console.log(`Node onBeforeMount`)
+  //console.log(name + `: onBeforeMount`)
   store.methods.query_all_nodes()
 })
 
@@ -188,9 +188,9 @@ onBeforeMount(() => {
 const checkNodeParameters = (nodeNumber) => {
   // param9 - cpu type to check if parameters have been fully retrieved
   if(store.state.nodes[nodeNumber].parameters[9]){
-    console.log("parameters exist")
+    console.log(name + ": parameters exist")
   } else {
-    console.log("need to read parameters")
+    console.log(name + ": need to read parameters")
     store.methods.request_all_node_parameters(nodeNumber, 20, 100)
   }
 }
@@ -216,7 +216,7 @@ Click event handlers
 
 
 const clickAddEvent = (nodeNumber) => {
-  console.log('clicked on node', store.state.selected_node)
+  console.log(name + ': clickAddEvent: node', store.state.selected_node)
   checkNodeParameters(nodeNumber)
   select_node_row(nodeNumber)
   console.log('add event', nodeNumber)
@@ -233,30 +233,31 @@ const clickDeleteNode = (nodeNumber) => {
   checkNodeParameters(nodeNumber)
   select_node_row(nodeNumber)
   showDeleteNodeDialog.value=true
-  console.log('selected node' + store.state.selected_node)
+  console.log(name + ': clickDeleteNode: node' + store.state.selected_node)
 }
 
 const clickEvents = (nodeNumber) => {
   checkNodeParameters(nodeNumber)
   select_node_row(nodeNumber)
-  console.log('selected node', nodeNumber)
+  console.log(name + ': clickEvents: node', nodeNumber)
 }
 
 const clickNameNode = (nodeNumber) => {
   checkNodeParameters(nodeNumber)
   select_node_row(nodeNumber)
-  console.log(`clickNameNode`)
+  console.log(name + `: clickNameNode: node ` + nodeNumber)
   showNameNodeDialog.value = true;
 }
 
 const clickParameters = (nodeNumber) => {
   checkNodeParameters(nodeNumber)
   select_node_row(nodeNumber)
-  console.log(`clickParameters`)
+  console.log(name + `: clickParameters: node ` + nodeNumber)
   showNodeParametersDialog.value = true
 }
 
 const clickRefresh = () => {
+  console.log(name + ': clickRefresh')
   store.methods.query_all_nodes()
 }
 
@@ -264,7 +265,7 @@ const clickRefresh = () => {
 const clickVariables = (nodeNumber) => {
   checkNodeParameters(nodeNumber)
   select_node_row(nodeNumber)
-  console.log(`clickVariables`)
+  console.log(name + `: clickVariables: node ` + nodeNumber)
   if(store.state.nodes[nodeNumber].parameters[9]) {
     // parameters loaded, so read variables & showNodeVariablesDialog
     store.methods.request_all_node_variables(

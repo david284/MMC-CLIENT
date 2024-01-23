@@ -2,17 +2,29 @@
 
   <q-dialog v-model='model' persistent full-width full-height> 
     <q-card class="q-pa-sm">
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+      <div class="text-h6">
+        Event Variables for event :  {{ store.getters.event_name(props.eventIdentifier) }}
+      </div>
+      <template v-slot:action>
+        <q-btn color="cyan-1" size="sm" text-color="black" 
+          label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
+      </template>
+    </q-banner>
       <q-card-section>
-        <div class="text-h6">Event Variables for event : {{ store.getters.event_name(props.eventIdentifier) }}</div>
         <div class="text-h6" v-if="showDescriptorWarning">
           *** Descriptor not loaded for this node ***
         </div>
+        <template v-slot:action>
+          <q-btn color="cyan-1" size="sm" text-color="black" 
+            label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
+        </template>
       </q-card-section>
 
 
       <div class="q-pa-none row">
 
-        <div v-for="item in eventVariables" :key="item">
+        <div v-for="item in variablesDescriptor" :key="item">
           <EventVariableBitArray v-if="(item.type=='EventVariableBitArray') && (isVisible(item))"
                                 :nodeNumber = "props.nodeNumber"
                                 :eventIndex = props.eventIndex
@@ -75,6 +87,7 @@
       </div>
 
       <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Toggle variable descriptor view" @click="clickToggleVariablesDescriptor()"/>
         <q-btn flat label="Toggle raw view" @click="clickToggleRaw()"/>
         <q-btn flat label="Close" v-close-popup @click="clickClose()"/>
       </q-card-actions>
@@ -98,11 +111,19 @@
         </p>
       </div>
 
-
-
+      <q-card-section class="q-pa-sm" v-if="showVariablesDescriptor">
+        <div class="q-pa-xs row">
+          <div class="text-body1">Variables descriptor<br></div>
+          <div class="text-body2">
+            <pre>{{ variablesDescriptor }}</pre>
+          </div>
+        </div>
+      </q-card-section>
 
     </q-card>
   </q-dialog>
+
+  <manageModuleDescriptorsDialog v-model='showManageModuleDescriptorsDialog'/>
 
 
 </template>
@@ -121,13 +142,17 @@ import EventVariableSelect from "components/modules/common/EventVariableSelect"
 import EventVariableSlider from "components/modules/common/EventVariableSlider"
 import EventVariableTabs from "components/modules/common/EventVariableTabs"
 import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
+import manageModuleDescriptorsDialog from "components/dialogs/ManageModuleDescriptorsDialog";
 
 
 const $q = useQuasar()
 const store = inject('store')
-const eventVariables = ref()
+const name = "EventVariablesdialog"
+const variablesDescriptor = ref()
 const showRawVariables = ref(false)
 const showDescriptorWarning = ref(false)
+const showManageModuleDescriptorsDialog = ref(false)
+const showVariablesDescriptor = ref(false)
 var loadFile_notification_raised = false    // used by checkFileLoad
 
 
@@ -146,8 +171,16 @@ const model = computed({
       set(newValue) { emit('update:modelValue', newValue) }
     })
 
+watch(model, () => {
+  console.log(name + `: WATCH model`)
+  showRawVariables.value = false
+  showVariablesDescriptor.value = false
+})
+
+
+
 watch(props.nodeNumber, () => {
-  console.log('NodeVariableDialog - watch nodeNumber')
+  console.log(name +': - watch nodeNumber')
 })
 
 const isVisible = (item) =>{
@@ -155,7 +188,7 @@ const isVisible = (item) =>{
       if (item.visibilityLogic) {
         result = parseLogicElement(item.visibilityLogic, store)
       }
-      console.log(`isVisible: ` + result + ' ' + item.type)
+      console.log(name + `: isVisible: ` + result + ' ' + item.type)
       return result
     }
 
@@ -168,14 +201,14 @@ onMounted(() => {
 
 
 onUpdated(() => {
-  console.log('EventVariablesDialog onUpdated')
+  console.log(name + ': onUpdated')
   if (props.nodeNumber){
-    console.log('NodeVariableDialog onUpdated - nodeNumber ' + props.nodeNumber)
+    console.log(name + ': onUpdated - nodeNumber ' + props.nodeNumber)
     if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
-      eventVariables.value = store.state.nodeDescriptors[props.nodeNumber].eventVariables
+      variablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].eventVariables
       showDescriptorWarning.value = false
     } else {
-      eventVariables.value = {}
+      variablesDescriptor.value = {}
       showRawVariables.value = true
       showDescriptorWarning.value = true
     }
@@ -185,7 +218,7 @@ onUpdated(() => {
 
 // raise notification if nodeDescriptor file not present
 const checkFileLoad = () => {
-  console.log(`checkFileLoad`)
+  console.log(name + `: checkFileLoad`)
   if (loadFile_notification_raised != true) {
     // module descriptor filename won't be created if there's no moduleName
     if( store.state.nodes[props.nodeNumber].moduleName == 'Unknown'){
@@ -211,7 +244,7 @@ const checkFileLoad = () => {
       loadFile_notification_raised = true;
     }
     if (loadFile_notification_raised) {
-       console.log(`checkLoadFile notification raised`) 
+       console.log(name + `: checkLoadFile notification raised`) 
     }
   }
 }
@@ -226,18 +259,32 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 const clickClose = () => {
-  console.log(`EventVariablesDialog clickClose`)
+  console.log(name +`: clickClose`)
   showRawVariables.value = false
-  eventVariables.value={}
+  variablesDescriptor.value={}
+}
+
+const clickToggleVariablesDescriptor = () => {
+  console.log(name + `: clickToggleVariablesDescriptor`)
+  if (showVariablesDescriptor.value){
+    showVariablesDescriptor.value = false
+  } else {
+    showVariablesDescriptor.value = true
+  }
 }
 
 const clickToggleRaw = () => {
-  console.log(`EventVariablesDialog clickToggleRaw`)
+  console.log(name + `: clickToggleRaw`)
   if (showRawVariables.value){
     showRawVariables.value = false
   } else {
     showRawVariables.value = true
   }
+}
+
+const clickUpdateModuleDescriptor = () => {
+  console.log(name + `: clickUpdateModuleDescriptor`)
+  showManageModuleDescriptorsDialog.value = true
 }
 
 

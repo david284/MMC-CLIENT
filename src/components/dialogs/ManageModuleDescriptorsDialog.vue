@@ -110,6 +110,10 @@ const model = computed({
   set(newValue) { emit('update:modelValue', newValue) }
 })
 
+watch(model, () => {
+  console.log(name + `: WATCH model`)
+})
+
 
 const moduleDescriptorFilename = computed(() => {
   return store.state.nodes[store.state.selected_node].moduleDescriptorFilename

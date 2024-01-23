@@ -21,7 +21,7 @@
       </q-card-section>
 
       <div class="q-pa-xs row">
-        <div v-for="item in nodeVariablesDescriptor" :key="item">
+        <div v-for="item in variablesDescriptor" :key="item">
           <NodeVariableBitArray v-if="(item.type=='NodeVariableBitArray') && (isVisible(item))"
                                 :nodeNumber="props.nodeNumber"
                                 :VariableIndex=item.nodeVariableIndex
@@ -85,7 +85,7 @@
       </div>
 
       <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Toggle node descriptor view" @click="clickToggleNodeDescriptor()"/>
+        <q-btn flat label="Toggle variables descriptor view" @click="clickToggleVariablesDescriptor()"/>
         <q-btn flat label="Toggle raw view" @click="clickToggleRaw()"/>
         <q-btn flat label="Close" v-close-popup @click="clickClose()"/>
       </q-card-actions>
@@ -107,11 +107,11 @@
         </p>
       </div>
 
-      <q-card-section class="q-pa-sm" v-if="showNodeDescriptor">
+      <q-card-section class="q-pa-sm" v-if="showVariableDescriptor">
         <div class="q-pa-xs row">
-          <div class="text-body1">Node descriptor<br></div>
+          <div class="text-body1">Variables descriptor<br></div>
           <div class="text-body2">
-            <pre>{{ nodeVariablesDescriptor }}</pre>
+            <pre>{{ variablesDescriptor }}</pre>
           </div>
         </div>
       </q-card-section>
@@ -154,11 +154,11 @@ const $q = useQuasar()
 const store = inject('store')
 const name = "NodevariablesDialog"
 const showDescriptorWarning = ref(false)
-const nodeVariablesDescriptor = ref()
+const variablesDescriptor = ref()
 const showRawVariables = ref(false)
 const showNoVariablesMessage = ref(false)
 const showManageModuleDescriptorsDialog = ref(false)
-const showNodeDescriptor = ref(false)
+const showVariableDescriptor = ref(false)
 var loadFile_notification_raised = {}    // used by checkFileLoad
 
 const props = defineProps({
@@ -174,24 +174,32 @@ const model = computed({
       set(newValue) { emit('update:modelValue', newValue) }
     })
 
+watch(model, () => {
+  console.log(name + `: WATCH model`)
+  showRawVariables.value = false
+  showVariableDescriptor.value = false
+})
+
+
+
 
 const isVisible = (item) =>{
       var result = true
       if (item.visibilityLogic) {
         result = parseLogicElement(item.visibilityLogic, store)
       }
-      console.log(`isVisible: ` + result + ' ' + item.type)
+      console.log(name + `: isVisible: ` + result + ' ' + item.type)
       return result
     }
 
     
-const update_nodeVariablesDescriptor = () => {
+const update_variablesDescriptor = () => {
   if (props.nodeNumber){
     if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
-        nodeVariablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariables
+        variablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariables
         showDescriptorWarning.value = false
       } else{
-        nodeVariablesDescriptor.value = {}
+        variablesDescriptor.value = {}
         showRawVariables.value = true
         showDescriptorWarning.value = true
     }
@@ -206,11 +214,11 @@ onMounted(() => {
 
 
 onUpdated(() => {
-  console.log('NodeVariableDialog onUpdated')
-  nodeVariablesDescriptor.value = null
+  console.log(name + ': onUpdated')
+  variablesDescriptor.value = null
   if (props.nodeNumber){
     console.log('NodeVariableDialog onUpdated - nodeNumber ' + props.nodeNumber)
-    update_nodeVariablesDescriptor()
+    update_variablesDescriptor()
     checkFileLoad()
     if (store.state.nodes[props.nodeNumber].parameters[6] == 0){
       showNoVariablesMessage.value = true
@@ -223,7 +231,7 @@ onUpdated(() => {
 
 // raise notification if nodeDescriptor file not present
 const checkFileLoad = () => {
-  console.log(`checkFileLoad`)
+  console.log(name + `: checkFileLoad`)
   if (loadFile_notification_raised[props.nodeNumber] == undefined) {
     // module descriptor filename won't be created if there's no moduleName
     if( store.state.nodes[props.nodeNumber].moduleName == 'Unknown'){
@@ -249,7 +257,7 @@ const checkFileLoad = () => {
       loadFile_notification_raised[props.nodeNumber]=true;
     }
     if (loadFile_notification_raised[props.nodeNumber]) {
-       console.log(`checkLoadFile notification raised`) 
+       console.log(name + `: checkLoadFile notification raised`) 
     }
   }
 }
@@ -263,9 +271,7 @@ Click event handlers
 
 const clickClose = () => {
   console.log(name + `: clickClose`)
-  showRawVariables.value = false
-//  loadFile_notification_raised = false
-  nodeVariablesDescriptor.value={}
+  variablesDescriptor.value={}
 }
 
 const clickToggleRaw = () => {
@@ -277,12 +283,12 @@ const clickToggleRaw = () => {
   }
 }
 
-const clickToggleNodeDescriptor = () => {
+const clickToggleVariablesDescriptor = () => {
   console.log(name + `: clickToggleNodeDescriptor`)
-  if (showNodeDescriptor.value){
-    showNodeDescriptor.value = false
+  if (showVariableDescriptor.value){
+    showVariableDescriptor.value = false
   } else {
-    showNodeDescriptor.value = true
+    showVariableDescriptor.value = true
   }
 }
 
