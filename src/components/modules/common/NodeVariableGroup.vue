@@ -93,7 +93,7 @@ export default {
     const store = inject('store')
     onMounted(() => {
       console.log("Group onMounted")
-      console.log('Node Group props: ' + JSON.stringify(props))
+//      console.log('Node Group props: ' + JSON.stringify(props))
     })
 
     function isVisible(item){

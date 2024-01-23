@@ -96,6 +96,7 @@ const showModuleDescriptorDownloadDialog = ref(false)
 const showModuleDescriptorUploadDialog = ref(false)
 const showModuleDescriptorViewDialog = ref(false)
 const moduleDescriptorValid = ref(false)
+const uploadFile = ref()
 
 
 const props = defineProps({
@@ -114,7 +115,7 @@ const moduleDescriptorFilename = computed(() => {
   return store.state.nodes[store.state.selected_node].moduleDescriptorFilename
 })
 
-/*
+/* don't know why this watch causes a crash at startup ?
 watch(moduleDescriptorFilename, () => {
   console.log(`WATCH moduleDescriptorFilename`)
 })

@@ -85,6 +85,7 @@
       </div>
 
       <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Toggle node descriptor view" @click="clickToggleNodeDescriptor()"/>
         <q-btn flat label="Toggle raw view" @click="clickToggleRaw()"/>
         <q-btn flat label="Close" v-close-popup @click="clickClose()"/>
       </q-card-actions>
@@ -105,6 +106,15 @@
           </pre>
         </p>
       </div>
+
+      <q-card-section class="q-pa-sm" v-if="showNodeDescriptor">
+        <div class="q-pa-xs row">
+          <div class="text-body1">Node descriptor<br></div>
+          <div class="text-body2">
+            <pre>{{ nodeVariablesDescriptor }}</pre>
+          </div>
+        </div>
+      </q-card-section>
 
     </q-card>
   </q-dialog>
@@ -148,6 +158,7 @@ const nodeVariablesDescriptor = ref()
 const showRawVariables = ref(false)
 const showNoVariablesMessage = ref(false)
 const showManageModuleDescriptorsDialog = ref(false)
+const showNodeDescriptor = ref(false)
 var loadFile_notification_raised = {}    // used by checkFileLoad
 
 const props = defineProps({
@@ -263,6 +274,15 @@ const clickToggleRaw = () => {
     showRawVariables.value = false
   } else {
     showRawVariables.value = true
+  }
+}
+
+const clickToggleNodeDescriptor = () => {
+  console.log(name + `: clickToggleNodeDescriptor`)
+  if (showNodeDescriptor.value){
+    showNodeDescriptor.value = false
+  } else {
+    showNodeDescriptor.value = true
   }
 }
 
