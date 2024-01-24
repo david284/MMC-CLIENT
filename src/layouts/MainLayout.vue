@@ -29,7 +29,7 @@
         <q-toolbar-title style="min-height: 0;" >
           <span style="min-height: 0;" class="text-h6">
             <!-- <span style="min-height: 0;" class="page-title no-margin no-padding text-h6"> -->
-            Module Management Console L2
+            Module Management Console
           </span>
         </q-toolbar-title>
       </q-toolbar>
