@@ -10,7 +10,7 @@
     </q-banner>
 
     <div class="full-width" >
-    <q-table 
+    <q-table
       style="height: 350px"
       bordered
       dense
@@ -45,18 +45,18 @@
     <nameEventDialog v-model='showNameEventDialog'
       :eventIdentifier = selected_event_Identifier
     />
- 
+
     <eventTeachDialog v-model='showEventTeachDialog'
       :eventIdentifier = selected_event_Identifier
     />
- 
-    <sendEventDialog v-model='showSendEventDialog' 
+
+    <sendEventDialog v-model='showSendEventDialog'
       :nodeNumber = selected_event_node
       :eventNumber = selected_event_number
       :eventIdentifier = selected_event_Identifier
     />
 
-    <deleteEventDialog v-model='showDeleteEventDialog' 
+    <deleteEventDialog v-model='showDeleteEventDialog'
       :nodeNumber = store.state.selected_node
       :eventIdentifier = selected_event_Identifier
     />
@@ -163,7 +163,7 @@ const update_rows = () => {
   rows.value = []
 
   // do stored events for this node first.....
-  var storedEvents = Object.values(store.state.nodes[store.state.selected_node].storedEvents) 
+  var storedEvents = Object.values(store.state.nodes[store.state.selected_node].storedEvents)
   storedEvents.forEach(event => {
     var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
     let output = {}
@@ -178,7 +178,7 @@ const update_rows = () => {
   })
 
   // now add bus events... but not if already in the list
-  var busEvents = Object.values(store.state.events) 
+  var busEvents = Object.values(store.state.events)
   busEvents.forEach(busEvent => {
     if (busEvent.nodeNumber == store.state.selected_node){
       // lets see if it's already in the stored events...
@@ -266,7 +266,7 @@ const clickDelete = (eventIndentifier) => {
 
 const clickRefresh = () => {
   console.log(name + `: clickRefresh`)
-  update_rows()
+  store.methods.request_all_node_events(store.state.selected_node)
 }
 
 
