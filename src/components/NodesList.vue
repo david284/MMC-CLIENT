@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-banner  inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin no-padding" >
-      <div class="text-h6">Node list</div>
+      <div class="text-h6">Nodes list</div>
       <template v-slot:action>
         <q-btn flat color="white" size="sm" label="Refresh" @click="clickRefresh()"/>
       </template>
@@ -113,7 +113,7 @@ const columns = [
 ]
 
 const store = inject('store')
-const name = "NodePage"
+const name = "NodesList"
 const filter = ref('')
 const rows = ref([])
 const selected_node_valid = ref(false)
