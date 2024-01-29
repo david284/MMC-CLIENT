@@ -6,6 +6,7 @@ import { EventBus } from 'quasar'
 const eventBus = new EventBus()
 const host = window.location.hostname
 const port = "5552"
+const name = "store"
 
 const state = reactive({
   version: {},
@@ -45,6 +46,10 @@ const methods = {
       "nodeNumber": nodeNumber,
       "eventNumber": eventNumber
     })
+  },
+  set_node_number(nodeNumber){
+    console.log(name + `: emit SET_NODE_NUMBER ${nodeNumber}`)
+    socket.emit('SET_NODE_NUMBER', nodeNumber)
   },
   short_on_event(nodeNumber, eventNumber){
     console.log(`ASON ${nodeNumber} : ${eventNumber}`)

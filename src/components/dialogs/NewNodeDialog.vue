@@ -4,7 +4,7 @@
     <q-card style="min-width: 350px">
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
-          New node
+          New node detected
         </div>
         <template v-slot:action>
           <q-btn flat color="white" size="md" label="Close" v-close-popup/>
@@ -13,16 +13,16 @@
 
       <q-card-section class="q-pt-none">
         <div class="text-h6">
-          New node number
+          Accept the node number below or enter a new one
         </div>
-        <q-input dense v-model="newNodeNumber" autofocus />
+        <q-input :input-style="{ fontSize: '30px' }" dense v-model="newNodeNumber" autofocus />
       </q-card-section>
 
       <q-card-section class="q-pt-none">
         <div class="text-h6">
-          (optional) name for this node
+          Enter a name for this node (optional)
         </div>
-        <q-input dense v-model="newNodeName" autofocus />
+        <q-input :input-style="{ fontSize: '30px' }" dense v-model="newNodeName" autofocus />
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
@@ -64,7 +64,9 @@ watch(model, () => {
 
 
 const clickAccept = () => {
-  console.log("new node name: " + newNodeName.value)
+  console.log(name + " new node number: " + newNodeNumber.value)
+  console.log(name + " new node name: " + newNodeName.value)
+  store.methods.set_node_number(newNodeNumber.value)
   store.setters.node_name(props.nodeNumber, newNodeName.value)
 }
 
