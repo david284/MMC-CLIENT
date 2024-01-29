@@ -40,13 +40,13 @@
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
 
 const store = inject('store')
-
+const name = "NewNodeDialog"
 const newNodeName = ref()
 const newNodeNumber = ref()
 
+
 const props = defineProps({
-  modelValue: { type: Boolean, required: true },
-  nodeNumber: { type:Number, required: true }
+  modelValue: { type: Boolean, required: true }
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -55,6 +55,12 @@ const model = computed({
       get() { return props.modelValue },
       set(newValue) { emit('update:modelValue', newValue) }
     })
+
+watch(model, () => {
+  console.log(name + `: WATCH model`)
+  newNodeNumber.value = store.state.layout.layoutDetails.nextNodeId
+})
+
 
 
 const clickAccept = () => {
