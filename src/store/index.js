@@ -1,7 +1,9 @@
 import {reactive} from 'vue'
 import io from 'socket.io-client'
 //import VueSocketIO from 'vue-socket.io'
+import { EventBus } from 'quasar'
 
+const eventBus = new EventBus()
 const host = window.location.hostname
 const port = "5552"
 
@@ -327,6 +329,12 @@ socket.on('DCC_SESSIONS', function (data) {
   state.dcc_sessions = data;
 })
 
+socket.on('dccSessions', function (data) {
+  console.log(`RECEIVED DCC Sessions`)
+  // console.log(`CBUS Errors Received:${JSON.stringify(data)}`)
+  state.dcc_sessions = data;
+})
+
 socket.on("EVENTS", (data) => {
   console.log(`RECEIVED Events Data`)
   state.events = data
@@ -358,10 +366,9 @@ socket.on("NODE_DESCRIPTOR", (data) => {
   state.nodeDescriptors[nodeNumber] = Object.values(data)[0]    // get first value
 })
 
-socket.on('dccSessions', function (data) {
-  console.log(`RECEIVED DCC Sessions`)
-  // console.log(`CBUS Errors Received:${JSON.stringify(data)}`)
-  state.dcc_sessions = data;
+socket.on("REQUEST_NODE_NUMBER", (nodeNumber) => {
+  console.log(`RECEIVED REQUEST_NODE_NUMBER : ` + JSON.stringify(nodeNumber))
+  eventBus.emit('REQUEST_NODE_NUMBER_EVENT')
 })
 
 socket.on("VERSION", (data) => {
@@ -373,5 +380,6 @@ export default {
   state,
   methods,
   getters,
-  setters
+  setters,
+  eventBus
 }

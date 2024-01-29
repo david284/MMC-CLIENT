@@ -21,6 +21,9 @@
             <q-item clickable @click="clickSystem()">
               <q-item-section>System</q-item-section>
             </q-item>
+            <q-item clickable @click="clickNewNode()">
+              <q-item-section>New Node</q-item-section>
+            </q-item>
           </q-list>
         </q-menu>
       </q-btn>
@@ -98,7 +101,10 @@
   <layoutDialog v-model='showLayoutDialog' />
   <modifiedGridConnectDialog v-model='showModifiedGridConnectDialog'
     :busMessage="busMessage"/>
+  <newNodeDialog v-model='showNewNodeDialog' />
   <systemDialog v-model='showSystemDialog' />
+
+
 
 </template>
 
@@ -110,6 +116,7 @@ import cbusErrorsDialog from "components/dialogs/CbusErrorsDialog";
 import jsonDialog from "components/dialogs/JsonDialog";
 import layoutDialog from "components/dialogs/LayoutDialog";
 import modifiedGridConnectDialog from "components/dialogs/ModifiedGridConnectDialog";
+import newNodeDialog from "components/dialogs/NewNodeDialog";
 import systemDialog from "components/dialogs/SystemDialog";
 
 const store = inject('store')
@@ -120,8 +127,15 @@ const showCbusErrorsDialog = ref(false)
 const showJsonDialog = ref(false)
 const showLayoutDialog = ref(false)
 const showModifiedGridConnectDialog = ref(false)
+const showNewNodeDialog = ref(false)
 const showSystemDialog = ref(false)
 const busMessage = ref("")
+
+
+store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', () => {
+ console.log(name + ': REQUEST_NODE_NUMBER_EVENT')
+ showNewNodeDialog.value = true
+})
 
 
 /*/////////////////////////////////////////////////////////////////////////////
@@ -160,6 +174,11 @@ const clickLayout = () => {
 const clickSystem = () => {
   console.log(name + ': clickSystem')
   showSystemDialog.value = true
+}
+
+const clickNewNode = () => {
+  console.log(name + ': clickNewNode')
+  store.eventBus.emit('REQUEST_NODE_NUMBER_EVENT')
 }
 
 
