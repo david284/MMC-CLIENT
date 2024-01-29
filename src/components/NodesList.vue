@@ -166,13 +166,13 @@ const getNodeName = (nodeNumber) => {
   if (nodeNumber in store.state.layout.nodeDetails) {
     return store.state.layout.nodeDetails[nodeNumber].name
   } else {
-    return nodeId.toString()+' - '+store.state.nodes[nodeNumber].moduleName
+    return nodeNumber.toString()+' - '+store.state.nodes[nodeNumber].moduleName
   }
 }
 
-const nodeColour = (nodeId) => {
-  if (nodeId in store.state.layout.nodeDetails) {
-    return store.state.layout.nodeDetails[nodeId].colour
+const nodeColour = (nodeNumber) => {
+  if (nodeNumber in store.state.layout.nodeDetails) {
+    return store.state.layout.nodeDetails[nodeNumber].colour
   } else {
     return 'blue'
   }
