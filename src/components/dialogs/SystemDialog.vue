@@ -35,10 +35,10 @@
 
       <q-card class="q-pa-md" flat v-show="store.state.advanced">
         <q-input
-          label="Next Assigned Node ID"
+          label="Base Node Number"
           hint="hint"
           outlined
-          v-model="store.state.layout.layoutDetails.nextNodeId"
+          v-model="store.state.layout.layoutDetails.baseNodeNumber"
           @change="store.methods.update_layout()">
         </q-input>
         <q-checkbox v-model="store.state.layout.layoutDetails.assignId" label="Assign Id"></q-checkbox>

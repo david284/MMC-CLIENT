@@ -208,11 +208,6 @@ const select_node_row = (nodeNumber) => {
 }
 
 
-store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', () => {
- console.log(name + ': REQUEST_NODE_NUMBER_EVENT')
-})
-
-
 
 
 /*/////////////////////////////////////////////////////////////////////////////

@@ -101,7 +101,8 @@
   <layoutDialog v-model='showLayoutDialog' />
   <modifiedGridConnectDialog v-model='showModifiedGridConnectDialog'
     :busMessage="busMessage"/>
-  <newNodeDialog v-model='showNewNodeDialog' />
+  <newNodeDialog v-model='showNewNodeDialog'
+    :previousNodeNumber="previousNodeNumber" />
   <systemDialog v-model='showSystemDialog' />
 
 
@@ -130,10 +131,12 @@ const showModifiedGridConnectDialog = ref(false)
 const showNewNodeDialog = ref(false)
 const showSystemDialog = ref(false)
 const busMessage = ref("")
+const previousNodeNumber = ref()
 
 
-store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', () => {
- console.log(name + ': REQUEST_NODE_NUMBER_EVENT')
+store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber) => {
+ console.log(name + ': REQUEST_NODE_NUMBER_EVENT - previous node number ' + nodeNumber)
+ previousNodeNumber.value = nodeNumber
  showNewNodeDialog.value = true
 })
 
@@ -178,7 +181,7 @@ const clickSystem = () => {
 
 const clickNewNode = () => {
   console.log(name + ': clickNewNode')
-  store.eventBus.emit('REQUEST_NODE_NUMBER_EVENT')
+  store.eventBus.emit('REQUEST_NODE_NUMBER_EVENT', 100)
 }
 
 
