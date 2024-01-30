@@ -1,7 +1,7 @@
 <template>
 
   <q-dialog v-model="model" persistent>
-    <q-card style="min-width: 350px">
+    <q-card style="min-width: 350px" class="bg-amber-2">
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
           New node detected
@@ -11,18 +11,18 @@
         </template>
       </q-banner>
 
-      <q-card-section class="q-pt-none">
+      <q-card-section class="q-pa-md" color="orange-1">
         <div class="text-h6">
           Accept the node number below or enter a new one
         </div>
-        <q-input :input-style="{ fontSize: '30px' }" dense v-model="newNodeNumber" autofocus />
+        <q-input type="number" style="max-width: 150px" :input-style="{ fontSize: '25px' }" dense v-model="newNodeNumber" autofocus />
       </q-card-section>
 
-      <q-card-section class="q-pt-none">
+      <q-card-section class="q-pa-md">
         <div class="text-h6">
           Enter a name for this node (optional)
         </div>
-        <q-input :input-style="{ fontSize: '30px' }" dense v-model="newNodeName" autofocus />
+        <q-input :input-style="{ fontSize: '25px' }" dense v-model="newNodeName" autofocus />
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
@@ -68,6 +68,9 @@ const clickAccept = () => {
   console.log(name + " new node name: " + newNodeName.value)
   store.methods.set_node_number(newNodeNumber.value)
   store.setters.node_name(props.nodeNumber, newNodeName.value)
+  if (newNodeNumber.value == store.state.layout.layoutDetails.nextNodeId){
+    store.state.layout.layoutDetails.nextNodeId++
+  }
 }
 
 
