@@ -41,7 +41,6 @@
           v-model="store.state.layout.layoutDetails.baseNodeNumber"
           @change="store.methods.update_layout()">
         </q-input>
-        <q-checkbox v-model="store.state.layout.layoutDetails.assignId" label="Assign Id"></q-checkbox>
       </q-card>
       <q-card class="q-pa-md" flat>
         <q-checkbox v-model="store.state.debug" label="Debug"></q-checkbox>
