@@ -146,9 +146,9 @@ watch(nodeDetails, () => {
 
 
 const update_rows = () => {
+  console.log(name + ': update_rows')
   rows.value = []
   nodeList.value.forEach(node => {
-//    console.log(name + ': ' + JSON.stringify(node))
     let output = {}
     output['nodeNumber'] = node.nodeNumber
     output['nodeName'] = getNodeName(node.nodeNumber)

@@ -21,9 +21,6 @@
             <q-item clickable @click="clickSystem()">
               <q-item-section>System</q-item-section>
             </q-item>
-            <q-item clickable @click="clickNewNode()">
-              <q-item-section>New Node</q-item-section>
-            </q-item>
           </q-list>
         </q-menu>
       </q-btn>
@@ -178,10 +175,6 @@ const clickSystem = () => {
   showSystemDialog.value = true
 }
 
-const clickNewNode = () => {
-  console.log(name + ': clickNewNode')
-  store.eventBus.emit('REQUEST_NODE_NUMBER_EVENT', 100)
-}
 
 
 </script>
