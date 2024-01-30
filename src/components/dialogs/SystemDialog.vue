@@ -36,7 +36,6 @@
       <q-card class="q-pa-md" flat v-show="store.state.advanced">
         <q-input
           label="Base Node Number"
-          hint="hint"
           outlined
           v-model="store.state.layout.layoutDetails.baseNodeNumber"
           @change="store.methods.update_layout()">
