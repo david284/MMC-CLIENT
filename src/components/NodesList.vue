@@ -208,6 +208,12 @@ const select_node_row = (nodeNumber) => {
 }
 
 
+store.eventBus.on('NODE_DELETED_EVENT', (nodeNumber) => {
+  console.log(name + ': NODE_DELETED_EVENT - node number ' + nodeNumber)
+  if (store.state.selected_node == nodeNumber){
+    selected_node_valid.value = false
+  }
+})
 
 
 /*/////////////////////////////////////////////////////////////////////////////

@@ -140,7 +140,6 @@ store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber) => {
  showNewNodeDialog.value = true
 })
 
-
 /*/////////////////////////////////////////////////////////////////////////////
 
 Click event handlers

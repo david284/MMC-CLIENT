@@ -104,10 +104,8 @@ const clickAccept = () => {
   console.log(name + " new node number: " + newNodeNumber.value)
   console.log(name + " new node name: " + newNodeName.value)
   store.methods.set_node_number(newNodeNumber.value)
-  // setting name will trigger layoutdetails update
-  if(newNodeName.value.length > 0){
-    store.setters.node_name(props.nodeNumber, newNodeName.value)
-  }
+  // setting name will trigger layoutdetails update & create entry if it doesn't exist
+  store.setters.node_name(newNodeNumber.value, newNodeName.value)
 }
 
 

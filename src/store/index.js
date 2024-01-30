@@ -66,7 +66,8 @@ const methods = {
     })
   },
   remove_node(nodeNumber) {
-    socket.emit('REMOVE_NODE', {"nodeId": nodeNumber})
+    socket.emit('REMOVE_NODE', nodeNumber)
+    console.log(name + ': sent REMOVE_NODE ' + nodeNumber)
   },
   update_layout() {
     console.log(`Update Layout Details : ` + state.title)
@@ -284,6 +285,7 @@ const setters = {
       state.layout.eventDetails[eventIdentifier].group = ""
     }
     state.layout.eventDetails[eventIdentifier].name = eventName
+    console.log(name + ': setter event_name ' + eventIdentifier + ' : ' + eventName)
     methods.update_layout()
   },
   node_name(nodeNumber, nodeName){
@@ -293,6 +295,7 @@ const setters = {
       state.layout.nodeDetails[nodeNumber].group = ""
     }
     state.layout.nodeDetails[nodeNumber].name = nodeName
+    console.log(name + ': setter node_name ' + nodeNumber + ' : ' + nodeName)
     methods.update_layout()
   }
 
@@ -373,7 +376,7 @@ socket.on("NODE_DESCRIPTOR", (data) => {
 
 socket.on("REQUEST_NODE_NUMBER", (nodeNumber) => {
   console.log(`RECEIVED REQUEST_NODE_NUMBER : ` + JSON.stringify(nodeNumber))
-  eventBus.emit('REQUEST_NODE_NUMBER_EVENT')
+  eventBus.emit('REQUEST_NODE_NUMBER_EVENT', nodeNumber)
 })
 
 socket.on("VERSION", (data) => {

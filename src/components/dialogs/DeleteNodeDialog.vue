@@ -27,16 +27,10 @@
 
 <script setup>
 
-/************************************************************************************
-      usage
-      <DialogExampleCompositionAPI v-model='showAddEventDialog' />
-      
-************************************************************************************ */ 
-
-
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 
 const store = inject('store')
+const name = 'DeleteNodeDialog'
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -51,8 +45,9 @@ const model = computed({
     })
 
 const deleteNode = () => {
-  console.log("deleting node " + props.nodeNumber)
-//  store.methods.remove_node(props.NodeNumber)
+  console.log(name + ": deleting node " + props.nodeNumber)
+  store.methods.remove_node(props.nodeNumber)
+  store.eventBus.emit('NODE_DELETED_EVENT', props.nodeNumber)
 }
 
 
