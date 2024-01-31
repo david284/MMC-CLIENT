@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import {inject, ref, onBeforeMount, computed, watch} from "vue";
+import {inject, ref, onBeforeMount, onMounted, computed, watch} from "vue";
 import EventsListByNode from "components/EventsListByNode"
 import addEventDialog from "components/dialogs/AddEventDialog"
 import deleteNodeDialog from "components/dialogs/DeleteNodeDialog"

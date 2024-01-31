@@ -108,6 +108,7 @@
 
 <script setup>
 import {computed, inject, onBeforeMount, onMounted, ref, watch} from "vue";
+import { useQuasar } from 'quasar'
 import nodesList from "components/NodesList"
 import busEventsDialog from "components/dialogs/BusEventsDialog";
 import cbusErrorsDialog from "components/dialogs/CbusErrorsDialog";
@@ -117,6 +118,7 @@ import modifiedGridConnectDialog from "components/dialogs/ModifiedGridConnectDia
 import newNodeDialog from "components/dialogs/NewNodeDialog";
 import systemDialog from "components/dialogs/SystemDialog";
 
+const $q = useQuasar()
 const store = inject('store')
 const name = "MainLayout"
 const leftDrawerOpen = ref(false);
@@ -130,11 +132,28 @@ const showSystemDialog = ref(false)
 const busMessage = ref("")
 const previousNodeNumber = ref()
 
+onMounted(() => {
+  store.methods.request_bus_connection()
+})
 
 store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber) => {
  console.log(name + ': REQUEST_NODE_NUMBER_EVENT - previous node number ' + nodeNumber)
  previousNodeNumber.value = nodeNumber
  showNewNodeDialog.value = true
+})
+
+store.eventBus.on('BUS_CONNECTION_EVENT', (busConnection) => {
+  console.log(name + ': BUS_CONNECTION_EVENT: ' + JSON.stringify(busConnection))
+  if (busConnection.state == false){
+    $q.notify({
+      message: 'Server has no connection to the CAN BUS',
+      caption: 'please check & restart application',
+      timeout: 0,
+      type: 'warning',
+      position: 'center',
+      actions: [ { label: 'Dismiss' } ]
+    })
+  }
 })
 
 /*/////////////////////////////////////////////////////////////////////////////

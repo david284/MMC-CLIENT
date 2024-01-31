@@ -217,6 +217,10 @@ const methods = {
     console.log(`STOP SERVER`)
     window.close()
   },
+  request_bus_connection() {
+    console.log(name + `: request_bus_connection`)
+    socket.emit('REQUEST_BUS_CONNECTION')
+  },
   request_version(){
     socket.emit('REQUEST_VERSION')
   },
@@ -372,6 +376,11 @@ socket.on("NODE_DESCRIPTOR", (data) => {
   var nodeNumber = Object.keys(data)[0]   // get first key
   console.log(`RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber)
   state.nodeDescriptors[nodeNumber] = Object.values(data)[0]    // get first value
+})
+
+socket.on("BUS_CONNECTION", (data) => {
+  eventBus.emit('BUS_CONNECTION_EVENT', data)
+  console.log(name + `: RECEIVED BUS_CONNECTION ` + JSON.stringify(data))
 })
 
 socket.on("REQUEST_NODE_NUMBER", (nodeNumber) => {
