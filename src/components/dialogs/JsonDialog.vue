@@ -29,6 +29,7 @@
           <q-tab name="layouts" label="Layouts"/>
           <q-tab name="nodes" label="Nodes"/>
           <q-tab name="nodeDescriptors" label="Node Descriptors"/>
+          <q-tab name="nodeDescriptorList" label="Node Descriptor Lists"/>
           <q-tab name="traffic" label="Traffic"/>
         </q-tabs>
         <q-tab-panels v-model="tab" animated>
@@ -43,6 +44,13 @@
             <div class="text-h6">Node Descriptors</div>
             <pre>
               {{ store.state.nodeDescriptors }}
+            </pre>
+          </q-tab-panel>
+
+          <q-tab-panel name="nodeDescriptorList">
+            <div class="text-h6">Node Descriptor List</div>
+            <pre>
+              {{ store.state.nodeDescriptorList }}
             </pre>
           </q-tab-panel>
 

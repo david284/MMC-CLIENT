@@ -108,7 +108,7 @@
 
 <script setup>
 import {computed, inject, onBeforeMount, onMounted, ref, watch} from "vue";
-import { useQuasar } from 'quasar'
+import { date, useQuasar } from 'quasar'
 import nodesList from "components/NodesList"
 import busEventsDialog from "components/dialogs/BusEventsDialog";
 import cbusErrorsDialog from "components/dialogs/CbusErrorsDialog";
@@ -134,7 +134,14 @@ const previousNodeNumber = ref()
 
 onMounted(() => {
   store.methods.request_bus_connection()
+  setInterval(eventIntervalFunc,5000);
 })
+
+const eventIntervalFunc = (nodeNumber) => {
+//  console.log(name + ": interval " + Date.now())
+  store.methods.request_bus_connection()
+}
+
 
 store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber) => {
  console.log(name + ': REQUEST_NODE_NUMBER_EVENT - previous node number ' + nodeNumber)

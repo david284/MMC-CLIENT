@@ -12,6 +12,7 @@ const state = reactive({
   version: {},
   nodes: {},
   nodeDescriptors: {},
+  nodeDescriptorList: {},
   nodeTraffic: [],
   events: {},
   cbus_errors: {},
@@ -376,6 +377,12 @@ socket.on("NODE_DESCRIPTOR", (data) => {
   var nodeNumber = Object.keys(data)[0]   // get first key
   console.log(`RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber)
   state.nodeDescriptors[nodeNumber] = Object.values(data)[0]    // get first value
+})
+
+socket.on("NODE_DESCRIPTOR_FILE_LIST", (nodeNumber, list) => {
+  console.log(`RECEIVED NODE_DESCRIPTOR_FILE_LIST : node ` + nodeNumber)
+  console.log(`RECEIVED NODE_DESCRIPTOR_FILE_LIST : list ` + list)
+  state.nodeDescriptorList[nodeNumber] = list
 })
 
 socket.on("BUS_CONNECTION", (data) => {
