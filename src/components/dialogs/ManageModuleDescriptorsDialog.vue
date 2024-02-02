@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model='model' persistent>
-    <q-card style="min-width: 300px">
+    <q-card style="min-width: 350px">
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
           Module Descriptor
@@ -12,7 +12,7 @@
 
 
       <div class=" row items-start q-gutter-md">
-        <q-card class="q-pa-sm">
+        <q-card class="q-pa-sm" style="min-width: 350px">
           <q-card-section>
             {{ moduleDescriptorName }}
             <div class="text-subtitle2" v-if="!moduleDescriptorValid">
@@ -30,64 +30,91 @@
 
       <q-dialog v-model="showModuleDescriptorViewDialog" persistent>
         <q-card style="min-width: 350px">
+
+          <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+            <div class="text-h6">
+              Module Descriptor Data
+            </div>
+            <template v-slot:action>
+              <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+            </template>
+          </q-banner>
+
           <q-card-section>
-            <div class="text-h4">Module Descriptor Data</div>
             <q-card-actions align="right" class="text-primary">
-              <q-btn flat label="Cancel" v-close-popup />
             </q-card-actions>
              <p>
               {{ JSON.stringify(store.state.nodeDescriptors[store.state.selected_node], null, "  ") }}
             </p>
-            </q-card-section>
+          </q-card-section>
+
           <q-card-actions align="right" class="text-primary">
-            <q-btn flat label="Cancel" v-close-popup />
+            <q-btn color="positive" label="Close" v-close-popup />
           </q-card-actions>
+
         </q-card>
       </q-dialog>
 
 
       <q-dialog v-model="showModuleDescriptorDownloadDialog" persistent>
         <q-card style="min-width: 350px">
-          <q-card-section>
-            <div class="text-h6">Download {{ moduleDescriptorFilename }} </div>
-          </q-card-section>
+
+          <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+            <div class="text-h6">
+              Download  {{ moduleDescriptorFilename }}
+            </div>
+            <template v-slot:action>
+              <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+            </template>
+          </q-banner>
+
           <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Download" v-close-popup  @click="actionDownload(moduleDescriptorFilename)" />
-          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn color="positive" label="Download" v-close-popup  @click="actionDownload(moduleDescriptorFilename)" />
           </q-card-actions>
+
         </q-card>
       </q-dialog>
 
 
       <q-dialog v-model="showModuleDescriptorUploadDialog" persistent>
-        <q-card style="min-width: 350px">
+        <q-card style="min-width: 500px">
+
+          <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+            <div class="text-h6">
+              File upload
+            </div>
+            <template v-slot:action>
+              <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+            </template>
+          </q-banner>
+
           <q-card-section>
-            <div class="text-h6">File upload </div>
-            <div class="text-subtitle2">Select a file to upload for this type of module</div>
-            <div class="text-subtitle2">The filename can be anything, as it will be stored as {{ moduleDescriptorFilename }}</div>
+            <div class="text-subtitle2">Select a file to upload</div>
+            <div class="text-subtitle2">
+              The file will be stored with it's original filename<br/>
+              If the module name is currently unknown, the 'name' portion from the filename will be used<br/>
+              The filename format is name-moduleIdentity-version.json
+            </div>
           </q-card-section>
+
           <q-file
             v-model="uploadFile"
             label="Pick one file"
             filled
             style="max-width: 300px"
           />
+
           <q-card-section>
             <div class="text-subtitle2">If this module descriptor already exists on the server, it will be overwritten  </div>
           </q-card-section>
+
           <q-card-actions align="right" class="text-primary">
-            <q-btn flat label="Upload" v-close-popup  @click="actionUpload()" />
-            <q-btn flat label="Cancel" v-close-popup />
+            <q-btn color="positive" label="Upload" v-close-popup  @click="actionUpload()" />
           </q-card-actions>
+
         </q-card>
       </q-dialog>
     
-
-      <q-card class="q-pa-sm" style="max-width: 300px">
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup/>
-        </q-card-actions>
-      </q-card>
 
     </q-card>
   </q-dialog>
@@ -158,9 +185,9 @@ const checkFileLoad = () => {
   if (store.state.nodeDescriptors[store.state.selected_node]) {
     // descriptor exists
     moduleDescriptorValid.value = true
-    console.log(`WATCH moduleDescriptorFilename ` + moduleDescriptorValid.value)
+    console.log(name + `: WATCH moduleDescriptorFilename ` + moduleDescriptorValid.value)
   } else{
-    console.log(`checkFileLoad failed for node ` + store.state.selected_node)
+    console.log(name + `: checkFileLoad failed for node ` + store.state.selected_node)
   }
 }
 
@@ -182,21 +209,22 @@ const actionDownload = () => {
   const actionUpload = () => {
     var result = {}
     if (uploadFile.value){
+      console.log(name + ': selected filename ' + uploadFile.value.name)
       let reader = new FileReader();
       reader.readAsText(uploadFile.value)
       reader.onload = function() {
         try{
           result = JSON.parse(reader.result)
-          result["moduleDescriptorName"] = moduleDescriptorName.value
-          console.log(`actionUpload: ` + result.moduleDescriptorName)
-          store.methods.import_module_descriptor(result)
+          result["moduleDescriptorFilename"] = uploadFile.value.name
+          console.log(name + `: actionUpload: ` + result.moduleDescriptorFilename)
+//          store.methods.import_module_descriptor(result)
         } catch(e){
-          console.log(`actionUpload: failed JSON parse`)
+          console.log(name + `: actionUpload: failed JSON parse`)
         }
       }
       uploadFile.value=null
     } else {
-      console.log(`actionUpload: uploadFile no value `)
+      console.log(name + `: actionUpload: uploadFile no value `)
     }
   }
 
