@@ -219,7 +219,7 @@ const methods = {
     window.close()
   },
   request_bus_connection() {
-    console.log(name + `: request_bus_connection`)
+//    console.log(name + `: request_bus_connection`)
     socket.emit('REQUEST_BUS_CONNECTION')
   },
   request_version(){
@@ -233,7 +233,7 @@ const methods = {
     socket.emit('CHANGE_LAYOUT', data)
   },
   import_module_descriptor(moduleDescriptor) {
-    console.log(`import_module_descriptor : ` + moduleDescriptor.moduleDescriptorName)
+    console.log(`import_module_descriptor : ` + moduleDescriptor.moduleDescriptorFilename)
     socket.emit('IMPORT_MODULE_DESCRIPTOR', moduleDescriptor)
   }
 }
@@ -387,7 +387,7 @@ socket.on("NODE_DESCRIPTOR_FILE_LIST", (nodeNumber, list) => {
 
 socket.on("BUS_CONNECTION", (data) => {
   eventBus.emit('BUS_CONNECTION_EVENT', data)
-  console.log(name + `: RECEIVED BUS_CONNECTION ` + JSON.stringify(data))
+//  console.log(name + `: RECEIVED BUS_CONNECTION ` + JSON.stringify(data))
 })
 
 socket.on("REQUEST_NODE_NUMBER", (nodeNumber) => {

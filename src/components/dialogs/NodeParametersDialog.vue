@@ -1,12 +1,14 @@
 <template>
 
   <q-dialog v-model='model' persistent> 
-    <q-card style="min-width: 500px">
+    <q-card style="min-width: 700px">
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
           Parameter Information for {{ store.getters.node_name(props.nodeNumber) }}
         </div>
         <template v-slot:action>
+          <q-btn color="cyan-1" size="sm" text-color="black" 
+            label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
           <q-btn flat color="white" size="md" label="Close" v-close-popup/>
         </template>
       </q-banner>
@@ -62,29 +64,22 @@
                         :Value="moduleDescriptorFilename">
         </node-parameter>
       </q-card-section>
-      <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Close" v-close-popup/>
-        </q-card-actions>
     </q-card>
   </q-dialog>
 
+  <manageModuleDescriptorsDialog v-model='showManageModuleDescriptorsDialog'/>
 
 </template>
 
 
 <script setup>
 
-/************************************************************************************
-      usage
-      <DialogExampleCompositionAPI v-model='showAddEventDialog' />
-      
-************************************************************************************ */ 
-
-
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import NodeParameter from "components/modules/common/NodeParameter"
+import manageModuleDescriptorsDialog from "components/dialogs/ManageModuleDescriptorsDialog";
 
 const store = inject('store')
+const showManageModuleDescriptorsDialog = ref(false)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -110,6 +105,18 @@ onBeforeMount(() => {
 
 onMounted(() => {
 })
+
+
+/*/////////////////////////////////////////////////////////////////////////////
+
+Click event handlers
+
+/////////////////////////////////////////////////////////////////////////////*/
+
+const clickUpdateModuleDescriptor = () => {
+  console.log(name + `: clickUpdateModuleDescriptor`)
+  showManageModuleDescriptorsDialog.value = true
+}
 
 
 

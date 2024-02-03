@@ -69,7 +69,7 @@
           </q-banner>
 
           <q-card-actions align="right" class="text-primary">
-          <q-btn color="positive" label="Download" v-close-popup  @click="actionDownload(moduleDescriptorFilename)" />
+          <q-btn color="positive" label="Download" v-close-popup="2"  @click="actionDownload(moduleDescriptorFilename)" />
           </q-card-actions>
 
         </q-card>
@@ -93,7 +93,7 @@
             <div class="text-subtitle2">
               The file will be stored with it's original filename<br/>
               If the module name is currently unknown, the 'name' portion from the filename will be used<br/>
-              The filename format is name-moduleIdentity-version.json
+              The filename format is moduleName-moduleIdentity-moduleVersion.json
             </div>
           </q-card-section>
 
@@ -105,11 +105,20 @@
           />
 
           <q-card-section>
+            <div class="text-subtitle2">Current node:</div>
+            <div class="text-subtitle2">
+              Module name: {{ store.state.nodes[store.state.selected_node].moduleName }}<br/>
+              Module identifier: {{ store.state.nodes[store.state.selected_node].moduleIdentifier }}<br/>
+              Module version: {{ store.state.nodes[store.state.selected_node].moduleVersion }}<br/>
+            </div>
+          </q-card-section>
+
+          <q-card-section>
             <div class="text-subtitle2">If this module descriptor already exists on the server, it will be overwritten  </div>
           </q-card-section>
 
           <q-card-actions align="right" class="text-primary">
-            <q-btn color="positive" label="Upload" v-close-popup  @click="actionUpload()" />
+            <q-btn color="positive" label="Upload" v-close-popup="2"  @click="actionUpload()" />
           </q-card-actions>
 
         </q-card>
@@ -209,15 +218,17 @@ const actionDownload = () => {
   const actionUpload = () => {
     var result = {}
     if (uploadFile.value){
-      console.log(name + ': selected filename ' + uploadFile.value.name)
+      var fileName = uploadFile.value.name
+      console.log(name + ': selected filename ' + fileName)
       let reader = new FileReader();
       reader.readAsText(uploadFile.value)
       reader.onload = function() {
         try{
-          result = JSON.parse(reader.result)
-          result["moduleDescriptorFilename"] = uploadFile.value.name
-          console.log(name + `: actionUpload: ` + result.moduleDescriptorFilename)
-//          store.methods.import_module_descriptor(result)
+          var resultOBJ = JSON.parse(reader.result)
+          resultOBJ["moduleDescriptorFilename"] = fileName
+          console.log(name + `: actionUpload: ` + resultOBJ.moduleDescriptorFilename)
+          console.log(name + `: actionUpload: result: ` + JSON.stringify(resultOBJ))
+          store.methods.import_module_descriptor(resultOBJ)
         } catch(e){
           console.log(name + `: actionUpload: failed JSON parse`)
         }

@@ -150,7 +150,7 @@ store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber) => {
 })
 
 store.eventBus.on('BUS_CONNECTION_EVENT', (busConnection) => {
-  console.log(name + ': BUS_CONNECTION_EVENT: ' + JSON.stringify(busConnection))
+//  console.log(name + ': BUS_CONNECTION_EVENT: ' + JSON.stringify(busConnection))
   if (busConnection.state == false){
     $q.notify({
       message: 'Server has no connection to the CAN BUS',
