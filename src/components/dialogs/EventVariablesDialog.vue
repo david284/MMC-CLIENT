@@ -154,7 +154,6 @@ const showRawVariables = ref(false)
 const showDescriptorWarning = ref(false)
 const showManageModuleDescriptorsDialog = ref(false)
 const showVariablesDescriptor = ref(false)
-var loadFile_notification_raised = false    // used by checkFileLoad
 
 
 const props = defineProps({
@@ -220,7 +219,7 @@ onUpdated(() => {
 // raise notification if nodeDescriptor file not present
 const checkFileLoad = () => {
   console.log(name + `: checkFileLoad`)
-  if (loadFile_notification_raised != true) {
+  if (store.state.loadFile_notification_raised[props.nodeNumber] != true) {
     // module descriptor filename won't be created if there's no moduleName
     if( store.state.nodes[props.nodeNumber].moduleName == 'Unknown'){
       $q.notify({
@@ -230,7 +229,7 @@ const checkFileLoad = () => {
         position: 'center',
         actions: [ { label: 'Dismiss' } ]
       })
-      loadFile_notification_raised = true;
+      store.state.loadFile_notification_raised[props.nodeNumber] = true;
     } 
     else if ((store.state.nodes[props.nodeNumber].moduleDescriptorFilename != undefined)  
       && (store.state.nodeDescriptors[props.nodeNumber] == undefined)) 
@@ -242,9 +241,9 @@ const checkFileLoad = () => {
         position: 'center',
         actions: [ { label: 'Dismiss' } ]
       })
-      loadFile_notification_raised = true;
+      store.state.loadFile_notification_raised[props.nodeNumber] = true;
     }
-    if (loadFile_notification_raised) {
+    if (store.state.loadFile_notification_raised[props.nodeNumber]) {
        console.log(name + `: checkLoadFile notification raised`) 
     }
   }
