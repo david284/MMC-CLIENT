@@ -309,6 +309,15 @@ const setters = {
 
 const socket = io(`http://${host}:${port}`)
 
+socket.on("error", (data) => {
+  console.log(name + `: connection error`)
+})
+
+socket.on("disconnect", (data) => {
+  console.log(name + `: disconnect`)
+  eventBus.emit('SERVER_DISCONNECT')
+})
+
 socket.on("connect", () => {
   console.log(`Socket Connect`)
   socket.emit('REQUEST_VERSION')
