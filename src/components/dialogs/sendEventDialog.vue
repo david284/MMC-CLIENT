@@ -87,7 +87,7 @@ onMounted(() => {
 const send_on = () => {
   console.log ("send on " + props.nodeNumber + ' ' + props.eventNumber)
   if (props.nodeNumber == 0) {
-    store.methods.short_on_event(props.nodeNumber, props.eventNumber)
+    store.methods.short_on_event(store.state.selected_node, props.eventNumber)
   } else {
     store.methods.long_on_event(props.nodeNumber, props.eventNumber)
   }
@@ -96,7 +96,7 @@ const send_on = () => {
 const send_off = () => {
   console.log ("send off " + props.nodeNumber + ' ' + props.eventNumber)
   if (props.nodeNumber == 0) {
-    store.methods.short_off_event(props.nodeNumber, props.eventNumber)
+    store.methods.short_off_event(store.state.selected_node, props.eventNumber)
   } else {
     store.methods.long_off_event(props.nodeNumber, props.eventNumber)
   }

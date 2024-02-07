@@ -56,14 +56,14 @@ const methods = {
   short_on_event(nodeNumber, eventNumber){
     console.log(`ASON ${nodeNumber} : ${eventNumber}`)
     socket.emit('ACCESSORY_SHORT_ON', {
-      "nodeNumber": 0,
+      "nodeNumber": nodeNumber,
       "deviceNumber": eventNumber
     })
   },
   short_off_event(nodeNumber, eventNumber){
     console.log(`ASOF ${nodeNumber} : ${eventNumber}`)
     socket.emit('ACCESSORY_SHORT_OFF', {
-      "nodeNumber": 0,
+      "nodeNumber": nodeNumber,
       "deviceNumber": eventNumber
     })
   },
