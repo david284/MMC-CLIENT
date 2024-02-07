@@ -28,7 +28,7 @@
           <q-td key="nodeNumber" :props="props">{{ props.row.nodeNumber }}</q-td>
           <q-td key="eventNumber" :props="props">{{ props.row.eventNumber }}</q-td>
           <q-td key="eventIndex" :props="props">{{ props.row.eventIndex }}</q-td>
-          <!-- <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td> -->
+          <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td>
           <q-td key="actions" :props="props">
             <q-btn flat size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
             <q-btn :disabled="!props.row.storedEvent" color="primary" size="md" flat label="Variables"
@@ -114,7 +114,7 @@ const columns = [
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Event node', align: 'left', sortable: true},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event number', align: 'left', sortable: true},
   {name: 'eventIndex', field: 'eventIndex', required: true, label: 'Event index', align: 'left', sortable: true},
-  // {name: 'eventType', field: 'eventType', required: true, label: 'Event type', align: 'left', sortable: true},
+  {name: 'eventType', field: 'eventType', required: true, label: 'Event type', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
 ]
 
@@ -172,28 +172,44 @@ const update_rows = () => {
     output['eventIndex'] = event.eventIndex
     output['nodeNumber'] = eventNodeNumber
     output['eventNumber'] = parseInt(event.eventIdentifier.substr(4, 4), 16)
-    output['eventType'] = getEventType(event.eventIndex)
+    output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
     output['storedEvent'] = true
     rows.value.push(output)
   })
 
   // now add bus events... but not if already in the list
+  // need to be careful with short events
   var busEvents = Object.values(store.state.events)
   busEvents.forEach(busEvent => {
     if (busEvent.nodeNumber == store.state.selected_node){
+      // ok, it's an event matching this node
       // lets see if it's already in the stored events...
+      // we need to match long and short events differently
       var alreadyInList = false
+      var type = ''
       storedEvents.forEach(event => {
-        if(busEvent.id == event.eventIdentifier){
-          alreadyInList = true
+        if (busEvent.type == 'long'){
+          // long event, so match whole eventIdentifier
+          if(busEvent.id == event.eventIdentifier){
+            alreadyInList = true
+          }
+        } else {
+          // if short event, then ignore node number, just match event number
+          // eventNumber is really deviceNumber
+          if(busEvent.eventNumber == parseInt(event.eventIdentifier.substr(4, 4), 16)){
+            alreadyInList = true
+            console.log(name + `: short event match`)
+          }          
         }
       })
+
       if (alreadyInList == false){
         let output = {}
         output['eventIdentifier'] = busEvent.id
         output['eventName'] = store.getters.event_name(busEvent.id)
         output['nodeNumber'] = busEvent.nodeNumber
         output['eventNumber'] = busEvent.eventNumber
+        output['eventType'] = busEvent.type
         output['storedEvent'] = false
         rows.value.push(output)
       }
@@ -204,21 +220,6 @@ const update_rows = () => {
   rows.value.sort(function(a, b){return (a.eventIdentifier < b.eventIdentifier)? -1 : 1;});
 }
 
-
-const getEventType = (eventIndex) =>{
-  if(store.state.nodeDescriptors[store.state.selected_node]){
-    var logic = store.state.nodeDescriptors[store.state.selected_node].producedEventLogic
-    if (logic == undefined){
-      return ""
-    }
-    var isProduced = parseLogicElement(logic, store, eventIndex)
-    if (isProduced){
-      return "produced"
-    } else {
-      return "consumed"
-    }
-  }
-}
 
 
 const readEventVariables = (eventIndex) => {

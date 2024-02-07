@@ -77,12 +77,12 @@ const methods = {
   },
   request_service_discovery(nodeNumber) {
     console.log(`Request Service Discovery : ` + nodeNumber)
-    socket.emit('REQUEST_SERVICE_DISCOVERY', {"nodeId":nodeNumber})
+    socket.emit('REQUEST_SERVICE_DISCOVERY', {"nodeNumber":nodeNumber})
   },
   request_diagnostics(nodeNumber, serviceIndex) {
     if (serviceIndex == undefined){serviceIndex = 0;}
     console.log(`Request Service Diagnostics : node ` + nodeNumber + ' Service Index ' + serviceIndex )
-    socket.emit('REQUEST_DIAGNOSTICS', {"nodeId":nodeNumber, "serviceIndex":serviceIndex})
+    socket.emit('REQUEST_DIAGNOSTICS', {"nodeNumber":nodeNumber, "serviceIndex":serviceIndex})
   },
   update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue) {
     state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
@@ -92,14 +92,14 @@ const methods = {
         && (state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode)){
           console.log(`MAIN Update Node Variable in learn mode : `+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue)
           socket.emit('UPDATE_NODE_VARIABLE_IN_LEARN_MODE', {
-        "nodeId": nodeNumber,
+        "nodeNumber": nodeNumber,
         "variableId": nodeVariableIndex,
         "variableValue": parseInt(nodeVariableValue)
       })
     } else {
       console.log(`MAIN Update Node Variable : `+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue)
       socket.emit('UPDATE_NODE_VARIABLE', {
-        "nodeId": nodeNumber,
+        "nodeNumber": nodeNumber,
         "variableId": nodeVariableIndex,
         "variableValue": parseInt(nodeVariableValue)
        })
@@ -110,7 +110,7 @@ const methods = {
     state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
     //if (nodeVariableValue !="" ) {
       socket.emit('UPDATE_NODE_VARIABLE_IN_LEARN_MODE', {
-        "nodeId": nodeNumber,
+        "nodeNumber": nodeNumber,
         "variableId": nodeVariableIndex,
         "variableValue": parseInt(nodeVariableValue)
       })
@@ -120,7 +120,7 @@ const methods = {
     console.log(`MAIN Update Event Variable : ${eventIndex} : ${eventVariableIndex} : ${eventVariableValue} `)
     state.nodes[nodeNumber].storedEvents[eventIndex].variables[eventVariableIndex] = eventVariableValue
     socket.emit('UPDATE_EVENT_VARIABLE',{
-      "nodeId": nodeNumber,
+      "nodeNumber": nodeNumber,
       "eventName": eventName,
       "eventIndex": eventIndex,
       "eventVariableId": eventVariableIndex,
@@ -129,13 +129,13 @@ const methods = {
   },
   remove_event(nodeNumber, eventName) {
     socket.emit('REMOVE_EVENT', {
-        "nodeId": nodeNumber,
+        "nodeNumber": nodeNumber,
         "eventName": eventName
     })
   },
   teach_event(nodeNumber, eventName, eventIndex) {
     socket.emit('TEACH_EVENT', {
-      "nodeId": nodeNumber,
+      "nodeNumber": nodeNumber,
       "eventName": eventName,
       "eventIndex": eventIndex
     })
@@ -165,56 +165,56 @@ const methods = {
     socket.emit('REFRESH_EVENTS')
     console.log(`REFRESH_EVENTS`)
   },
-  request_all_node_parameters(nodeId, parameters, delay) {
-    socket.emit('REQUEST_ALL_NODE_PARAMETERS', {"nodeId": nodeId, "parameters": parameters, "delay": delay})
+  request_all_node_parameters(nodeNumber, parameters, delay) {
+    socket.emit('REQUEST_ALL_NODE_PARAMETERS', {"nodeNumber": nodeNumber, "parameters": parameters, "delay": delay})
     console.log(`REQUEST_ALL_NODE_PARAMETERS`)
   },
-  request_node_parameter(nodeId, parameter) {
-    socket.emit('RQNPN', {"nodeId": nodeId, "parameter": parameter})
+  request_node_parameter(nodeNumber, parameter) {
+    socket.emit('RQNPN', {"nodeNumber": nodeNumber, "parameter": parameter})
   },
-  request_all_node_variables(nodeId, variables, delay, start) {
+  request_all_node_variables(nodeNumber, variables, delay, start) {
     socket.emit('REQUEST_ALL_NODE_VARIABLES', {
-      "nodeId": nodeId,
+      "nodeNumber": nodeNumber,
       "variables": variables,
       "delay": delay,
       "start": start
     })
     console.log(`REQUEST_ALL_NODE_VARIABLES`)
   },
-  request_node_variable(nodeId, variable) {
+  request_node_variable(nodeNumber, variable) {
     socket.emit('REQUEST_NODE_VARIABLE', {
-      "nodeId": nodeId,
+      "nodeNumber": nodeNumber,
       "variableId": variable,
     })
   },
-  request_all_node_events(nodeId) {
-    socket.emit('REQUEST_ALL_NODE_EVENTS', {"nodeId": nodeId})
+  request_all_node_events(nodeNumber) {
+    socket.emit('REQUEST_ALL_NODE_EVENTS', {"nodeNumber": nodeNumber})
     console.log(`REQUEST_ALL_NODE_EVENTS`)
   },
-  request_all_event_variables(nodeId, eventIndex, delay, variables) {
+  request_all_event_variables(nodeNumber, eventIndex, delay, variables) {
     console.log(`REQUEST_ALL_EVENT_VARIABLES: eventIndex ` + eventIndex)
     socket.emit('REQUEST_ALL_EVENT_VARIABLES', {
-      "nodeId": nodeId,
+      "nodeNumber": nodeNumber,
       "eventIndex": eventIndex,
       "variables": variables,
       "delay": delay
     })
   },
-  request_event_variable(nodeId, eventIndex, eventVariableId){
+  request_event_variable(nodeNumber, eventIndex, eventVariableId){
     console.log(`REQUEST_EVENT_VARIABLE ${eventIndex} ${eventVariableId}`)
     socket.emit('REQUEST_EVENT_VARIABLE', {
-      "nodeId": nodeId,
+      "nodeNumber": nodeNumber,
       "eventIndex": eventIndex,
       "eventVariableId": eventVariableId
     })
   },
-  clear_node_events(nodeId) {
-    console.log(`CLEAR_NODE_EVENTS ${nodeId}`)
+  clear_node_events(nodeNumber) {
+    console.log(`CLEAR_NODE_EVENTS ${nodeNumber}`)
     socket.emit('CLEAR_NODE_EVENTS',{
-      "nodeId": nodeId
+      "nodeNumber": nodeNumber
     })
   },
-  STOP_SERVER(nodeId) {
+  STOP_SERVER(nodeNumber) {
     socket.emit('STOP_SERVER')
     console.log(`STOP SERVER`)
     window.close()
@@ -240,35 +240,35 @@ const methods = {
 }
 
 const getters = {
-  event_name(eventId) {
-    if (eventId in state.layout.eventDetails) {
+  event_name(eventIdentifier) {
+    if (eventIdentifier in state.layout.eventDetails) {
       //console.log(`Event Name`)
-      return state.layout.eventDetails[eventId].name
+      return state.layout.eventDetails[eventIdentifier].name
     } else {
-      //console.log(`Event No Name ${JSON.stringify(eventId)}`)
-      state.layout.eventDetails[eventId] = {}
-      state.layout.eventDetails[eventId].name = eventId
-      state.layout.eventDetails[eventId].colour = "black"
-      state.layout.eventDetails[eventId].group = ""
-      return JSON.stringify(eventId)
+      //console.log(`Event No Name ${JSON.stringify(eventIdentifier)}`)
+      state.layout.eventDetails[eventIdentifier] = {}
+      state.layout.eventDetails[eventIdentifier].name = eventIdentifier
+      state.layout.eventDetails[eventIdentifier].colour = "black"
+      state.layout.eventDetails[eventIdentifier].group = ""
+      return JSON.stringify(eventIdentifier)
       store.setters.event_name()
     }
   },
-  event_colour(eventId) {
-    if (eventId in state.layout.eventDetails) {
+  event_colour(eventIdentifier) {
+    if (eventIdentifier in state.layout.eventDetails) {
       //console.log(`Event Name`)
-      return state.layout.eventDetails[eventId].colour
+      return state.layout.eventDetails[eventIdentifier].colour
     } else {
-      //console.log(`Event No Name ${JSON.stringify(eventId)}`)
+      //console.log(`Event No Name ${JSON.stringify(eventIdentifier)}`)
       return "black"
     }
   },
-  event_group(eventId) {
-    if (eventId in state.layout.eventDetails) {
+  event_group(eventIdentifier) {
+    if (eventIdentifier in state.layout.eventDetails) {
       //console.log(`Event Name`)
-      return state.layout.eventDetails[eventId].group
+      return state.layout.eventDetails[eventIdentifier].group
     } else {
-      //console.log(`Event No Name ${JSON.stringify(eventId)}`)
+      //console.log(`Event No Name ${JSON.stringify(eventIdentifier)}`)
       return ""
     }
   },

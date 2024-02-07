@@ -195,9 +195,9 @@ const editEvent = (eventIndex) => {
   store.methods.update_event_component("Default2EventVariables")
 }
 
-const removeEvent = (nodeId, eventIndex) => {
+const removeEvent = (nodeNumber, eventIndex) => {
   console.log(`removeEvent`)
-  store.methods.remove_event(nodeId, eventIndex)
+  store.methods.remove_event(nodeNumber, eventIndex)
 }
 
 const showAddEventDialog = () => {
@@ -231,10 +231,10 @@ const refreshEvents = () => {
 const createEvent = () => {
   var eventIndex = getFreeEventIndex()
   if (eventType.value == 'short'){newNodeNumber.value = 0}
-  var eventID = parseInt(newNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
+  var eventIdentifier = parseInt(newNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
                + parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
-  console.log(`createEvent - index ` + eventIndex + ` eventID ` + eventID)
-  store.methods.teach_event(store.state.selected_node, eventID, eventIndex, )
+  console.log(`createEvent - index ` + eventIndex + ` eventIdentifier ` + eventID)
+  store.methods.teach_event(store.state.selected_node, eventIdentifier, eventIndex, )
   // event list will be refreshed on acknowledge (WRACK, GRSP) from node
 }
 

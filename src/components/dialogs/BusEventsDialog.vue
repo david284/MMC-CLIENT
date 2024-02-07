@@ -193,32 +193,32 @@ const update_events = () => {
   displayEventList.value = displayEventListLocal
 }
 
-const event_name = (eventId) => {
-  if (eventId in store.state.layout.eventDetails) {
+const event_name = (eventIdentifier) => {
+  if (eventIdentifier in store.state.layout.eventDetails) {
     //console.log(`Event Name`)
-    return store.state.layout.eventDetails[eventId].name
+    return store.state.layout.eventDetails[eventIdentifier].name
   } else {
-    //console.log(`Event No Name ${JSON.stringify(eventId)}`)
-    return JSON.stringify(eventId)
+    //console.log(`Event No Name ${JSON.stringify(eventIdentifier)}`)
+    return JSON.stringify(eventIdentifier)
   }
 }
 
-const event_colour = (eventId) => {
-  if (eventId in store.state.layout.eventDetails) {
+const event_colour = (eventIdentifier) => {
+  if (eventIdentifier in store.state.layout.eventDetails) {
     //console.log(`Event Colour`)
-    return store.state.layout.eventDetails[eventId].colour
+    return store.state.layout.eventDetails[eventIdentifier].colour
   } else {
-    //console.log(`Event No Colour ${JSON.stringify(eventId)}`)
+    //console.log(`Event No Colour ${JSON.stringify(eventIdentifier)}`)
     return "blue"
   }
 }
 
-const event_group = (eventId) => {
-  if (eventId in store.state.layout.eventDetails) {
+const event_group = (eventIdentifier) => {
+  if (eventIdentifier in store.state.layout.eventDetails) {
     //console.log(`Event Colour`)
-    return store.state.layout.eventDetails[eventId].group
+    return store.state.layout.eventDetails[eventIdentifier].group
   } else {
-    //console.log(`Event No Colour ${JSON.stringify(eventId)}`)
+    //console.log(`Event No Colour ${JSON.stringify(eventIdentifier)}`)
     return ""
   }
 }

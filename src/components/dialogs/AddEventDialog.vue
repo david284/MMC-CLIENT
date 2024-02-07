@@ -110,11 +110,12 @@ onUpdated(() =>{
 
 const createEvent = () => {
   var eventIndex = getFreeEventIndex()
+  // to program a short event, the node number must be zero
   if (eventType.value == 'short'){newNodeNumber.value = 0}
-  var eventID = parseInt(newNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
+  var eventIdentifier = parseInt(newNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
                + parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
-  console.log(`createEvent - index ` + eventIndex + ` eventID ` + eventID)
-  store.methods.teach_event(store.state.selected_node, eventID, eventIndex, )
+  console.log(`createEvent - index ` + eventIndex + ` eventIdentifier ` + eventIdentifier)
+  store.methods.teach_event(store.state.selected_node, eventIdentifier, eventIndex, )
   // event list will be refreshed on acknowledge (WRACK, GRSP) from node
 }
 
