@@ -178,7 +178,7 @@ const update_events = () => {
     output['type'] = events[key].type
     output['count'] = events[key].count
     //displayEventList[i].id = i.id
-    output['name'] = event_name(events[key].id)
+    output['name'] = event_name(events[key])
     output['colour'] = event_colour(events[key].id)
     output['group'] = event_group(events[key].id)
     /*if (event.id in store.state.layout.eventDetails) {
@@ -193,7 +193,12 @@ const update_events = () => {
   displayEventList.value = displayEventListLocal
 }
 
-const event_name = (eventIdentifier) => {
+const event_name = (event) => {
+  var eventIdentifier = event.id
+  // need to handle short events differently
+  if(event.type == 'short'){
+    eventIdentifier = '0000' + event.id.slice(-4)
+  }
   if (eventIdentifier in store.state.layout.eventDetails) {
     //console.log(`Event Name`)
     return store.state.layout.eventDetails[eventIdentifier].name
