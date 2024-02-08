@@ -191,9 +191,9 @@ const update_rows = () => {
       // for short events, we need to drop the nodenumber to find a match
       // as 'short' stored events will always have 0 as node number
       if (busEvent.type == 'short'){
-        eventIdentifier = '0000' + busEvent.id.splice(-4)
+        eventIdentifier = '0000' + eventIdentifier.substr(4,4)
       }
-      
+
       // now find if we have a match
       storedEvents.forEach(event => {
         if(eventIdentifier == event.eventIdentifier){
