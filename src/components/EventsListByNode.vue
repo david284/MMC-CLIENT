@@ -186,27 +186,25 @@ const update_rows = () => {
       // lets see if it's already in the stored events...
       // we need to match long and short events differently
       var alreadyInList = false
-      var type = ''
+      var eventIdentifier = busEvent.id
+
+      // for short events, we need to drop the nodenumber to find a match
+      // as 'short' stored events will always have 0 as node number
+      if (busEvent.type == 'short'){
+        eventIdentifier = '0000' + busEvent.id.splice(-4)
+      }
+      
+      // now find if we have a match
       storedEvents.forEach(event => {
-        if (busEvent.type == 'long'){
-          // long event, so match whole eventIdentifier
-          if(busEvent.id == event.eventIdentifier){
-            alreadyInList = true
-          }
-        } else {
-          // if short event, then ignore node number, just match event number
-          // eventNumber is really deviceNumber
-          if(busEvent.eventNumber == parseInt(event.eventIdentifier.substr(4, 4), 16)){
-            alreadyInList = true
-            console.log(name + `: short event match`)
-          }          
+        if(eventIdentifier == event.eventIdentifier){
+          alreadyInList = true
         }
       })
 
       if (alreadyInList == false){
         let output = {}
-        output['eventIdentifier'] = busEvent.id
-        output['eventName'] = store.getters.event_name(busEvent.id)
+        output['eventIdentifier'] = eventIdentifier
+        output['eventName'] = store.getters.event_name(eventIdentifier)
         output['nodeNumber'] = busEvent.nodeNumber
         output['eventNumber'] = busEvent.eventNumber
         output['eventType'] = busEvent.type
