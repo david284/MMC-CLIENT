@@ -35,7 +35,8 @@
                             :min = "item.min"
                             :max = "item.max"
                             :startBit = "item.startBit"
-                            :endBit = "item.endBit">
+                            :endBit = "item.endBit"
+                            :configuration="item">
         </node-variable-slider>
         <NodeVariableDual v-if="(item.type=='NodeVariableDual') && (isVisible(item))"
                           :NodeVariableIndexLow="item.nodeVariableIndexLow"

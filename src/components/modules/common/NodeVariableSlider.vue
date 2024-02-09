@@ -14,11 +14,17 @@
       >
       </q-slider>
     </q-card-section>
+
+    <q-card-actions v-if="(configuration.outputChangeOnWrite == true)" align="right" class="text-primary">
+      <q-btn label="Test" @click="clickTest()"/>
+    </q-card-actions>
+
   </q-card>
 </template>
 
 <script setup>
 import {inject, ref, onMounted, computed} from "vue";
+const name = 'NodeVariableSlider'
 
 const props = defineProps({
   "nodeNumber": {
@@ -64,10 +70,12 @@ const props = defineProps({
   "endBit":{
     type: Number,
     default: 7
-  }
+  },
+  "configuration": Object
 })
 
-console.log(`Node Variable : ` + props.nodeNumber)
+console.log(name + `: nodeNumber ` + props.nodeNumber)
+console.log(name +`: configuration: ` + JSON.stringify(props.configuration))
 const label = props.name ? props.name : "Variable" + props.nodeVariableIndex
 const store = inject('store')
 const error = ref(false)
@@ -79,6 +87,7 @@ const bitMask = computed(() => {
   }
   return bitMask;
 })
+const newByteValue = undefined
 console.log(`NodeVariableSlider: bitMask : ${bitMask.value}`)
 
 const sliderValue = computed({
@@ -87,7 +96,7 @@ const sliderValue = computed({
   },
   set(newValue) {
     // get previous value, as starting point for updated byte value
-    let newByteValue = store.state.nodes[props.nodeNumber].nodeVariables[props.nodeVariableIndex]
+    newByteValue = store.state.nodes[props.nodeNumber].nodeVariables[props.nodeVariableIndex]
     console.log(`OldByteValue : ${newByteValue}`)
     // not sure we need to do a range check as the slider control uses max & min anyway...
     if (newValue <= props.max && newValue >= props.min) {
@@ -123,6 +132,16 @@ onMounted(() => {
   console.log(`NodeVariableSlider`)
 })
 
+/*/////////////////////////////////////////////////////////////////////////////
+
+Click event handlers
+
+/////////////////////////////////////////////////////////////////////////////*/
+
+const clickTest = () => {
+  console.log(name + `: clickTest: NV ` + props.nodeVariableIndex)
+  store.methods.update_node_variable(props.nodeNumber, props.nodeVariableIndex, newByteValue)
+}
 
 </script>
 
