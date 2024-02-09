@@ -23,7 +23,7 @@
   </div>
   <div class="q-pa-sm row" v-if="store.state.debug">
     <p>
-      {{ Object.values(store.state.events) }}
+      {{ Object.values(store.state.busEvents) }}
     </p>
   </div>
 </template>

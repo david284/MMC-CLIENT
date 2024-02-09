@@ -30,7 +30,7 @@ const geteventslist = (nodeNumber, store) => {
   })
 
   // now add bus events... but not if already in the list
-  var busEvents = Object.values(store.state.events) 
+  var busEvents = Object.values(store.state.busEvents) 
   busEvents.forEach(busEvent => {
     if (busEvent.nodeNumber == nodeNumber){
       // lets see if it's already in the stored events...

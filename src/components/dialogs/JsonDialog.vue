@@ -24,7 +24,7 @@
           narrow-indicator
         >
           <q-tab name="cbusErrors" label="Cbus Errors"/>
-          <q-tab name="events" label="Events"/>
+          <q-tab name="busEvents" label="Bus Events"/>
           <q-tab name="layout" label="Layout"/>
           <q-tab name="layouts" label="Layouts"/>
           <q-tab name="nodes" label="Nodes"/>
@@ -54,10 +54,10 @@
             </pre>
           </q-tab-panel>
 
-          <q-tab-panel name="events">
+          <q-tab-panel name="busEvents">
             <div class="text-h6">Events</div>
             <pre>
-              {{ store.state.events }}
+              {{ store.state.busEvents }}
             </pre>
           </q-tab-panel>
 

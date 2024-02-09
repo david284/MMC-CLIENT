@@ -14,7 +14,7 @@ const state = reactive({
   nodeDescriptors: {},
   nodeDescriptorList: {},
   nodeTraffic: [],
-  events: {},
+  busEvents: {},
   cbus_errors: {},
   dcc_sessions: {},
   dcc_errors: {},
@@ -153,17 +153,13 @@ const methods = {
     console.log(`QUERY_ALL_NODES`)
     socket.emit('QUERY_ALL_NODES')
   },
-  clear_events() {
-    socket.emit('CLEAR_EVENTS')
-    console.log(`CLEAR_EVENTS`)
+  clear_bus_events() {
+    socket.emit('CLEAR_BUS_EVENTS')
+    console.log(name + `: CLEAR_BUS_EVENTS`)
   },
   clear_cbus_errors() {
     socket.emit('CLEAR_CBUS_ERRORS')
     console.log(`CLEAR_CBUS_ERRORS`)
-  },
-  refresh_events() {
-    socket.emit('REFRESH_EVENTS')
-    console.log(`REFRESH_EVENTS`)
   },
   request_all_node_parameters(nodeNumber, parameters, delay) {
     socket.emit('REQUEST_ALL_NODE_PARAMETERS', {"nodeNumber": nodeNumber, "parameters": parameters, "delay": delay})
@@ -180,6 +176,10 @@ const methods = {
       "start": start
     })
     console.log(`REQUEST_ALL_NODE_VARIABLES`)
+  },
+  refresh_bus_events() {
+    socket.emit('REQUEST_BUS_EVENTS')
+    console.log(name + `: REQUEST_BUS_EVENTS`)
   },
   request_node_variable(nodeNumber, variable) {
     socket.emit('REQUEST_NODE_VARIABLE', {
@@ -358,9 +358,9 @@ socket.on('dccSessions', function (data) {
   state.dcc_sessions = data;
 })
 
-socket.on("EVENTS", (data) => {
-  console.log(`RECEIVED Events Data`)
-  state.events = data
+socket.on("BUS_EVENTS", (data) => {
+  console.log(name + `: RECEIVED BUS_EVENTS Data`)
+  state.busEvents = data
 })
 
 socket.on('LAYOUT_DETAILS', (data) => {

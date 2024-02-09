@@ -140,7 +140,7 @@ watch(nodeEvents, () => {
 
 // need to know if new bus events received
 const busEvents = computed(() =>{
-  return Object.values(store.state.events)
+  return Object.values(store.state.busEvents)
 })
 watch(busEvents, () => {
   console.log(name + `: WATCH busEvents`)
@@ -162,16 +162,20 @@ const update_rows = () => {
   console.log(name + ': update_rows ' + store.state.selected_node)
   rows.value = []
 
+//  console.log(name + ': update_rows: storedEvents ' + JSON.stringify(store.state.nodes[store.state.selected_node].storedEvents))
   // do stored events for this node first.....
   var storedEvents = Object.values(store.state.nodes[store.state.selected_node].storedEvents)
+//  console.log(name + ': update_rows: storedEvents ' + JSON.stringify(storedEvents))
   storedEvents.forEach(event => {
+//    console.log(name + ': update_rows: event ' + JSON.stringify(event))
     var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
+    var eventNumber = parseInt(event.eventIdentifier.substr(4, 4), 16)
     let output = {}
     output['eventIdentifier'] = event.eventIdentifier
     output['eventName'] = store.getters.event_name(event.eventIdentifier)
     output['eventIndex'] = event.eventIndex
     output['nodeNumber'] = eventNodeNumber
-    output['eventNumber'] = parseInt(event.eventIdentifier.substr(4, 4), 16)
+    output['eventNumber'] = eventNumber
     output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
     output['storedEvent'] = true
     rows.value.push(output)
@@ -179,14 +183,14 @@ const update_rows = () => {
 
   // now add bus events... but not if already in the list
   // need to be careful with short events
-  var busEvents = Object.values(store.state.events)
+  var busEvents = Object.values(store.state.busEvents)
   busEvents.forEach(busEvent => {
     if (busEvent.nodeNumber == store.state.selected_node){
       // ok, it's an event matching this node
       // lets see if it's already in the stored events...
       // we need to match long and short events differently
       var alreadyInList = false
-      var eventIdentifier = busEvent.id
+      var eventIdentifier = busEvent.eventIdentifier
 
       // for short events, we need to drop the nodenumber to find a match
       // as 'short' stored events will always have 0 as node number
