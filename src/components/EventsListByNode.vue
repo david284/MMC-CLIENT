@@ -34,7 +34,7 @@
             <q-btn :disabled="!props.row.storedEvent" color="primary" size="md" flat label="Variables"
             @click="clickVariables(props.row.eventIndex, props.row.eventIdentifier)" no-caps/>
             <q-btn flat size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
-            <q-btn flat size="md" color="primary" label="Test" @click="clickTest(props.row.nodeNumber, props.row.eventNumber, props.row.eventindex)" no-caps/>
+            <q-btn flat size="md" color="primary" label="Test" @click="clickTest(props.row.nodeNumber, props.row.eventNumber, props.row.eventIdentifier)" no-caps/>
             <q-btn flat size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier)" no-caps/>
           </q-td>
         </q-tr>
@@ -51,7 +51,7 @@
     />
 
     <sendEventDialog v-model='showSendEventDialog'
-      :nodeNumber = selected_event_node
+      :sendingNodeNumber = store.state.selected_node
       :eventNumber = selected_event_number
       :eventIdentifier = selected_event_Identifier
     />
@@ -273,11 +273,14 @@ const clickRefresh = () => {
 }
 
 
-const clickTest = (nodeNumber, eventNumber, eventIndex) => {
+const clickTest = (nodeNumber, eventNumber, eventIndentifer) => {
   selected_event_node.value = nodeNumber
   selected_event_number.value = eventNumber
-  selected_event_index.value = eventIndex
-  console.log(name + `: clickTest: eventIdentifier ` + selected_event_node.value + ' ' + selected_event_number.value)
+  selected_event_Identifier.value = eventIndentifer
+  console.log(name + `: clickTest: event ` 
+    + selected_event_node.value + ' ' 
+    + selected_event_number.value + ' '
+    + selected_event_Identifier.value)
   showSendEventDialog.value = true
 }
 

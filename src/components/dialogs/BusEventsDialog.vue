@@ -13,11 +13,11 @@
     </q-banner>
 
     <q-table
-      title="Events"
+      title="Bus Events"
       :rows=displayEventList
       :columns="columns"
       :filter="filter"
-      row-key="id"
+      row-key="eventIdentifier"
       virtual-scroll
       v-model:pagnation="pagnation"
       :rows-per-page-options="[0]"
@@ -40,59 +40,50 @@
 
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="expand" auto-width>
-            <q-btn size="sm" color="accent" round dense @click="props.expand = !props.expand"
-                   :icon="props.expand ? 'remove' : 'add'"/>
+          <q-td key="eventName" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.name }}</q-td>
+          <!-- <q-td key="group" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.group }}</q-td> -->
+          <q-td key="eventIdentifier" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
+            {{ props.row.eventIdentifier }}
           </q-td>
-          <q-td key="eventName" :props="props" :class="'text-'+event_colour(props.row.id)">{{ props.row.name }}</q-td>
-          <!-- <q-td key="group" :props="props" :class="'text-'+event_colour(props.row.id)">{{ props.row.group }}</q-td> -->
-          <q-td key="eventIdentifier" :props="props" :class="'text-'+event_colour(props.row.id)">{{
-              props.row.id
-            }}
+          <q-td key="nodeNumber" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
+            {{ props.row.nodeNumber }}
           </q-td>
-          <q-td key="nodeNumber" :props="props" :class="'text-'+event_colour(props.row.id)">{{
-              props.row.nodeNumber
-            }}
-          </q-td>
-          <q-td key="eventNumber" :props="props" :class="'text-'+event_colour(props.row.id)">{{
-              props.row.eventNumber
-            }}
+          <q-td key="eventNumber" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
+            {{ props.row.eventNumber }}
           </q-td>
           <q-td key="status" :props="props">
             <q-chip color="white" text-color="green" v-if="props.row.status=='on'">ON</q-chip>
             <q-chip color="white" text-color="red" v-else>OFF</q-chip>
           </q-td>
-          <q-td key="type" :props="props" :class="'text-'+event_colour(props.row.id)">{{ props.row.type }}</q-td>
-          <q-td key="count" :props="props" :class="'text-'+event_colour(props.row.id)">{{ props.row.count }}</q-td>
+          <q-td key="type" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.type }}</q-td>
+          <q-td key="count" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.count }}</q-td>
           <q-td key="actions" :props="props">
-            <q-btn flat size="md" color="primary" label="Name" @click="clickEventName(props.row.id)" no-caps/>
-            <q-btn flat size="md" color="primary" label="Teach" @click="clickTeach(props.row.id)" no-caps/>
-
-            <!-- <q-btn flat size="md" color="primary" label="Test" @click="clickTest(props.row.nodeNumber, props.row.eventNumber, props.row.eventindex)" no-caps/> -->
-
+            <q-btn flat size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
+            <q-btn flat size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
+            <q-btn flat size="md" color="primary" label="Test" @click="clickTest(props.row.nodeNumber, props.row.eventNumber, props.row.eventIdentifier)" no-caps/>
           </q-td>
         </q-tr>
 
-        <q-tr v-show="props.expand" :props="props">
-          <q-td colspan="100%">
-            <event-details
-              :eventIdentifier="props.row.id"
-              :nodeNumber="props.row.nodeNumber"
-              :eventNumber="props.row.eventNumber"
-              :type="props.row.type"
-            ></event-details>
-          </q-td>
-        </q-tr>
       </template>
     </q-table>
 
-
       <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Toggle bus events json" @click="clickToggleShowBusEventsJSON()"/>
         <q-btn flat label="Close" v-close-popup/>
       </q-card-actions>
 
+      <q-card-section class="q-pa-sm" v-if="showBusEventsJSON">
+        <div class="q-pa-xs row">
+          <div class="text-body1">Bus events<br></div>
+          <div class="text-body2">
+            <pre>{{ store.state.busEvents }}</pre>
+          </div>
+        </div>
+      </q-card-section>
+
     </q-card>
-  </q-dialog>
+
+    </q-dialog>
 
   <nameEventDialog v-model='showNameEventDialog'
     :eventIdentifier = selected_event_Identifier
@@ -103,7 +94,7 @@
   />
 
   <sendEventDialog v-model='showSendEventDialog'
-    :nodeNumber = selected_event_node
+    :sendingNodeNumber = selected_event_node
     :eventNumber = selected_event_number
     :eventIdentifier = selected_event_Identifier
   />
@@ -139,13 +130,12 @@ const selected_event_Identifier = ref("") // Dialog will complain if null
 const newEventName = ref()
 const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
-const selected_event_index = ref(0) // Dialog will complain if null
+const showBusEventsJSON = ref(false)
 
 const columns = [
-  {name: 'expand', field: 'expand', required: true, label: 'Expand', align: 'left', sortable: false},
   {name: 'eventName', field: 'name', required: true, label: 'Event Name', align: 'left', sortable: false},
 //  {name: 'group', field: 'name', required: true, label: 'Group', align: 'left', sortable: false},
-  {name: 'eventIdentifier', field: 'id', required: true, label: 'Event Identifier', align: 'left', sortable: false},
+  {name: 'eventIdentifier', field: 'eventIdentifier', required: true, label: 'Event Identifier', align: 'left', sortable: false},
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node Number', align: 'left', sortable: false},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event Number', align: 'left', sortable: false},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: false},
@@ -197,7 +187,7 @@ const update_bus_events = () => {
   // order keys
   for (let key of Object.keys(busEvents).sort()) {
     let output = {}
-    output['id'] = busEvents[key].eventIdentifier
+    output['eventIdentifier'] = busEvents[key].eventIdentifier
     output['nodeNumber'] = busEvents[key].nodeNumber
     output['eventNumber'] = busEvents[key].eventNumber
     output['status'] = busEvents[key].status
@@ -275,20 +265,44 @@ const clickEventName = (eventIdentifier) => {
   showNameEventDialog.value = true;
 }
 
-
-const clickTest = (nodeNumber, eventNumber, eventIndex) => {
+/*
+const clickTest = (nodeNumber, eventNumber, eventIdentifier) => {
   selected_event_node.value = nodeNumber
   selected_event_number.value = eventNumber
-  selected_event_index.value = eventIndex
-  console.log(name + `: clickTest: eventIdentifier ` + selected_event_node.value + ' ' + selected_event_number.value)
+  selected_event_Identifier.value = eventIdentifier
+    console.log(name + `: clickTest: eventIdentifier ` + selected_event_node.value + ' ' + selected_event_number.value)
   showSendEventDialog.value = true
 }
+*/
+
+const clickTest = (nodeNumber, eventNumber, eventIndentifer) => {
+  selected_event_node.value = nodeNumber
+  selected_event_number.value = eventNumber
+  selected_event_Identifier.value = eventIndentifer
+  console.log(name + `: clickTest: event ` 
+    + selected_event_node.value + ' ' 
+    + selected_event_number.value + ' '
+    + selected_event_Identifier.value)
+  showSendEventDialog.value = true
+}
+
+
 
 const clickTeach = (eventIndentifier) => {
   console.log(name + `: clickTeach`)
   selected_event_Identifier.value = eventIndentifier
   showEventTeachDialog.value = true
 }
+
+const clickToggleShowBusEventsJSON = () => {
+  console.log(name + `: clickToggleShowBusEventsJSON`)
+  if (showBusEventsJSON.value){
+    showBusEventsJSON.value = false
+  } else {
+    showBusEventsJSON.value = true
+  }
+}
+
 
 
 

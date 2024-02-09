@@ -13,7 +13,8 @@
       </q-banner>
 
       <q-card-section>
-        <div class="text-h6">Event {{ props.nodeNumber }}:{{ props.eventNumber }}</div>
+        <div class="text-h6">Sending Node {{ props.sendingNodeNumber }}</div>
+        <div class="text-h6">Event {{ eventNodeNumber }}:{{ props.eventNumber }}</div>
       </q-card-section>
 
       <q-card-section class="q-pa-md">
@@ -38,9 +39,10 @@
 <script setup>
 
 /************************************************************************************
-      usage
-      <DialogExampleCompositionAPI v-model='showAddEventDialog' />
-      
+  nodeNumber is the node sending the event - not the eventNodeNumber
+  for long events, eventIdentifier is built from the eventNodeNumber & the event number
+  for short events, eventIdentifier is built from '0000' & the device number
+  to send a short event, the nodenumber used is the sending node number
 ************************************************************************************ */ 
 
 
@@ -48,19 +50,13 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 
 const store = inject('store')
 const name = "SendEventDialog"
+const eventNodeNumber = ref()
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
-  "eventNumber": {
-    type: Number,
-    required: true
-  },
-  "nodeNumber": {
-    type: Number,
-    required: true
-  },
-  eventIdentifier: { type:String, required: true }
-
+  eventNumber: { type: Number, required: true },
+  sendingNodeNumber: { type: Number, required: true },
+  eventIdentifier: { type: String, required: true }
 })
 
 
@@ -73,6 +69,7 @@ const model = computed({
 
 watch(model, () => {
   console.log(name + `: WATCH model`)
+//  eventNodeNumber.value = parseInt(props.eventIdentifier.slice(0,4), 16)
 })
 
 
@@ -85,20 +82,22 @@ onMounted(() => {
 })
 
 const send_on = () => {
-  console.log ("send on " + props.nodeNumber + ' ' + props.eventNumber)
-  if (props.nodeNumber == 0) {
-    store.methods.short_on_event(store.state.selected_node, props.eventNumber)
+  console.log ("send on " + props.eventIdentifier)
+  var eventNodeNumber = parseInt(props.eventIdentifier.slice(0,4), 16)
+  if (eventNodeNumber == 0) {
+    store.methods.short_on_event(props.sendingNodeNumber, props.eventNumber)
   } else {
-    store.methods.long_on_event(props.nodeNumber, props.eventNumber)
+    store.methods.long_on_event(eventNodeNumber, props.eventNumber)
   }
 }
 
 const send_off = () => {
-  console.log ("send off " + props.nodeNumber + ' ' + props.eventNumber)
-  if (props.nodeNumber == 0) {
-    store.methods.short_off_event(store.state.selected_node, props.eventNumber)
+  console.log ("send off " + props.eventIdentifier)
+  var eventNodeNumber = parseInt(props.eventIdentifier.slice(0,4), 16)
+  if (eventNodeNumber == 0) {
+    store.methods.short_off_event(props.sendingNodeNumber, props.eventNumber)
   } else {
-    store.methods.long_off_event(props.nodeNumber, props.eventNumber)
+    store.methods.long_off_event(eventNodeNumber, props.eventNumber)
   }
 }
 
