@@ -42,6 +42,10 @@
               @click="clickParameters(props.row.nodeNumber)" no-caps/>
             <q-btn color="primary" size="md" flat label="Variables"
               @click="clickVariables(props.row.nodeNumber)" no-caps/>
+            <q-btn v-if="(!props.row.vlcb)" disabled color="primary" size="md" flat label="CBUS"
+              @click="clickVLCB(props.row.nodeNumber)" no-caps/>
+            <q-btn v-if="(props.row.vlcb)" color="primary" size="md" flat label="VLCB"
+              @click="clickVLCB(props.row.nodeNumber)" no-caps/>
             <q-btn color="primary" size="md" flat label="Add Event"
               @click="clickAddEvent(props.row.nodeNumber)" no-caps/>
             <q-btn color="negative" size="md" flat label="Delete"
@@ -81,6 +85,8 @@
         :nodeNumber = store.state.selected_node
       />
 
+      <vlcbServicesDialog  v-model='showVLCBServicesDialog' />
+
       <p v-if="store.state.debug">
         {{ Object.values(store.state.nodes) }}
       </p>
@@ -98,6 +104,7 @@ import nameNodeDialog from "components/dialogs/NameNodeDialog"
 import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
 import nodeVariablesDialog from "components/dialogs/NodeVariablesDialog"
 import parametersLoadingDialog from "components/dialogs/parametersLoadingDialog"
+import vlcbServicesDialog from "components/dialogs/VLCBServicesDialog"
 
 
 const columns = [
@@ -124,6 +131,7 @@ const showNodeParametersDialog = ref(false)
 const showNodeVariablesDialog = ref(false)
 const selected_nodeNumber = ref()
 const showParametersLoadingDialog = ref(false)
+const showVLCBServicesDialog = ref(false)
 
 const nodeList = computed(() => {
   return Object.values(store.state.nodes)
@@ -158,6 +166,7 @@ const update_rows = () => {
     output['status'] = node.status
     output['mode'] = node.flim
     output['events'] = node.eventCount
+    output['vlcb'] = node.VLCB
     rows.value.push(output)
   })
 }
@@ -287,6 +296,14 @@ const clickVariables = (nodeNumber) => {
     // parameters not loaded, so showParametersLoadingDialog
     showParametersLoadingDialog.value = true
   }
+}
+
+const clickVLCB = (nodeNumber) => {
+  console.log(name + ': clickVLCB')
+  // don't need parameters for this
+  select_node_row(nodeNumber)
+  store.methods.request_diagnostics(nodeNumber)
+  showVLCBServicesDialog.value = true
 }
 
 
