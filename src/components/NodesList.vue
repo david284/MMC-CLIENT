@@ -203,6 +203,7 @@ const select_node_row = (nodeNumber) => {
     store.methods.request_all_node_events(store.state.selected_node)
     selected_nodeNumber.value = nodeNumber    // used to highlight row
     selected_node_valid.value = true 
+    store.methods.request_service_discovery(store.state.selected_node)
     console.log(name + ': node row ', store.state.selected_node + " selected")
   }
 }
