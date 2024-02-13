@@ -41,7 +41,9 @@
 
       <q-toolbar class="col">
         <q-space />
-        <div class="text-h6 float-right"></div>
+        <div class="text-h6 float-right">
+          <q-btn color="negative" label="Exit" @click="clickExit()" no-caps/>
+        </div>
       </q-toolbar>
 
     </q-header>
@@ -179,20 +181,19 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 
-const clickCbusErrors = () => {
-  console.log(name + ': clickCbusErrors')
-  showCbusErrorsDialog.value = true
-}
-
 const clickBusEvents = () => {
   console.log(name + ': clickBusEvents')
   showBusEventsDialog.value = true
 }
 
-const clickSingleBusEvent = (message) => {
-  console.log(name + ': clickSingleBusEvent')
-  busMessage.value = message
-  showModifiedGridConnectDialog.value = true
+const clickCbusErrors = () => {
+  console.log(name + ': clickCbusErrors')
+  showCbusErrorsDialog.value = true
+}
+
+const clickExit = () => {
+  console.log(name + `: clickStop`)
+  store.methods.STOP_SERVER()
 }
 
 const clickJson = () => {
@@ -205,11 +206,16 @@ const clickLayout = () => {
   showLayoutDialog.value = true
 }
 
+const clickSingleBusEvent = (message) => {
+  console.log(name + ': clickSingleBusEvent')
+  busMessage.value = message
+  showModifiedGridConnectDialog.value = true
+}
+
 const clickSystem = () => {
   console.log(name + ': clickSystem')
   showSystemDialog.value = true
 }
-
 
 
 </script>
