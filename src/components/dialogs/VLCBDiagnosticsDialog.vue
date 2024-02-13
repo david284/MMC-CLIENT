@@ -78,7 +78,7 @@ const model = computed({
 // model changes when Dialog opened & closed
 watch(model, () => {
   console.log(name + `: WATCH model`)
-  update_rows()
+//  update_rows()
 })
 
 
@@ -90,15 +90,19 @@ const columns = [
 
 
 const nodeServiceDiagnostics = computed(() =>{
-  return Object.values(store.state.nodes[store.state.selected_node].services[store.state.selected_service_index].diagnostics)
+  var obj = {}
+  if(store.state.selected_node){
+    if(store.state.selected_service_index){
+      obj = Object.values(store.state.nodes[store.state.selected_node].services[store.state.selected_service_index].diagnostics)
+    }
+  }
+  return obj
 })
+
 
 watch(nodeServiceDiagnostics, () => {
   update_rows()
 })
-
-const nodeService = store.state.nodes[store.state.selected_node].services[store.state.selected_service_index]
-console.log(`Default2ServiceDiagnostics: Service: ${JSON.stringify(nodeService)}`)
 
 const update_rows = () => {
   rows.value = []
@@ -113,7 +117,6 @@ const update_rows = () => {
 
 
 onBeforeMount(() => {
-//  update_rows()
 })
 
 onMounted(() => {
@@ -128,11 +131,7 @@ Click event handlers
 
 const clickToggleShowDiagnosticsJSON = () => {
   console.log(name + `: clickToggleShowDiagnosticsJSON`)
-  if (showDiagnosticsJSON.value){
-    showDiagnosticsJSON.value = false
-  } else {
-    showDiagnosticsJSON.value = true
-  }
+  showDiagnosticsJSON.value ? showDiagnosticsJSON.value = false : showDiagnosticsJSON.value = true
 }
 
 

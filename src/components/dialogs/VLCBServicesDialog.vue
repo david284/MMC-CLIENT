@@ -78,14 +78,15 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const model = computed({
-      get() { return props.modelValue },
-      set(newValue) { emit('update:modelValue', newValue) }
-    })
+  get() { return props.modelValue },
+  set(newValue) { emit('update:modelValue', newValue) }
+})
+
 
 // model changes when Dialog opened & closed
 watch(model, () => {
-  console.log(name + `: WATCH model`)
 })
+
 
 
 const columns = [
@@ -97,15 +98,20 @@ const columns = [
 
 
 const nodeServices = computed(() =>{
-  return Object.values(store.state.nodes[store.state.selected_node].services)
+  var obj = {}
+  if(store.state.selected_node){
+    obj = Object.values(store.state.nodes[store.state.selected_node].services)
+  }
+  return obj
 })
+
 
 watch(nodeServices, () => {
   update_rows()
 })
 
+
 const update_rows = () => {
-  //console.log(`DefaultEventList Update Rows ${store.state.selected_node}`)
   rows.value = []
   nodeServices.value.forEach(service => {
     let output = {}
@@ -124,6 +130,7 @@ onBeforeMount(() => {
 onMounted(() => {
 })
 
+
 /*/////////////////////////////////////////////////////////////////////////////
 
 Click event handlers
@@ -133,21 +140,15 @@ Click event handlers
 
 const clickToggleShowServicesJSON = () => {
   console.log(name + `: clickToggleShowServicesJSON`)
-  if (showServicesJSON.value){
-    showServicesJSON.value = false
-  } else {
-    showServicesJSON.value = true
-  }
+  showServicesJSON.value ? showServicesJSON.value = false : showServicesJSON.value = true
 }
 
 
 const clickDiagnostics = (serviceIndex) => {
   console.log(`clickiagnostics: index ${serviceIndex}`)
-  
   store.methods.request_diagnostics(store.state.selected_node, serviceIndex)
   store.state.selected_service_index = serviceIndex
   showVLCBDiagnosticsDialog.value = true
-  
 }
 
 
