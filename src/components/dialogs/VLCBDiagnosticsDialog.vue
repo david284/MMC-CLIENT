@@ -1,52 +1,53 @@
 <template>
-
   <q-dialog v-model='model' persistent>
-    <q-card style="min-width: 600px">
 
-      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
-        <div class="text-h6">
-          VLCB Diagnostics
-        </div>
-        <template v-slot:action>
-          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
-        </template>
-      </q-banner>
-
-      <div >
-        <q-table
-          title="Diagnostics"
-          :rows=rows
-          :columns="columns"
-          row-key="diagnosticCode"
-          virtual-scroll
-          :rows-per-page-options="[0]"
-          :virtual-scroll-sticky-size-start="48"
-        >
-          <template v-slot:body="props">
-            <q-tr :props="props">
-              <q-td key="diagnosticCode" :props="props">{{ props.row.diagnosticCode }}</q-td>
-              <q-td key="diagnosticValue" :props="props">{{ props.row.diagnosticValue}}</q-td>
-              <q-td key="diagnosticName" :props="props">{{ props.row.diagnosticName}}</q-td>
-            </q-tr>
+    <q-card style="min-width: 600px" class="q-pa-none q-ma-none">
+      <q-card-section class="q-pa-none q-ma-none">
+        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
+          <div class="text-h6">
+            VLCB Diagnostics
+          </div>
+          <template v-slot:action>
+            <q-btn flat color="white" size="md" label="Close" v-close-popup/>
           </template>
-        </q-table>
-      </div>
+        </q-banner>
+      </q-card-section>
 
+      <q-card>
+        <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
 
+          <q-table
+            :rows=rows
+            :columns="columns"
+            row-key="diagnosticCode"
+            virtual-scroll
+            :rows-per-page-options="[0]"
+            :virtual-scroll-sticky-size-start="48"
+            hide-header
+            hide-bottom
+          >
+            <template v-slot:body="props">
+              <q-tr :props="props">
+                <q-td key="diagnosticCode" :props="props">{{ props.row.diagnosticCode }}</q-td>
+                <q-td key="diagnosticValue" :props="props">{{ props.row.diagnosticValue}}</q-td>
+                <q-td key="diagnosticName" :props="props">{{ props.row.diagnosticName}}</q-td>
+              </q-tr>
+            </template>
+          </q-table>
+
+          <div class="q-pa-xs row" v-if="showDiagnosticsJSON">
+            <div class="text-body1">Diagnostics<br></div>
+            <div class="text-body2">
+              <pre>{{ store.state.nodes[store.state.selected_node].services[store.state.selected_service_index].diagnostics }}</pre>
+            </div>
+          </div>
+
+        </q-card-section>
+      </q-card>
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Toggle diagnostics json" @click="clickToggleShowDiagnosticsJSON()"/>
-        <q-btn flat label="Close" v-close-popup/>
       </q-card-actions>
-
-      <q-card-section class="q-pa-sm" v-if="showDiagnosticsJSON">
-        <div class="q-pa-xs row">
-          <div class="text-body1">Diagnostics<br></div>
-          <div class="text-body2">
-            <pre>{{ store.state.nodes[store.state.selected_node].services[store.state.selected_service_index].diagnostics }}</pre>
-          </div>
-        </div>
-      </q-card-section>
 
     </q-card>
 

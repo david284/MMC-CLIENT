@@ -14,30 +14,29 @@
       </q-card-section>
 
       <q-card>
-        <q-card-section style="max-height: 75vh" class="scroll">
-          <div>
-            <q-table
-              :rows=rows
-              :columns="columns"
-              row-key="serviceIndex"
-              virtual-scroll
-              :rows-per-page-options="[0]"
-              :virtual-scroll-sticky-size-start="48"
-              hide-header
-              hide-bottom
-            >
-              <template v-slot:body="props">
-                <q-tr :props="props">
-                  <q-td key="serviceIndex" :props="props">{{ props.row.serviceIndex }}</q-td>
-                  <q-td key="serviceType" :props="props">{{ props.row.serviceType}}</q-td>
-                  <q-td key="serviceName" :props="props">{{ props.row.serviceName}}</q-td>
-                  <q-td key="diagnostics" :props="props">
-                    <q-btn color="primary" flat rounded label="diagnostics" @click="clickDiagnostics(props.row.serviceIndex)" no-caps/>
-                  </q-td>
-                </q-tr>
-              </template>
-            </q-table>
-          </div>
+        <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
+
+          <q-table
+            :rows=rows
+            :columns="columns"
+            row-key="serviceIndex"
+            virtual-scroll
+            :rows-per-page-options="[0]"
+            :virtual-scroll-sticky-size-start="48"
+            hide-header
+            hide-bottom
+          >
+            <template v-slot:body="props">
+              <q-tr :props="props">
+                <q-td key="serviceIndex" :props="props">{{ props.row.serviceIndex }}</q-td>
+                <q-td key="serviceType" :props="props">{{ props.row.serviceType}}</q-td>
+                <q-td key="serviceName" :props="props">{{ props.row.serviceName}}</q-td>
+                <q-td key="diagnostics" :props="props">
+                  <q-btn color="primary" flat rounded label="diagnostics" @click="clickDiagnostics(props.row.serviceIndex)" no-caps/>
+                </q-td>
+              </q-tr>
+            </template>
+          </q-table>
 
           <div class="q-pa-xs row"  v-if="showServicesJSON">
             <div class="text-body1">Services<br></div>
