@@ -2,6 +2,7 @@
 
   <q-dialog v-model='model' persistent>
     <q-card style="min-width: 800px">
+      <q-card-section>
 
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
@@ -11,8 +12,9 @@
           <q-btn flat color="white" size="md" label="Close" v-close-popup/>
         </template>
       </q-banner>
+      </q-card-section> 
 
-
+      <q-card-section style="max-height: 75vh" class="scroll">
        <div>
         <q-table
           :rows=rows
@@ -35,12 +37,20 @@
         </q-table>
       </div>
 
+      <div class="q-pa-xs row"  v-if="showServicesJSON">
+        <div class="text-body1">Services<br></div>
+        <div class="text-body2">
+          <pre>{{ store.state.nodes[store.state.selected_node].services }}</pre>
+        </div>
+      </div>
+
+    </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Toggle services json" @click="clickToggleShowServicesJSON()"/>
-        <q-btn flat label="Close" v-close-popup/>
       </q-card-actions>
 
+<!-- 
       <q-card-section class="q-pa-sm" v-if="showServicesJSON">
         <div class="q-pa-xs row">
           <div class="text-body1">Services<br></div>
@@ -49,7 +59,7 @@
           </div>
         </div>
       </q-card-section>
-
+ -->
     </q-card>
 
   </q-dialog>
