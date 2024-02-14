@@ -3,7 +3,8 @@
   <!-- <q-dialog v-model='model' persistent style="min-width: 350px"> -->
 
     <q-dialog v-model="model">
-      <q-card>
+      <!-- min-width: has no effect on q-dialog -->
+      <q-card  style="min-width: 800px">
 
         <q-card-section>
           <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
