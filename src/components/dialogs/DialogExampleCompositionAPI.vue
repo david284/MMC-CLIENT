@@ -1,26 +1,20 @@
 <template>
+  <q-dialog v-model="model">
 
-  <!-- <q-dialog v-model='model' persistent style="min-width: 350px"> -->
+    <!-- min-width: has no effect on q-dialog -->
+    <q-card  style="min-width: 800px" class="q-pa-none q-ma-none">
+      <q-card-section class="q-pa-none q-ma-none">
+        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
+          <div class="text-h6">
+            Example banner  
+          </div>
+          <template v-slot:action>
+            <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+          </template>
+        </q-banner>
+      </q-card-section>
 
-    <q-dialog v-model="model">
-
-
-      <!-- min-width: has no effect on q-dialog -->
-      <q-card  style="min-width: 800px" class="q-pa-none q-ma-none">
-
-        <q-card-section class="q-pa-none q-ma-none">
-          <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
-            <div class="text-h6">
-              Example banner  
-            </div>
-            <template v-slot:action>
-              <q-btn flat color="white" size="md" label="Close" v-close-popup/>
-            </template>
-          </q-banner>
-        </q-card-section>
-
-        <q-card>
-
+      <q-card>
         <q-card-section style="max-height: 50vh" class="scroll q-py-none no-margin">
           <q-card>
           <q-btn flat color="positive" label="example button"/>
@@ -38,15 +32,15 @@
               Example q-card
             </div>
         </q-card-section>
-
-
       </q-card>
+
       <q-card-actions align="right" class="text-primary q-py-none no-margin">
         <q-btn flat label="toggle show more" @click="clickShowMore()"/>
       </q-card-actions>
-    </q-card>
-    </q-dialog>
 
+    </q-card>
+
+  </q-dialog>
 </template>
 
 
