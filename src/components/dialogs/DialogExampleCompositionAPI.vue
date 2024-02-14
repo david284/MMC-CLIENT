@@ -9,7 +9,7 @@
       <q-card  style="min-width: 800px" class="q-pa-none q-ma-none">
 
         <q-card-section class="q-pa-none q-ma-none">
-          <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+          <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
             <div class="text-h6">
               Example banner  
             </div>
@@ -21,7 +21,7 @@
 
         <q-card>
 
-        <q-card-section style="max-height: 50vh" class="scroll">
+        <q-card-section style="max-height: 50vh" class="scroll q-py-none no-margin">
           <q-card>
           <q-btn flat color="positive" label="example button"/>
           <q-btn flat color="negative" label="example button"/>
@@ -33,7 +33,7 @@
           </div>
         </q-card-section>
 
-        <q-card-section>
+        <q-card-section class="q-py-none no-margin">
           <div class="text-h6">
               Example q-card
             </div>
@@ -41,7 +41,7 @@
 
 
       </q-card>
-      <q-card-actions align="right" class="text-primary q-pa-none q-ma-none">
+      <q-card-actions align="right" class="text-primary q-py-none no-margin">
         <q-btn flat label="toggle show more" @click="clickShowMore()"/>
       </q-card-actions>
     </q-card>
