@@ -21,6 +21,9 @@
             <q-item clickable @click="clickSystem()">
               <q-item-section>System</q-item-section>
             </q-item>
+            <q-item v-if="(store.state.develop)" clickable @click="clickExample()">
+              <q-item-section>Example</q-item-section>
+            </q-item>
           </q-list>
         </q-menu>
       </q-btn>
@@ -104,6 +107,7 @@
     :previousNodeNumber="previousNodeNumber" />
   <systemDialog v-model='showSystemDialog' />
 
+  <dialogExampleCompositionAPI v-model='showDialogExampleCompositionAPI' />
 
 
 </template>
@@ -119,6 +123,7 @@ import layoutDialog from "components/dialogs/LayoutDialog";
 import modifiedGridConnectDialog from "components/dialogs/ModifiedGridConnectDialog";
 import newNodeDialog from "components/dialogs/NewNodeDialog";
 import systemDialog from "components/dialogs/SystemDialog";
+import dialogExampleCompositionAPI from "components/dialogs/DialogExampleCompositionAPI";
 
 const $q = useQuasar()
 const store = inject('store')
@@ -133,6 +138,7 @@ const showNewNodeDialog = ref(false)
 const showSystemDialog = ref(false)
 const busMessage = ref("")
 const previousNodeNumber = ref()
+const showDialogExampleCompositionAPI = ref(false)
 
 onMounted(() => {
   store.methods.request_bus_connection()
@@ -190,6 +196,12 @@ const clickCbusErrors = () => {
   console.log(name + ': clickCbusErrors')
   showCbusErrorsDialog.value = true
 }
+
+const clickExample = () => {
+  console.log(name + `: clickExample`)
+  showDialogExampleCompositionAPI.value = true
+}
+
 
 const clickExit = () => {
   console.log(name + `: clickStop`)

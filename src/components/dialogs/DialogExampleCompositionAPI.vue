@@ -1,13 +1,33 @@
 <template>
 
-    <q-dialog v-model='model' persistent>
-      <q-card style="min-width: 350px">
+  <!-- <q-dialog v-model='model' persistent style="min-width: 350px"> -->
+
+    <q-dialog v-model="model">
+      <q-card>
+
         <q-card-section>
-          <div class="text-h6">Example Dialog</div>
+          <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+            <div class="text-h6">
+              Example dialog  
+            </div>
+            <template v-slot:action>
+              <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+            </template>
+          </q-banner>
         </q-card-section>
+
+
+        <q-card-section style="max-height: 75vh" class="scroll">
+          <p v-for="n in 15" :key="n">Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum repellendus sit voluptate voluptas eveniet porro. Rerum blanditiis perferendis totam, ea at omnis vel numquam exercitationem aut, natus minima, porro labore.</p>
+          <div v-if="(showMore)" class="text-red">  
+            <p v-for="n in 15" :key="n">Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum repellendus sit voluptate voluptas eveniet porro. Rerum blanditiis perferendis totam, ea at omnis vel numquam exercitationem aut, natus minima, porro labore.</p>
+          </div>
+        </q-card-section>
+
         <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup/>
-        </q-card-actions>
+        <q-btn flat label="toggle show more" @click="clickShowMore()"/>
+      </q-card-actions>
+
       </q-card>
     </q-dialog>
 
@@ -27,6 +47,7 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 
 const store = inject('store')
 const name = "DialogExampleCompositionAPI"
+const showMore = ref(false)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true }
@@ -51,6 +72,10 @@ onBeforeMount(() => {
 onMounted(() => {
 })
 
+
+const clickShowMore = () => {
+  showMore.value = showMore.value ? false : true
+}
 
 
 
