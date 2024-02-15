@@ -76,9 +76,6 @@
 
         </div>
 
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Close" v-close-popup/>
-        </q-card-actions>
       </q-card>
     </q-dialog>
 

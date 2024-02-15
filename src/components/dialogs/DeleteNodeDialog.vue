@@ -16,8 +16,7 @@
           <div class="text-h6">Are you sure you want to delete this node?</div>
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Yes" v-close-popup @click="deleteNode()"/>
-          <q-btn flat label="Cancel" v-close-popup/>
+          <q-btn flat colour="positive" label="Yes" v-close-popup @click="deleteNode()"/>
         </q-card-actions>
       </q-card>
     </q-dialog>

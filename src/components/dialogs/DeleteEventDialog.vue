@@ -16,8 +16,7 @@
           <div class="text-h6">Are you sure you want to delete this event?</div>
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Yes" v-close-popup @click="removeEvent()"/>
-          <q-btn flat label="Cancel" v-close-popup/>
+          <q-btn flat color="positive" label="Yes" v-close-popup @click="removeEvent()"/>
         </q-card-actions>
       </q-card>
     </q-dialog>
