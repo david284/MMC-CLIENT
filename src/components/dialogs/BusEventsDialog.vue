@@ -1,78 +1,78 @@
 <template>
+  <q-dialog v-model='model' persistent  full-width>
+    <q-card class="q-pa-none q-ma-none">
 
-  <q-dialog v-model='model' persistent  full-width full-height>
-    <q-card>
-
-      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
-      <div class="text-h6">
-        Bus Events Dialog
-      </div>
-      <template v-slot:action>
-        <q-btn flat color="white" size="md" label="Close" v-close-popup/>
-      </template>
-    </q-banner>
-
-    <q-table
-      title="Bus Events"
-      :rows=displayEventList
-      :columns="columns"
-      :filter="filter"
-      row-key="eventIdentifier"
-      virtual-scroll
-      v-model:pagnation="pagnation"
-      :rows-per-page-options="[0]"
-      :virtual-scroll-sticky-size-start="48"
-    >
-
-      <template v-slot:top="">
-        <div class="col-2 q-table__title text-h4">Bus Events</div>
-        <q-space/>
-        <q-input outlined dense debounce="300" v-model="filter" placeholder="Search">
-          <template v-slot:append>
-            <q-icon name="search"/>
+      <q-card-section class="q-pa-none q-ma-none">
+        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
+          <div class="text-h6">
+            Bus Events Dialog
+          </div>
+          <template v-slot:action>
+            <q-btn flat color="white" size="md" label="Close" v-close-popup/>
           </template>
-        </q-input>
-        <q-space/>
-        <q-btn color="negative" label="Refresh Events" @click="store.methods.refresh_bus_events()" no-caps/>
-        <q-space/>
-        <q-btn color="negative" label="Clear Events" @click="store.methods.clear_bus_events()" no-caps/>
-      </template>
+        </q-banner>
+      </q-card-section>
 
-      <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td key="eventName" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.name }}</q-td>
-          <!-- <q-td key="group" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.group }}</q-td> -->
-          <q-td key="eventIdentifier" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
-            {{ props.row.eventIdentifier }}
-          </q-td>
-          <q-td key="nodeNumber" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
-            {{ props.row.nodeNumber }}
-          </q-td>
-          <q-td key="eventNumber" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
-            {{ props.row.eventNumber }}
-          </q-td>
-          <q-td key="status" :props="props">
-            <q-chip color="white" text-color="green" v-if="props.row.status=='on'">ON</q-chip>
-            <q-chip color="white" text-color="red" v-else>OFF</q-chip>
-          </q-td>
-          <q-td key="type" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.type }}</q-td>
-          <q-td key="count" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.count }}</q-td>
-          <q-td key="actions" :props="props">
-            <q-btn flat size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
-            <q-btn flat size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
-            <q-btn flat size="md" color="primary" label="Test" @click="clickTest(props.row.nodeNumber, props.row.eventNumber, props.row.eventIdentifier)" no-caps/>
-          </q-td>
-        </q-tr>
+      <q-card>
+        <q-card-section style="max-height: 80vh" class="scroll no-margin no-padding">
 
-      </template>
-    </q-table>
+          <q-table
+          title="Bus Events"
+          :rows=displayEventList
+          :columns="columns"
+          :filter="filter"
+          row-key="eventIdentifier"
+          virtual-scroll
+          v-model:pagnation="pagnation"
+          :rows-per-page-options="[0]"
+          :virtual-scroll-sticky-size-start="48"
+          hide-bottom
+        >
 
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Toggle bus events json" @click="clickToggleShowBusEventsJSON()"/>
-        <q-btn flat label="Close" v-close-popup/>
-      </q-card-actions>
+          <template v-slot:top="">
+            <div class="col-2 q-table__title text-h4">Bus Events</div>
+            <q-space/>
+            <q-input outlined dense debounce="300" v-model="filter" placeholder="Search">
+              <template v-slot:append>
+                <q-icon name="search"/>
+              </template>
+            </q-input>
+            <q-space/>
+            <q-btn color="negative" label="Refresh Events" @click="store.methods.refresh_bus_events()" no-caps/>
+            <q-space/>
+            <q-btn color="negative" label="Clear Events" @click="store.methods.clear_bus_events()" no-caps/>
+          </template>
 
-      <q-card-section class="q-pa-sm" v-if="showBusEventsJSON">
+          <template v-slot:body="props">
+            <q-tr :props="props">
+              <q-td key="eventName" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.name }}</q-td>
+              <!-- <q-td key="group" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.group }}</q-td> -->
+              <q-td key="eventIdentifier" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
+                {{ props.row.eventIdentifier }}
+              </q-td>
+              <q-td key="nodeNumber" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
+                {{ props.row.nodeNumber }}
+              </q-td>
+              <q-td key="eventNumber" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
+                {{ props.row.eventNumber }}
+              </q-td>
+              <q-td key="status" :props="props">
+                <q-chip color="white" text-color="green" v-if="props.row.status=='on'">ON</q-chip>
+                <q-chip color="white" text-color="red" v-else>OFF</q-chip>
+              </q-td>
+              <q-td key="type" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.type }}</q-td>
+              <q-td key="count" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.count }}</q-td>
+              <q-td key="actions" :props="props">
+                <q-btn flat size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
+                <q-btn flat size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
+                <q-btn flat size="md" color="primary" label="Test" @click="clickTest(props.row.nodeNumber, props.row.eventNumber, props.row.eventIdentifier)" no-caps/>
+              </q-td>
+            </q-tr>
+
+          </template>
+        </q-table>
+
+        <q-card-section class="q-pa-sm" v-if="showBusEventsJSON">
         <div class="q-pa-xs row">
           <div class="text-body1">Bus events<br></div>
           <div class="text-body2">
@@ -81,9 +81,16 @@
         </div>
       </q-card-section>
 
+      </q-card-section>
     </q-card>
 
-    </q-dialog>
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Toggle bus events json" @click="clickToggleShowBusEventsJSON()"/>
+      </q-card-actions>
+
+    </q-card>
+
+  </q-dialog>
 
   <nameEventDialog v-model='showNameEventDialog'
     :eventIdentifier = selected_event_Identifier
