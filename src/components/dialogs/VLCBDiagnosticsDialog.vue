@@ -101,7 +101,9 @@ const nodeServiceDiagnostics = computed(() =>{
 
 
 watch(nodeServiceDiagnostics, () => {
-  update_rows()
+  if (nodeServiceDiagnostics.value){
+    update_rows()
+  }
 })
 
 const update_rows = () => {

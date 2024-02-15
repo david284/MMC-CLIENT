@@ -57,7 +57,6 @@
     </div>
       <q-card-actions align="right" class="text-primary">
         <q-btn v-if="(addEventEnabled)" flat label="Add Event" v-close-popup @click="createEvent()"/>
-        <q-btn flat label="Cancel" v-close-popup/>
       </q-card-actions>
     </q-card>
   </q-dialog>

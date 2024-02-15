@@ -1,131 +1,146 @@
 <template>
-
   <q-dialog v-model='model' persistent full-width full-height> 
-    <q-card>
-      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
-      <div class="text-h6">
-        Event Variables for event :  {{ store.getters.event_name(props.eventIdentifier) }}
-      </div>
-      <template v-slot:action>
-        <q-btn color="cyan-1" size="sm" text-color="black" 
-          label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
-          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
-      </template>
-    </q-banner>
-      <q-card-section>
-        <div class="text-h6" v-if="showDescriptorWarning">
-          *** Descriptor not loaded for this node ***
-        </div>
-        <template v-slot:action>
-          <q-btn color="cyan-1" size="sm" text-color="black" 
-            label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
-        </template>
+    <q-card class="q-pa-none q-ma-none">
+
+      <q-card-section class="q-pa-none q-ma-none">
+        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
+          <div class="text-h6">
+            Event Variables for event :  {{ store.getters.event_name(props.eventIdentifier) }}
+          </div>
+          <template v-slot:action>
+            <q-btn color="cyan-1" size="sm" text-color="black" 
+              label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
+              <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+          </template>
+        </q-banner>
       </q-card-section>
 
+      <q-card>
+        <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
 
-      <div class="q-pa-none row">
+          <q-card-section>
+            <div class="text-h6" v-if="showDescriptorWarning">
+              *** Descriptor not loaded for this node ***
+            </div>
+            <template v-slot:action>
+              <q-btn color="cyan-1" size="sm" text-color="black" 
+                label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
+            </template>
+          </q-card-section>
 
-        <div v-for="item in variablesDescriptor" :key="item">
-          <EventVariableBitArray v-if="(item.type=='EventVariableBitArray') && (isVisible(item))"
-                                :nodeNumber = "props.nodeNumber"
-                                :eventIndex = props.eventIndex
-                                :eventVariableIndex=item.eventVariableIndex
-                                :bitCollection = item.bitCollection
-                                :displayTitle="item.displayTitle"
-                                :displaySubTitle="item.displaySubTitle">
-          </EventVariableBitArray>
-          <EventVariableBitSingle v-if="(item.type=='EventVariableBitSingle') && (isVisible(item))"
-                                :nodeNumber = "props.nodeNumber"
-                                :eventIndex = props.eventIndex
-                                :eventVariableIndex=item.eventVariableIndex
-                                :bit = "item.bit"
-                                :displayTitle="item.displayTitle"
-                                :displaySubTitle="item.displaySubTitle">
-          </EventVariableBitSingle>
-          <EventVariableGroup v-if="(item.type=='EventVariableGroup') && (isVisible(item))"
-                        :configuration = item>
-          </EventVariableGroup>
-          <EventVariableNumber v-if="(item.type=='EventVariableNumber') && (isVisible(item))"
-                      :node-number=props.nodeNumber
-                      :eventIndex = props.eventIndex
-                      :eventVariableIndex= "item.eventVariableIndex"
-                      :displayTitle="item.displayTitle"
-                      :displaySubTitle="item.displaySubTitle"
-                      :startBit = "item.startBit"
-                      :endBit = "item.endBit"
-                      :displayOffset = "item.displayOffset"
-                      :min = "item.min"
-                      :max = "item.max"
-                      :configuration = item>
-          </EventVariableNumber>
-          <EventVariableSelect v-if="(item.type=='EventVariableSelect') && (isVisible(item))"
-                            :nodeNumber="props.nodeNumber"
-                            :eventIndex = "props.eventIndex"
-                            :eventVariableIndex= "item.eventVariableIndex"
-                            :bitMask = "item.bitMask"
-                            :displayTitle="item.displayTitle"
-                            :displaySubTitle="item.displaySubTitle"
-                            :options= "item.options">
-          </EventVariableSelect>
-          <EventVariableSlider v-if="(item.type=='EventVariableSlider') && (isVisible(item))"
-                                :node-number="props.nodeNumber"
+
+          <div class="q-pa-xs row">
+
+            <div v-for="item in variablesDescriptor" :key="item">
+              <EventVariableBitArray v-if="(item.type=='EventVariableBitArray') && (isVisible(item))"
+                                    :nodeNumber = "props.nodeNumber"
+                                    :eventIndex = "props.eventIndex"
+                                    :eventVariableIndex=item.eventVariableIndex
+                                    :bitCollection = item.bitCollection
+                                    :displayTitle="item.displayTitle"
+                                    :displaySubTitle="item.displaySubTitle">
+              </EventVariableBitArray>
+              <EventVariableBitSingle v-if="(item.type=='EventVariableBitSingle') && (isVisible(item))"
+                                    :nodeNumber = "props.nodeNumber"
+                                    :eventIndex = props.eventIndex
+                                    :eventVariableIndex=item.eventVariableIndex
+                                    :bit = "item.bit"
+                                    :displayTitle="item.displayTitle"
+                                    :displaySubTitle="item.displaySubTitle">
+              </EventVariableBitSingle>
+              <EventVariableGroup v-if="(item.type=='EventVariableGroup') && (isVisible(item))"
+                            :configuration = item>
+              </EventVariableGroup>
+              <EventVariableNumber v-if="(item.type=='EventVariableNumber') && (isVisible(item))"
+                          :node-number=props.nodeNumber
+                          :eventIndex = props.eventIndex
+                          :eventVariableIndex= "item.eventVariableIndex"
+                          :displayTitle="item.displayTitle"
+                          :displaySubTitle="item.displaySubTitle"
+                          :startBit = "item.startBit"
+                          :endBit = "item.endBit"
+                          :displayOffset = "item.displayOffset"
+                          :min = "item.min"
+                          :max = "item.max"
+                          :configuration = item>
+              </EventVariableNumber>
+              <EventVariableSelect v-if="(item.type=='EventVariableSelect') && (isVisible(item))"
+                                :nodeNumber="props.nodeNumber"
                                 :eventIndex = "props.eventIndex"
                                 :eventVariableIndex= "item.eventVariableIndex"
+                                :bitMask = "item.bitMask"
                                 :displayTitle="item.displayTitle"
-                                :displaySubTitle = "item.displaySubTitle"
-                                :displayScale="item.displayScale"
-                                :displayUnits="item.displayUnits"
-                                :displayOffset = "item.displayOffset"
-                                :min = "item.min"
-                                :max = "item.max"
-                                :startBit = "item.startBit"
-                                :endBit = "item.endBit">
-          </EventVariableSlider>
-          <EventVariableTabs v-if="(item.type=='EventVariableTabs') && (isVisible(item))"
-                      :configuration=item>
-          </EventVariableTabs>
-        </div>
-      </div>
+                                :displaySubTitle="item.displaySubTitle"
+                                :options= "item.options">
+              </EventVariableSelect>
+              <EventVariableSlider v-if="(item.type=='EventVariableSlider') && (isVisible(item))"
+                                    :node-number="props.nodeNumber"
+                                    :eventIndex = "props.eventIndex"
+                                    :eventVariableIndex= "item.eventVariableIndex"
+                                    :displayTitle="item.displayTitle"
+                                    :displaySubTitle = "item.displaySubTitle"
+                                    :displayScale="item.displayScale"
+                                    :displayUnits="item.displayUnits"
+                                    :displayOffset = "item.displayOffset"
+                                    :min = "item.min"
+                                    :max = "item.max"
+                                    :startBit = "item.startBit"
+                                    :endBit = "item.endBit">
+              </EventVariableSlider>
+              <EventVariableTabs v-if="(item.type=='EventVariableTabs') && (isVisible(item))"
+                          :configuration=item>
+              </EventVariableTabs>
+            </div>
+          </div>
+
+          <q-separator />
+
+          <q-card-section class="q-pa-xs row" v-if="showRawVariables">
+            <EventVariableRaw
+              :eventVariableIndex="n"
+              :nodeNumber="props.nodeNumber"
+              :eventIndex = props.eventIndex
+              v-for="n in store.state.nodes[props.nodeNumber].parameters[5]"
+              :key="n">
+            </EventVariableRaw>
+            <q-separator />
+          </q-card-section>
+
+          <q-card-section class="q-pa-xs" v-if="showVariablesDescriptor">
+            <div class="q-pa-xs row">
+              <div class="text-body1">Variables descriptor<br></div>
+              <div class="text-body2">
+                <pre>{{ variablesDescriptor }}</pre>
+              </div>
+            </div>
+            <q-separator />
+          </q-card-section>
+
+
+          <q-card-section class="q-pa-xs" v-if="showStoredEventJSON">
+            <div class="q-pa-xs row">
+              <div class="text-body1">Stored event<br></div>
+              <div class="text-body2">
+                <pre>{{ store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex] }}</pre>
+              </div>
+            </div>
+            <q-separator />
+          </q-card-section>
+
+
+        </q-card-section>
+      </q-card>
 
       <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Toggle stored event view" @click="clickToggleStoredEvent()"/>
         <q-btn flat label="Toggle variable descriptor view" @click="clickToggleVariablesDescriptor()"/>
         <q-btn flat label="Toggle raw view" @click="clickToggleRaw()"/>
-        <q-btn flat label="Close" v-close-popup @click="clickClose()"/>
       </q-card-actions>
-
-      <div class="q-pa-none row" v-if="showRawVariables">
-        <EventVariableRaw
-          :eventVariableIndex="n"
-          :nodeNumber="props.nodeNumber"
-          :eventIndex = props.eventIndex
-          v-for="n in store.state.nodes[props.nodeNumber].parameters[5]"
-          :key="n">
-        </EventVariableRaw>
-      </div>
-
-      <div class="q-pa-xs row">
-        <p v-if="store.state.debug">
-          Debug: event variables<br>
-          <pre>
-            {{ store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex] }}
-          </pre>
-        </p>
-      </div>
-
-      <q-card-section class="q-pa-sm" v-if="showVariablesDescriptor">
-        <div class="q-pa-xs row">
-          <div class="text-body1">Variables descriptor<br></div>
-          <div class="text-body2">
-            <pre>{{ variablesDescriptor }}</pre>
-          </div>
-        </div>
-      </q-card-section>
 
     </q-card>
   </q-dialog>
 
   <manageModuleDescriptorsDialog v-model='showManageModuleDescriptorsDialog'/>
-
 
 </template>
 
@@ -154,6 +169,7 @@ const showRawVariables = ref(false)
 const showDescriptorWarning = ref(false)
 const showManageModuleDescriptorsDialog = ref(false)
 const showVariablesDescriptor = ref(false)
+const showStoredEventJSON = ref(false)
 
 
 const props = defineProps({
@@ -181,6 +197,14 @@ watch(model, () => {
 
 watch(props.nodeNumber, () => {
   console.log(name +': - watch nodeNumber')
+})
+
+watch(props.eventIndex, () => {
+  console.log(name +': - watch eventIndex')
+  if (props.eventIndex){
+    store.state.selected_event_index = props.eventIndex
+    console.log(name + ': selected_event_index: ' + JSON.stringify(store.state.selected_event_index))
+  }
 })
 
 const isVisible = (item) =>{
@@ -213,6 +237,7 @@ onUpdated(() => {
       showDescriptorWarning.value = true
     }
     checkFileLoad()
+    store.state.selected_event_index = props.eventIndex
   }
 })
 
@@ -280,6 +305,11 @@ const clickToggleRaw = () => {
   } else {
     showRawVariables.value = true
   }
+}
+
+const clickToggleStoredEvent = () => {
+  console.log(name + `: clickToggleStoredEvent`)
+  showStoredEventJSON.value = showStoredEventJSON.value ? false : true
 }
 
 const clickUpdateModuleDescriptor = () => {
