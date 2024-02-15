@@ -1,16 +1,17 @@
 <template>
-
     <q-dialog v-model='model' persistent  full-width full-height>
-      <q-card>
+      <q-card class="q-pa-none q-ma-none">
 
-        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
-        <div class="text-h6">
-          JSON Dialog
-        </div>
-        <template v-slot:action>
-          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
-        </template>
-      </q-banner>
+        <q-card-section class="q-pa-none q-ma-none">
+          <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+            <div class="text-h6">
+              JSON Dialog
+            </div>
+            <template v-slot:action>
+              <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+            </template>
+          </q-banner>
+        </q-card-section>
 
 
       <q-card>
@@ -34,70 +35,81 @@
         </q-tabs>
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="nodes">
-            <div class="text-h6">Nodes</div>
-            <pre>
-              {{ store.state.nodes }}
-            </pre>
+            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
+              <div class="text-h6">Nodes</div>
+              <pre>
+                {{ store.state.nodes }}
+              </pre>
+            </q-card-section>
           </q-tab-panel>
 
           <q-tab-panel name="nodeDescriptors">
-            <div class="text-h6">Node Descriptors</div>
-            <pre>
-              {{ store.state.nodeDescriptors }}
-            </pre>
+            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
+              <div class="text-h6">Node Descriptors</div>
+              <pre>
+                {{ store.state.nodeDescriptors }}
+              </pre>
+            </q-card-section>
           </q-tab-panel>
 
           <q-tab-panel name="nodeDescriptorList">
-            <div class="text-h6">Node Descriptor List</div>
-            <pre>
-              {{ store.state.nodeDescriptorList }}
-            </pre>
+            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
+              <div class="text-h6">Node Descriptor List</div>
+              <pre>
+                {{ store.state.nodeDescriptorList }}
+              </pre>
+            </q-card-section>
           </q-tab-panel>
 
           <q-tab-panel name="busEvents">
-            <div class="text-h6">Events</div>
-            <pre>
-              {{ store.state.busEvents }}
-            </pre>
+            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
+              <div class="text-h6">Events</div>
+              <pre>
+                {{ store.state.busEvents }}
+              </pre>
+            </q-card-section>
           </q-tab-panel>
 
           <q-tab-panel name="layout">
-            <div class="text-h6">Layout</div>
-            <pre>
-            {{ store.state.layout }}
-            </pre>
+            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
+              <div class="text-h6">Layout</div>
+              <pre>
+              {{ store.state.layout }}
+              </pre>
+            </q-card-section>
           </q-tab-panel>
 
           <q-tab-panel name="layouts">
-            <div class="text-h6">List of Layouts</div>
-            <pre>
-            {{ store.state.layouts_list }}
-            </pre>
+            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
+              <div class="text-h6">List of Layouts</div>
+              <pre>
+              {{ store.state.layouts_list }}
+              </pre>
+            </q-card-section>
           </q-tab-panel>
 
           <q-tab-panel name="traffic">
-            <div class="text-h6">Node Traffic</div>
-            <pre>
-            {{ store.state.nodeTraffic }}
-            </pre>
+            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
+              <div class="text-h6">Node Traffic</div>
+              <pre>
+              {{ store.state.nodeTraffic }}
+              </pre>
+            </q-card-section>
           </q-tab-panel>
 
           <q-tab-panel name="cbusErrors">
-            <div class="text-h6">Cbus Errors</div>
-            <pre>
-            {{ store.state.cbus_errors }}
-            </pre>
+            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
+              <div class="text-h6">Cbus Errors</div>
+              <pre>
+              {{ store.state.cbus_errors }}
+              </pre>
+            </q-card-section>
           </q-tab-panel>
         </q-tab-panels>
       </q-card>
 
-
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Close" v-close-popup/>
-        </q-card-actions>
-
-      </q-card>
-    </q-dialog>
+    </q-card>
+  </q-dialog>
 
 </template>
 
