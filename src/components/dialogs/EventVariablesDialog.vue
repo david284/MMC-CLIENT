@@ -237,7 +237,7 @@ onUpdated(() => {
       showDescriptorWarning.value = true
     }
     checkFileLoad()
-    // many donwstream components depend on selected_event_index being set
+    // many downstream components depend on selected_event_index being set
     store.state.selected_event_index = props.eventIndex
   }
 })
