@@ -1,7 +1,7 @@
 <template>
   <q-dialog v-model='model' persistent>
-
     <q-card style="min-width: 800px" class="q-pa-none q-ma-none">
+
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
           <div class="text-h6">
@@ -23,7 +23,6 @@
             virtual-scroll
             :rows-per-page-options="[0]"
             :virtual-scroll-sticky-size-start="48"
-            hide-header
             hide-bottom
           >
             <template v-slot:body="props">
