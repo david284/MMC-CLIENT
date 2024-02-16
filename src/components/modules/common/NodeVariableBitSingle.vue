@@ -1,6 +1,6 @@
 <template>
-  <q-card class="q-pa-md">
-    <q-card-section>
+  <q-card class="q-ma-xs no-padding">
+    <q-card-section style="height: 120px" class="no-margin q-py-none">
       <div class="text-h6">{{ displayTitle }}</div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
       <node-variable-bit
