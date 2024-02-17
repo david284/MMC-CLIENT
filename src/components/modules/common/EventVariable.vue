@@ -1,6 +1,6 @@
 <template>
-  <q-card class="q-pa-md" flat>
-    <q-card-section>
+  <q-card  class="q-ma-xs no-padding" flat>
+    <q-card-section style="height: 120px" class="no-margin q-py-none">
       <div class="text-h6">{{ Title }}</div>
       <div class="text-subtitle2">{{ Description }}</div>
       <q-input

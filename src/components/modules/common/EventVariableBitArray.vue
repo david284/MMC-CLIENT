@@ -1,7 +1,7 @@
 <template>
-  <q-card class="q-pa-md">
+  <q-card class="q-ma-xs no-padding">
 
-    <q-card-section>
+    <q-card-section class="no-margin q-py-none">
       <div class="text-h6">{{ displayTitle }}</div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
       <div v-for="item in bitCollection" :key="item">
