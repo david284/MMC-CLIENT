@@ -13,7 +13,7 @@
                             :nodeNumber="store.state.selected_node"
                             :VariableIndex=item.nodeVariableIndex
                             :bitCollection = item.bitCollection
-                            :Title="item.displayTitle"
+                            :displayTitle="item.displayTitle"
                             :Description="item.description"
                             :learn="false"
         ></NodeVariableBitArray>
