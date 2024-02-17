@@ -118,7 +118,7 @@
           </q-card-section>
 
           <q-card-actions align="right" class="text-primary">
-            // Only close top dialog - this gives time for underlying dialogs to update
+            <!-- // Only close top dialog - this gives time for underlying dialogs to update -->
             <q-btn color="positive" label="Upload" v-close-popup  @click="actionUpload()" />
           </q-card-actions>
 
