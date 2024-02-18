@@ -1,5 +1,5 @@
 <template>
-    <div class="q-pa-md">
+    <div class="no-padding no-margin">
 
       <q-tabs v-model="selectedTab">
         <q-tab v-for="tab in tabPanels" :key="tab.displayTitle"
@@ -8,9 +8,11 @@
         />
       </q-tabs>
 
+      <div class="no-padding no-margin" style="width: 90vw">
+
       <q-tab-panels keep-alive v-model="selectedTab">
-        <q-tab-panel v-for="tab in tabPanels" :key="tab.displayTitle" :name="tab.displayTitle" >
-          <div class="q-pa-xs row"  style="border:1px solid grey">
+        <q-tab-panel v-for="tab in tabPanels" :key="tab.displayTitle" :name="tab.displayTitle">
+          <div class="no-padding no-margin row"  style="border:1px solid grey">
             <div v-for="item in tab.items" :key="item">
 
               <NodeVariableNumber v-if="(item.type=='NodeVariableNumber') && (isVisible(item))"
@@ -70,6 +72,7 @@
           </div>
         </q-tab-panel>
       </q-tab-panels>
+      </div>
 
     </div>
   </template>
