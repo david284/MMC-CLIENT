@@ -1,6 +1,6 @@
 <template>
-  <div style="border:2px solid grey">
-    <div class = "GroupTitle"> {{ configuration.displayTitle }}</div>
+  <div style="border:2px solid grey" class="q-pa-xs">
+    <div class = "GroupTitle q-py-none"> {{ configuration.displayTitle }}</div>
     <div class="q-pa-xs row">
       <div v-for="item in configuration.groupItems" :key="item" >
         <NodeVariableNumber v-if="(item.type=='NodeVariableNumber') && (isVisible(item))"
