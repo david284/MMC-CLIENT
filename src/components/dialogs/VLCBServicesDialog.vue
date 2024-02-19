@@ -162,7 +162,7 @@ const clickDiagnostics = (serviceIndex) => {
 <style lang="sass">
 .vlcb-services-table
   /* height or max-height is important */
-  height: 600px
+  height: 500px
 
   .q-table__top,
   .q-table__bottom,

@@ -14,9 +14,10 @@
       </q-card-section>
 
       <q-card>
-        <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
+        <q-card-section class="scroll no-margin q-py-none">
 
           <q-table
+            class="vlcb-diagnostics-table"
             :rows=rows
             :columns="columns"
             row-key="diagnosticCode"
@@ -108,7 +109,6 @@ watch(nodeServiceDiagnostics, () => {
 
 const update_rows = () => {
   rows.value = []
-  if (nodeServiceDiagnostics.value.diagnostics){
     nodeServiceDiagnostics.value.forEach(diagnostic => {
       let output = {}
         output['diagnosticCode'] = diagnostic.DiagnosticCode
@@ -116,7 +116,6 @@ const update_rows = () => {
         output['diagnosticName'] = diagnostic.DiagnosticName
         rows.value.push(output)
     })
-  }
 }
 
 
@@ -140,12 +139,33 @@ const clickToggleShowDiagnosticsJSON = () => {
 
 
 
-
-
-
-
 </script>
 
-<style scoped>
+<style lang="sass">
+.vlcb-diagnostics-table
+  /* height or max-height is important */
+  height: 500px
 
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    /* otherwise you see the table scrolling underneath the header */
+    background-color: $blue-grey-1
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
 </style>
