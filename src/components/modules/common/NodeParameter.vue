@@ -1,5 +1,5 @@
 <template>
-  <q-card class="q-pa-xs" flat style="max-width: 300px">
+  <q-card class="q-pa-xs" flat>
 <!--    <q-input
       :label="props.Name"
       v-model="props.Value"

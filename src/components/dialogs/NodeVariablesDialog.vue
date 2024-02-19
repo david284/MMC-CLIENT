@@ -80,7 +80,8 @@
                                     :min = "item.min"
                                     :max = "item.max"
                                     :startBit = "item.startBit"
-                                    :endBit = "item.endBit">
+                                    :endBit = "item.endBit"
+                                    :configuration = "item">
               </node-variable-slider>
               <NodeVariableTabs v-if="(item.type=='NodeVariableTabs') && (isVisible(item))"
                           :configuration=item>

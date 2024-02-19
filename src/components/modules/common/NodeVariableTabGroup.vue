@@ -35,7 +35,8 @@
                             :min = "item.min"
                             :max = "item.max"
                             :startBit = "item.startBit"
-                            :endBit = "item.endBit">
+                            :endBit = "item.endBit"
+                            :configuration="item">
         </node-variable-slider>
         <NodeVariableDual v-if="(item.type=='NodeVariableDual') && (isVisible(item))"
                           :NodeVariableIndexLow="item.nodeVariableIndexLow"
@@ -87,7 +88,7 @@ export default {
     const store = inject('store')
     onMounted(() => {
       console.log("Group onMounted")
-      console.log(': ' + JSON.stringify(props))
+//      console.log(': ' + JSON.stringify(props))
     })
 
     function isVisible(item){

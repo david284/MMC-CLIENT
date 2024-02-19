@@ -62,7 +62,8 @@
                                   :min = "item.min"
                                   :max = "item.max"
                                   :startBit = "item.startBit"
-                                  :endBit = "item.endBit">
+                                  :endBit = "item.endBit"
+                                  :configuration="item">
               </node-variable-slider>
               <NodeVariableTabGroup v-if="(item.type=='NodeVariableGroup') && (isVisible(item))"
                       :configuration = item>
@@ -110,9 +111,9 @@
       const selectedTab = ref()  
       const store = inject('store')
       onMounted(() => {
-        console.log('tabs props: ' + JSON.stringify(props))
+//        console.log('tabs props: ' + JSON.stringify(props))
         tabPanels.value = props.configuration.tabPanels
-        console.log('tabs tabPanels: ' + JSON.stringify(tabPanels.value))
+//        console.log('tabs tabPanels: ' + JSON.stringify(tabPanels.value))
         selectedTab.value = tabPanels.value[0].displayTitle
       })
 

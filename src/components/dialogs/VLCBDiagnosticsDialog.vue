@@ -108,13 +108,15 @@ watch(nodeServiceDiagnostics, () => {
 
 const update_rows = () => {
   rows.value = []
-  nodeServiceDiagnostics.value.forEach(diagnostic => {
-    let output = {}
-      output['diagnosticCode'] = diagnostic.DiagnosticCode
-      output['diagnosticValue'] = diagnostic.DiagnosticValue
-      output['diagnosticName'] = diagnostic.DiagnosticName
-      rows.value.push(output)
-  })
+  if (nodeServiceDiagnostics.value.diagnostics){
+    nodeServiceDiagnostics.value.forEach(diagnostic => {
+      let output = {}
+        output['diagnosticCode'] = diagnostic.DiagnosticCode
+        output['diagnosticValue'] = diagnostic.DiagnosticValue
+        output['diagnosticName'] = diagnostic.DiagnosticName
+        rows.value.push(output)
+    })
+  }
 }
 
 
