@@ -14,7 +14,7 @@
       </q-card-section>
 
       <q-card>
-        <q-card-section class="scroll no-margin q-py-none">
+        <q-card-section class="no-margin q-pa-xs">
 
           <q-table
             class="vlcb-diagnostics-table"
