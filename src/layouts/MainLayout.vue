@@ -136,8 +136,8 @@ const showLayoutDialog = ref(false)
 const showModifiedGridConnectDialog = ref(false)
 const showNewNodeDialog = ref(false)
 const showSystemDialog = ref(false)
-const busMessage = ref("")
-const previousNodeNumber = ref()
+const busMessage = ref({})
+const previousNodeNumber = ref(0)
 const showDialogExampleCompositionAPI = ref(false)
 
 onMounted(() => {
