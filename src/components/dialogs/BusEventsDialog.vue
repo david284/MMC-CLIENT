@@ -14,10 +14,12 @@
       </q-card-section>
 
       <q-card>
-        <q-card-section style="max-height: 80vh" class="scroll no-margin no-padding">
+        <q-card-section class="no-margin no-padding">
 
           <q-table
           title="Bus Events"
+          class="bus-events-table"
+          dense
           :rows=displayEventList
           :columns="columns"
           :filter="filter"
@@ -316,6 +318,31 @@ const clickToggleShowBusEventsJSON = () => {
 
 </script>
 
-<style scoped>
+<style lang="sass">
+.bus-events-table
+  /* height or max-height is important */
+  height: 600px
 
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    /* otherwise you see the table scrolling underneath the header */
+    background-color: $blue-grey-1
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
 </style>
