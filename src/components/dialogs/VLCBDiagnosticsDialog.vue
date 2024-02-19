@@ -79,7 +79,6 @@ const model = computed({
 // model changes when Dialog opened & closed
 watch(model, () => {
   console.log(name + `: WATCH model`)
-//  update_rows()
 })
 
 
@@ -91,9 +90,9 @@ const columns = [
 
 
 const nodeServiceDiagnostics = computed(() =>{
-  var obj = {}
+  var obj = undefined
   if(store.state.selected_node){
-    if(store.state.selected_service_index){
+    if(store.state.nodes[store.state.selected_node].services[store.state.selected_service_index]){
       obj = Object.values(store.state.nodes[store.state.selected_node].services[store.state.selected_service_index].diagnostics)
     }
   }
@@ -103,19 +102,19 @@ const nodeServiceDiagnostics = computed(() =>{
 
 watch(nodeServiceDiagnostics, () => {
   if (nodeServiceDiagnostics.value){
-    update_rows()
+      update_rows()
   }
 })
 
 const update_rows = () => {
   rows.value = []
-    nodeServiceDiagnostics.value.forEach(diagnostic => {
-      let output = {}
-        output['diagnosticCode'] = diagnostic.DiagnosticCode
-        output['diagnosticValue'] = diagnostic.DiagnosticValue
-        output['diagnosticName'] = diagnostic.DiagnosticName
-        rows.value.push(output)
-    })
+  nodeServiceDiagnostics.value.forEach(diagnostic => {
+    let output = {}
+      output['diagnosticCode'] = diagnostic.DiagnosticCode
+      output['diagnosticValue'] = diagnostic.DiagnosticValue
+      output['diagnosticName'] = diagnostic.DiagnosticName
+      rows.value.push(output)
+  })
 }
 
 
