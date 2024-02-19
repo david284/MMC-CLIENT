@@ -8,7 +8,7 @@
     </q-banner>
     <div>
         <q-table
-        style="height: 350px"
+        class="my-sticky-header-table"
         :rows=rows
         bordered
         dense
@@ -18,6 +18,7 @@
         virtual-scroll
         :rows-per-page-options="[0]"
         :virtual-scroll-sticky-size-start="48"
+        hide-bottom
       >
       <template v-slot:body="props" >
           <q-tr :props="props" :class="selected_nodeNumber==props.row.nodeNumber?'bg-blue-1':'bg-white'">
@@ -309,7 +310,31 @@ const clickVLCB = (nodeNumber) => {
 
 </script>
 
-<style scoped>
+<style lang="sass">
+.my-sticky-header-table
+  /* height or max-height is important */
+  height: 330px
 
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    /* otherwise you see the table scrolling underneath the header */
+    background-color: $blue-grey-1
 
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
 </style>
