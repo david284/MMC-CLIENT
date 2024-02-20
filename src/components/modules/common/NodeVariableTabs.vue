@@ -1,7 +1,7 @@
 <template>
-    <div class="no-padding no-margin">
+    <div class="no-padding no-margin" style="max-width: 90vw">
 
-      <q-tabs v-model="selectedTab">
+      <q-tabs v-model="selectedTab" outside-arrows narrow-indicator dense>
         <q-tab v-for="tab in tabPanels" :key="tab.displayTitle"
           :label="tab.displayTitle"
           :name="tab.displayTitle"
@@ -83,7 +83,7 @@
   
   // composition API - uses ref()
 
-  import { inject, ref, onMounted } from 'vue'
+  import { inject, ref, onMounted, watch } from 'vue'
   import NodeVariableBitArray from "components/modules/common/NodeVariableBitArray"
   import NodeVariableBitSingle from "components/modules/common/NodeVariableBitSingle"
   import NodeVariableDual from "components/modules/common/NodeVariableDual"
@@ -107,6 +107,7 @@
       NodeVariableTabGroup
     },
     setup (props) {
+      const name = 'NodeVariableTabs'
       const tabPanels = ref()
       const selectedTab = ref()  
       const store = inject('store')
@@ -117,12 +118,17 @@
         selectedTab.value = tabPanels.value[0].displayTitle
       })
 
+      watch(selectedTab, () => {
+        console.log(name + `: WATCH selectedTab ` + JSON.stringify(selectedTab.value))
+      })
+
+
       function isVisible(item){
       var result = true
       if (item.visibilityLogic) {
         result = parseLogicElement(item.visibilityLogic, store)
       }
-      console.log(`isVisible: ` + result + ' ' + item.type)
+      console.log(name + `: isVisible: ` + result + ' ' + item.type)
       return result
     }
 

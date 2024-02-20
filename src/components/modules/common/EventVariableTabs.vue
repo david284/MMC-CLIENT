@@ -1,7 +1,7 @@
 <template>
-    <div class="no-padding no-margin">
+    <div class="no-padding no-margin" style="max-width: 90vw">
 
-      <q-tabs v-model="selectedTab">
+      <q-tabs v-model="selectedTab" outside-arrows narrow-indicator dense>
         <q-tab v-for="tab in tabPanels" :key="tab.displayTitle"
           :label="tab.displayTitle"
           :name="tab.displayTitle"
