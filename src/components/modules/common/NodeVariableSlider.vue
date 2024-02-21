@@ -13,7 +13,7 @@
         @change="update_variable"
       >
       </q-slider>
-      <div v-if="(OutputOnWrite)">
+      <div v-if="(outputOnWrite)">
         <q-btn dense label="Test" @click="clickTest()" no-caps/>
       </div>
     </q-card-section>
@@ -92,24 +92,24 @@ let newByteValue = store.state.nodes[props.nodeNumber].nodeVariables[props.nodeV
 console.log(`NodeVariableSlider: bitMask : ${bitMask.value}`)
 
 const cardHeight = computed(() => {
-  if(OutputOnWrite.value) {
+  if(outputOnWrite.value) {
    return{ height: '150px' }
   } else {
     return{ height: '120px' }
   }
  })
 
-const OutputOnWrite = computed(() =>{
+const outputOnWrite = computed(() =>{
   var result = false
   if (props){
-  result =  props.configuration.OutputOnWrite ? true : false
+  result =  props.configuration.outputOnWrite ? true : false
   }
   return result
 })
-console.log(name + `: computed OutputOnWrite: ` + OutputOnWrite.value)
+console.log(name + `: computed outputOnWrite: ` + outputOnWrite.value)
 
-watch(OutputOnWrite, () => {
-  console.log(name + `: WATCH OutputOnWrite: ` + OutputOnWrite.value)
+watch(outputOnWrite, () => {
+  console.log(name + `: WATCH outputOnWrite: ` + outputOnWrite.value)
 })
 
 
