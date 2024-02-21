@@ -155,7 +155,6 @@ const $q = useQuasar()
 const store = inject('store')
 const name = "NodevariablesDialog"
 const showDescriptorWarning = ref(false)
-const variablesDescriptor = ref()
 const showRawVariables = ref(false)
 const showNoVariablesMessage = ref(false)
 const showManageModuleDescriptorsDialog = ref(false)
@@ -181,8 +180,6 @@ watch(model, () => {
 })
 
 
-
-
 const isVisible = (item) =>{
       var result = true
       if (item.visibilityLogic) {
@@ -192,19 +189,27 @@ const isVisible = (item) =>{
       return result
     }
 
-    
-const update_variablesDescriptor = () => {
+// need to know if descriptor changed, could be updated import
+const variablesDescriptor = computed(() =>{
+  var obj = undefined
   if (props.nodeNumber){
     if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
-        variablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariables
-        showDescriptorWarning.value = false
-      } else{
-        variablesDescriptor.value = {}
-        showRawVariables.value = true
-        showDescriptorWarning.value = true
-    }
+        obj = store.state.nodeDescriptors[props.nodeNumber].nodeVariables
+      }
   }
-}
+  return obj
+})
+
+watch(variablesDescriptor, () => {
+  console.log(name + `: WATCH variablesDescriptor`)
+  if (variablesDescriptor.value == undefined){
+    showRawVariables.value = true
+    showDescriptorWarning.value = true
+  } else {
+    showDescriptorWarning.value = false
+  }
+})
+
 
 onBeforeMount(() => {
 })
@@ -212,13 +217,10 @@ onBeforeMount(() => {
 onMounted(() => {
 })
 
-
 onUpdated(() => {
   console.log(name + ': onUpdated')
-  variablesDescriptor.value = null
   if (props.nodeNumber){
     console.log('NodeVariableDialog onUpdated - nodeNumber ' + props.nodeNumber)
-    update_variablesDescriptor()
     checkFileLoad()
     if (store.state.nodes[props.nodeNumber].parameters[6] == 0){
       showNoVariablesMessage.value = true
@@ -271,7 +273,6 @@ Click event handlers
 
 const clickClose = () => {
   console.log(name + `: clickClose`)
-  variablesDescriptor.value={}
 }
 
 const clickToggleRaw = () => {
