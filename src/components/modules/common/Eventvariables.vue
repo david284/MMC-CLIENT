@@ -19,7 +19,10 @@
                             :displaySubTitle="item.displaySubTitle">
       </EventVariableBitSingle>
       <EventVariableGroup v-if="(item.type=='EventVariableGroup') && (isVisible(item))"
-                    :configuration = item>
+        :node-number=props.nodeNumber
+        :eventIndex = props.eventIndex
+        :eventVariableIndex= "item.eventVariableIndex"
+        :configuration = item>
       </EventVariableGroup>
       <EventVariableNumber v-if="(item.type=='EventVariableNumber') && (isVisible(item))"
                   :node-number=props.nodeNumber
@@ -60,6 +63,7 @@
       <EventVariableTabs v-if="(item.type=='EventVariableTabs') && (isVisible(item))"
                   :configuration=item>
       </EventVariableTabs>
+
     </div>
 
   </div>
