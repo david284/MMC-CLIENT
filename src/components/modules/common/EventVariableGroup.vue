@@ -1,18 +1,19 @@
 <template>
-  <div style="border:2px solid grey"  class="q-pa-xs">
+  <div class="q-pa-xs row">
 
-    <div class = "GroupTitle q-py-none"> {{ configuration.displayTitle }}</div>
+    <div style="border:2px solid grey" class="q-pa-xs no-margin">
 
+      <div class = "GroupTitle q-py-none"> {{ configuration.displayTitle }}</div>
+      <EventVariables
+        :configuration = configuration.groupItems
+        :nodeNumber = nodeNumber
+        :eventIndex = eventIndex
+        :eventIdentifier = eventIdentifier>
+      </EventVariables>
 
-    <EventVariables
-      :configuration = configuration.groupItems
-      :nodeNumber = nodeNumber
-      :eventIndex = eventIndex
-      :eventIdentifier = eventIdentifier>
-    </EventVariables>
+    </div>
 
-
-   </div>
+  </div>
 </template>
 
 

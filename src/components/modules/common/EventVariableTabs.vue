@@ -1,36 +1,34 @@
 <template>
+  <div class="no-padding no-margin">
+
+    <!-- you have to set a width for the scrolling to work -->
+    <!-- auto doesn't work, % gives flickering display -->
+    <q-tabs v-model="selectedTab" outside-arrows narrow-indicator dense  style="max-width:92vw">
+      <q-tab v-for="tab in tabPanels" :key="tab.displayTitle"
+        :label="tab.displayTitle"
+        :name="tab.displayTitle"
+      />
+    </q-tabs>
+
     <div class="no-padding no-margin">
-
-
-      <q-tabs v-model="selectedTab" outside-arrows narrow-indicator dense>
-        <q-tab v-for="tab in tabPanels" :key="tab.displayTitle"
-          :label="tab.displayTitle"
-          :name="tab.displayTitle"
-        />
-      </q-tabs>
-
-      <div class="no-padding no-margin" style="width: 90vw">
-
       <q-tab-panels keep-alive v-model="selectedTab">
         <q-tab-panel v-for="tab in tabPanels" :key="tab.displayTitle" :name="tab.displayTitle" >
 
           <div class="no-padding no-margin row"  style="border:1px solid grey">
-
             <EventVariables
               :configuration = tab.items
               :nodeNumber = props.nodeNumber
               :eventIndex = props.eventIndex
               :eventIdentifier = props.eventIdentifier>
             </EventVariables>
-
-
           </div>
+
         </q-tab-panel>
       </q-tab-panels>
-      </div>
-
     </div>
-  </template>
+
+  </div>
+</template>
   
 
   <script setup>
