@@ -25,6 +25,7 @@ const state = reactive({
   services_component: "Default2NodeServicesList",
   selected_node: 0,
   selected_event_index: 0,
+  selected_event_indentifier: "",
   selected_service_index: 0,
   loadFile_notification_raised: {},
   title: "MMC",

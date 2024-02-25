@@ -28,71 +28,16 @@
             </template>
           </q-card-section>
 
-
           <div class="q-pa-xs row">
 
-            <div v-for="item in variablesDescriptor" :key="item">
-              <EventVariableBitArray v-if="(item.type=='EventVariableBitArray') && (isVisible(item))"
-                                    :nodeNumber = "props.nodeNumber"
-                                    :eventIndex = "props.eventIndex"
-                                    :eventVariableIndex=item.eventVariableIndex
-                                    :bitCollection = item.bitCollection
-                                    :displayTitle="item.displayTitle"
-                                    :displaySubTitle="item.displaySubTitle">
-              </EventVariableBitArray>
-              <EventVariableBitSingle v-if="(item.type=='EventVariableBitSingle') && (isVisible(item))"
-                                    :nodeNumber = "props.nodeNumber"
-                                    :eventIndex = props.eventIndex
-                                    :eventVariableIndex=item.eventVariableIndex
-                                    :bit = "item.bit"
-                                    :displayTitle="item.displayTitle"
-                                    :displaySubTitle="item.displaySubTitle">
-              </EventVariableBitSingle>
-              <EventVariableGroup v-if="(item.type=='EventVariableGroup') && (isVisible(item))"
-                            :configuration = item>
-              </EventVariableGroup>
-              <EventVariableNumber v-if="(item.type=='EventVariableNumber') && (isVisible(item))"
-                          :node-number=props.nodeNumber
-                          :eventIndex = props.eventIndex
-                          :eventVariableIndex= "item.eventVariableIndex"
-                          :displayTitle="item.displayTitle"
-                          :displaySubTitle="item.displaySubTitle"
-                          :startBit = "item.startBit"
-                          :endBit = "item.endBit"
-                          :displayOffset = "item.displayOffset"
-                          :min = "item.min"
-                          :max = "item.max"
-                          :configuration = item>
-              </EventVariableNumber>
-              <EventVariableSelect v-if="(item.type=='EventVariableSelect') && (isVisible(item))"
-                                :nodeNumber="props.nodeNumber"
-                                :eventIndex = "props.eventIndex"
-                                :eventVariableIndex= "item.eventVariableIndex"
-                                :bitMask = "item.bitMask"
-                                :displayTitle="item.displayTitle"
-                                :displaySubTitle="item.displaySubTitle"
-                                :options= "item.options">
-              </EventVariableSelect>
-              <EventVariableSlider v-if="(item.type=='EventVariableSlider') && (isVisible(item))"
-                                    :node-number="props.nodeNumber"
-                                    :eventIndex = "props.eventIndex"
-                                    :eventVariableIndex= "item.eventVariableIndex"
-                                    :displayTitle="item.displayTitle"
-                                    :displaySubTitle = "item.displaySubTitle"
-                                    :displayScale="item.displayScale"
-                                    :displayUnits="item.displayUnits"
-                                    :displayOffset = "item.displayOffset"
-                                    :min = "item.min"
-                                    :max = "item.max"
-                                    :startBit = "item.startBit"
-                                    :endBit = "item.endBit">
-              </EventVariableSlider>
-              <EventVariableTabs v-if="(item.type=='EventVariableTabs') && (isVisible(item))"
-                          :configuration=item>
-              </EventVariableTabs>
-            </div>
-          </div>
+            <EventVariables
+              :configuration = store.state.nodeDescriptors[store.state.selected_node].eventVariables
+              :nodeNumber = nodeNumber
+              :eventIndex = eventIndex
+              :eventIdentifier = eventIdentifier>
+            </EventVariables>
 
+          </div>
           <q-separator />
 
           <q-card-section class="q-pa-xs row" v-if="showRawVariables">
@@ -149,15 +94,8 @@
 
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
 import { useQuasar } from 'quasar'
-import EventVariableBitArray from "components/modules/common/EventVariableBitArray"
-import EventVariableBitSingle from "components/modules/common/EventVariableBitSingle"
-import EventVariableGroup from "components/modules/common/EventVariableGroup"
-import EventVariableNumber from "components/modules/common/EventVariableNumber"
+import EventVariables from "components/modules/common/EventVariables"
 import EventVariableRaw from "components/modules/common/EventVariableRaw"
-import EventVariableSelect from "components/modules/common/EventVariableSelect"
-import EventVariableSlider from "components/modules/common/EventVariableSlider"
-import EventVariableTabs from "components/modules/common/EventVariableTabs"
-import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
 import manageModuleDescriptorsDialog from "components/dialogs/ManageModuleDescriptorsDialog";
 
 
@@ -194,7 +132,6 @@ watch(model, () => {
 })
 
 
-
 watch(props.nodeNumber, () => {
   console.log(name +': - watch nodeNumber')
 })
@@ -207,22 +144,12 @@ watch(props.eventIndex, () => {
   }
 })
 
-const isVisible = (item) =>{
-      var result = true
-      if (item.visibilityLogic) {
-        result = parseLogicElement(item.visibilityLogic, store, store.state.selected_event_index)
-      }
-      console.log(name + `: isVisible: ` + result + ' ' + item.type)
-      return result
-    }
-
 
 onBeforeMount(() => {
 })
 
 onMounted(() => {
 })
-
 
 onUpdated(() => {
   console.log(name + ': onUpdated')

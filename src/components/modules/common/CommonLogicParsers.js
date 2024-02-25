@@ -26,10 +26,12 @@ export function parseLogicElement (logic, store, argument3) {
     if (argument3 != undefined){
       // in this logic case, argument3 is the event index
       var eventVariables = store.state.nodes[store.state.selected_node].storedEvents[argument3]
-      var value = eventVariables.variables[logic.evBit.index]
-      value = (value & 2 ** logic.evBit.bit) >> logic.evBit.bit
-      result = testCondition(value, logic)
-      console.log(`parseLogicElement: evBit result = ` + result)
+      if (eventVariables){
+        var value = eventVariables.variables[logic.evBit.index]
+        value = (value & 2 ** logic.evBit.bit) >> logic.evBit.bit
+        result = testCondition(value, logic)
+        console.log(`parseLogicElement: evBit result = ` + result)
+      } else { console.log(`parseLogicElement: ERROR: evBit - event variables undefined ` ) }
     } else { console.log(`parseLogicElement: ERROR: evBit - event index (argument3) not defined `) }
   }
 
