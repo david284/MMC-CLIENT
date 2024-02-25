@@ -21,7 +21,7 @@
       <EventVariableGroup v-if="(item.type=='EventVariableGroup') && (isVisible(item))"
         :node-number=props.nodeNumber
         :eventIndex = props.eventIndex
-        :eventVariableIndex= "item.eventVariableIndex"
+        :eventIdentifier= props.eventIdentifier
         :configuration = item>
       </EventVariableGroup>
       <EventVariableNumber v-if="(item.type=='EventVariableNumber') && (isVisible(item))"
@@ -61,7 +61,10 @@
                             :endBit = "item.endBit">
       </EventVariableSlider>
       <EventVariableTabs v-if="(item.type=='EventVariableTabs') && (isVisible(item))"
-                  :configuration=item>
+        :node-number=props.nodeNumber
+        :eventIndex = props.eventIndex
+        :eventIdentifier= props.eventIdentifier
+        :configuration=item>
       </EventVariableTabs>
 
     </div>
@@ -100,22 +103,12 @@ const isVisible = (item) =>{
 }
 
 
-const level = computed(() =>{
-    return props.level
-})
-
-
-
-watch(level, () => {
-  console.log(name + ': watch source ' + props.source + ' level ' + level.value)
-})
-
 onBeforeMount(() => {
-  console.log(name + `: onBeforeMount source ` + props.source + ` level ` + props.level)
+  console.log(name + `: onBeforeMount`)
 })
 
 onMounted(() => {
-//  console.log(name + `: onMounted source ` + props.source + ` level ` + props.level)
+  console.log(name + `: onMounted`)
 })
 
 onUpdated(() => {
