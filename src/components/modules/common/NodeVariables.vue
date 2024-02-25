@@ -74,7 +74,7 @@ import NodeVariableGroup from "components/modules/common/NodeVariableGroup"
 import NodeVariableNumber from "components/modules/common/NodeVariableNumber"
 import NodeVariableSelect from "components/modules/common/NodeVariableSelect"
 import NodeVariableSlider from "components/modules/common/NodeVariableSlider"
-import NodeVariableTabs from "components/modules/common/NodeVariableTabsA"
+import NodeVariableTabs from "components/modules/common/NodeVariableTabs"
 import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
 
 const props = defineProps({

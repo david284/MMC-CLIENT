@@ -1,144 +1,76 @@
 <template>
-    <div class="no-padding no-margin" style="max-width: 90vw">
+  <div class="no-padding no-margin" >
 
-      <q-tabs v-model="selectedTab" outside-arrows narrow-indicator dense>
-        <q-tab v-for="tab in tabPanels" :key="tab.displayTitle"
-          :label="tab.displayTitle"
-          :name="tab.displayTitle"
-        />
-      </q-tabs>
+    <!-- you have to set a width for the scrolling to work -->
+    <!-- auto doesn't work, % gives flickering display -->
+    <q-tabs v-model="selectedTab" outside-arrows narrow-indicator dense style="max-width:92vw">
+      <q-tab v-for="tab in tabPanels" :key="tab.displayTitle"
+        :label="tab.displayTitle"
+        :name="tab.displayTitle"
+      />
+    </q-tabs>
 
-      <div class="no-padding no-margin" style="width: 90vw">
+    <q-tab-panels keep-alive v-model="selectedTab" class="no-padding no-margin" >
+      <q-tab-panel v-for="tab in tabPanels" :key="tab.displayTitle" :name="tab.displayTitle"  class="no-padding no-margin">
 
-      <q-tab-panels keep-alive v-model="selectedTab">
-        <q-tab-panel v-for="tab in tabPanels" :key="tab.displayTitle" :name="tab.displayTitle">
           <div class="no-padding no-margin row"  style="border:1px solid grey">
-            <div v-for="item in tab.items" :key="item">
-
-              <NodeVariableNumber v-if="(item.type=='NodeVariableNumber') && (isVisible(item))"
-                        :node-number=store.state.selected_node
-                        :displayTitle="item.displayTitle"
-                        :displaySubTitle = "item.displaySubTitle"
-                        :node-variable-index=item.nodeVariableIndex>
-              </NodeVariableNumber>
-              <NodeVariableBitArray v-if="(item.type=='NodeVariableBitArray') && (isVisible(item))"
-                                  :nodeNumber="store.state.selected_node"
-                                  :VariableIndex=item.nodeVariableIndex
-                                  :bitCollection = item.bitCollection
-                                  :displayTitle="item.displayTitle"
-                                  :displaySubTitle="item.displaySubTitle"
-                                  :learn="false"
-              ></NodeVariableBitArray>
-              <NodeVariableBitSingle v-if="(item.type=='NodeVariableBitSingle') && (isVisible(item))"
-                                        :NodeNumber="store.state.selected_node"
-                                        :VariableIndex=item.nodeVariableIndex
-                                        :displayTitle="item.displayTitle"
-                                        :displaySubTitle="item.displaySubTitle"
-                                        :Bit=item.bit>
-              </NodeVariableBitSingle>
-              <NodeVariableDual v-if="(item.type=='NodeVariableDual') && (isVisible(item))"
-                                :NodeVariableIndexLow="item.nodeVariableIndexLow"
-                                :NodeVariableIndexHigh="item.nodeVariableIndexHigh"
-                                :NodeNumber="store.state.selected_node"
-                                :displayTitle="item.displayTitle"
-                                :displaySubTitle="item.displaySubTitle">
-              </NodeVariableDual>
-              <NodeVariableSelect v-if="(item.type=='NodeVariableSelect') && (isVisible(item))"
-                                  :nodeVariableIndex="item.nodeVariableIndex"
-                                  :nodeNumber="store.state.selected_node"
-                                  :bitMask = "item.bitMask"
-                                  :displayTitle="item.displayTitle"
-                                  :displaySubTitle="item.displaySubTitle"
-                                  :options="item.options">
-              </NodeVariableSelect>
-              <node-variable-slider v-if="(item.type=='NodeVariableSlider') && (isVisible(item))"
-                                  :node-number="store.state.selected_node"
-                                  :nodeVariableIndex="item.nodeVariableIndex"
-                                  :displayTitle="item.displayTitle"
-                                  :displaySubTitle = "item.displaySubTitle"
-                                  :displayScale="item.displayScale"
-                                  :displayUnits="item.displayUnits"
-                                  :displayOffset = "item.displayOffset"
-                                  :min = "item.min"
-                                  :max = "item.max"
-                                  :startBit = "item.startBit"
-                                  :endBit = "item.endBit"
-                                  :configuration="item">
-              </node-variable-slider>
-              <NodeVariableTabGroup v-if="(item.type=='NodeVariableGroup') && (isVisible(item))"
-                      :configuration = item>
-              </NodeVariableTabGroup>
-
-            </div>
+            <NodeVariables
+              :configuration = tab.items
+              :source="sourceName"
+              :level=level+1>
+            </NodeVariables>
           </div>
-        </q-tab-panel>
-      </q-tab-panels>
-      </div>
 
-    </div>
-  </template>
+      </q-tab-panel>
+    </q-tab-panels>
+
+  </div>
+</template>
   
 
-  <script>
-  
+<script setup>
+
   // composition API - uses ref()
 
-  import { inject, ref, onMounted, watch } from 'vue'
-  import NodeVariableBitArray from "components/modules/common/NodeVariableBitArray"
-  import NodeVariableBitSingle from "components/modules/common/NodeVariableBitSingle"
-  import NodeVariableDual from "components/modules/common/NodeVariableDual"
-  import NodeVariableNumber from "components/modules/common/NodeVariableNumber"
-  import NodeVariableSelect from "components/modules/common/NodeVariableSelect"
-  import NodeVariableSlider from "components/modules/common/NodeVariableSlider"
-  import NodeVariableTabGroup from "components/modules/common/NodeVariableTabGroup"
+  import { inject, ref, onMounted, watch, onUpdated } from 'vue'
   import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
-
-  export default {
-    props: {
-      configuration: Object
-    },
-    components: {
-      NodeVariableBitArray,
-      NodeVariableBitSingle,
-      NodeVariableDual,
-      NodeVariableNumber,
-      NodeVariableSelect,
-      NodeVariableSlider,
-      NodeVariableTabGroup
-    },
-    setup (props) {
-      const name = 'NodeVariableTabs'
-      const tabPanels = ref()
-      const selectedTab = ref()  
-      const store = inject('store')
-      onMounted(() => {
-//        console.log('tabs props: ' + JSON.stringify(props))
-        tabPanels.value = props.configuration.tabPanels
-//        console.log('tabs tabPanels: ' + JSON.stringify(tabPanels.value))
-        selectedTab.value = tabPanels.value[0].displayTitle
-      })
-
-      watch(selectedTab, () => {
-        console.log(name + `: WATCH selectedTab ` + JSON.stringify(selectedTab.value))
-      })
+  import NodeVariables from "components/modules/common/NodeVariables"
 
 
-      function isVisible(item){
-      var result = true
-      if (item.visibilityLogic) {
-        result = parseLogicElement(item.visibilityLogic, store)
-      }
-      console.log(name + `: isVisible: ` + result + ' ' + item.type)
-      return result
+  const props = defineProps({
+    configuration: Object,
+    level: {Number, default:-8}
+  })
+
+  const name = 'NodeVariableTabsA'
+  const tabPanels = ref()
+  const selectedTab = ref()  
+  const store = inject('store')
+  const sourceName=ref("nvTabs")
+  const tabWidth = ref("92vw")
+
+  onMounted(() => {
+    tabPanels.value = props.configuration.tabPanels
+    selectedTab.value = tabPanels.value[0].displayTitle
+  })
+
+  watch(selectedTab, () => {
+    console.log(name + `: WATCH selectedTab ` + JSON.stringify(selectedTab.value))
+  })
+
+
+  function isVisible(item){
+    var result = true
+    if (item.visibilityLogic) {
+      result = parseLogicElement(item.visibilityLogic, store)
     }
-
-      return {
-        store,
-        selectedTab,
-        tabPanels,
-        isVisible
-      }
-    }
+    console.log(name + `: isVisible: ` + result + ' ' + item.type)
+    return result
   }
-  </script>
-  
+
+onUpdated(() => {
+})
+
+</script>
+
+
