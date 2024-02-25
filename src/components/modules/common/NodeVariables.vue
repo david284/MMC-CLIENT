@@ -25,7 +25,8 @@
                         :displaySubTitle="item.displaySubTitle">
       </NodeVariableDual>
       <NodeVariableGroup v-if="(item.type=='NodeVariableGroup') && (isVisible(item))"
-                    :configuration = item>
+                    :configuration = item
+                    :level=level>
       </NodeVariableGroup>
       <NodeVariableNumber v-if="(item.type=='NodeVariableNumber') && (isVisible(item))"
                     :node-number=store.state.selected_node
@@ -56,7 +57,8 @@
                             :configuration = "item">
       </node-variable-slider>
       <NodeVariableTabs v-if="(item.type=='NodeVariableTabs') && (isVisible(item))"
-                  :configuration=item>
+                  :configuration=item
+                  :level=level>
       </NodeVariableTabs>
     </div>
   </div>
@@ -64,7 +66,7 @@
 </template>
 
 <script setup>
-import {inject, onBeforeMount, onMounted, onUpdated} from "vue";
+import {computed, inject, onBeforeMount, onMounted, onUpdated, watch} from "vue";
 import NodeVariableBitArray from "components/modules/common/NodeVariableBitArray"
 import NodeVariableBitSingle from "components/modules/common/NodeVariableBitSingle"
 import NodeVariableDual from "components/modules/common/NodeVariableDual"
@@ -72,11 +74,13 @@ import NodeVariableGroup from "components/modules/common/NodeVariableGroup"
 import NodeVariableNumber from "components/modules/common/NodeVariableNumber"
 import NodeVariableSelect from "components/modules/common/NodeVariableSelect"
 import NodeVariableSlider from "components/modules/common/NodeVariableSlider"
-import NodeVariableTabs from "components/modules/common/NodeVariableTabs"
+import NodeVariableTabs from "components/modules/common/NodeVariableTabsA"
 import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
 
 const props = defineProps({
-  configuration: Object
+  configuration: Object,
+  level: {Number, default: 0},
+  source: {String, default:"unsourced"}
 })
 
 const store = inject('store')
@@ -91,12 +95,23 @@ function isVisible(item){
   return result
 }
 
+
+const level = computed(() =>{
+    return props.level
+})
+
+
+
+watch(level, () => {
+  console.log(name + ': watch source ' + props.source + ' level ' + level.value)
+})
+
 onBeforeMount(() => {
-  console.log(name + `: onBeforeMount`)
+  console.log(name + `: onBeforeMount source ` + props.source + ` level ` + props.level)
 })
 
 onMounted(() => {
-  console.log(name + `: onMounted`)
+//  console.log(name + `: onMounted source ` + props.source + ` level ` + props.level)
 })
 
 onUpdated(() => {

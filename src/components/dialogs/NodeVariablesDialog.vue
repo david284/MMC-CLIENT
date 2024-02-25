@@ -28,7 +28,9 @@
           </q-card-section>
 
           <NodeVariables
-            :configuration = store.state.nodeDescriptors[store.state.selected_node].nodeVariables>
+            :configuration = store.state.nodeDescriptors[store.state.selected_node].nodeVariables
+            :level=1
+            :source="sourceName">
           </NodeVariables>
 
           <div class="q-pa-none row" v-if="showRawVariables">
@@ -89,6 +91,7 @@ const showRawVariables = ref(false)
 const showNoVariablesMessage = ref(false)
 const showManageModuleDescriptorsDialog = ref(false)
 const showVariableDescriptor = ref(false)
+const sourceName=ref("nvDialog")
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },

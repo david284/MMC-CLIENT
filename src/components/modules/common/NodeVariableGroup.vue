@@ -1,25 +1,32 @@
 <template>
-  <div style="border:2px solid grey" class="q-pa-xs">
-    <div class = "GroupTitle q-py-none"> {{ configuration.displayTitle }}</div>
+  <div class="q-pa-xs row">
 
-    <NodeVariables
-            :configuration = configuration.groupItems>
-    </NodeVariables>
+    <div style="border:2px solid grey" class="q-pa-xs no-margin">
+      <div class = "GroupTitle q-py-none"> {{ configuration.displayTitle }}</div>
+
+      <NodeVariables
+              :configuration = configuration.groupItems
+              :source="sourceName"
+              :level=level+1>
+      </NodeVariables>
+    </div>
 
   </div>
 </template>
 
 
 <script setup>
-  import {inject, onMounted, onUpdated} from "vue";
+  import {inject, onMounted, onUpdated, ref} from "vue";
   import NodeVariables from "components/modules/common/NodeVariables"
 
   const props = defineProps({
-    configuration: Object
+    configuration: Object,
+    level: {Number, default:-9}
   })
 
   const store = inject('store')
   const name = "NodeVariableGroup"
+  const sourceName=ref("nvGroup")
 
   onMounted(() => {
     console.log(name + ": onMounted")

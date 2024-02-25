@@ -210,7 +210,7 @@ watch(props.eventIndex, () => {
 const isVisible = (item) =>{
       var result = true
       if (item.visibilityLogic) {
-        result = parseLogicElement(item.visibilityLogic, store)
+        result = parseLogicElement(item.visibilityLogic, store, store.state.selected_event_index)
       }
       console.log(name + `: isVisible: ` + result + ' ' + item.type)
       return result
