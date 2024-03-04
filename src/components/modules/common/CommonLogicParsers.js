@@ -60,14 +60,29 @@ export function parseLogicElement (logic, store, argument3) {
     console.log(`parseLogicElement: nv result = ` + result)
   }
 
+  // logic for slot - slot is an alias for event index
+  // where fixed event index 'slots' are used
+  if (logic.slot != undefined){
+    var value = store.state.selected_event_index
+    result = testCondition(value, logic)
+    console.log(`parseLogicElement: slot result = ` + result)
+  }
+
   return result
 }
 
 function testCondition(value, logic){
+  console.log(`testCondition: value ` + value + ' logic ' + JSON.stringify(logic))
   var result = true;
+
   if (logic.equals != undefined){
     //console.log(`testCondition: equals ` + JSON.stringify(logic.equals))
     if (logic.equals != value) {result = false}
+  }
+
+  if (logic.greaterThan != undefined){
+    //console.log(`testCondition: greaterThan ` + JSON.stringify(logic))
+    if (value <= logic.greaterThan) {result = false}
   }
 
   // tests input value equals one of the array values
@@ -78,10 +93,17 @@ function testCondition(value, logic){
       if(value == logicValue) {result = true}
     });
   }
+
+  if (logic.lessThan != undefined){
+    //console.log(`testCondition: lessThan ` + JSON.stringify(logic))
+    if (value >= logic.lessThan) {result = false}
+  }
+
   if (logic.notEqual != undefined){
     //console.log(`testCondition: notEqual ` + JSON.stringify(logic.notEqual))
     if (logic.notEqual == value) {result = false}
   }
+
   return result
 }
 

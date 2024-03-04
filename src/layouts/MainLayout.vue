@@ -24,6 +24,9 @@
             <q-item v-if="(store.state.develop)" clickable @click="clickExample()">
               <q-item-section>Example</q-item-section>
             </q-item>
+            <q-item v-if="(store.state.develop)" clickable @click="clickiframe()">
+              <q-item-section>Example iFrame</q-item-section>
+            </q-item>
           </q-list>
         </q-menu>
       </q-btn>
@@ -109,6 +112,9 @@
 
   <dialogExampleCompositionAPI v-model='showDialogExampleCompositionAPI' />
 
+  <iFrameDialog v-model='showiFrameDialog' 
+    :URL=exampleURL />
+
 
 </template>
 
@@ -124,6 +130,7 @@ import modifiedGridConnectDialog from "components/dialogs/ModifiedGridConnectDia
 import newNodeDialog from "components/dialogs/NewNodeDialog";
 import systemDialog from "components/dialogs/SystemDialog";
 import dialogExampleCompositionAPI from "components/dialogs/DialogExampleCompositionAPI";
+import iFrameDialog from "components/dialogs/iFrameDialog";
 
 const $q = useQuasar()
 const store = inject('store')
@@ -139,6 +146,9 @@ const showSystemDialog = ref(false)
 const busMessage = ref({})
 const previousNodeNumber = ref(0)
 const showDialogExampleCompositionAPI = ref(false)
+const showiFrameDialog = ref(false)
+const exampleURL = ref("http://192.168.1.50")
+
 
 onMounted(() => {
   store.methods.request_bus_connection()
@@ -206,6 +216,11 @@ const clickExample = () => {
 const clickExit = () => {
   console.log(name + `: clickStop`)
   store.methods.STOP_SERVER()
+}
+
+const clickiframe = () => {
+  console.log(name + ': clickiframe')
+  showiFrameDialog.value = true
 }
 
 const clickJson = () => {

@@ -35,21 +35,21 @@
           </q-td>
           <q-td key="events" :props="props">{{ props.row.events }}</q-td>
           <q-td key="actions">
-            <q-btn color="cyan-1" text-color="black" size="md" label="Events"
+            <q-btn dense class="q-mx-xs" color="cyan-1" text-color="black" size="md" label="Events"
               @click="clickEvents(props.row.nodeNumber)" no-caps/>
-            <q-btn color="primary" size="md" flat label="Name"
+            <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Name"
               @click="clickNameNode(props.row.nodeNumber)" no-caps/>
-            <q-btn color="primary" size="md" flat label="Parameters"
+            <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Parameters"
               @click="clickParameters(props.row.nodeNumber)" no-caps/>
-            <q-btn color="primary" size="md" flat label="Variables"
+            <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Variables"
               @click="clickVariables(props.row.nodeNumber)" no-caps/>
-            <q-btn v-if="(!props.row.vlcb)" disabled color="primary" size="md" flat label="CBUS"
+            <q-btn dense class="q-mx-xs" outline v-if="(!props.row.vlcb)" disabled color="primary" size="md" label="CBUS"
               @click="clickVLCB(props.row.nodeNumber)" no-caps/>
-            <q-btn v-if="(props.row.vlcb)" color="primary" size="md" flat label="VLCB"
+            <q-btn dense class="q-mx-xs" outline v-if="(props.row.vlcb)" color="primary" size="md" label="VLCB"
               @click="clickVLCB(props.row.nodeNumber)" no-caps/>
-            <q-btn color="primary" size="md" flat label="Add Event"
+            <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Add Event"
               @click="clickAddEvent(props.row.nodeNumber)" no-caps/>
-            <q-btn color="negative" size="md" flat label="Delete"
+            <q-btn dense class="q-mx-xs" outline color="negative" size="md" label="Delete"
               @click="clickDeleteNode(props.row.nodeNumber)" no-caps/>
 
           </q-td>

@@ -23,20 +23,23 @@
       hide-bottom
     >
       <template v-slot:body="props">
-        <q-tr :props="props">
+        <q-tr :props="props" class="q-my-none q-py-none">
           <q-td key="eventIdentifier" :props="props">{{ props.row.eventIdentifier }}</q-td>
           <q-td key="eventName" :props="props">{{ props.row.eventName}}</q-td>
           <q-td key="nodeNumber" :props="props">{{ props.row.nodeNumber }}</q-td>
           <q-td key="eventNumber" :props="props">{{ props.row.eventNumber }}</q-td>
           <q-td key="eventIndex" :props="props">{{ props.row.eventIndex }}</q-td>
           <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td>
+          <q-td key="source" :props="props">{{ props.row.source }}</q-td>
           <q-td key="actions" :props="props">
-            <q-btn flat size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
-            <q-btn :disabled="!props.row.storedEvent" color="primary" size="md" flat label="Variables"
+            <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
+            <q-btn dense class="q-mx-xs" outline :disabled="!props.row.storedEvent" color="primary" size="md" label="Variables"
             @click="clickVariables(props.row.eventIndex, props.row.eventIdentifier)" no-caps/>
-            <q-btn flat size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
-            <q-btn flat size="md" color="primary" label="Test" @click="clickTest(props.row.nodeNumber, props.row.eventNumber, props.row.eventIdentifier)" no-caps/>
-            <q-btn flat size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier)" no-caps/>
+            <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
+            <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.eventIdentifier)" no-caps>send ON</q-btn>
+            <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.eventIdentifier)" no-caps>send OFF</q-btn>
+            <!-- <q-btn flat size="md" color="primary" label="Test" @click="clickTest(props.row.nodeNumber, props.row.eventNumber, props.row.eventIdentifier)" no-caps/> -->
+            <q-btn dense class="q-mx-xs" outline size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier)" no-caps/>
           </q-td>
         </q-tr>
       </template>
@@ -116,6 +119,7 @@ const columns = [
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event number', align: 'left', sortable: true},
   {name: 'eventIndex', field: 'eventIndex', required: true, label: 'Event index', align: 'left', sortable: true},
   {name: 'eventType', field: 'eventType', required: true, label: 'Event type', align: 'left', sortable: true},
+  {name: 'source', field: 'source', required: true, label: 'Event source', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
 ]
 
@@ -179,6 +183,7 @@ const update_rows = () => {
     output['eventNumber'] = eventNumber
     output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
     output['storedEvent'] = true
+    output['source'] = "stored event"
     rows.value.push(output)
   })
 
@@ -214,6 +219,7 @@ const update_rows = () => {
         output['eventNumber'] = busEvent.eventNumber
         output['eventType'] = busEvent.type
         output['storedEvent'] = false
+        output['source'] = "bus event"
         rows.value.push(output)
       }
     }
@@ -271,6 +277,29 @@ const clickDelete = (eventIndentifier) => {
 const clickRefresh = () => {
   console.log(name + `: clickRefresh`)
   store.methods.request_all_node_events(store.state.selected_node)
+}
+
+const clickSendOff = (eventIdentifier) => {
+  console.log (name + ": send OFF " + eventIdentifier)
+  var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
+  var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
+  if (eventNodeNumber == 0) {
+    store.methods.short_off_event(props.nodeNumber, eventNumber)
+  } else {
+    store.methods.long_off_event(eventNodeNumber, eventNumber)
+  }
+}
+
+
+const clickSendOn = (eventIdentifier) => {
+  console.log (name + ": send ON " + eventIdentifier)
+  var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
+  var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
+  if (eventNodeNumber == 0) {
+    store.methods.short_on_event(props.nodeNumber, eventNumber)
+  } else {
+    store.methods.long_on_event(eventNodeNumber, eventNumber)
+  }
 }
 
 

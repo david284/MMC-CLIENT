@@ -3,9 +3,9 @@
   <q-dialog v-model='model' persistent>
     <q-card style="min-width: 900px">
 
-      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense q-py-none">
         <div class="text-h6">
-          Manage Layout
+          System
         </div>
         <template v-slot:action>
           <q-btn flat color="white" size="md" label="Close" v-close-popup/>
