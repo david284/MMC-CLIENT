@@ -65,9 +65,10 @@
               <q-td key="type" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.type }}</q-td>
               <q-td key="count" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.count }}</q-td>
               <q-td key="actions" :props="props">
-                <q-btn flat size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
-                <q-btn flat size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
-                <q-btn flat size="md" color="primary" label="Test" @click="clickTest(props.row.nodeNumber, props.row.eventNumber, props.row.eventIdentifier)" no-caps/>
+                <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
+                <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
+                <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.nodeNumber, props.row.eventIdentifier)" no-caps>send ON</q-btn>
+                <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.nodeNumber, props.row.eventIdentifier)" no-caps>send OFF</q-btn>
               </q-td>
             </q-tr>
 
@@ -274,28 +275,28 @@ const clickEventName = (eventIdentifier) => {
   showNameEventDialog.value = true;
 }
 
-/*
-const clickTest = (nodeNumber, eventNumber, eventIdentifier) => {
-  selected_event_node.value = nodeNumber
-  selected_event_number.value = eventNumber
-  selected_event_Identifier.value = eventIdentifier
-    console.log(name + `: clickTest: eventIdentifier ` + selected_event_node.value + ' ' + selected_event_number.value)
-  showSendEventDialog.value = true
-}
-*/
-
-const clickTest = (nodeNumber, eventNumber, eventIndentifer) => {
-  selected_event_node.value = nodeNumber
-  selected_event_number.value = eventNumber
-  selected_event_Identifier.value = eventIndentifer
-  console.log(name + `: clickTest: event ` 
-    + selected_event_node.value + ' ' 
-    + selected_event_number.value + ' '
-    + selected_event_Identifier.value)
-  showSendEventDialog.value = true
+const clickSendOff = (nodeNumber, eventIdentifier) => {
+  console.log (name + ": send OFF " + nodeNumber + ' ' + eventIdentifier)
+  var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
+  var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
+  if (eventNodeNumber == 0) {
+    store.methods.short_off_event(nodeNumber, eventNumber)
+  } else {
+    store.methods.long_off_event(eventNodeNumber, eventNumber)
+  }
 }
 
 
+const clickSendOn = (nodeNumber, eventIdentifier) => {
+  console.log (name + ": send ON " + nodeNumber + ' ' + eventIdentifier)
+  var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
+  var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
+  if (eventNodeNumber == 0) {
+    store.methods.short_on_event(nodeNumber, eventNumber)
+  } else {
+    store.methods.long_on_event(eventNodeNumber, eventNumber)
+  }
+}
 
 const clickTeach = (eventIndentifier) => {
   console.log(name + `: clickTeach`)
