@@ -1,20 +1,23 @@
 <template>
 
   <q-dialog v-model='model' persistent>
-    <q-card style="min-width: 350px">
+    <q-card  class="q-pa-none q-ma-none" style="min-width: 850px">
 
-      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
-        <div class="text-h6">
-          Teach event :  {{ store.getters.event_name(props.eventIdentifier) }}
-        </div>
-        <template v-slot:action>
-          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
-        </template>
-      </q-banner>
+      <q-card-section class="q-pa-none q-ma-none">
+        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin g-py-none">
+          <div class="text-h6">
+            Teach event :  {{ store.getters.event_name(props.eventIdentifier) }}
+          </div>
+          <template v-slot:action>
+            <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+          </template>
+        </q-banner>
+      </q-card-section>
 
-      <div class="q-pa-md row items-start q-gutter-md">
-         
-        <q-card class="q-pa-xs" style="max-width: 300px">
+      <q-card style="min-width: 800px">
+        <q-card-section style="max-height: 75vh" class="q-py-none row">
+
+          <q-card  style="width: 250px; height: 200px;" class="q-ma-md q-py-none">
           <q-card-section class="q-pa-xs">
             <div class="text-h6">Teach Event</div>
             <div class="text-subtitle2">To consumer nodes only</div>
@@ -29,10 +32,10 @@
                   no-caps/>
             </div>
           </q-card-section>
-        </q-card>
+          </q-card>
 
-        <q-card class="q-pa-xs" style="max-width: 300px">
-          <q-card-section class="q-pa-xs">
+          <q-card style="max-height: 70vh" class="scroll q-ma-md">
+          <q-card-section class="no-margin q-py-none-xs" style="width: 450px;">
             <div class="text-h6">Taught Events</div>
             <div class="text-subtitle2">Nodes using this event</div>
             <q-table
@@ -42,21 +45,39 @@
               :columns="teColumns"
               row-key="number"
               hide-header
-              :pagination="{rowsPerPage: 10}"
-            />
+              hide-bottom
+              virtual-scroll
+              :rows-per-page-options="[0]"
+              :virtual-scroll-sticky-size-start="48"
+              >
+
+              <template v-slot:body="props">
+                <q-tr :props="props" class="q-my-none q-py-none">
+                  <q-td key="number" :props="props">{{ props.row.number }}</q-td>
+                  <q-td key="name" :props="props">{{ props.row.name }}</q-td>
+                  <q-td key="actions" :props="props">
+                    <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Variables"
+                    @click="clickVariables(props.row.number, props.row.eventIndex, props.row.eventIdentifier)" no-caps/>
+                  </q-td>              
+
+                </q-tr>
+              </template>
+            </q-table>
           </q-card-section>
-        </q-card>
+          </q-card>
 
-      </div>
-
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Cancel" v-close-popup/>
-      </q-card-actions>
+        </q-card-section>
+      </q-card>
 
     </q-card>
-
-
   </q-dialog>
+
+  <eventVariablesDialog v-model='showEventVariablesDialog'
+        :nodeNumber = selected_event_node
+        :eventIndex = selected_event_index
+        :eventIdentifier = selected_event_Identifier
+      />
+
 
 
 </template>
@@ -65,8 +86,16 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
+import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 
 const store = inject('store')
+const name = 'EventTeachDialog'
+
+const selected_event_Identifier = ref("") // Dialog will complain if null
+const selected_event_node = ref(0) // Dialog will complain if null
+const selected_event_index = ref(0) // Dialog will complain if null
+const showEventVariablesDialog = ref(false)
+
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -88,6 +117,7 @@ const teRows = ref([])
 const teColumns = [
   {name: 'number', field: 'number', required: true, label: 'Number', align: 'left', sortable: true},
   {name: 'name', field: 'name', required: true, label: 'Name', align: 'left', sortable: true},
+  {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
 
@@ -112,7 +142,7 @@ const update_taught_nodes = () => {
         if (event.eventIdentifier == props.eventIdentifier) {
           taughtNodes.value.push(event.node)
           var nodeName = store.state.layout.nodeDetails[node.nodeNumber].name
-          teRows.value.push({"number" : node.nodeNumber, "name" : nodeName})
+          teRows.value.push({"number" : node.nodeNumber, "name" : nodeName, "eventIndex":event.eventIndex, "eventIdentifier":event.eventIdentifier})
         }
       })
     }
@@ -149,20 +179,6 @@ const update_available_nodes = () =>{
   }  
 }
 
-
-const clickTeachEvent = () => {
-  console.log(`teach_event : ${newNode.value} : ${props.eventIdentifier}`)
-  if (newNode.value != "") {
-    // get node number from input value
-    var array = newNode.value.split(':')
-    console.log(`teach_event : ${array[0]} : ${props.eventIdentifier}`)
-    store.methods.teach_event(array[0], props.eventIdentifier, props.eventIndex)
-    newNode.value = undefined
-  }
-}
-
-
-
 onBeforeMount(() => {
 })
 
@@ -175,6 +191,64 @@ onUpdated(() => {
     update_taught_nodes()
   }
 })
+
+
+const readEventVariables = (nodeNumber, eventIndex) => {
+  // refresh event list
+  console.log(name + `: readEventVariables - eventIndex ` + eventIndex)
+  store.methods.request_all_event_variables(
+    nodeNumber,
+    eventIndex,
+    100,
+    store.state.nodes[nodeNumber].parameters[5]
+  );
+}
+
+
+// used to ensure the parameters have been read for a node
+const checkNodeParameters = (nodeNumber) => {
+  console.log(name + `: checkNodeParameters ` + nodeNumber)
+  // param9 - cpu type to check if parameters have been fully retrieved
+  if(store.state.nodes[nodeNumber].parameters[9]){
+    console.log(name + ": parameters exist")
+  } else {
+    console.log(name + ": need to read parameters")
+    store.methods.request_all_node_parameters(nodeNumber, 20, 100)
+  }
+}
+
+
+/*/////////////////////////////////////////////////////////////////////////////
+
+Click event handlers
+
+/////////////////////////////////////////////////////////////////////////////*/
+
+const clickTeachEvent = () => {
+  console.log(name + `: ${newNode.value} : ${props.eventIdentifier}`)
+  if (newNode.value != "") {
+    // get node number from input value
+    var array = newNode.value.split(':')
+    console.log(`teach_event : ${array[0]} : ${props.eventIdentifier}`)
+    store.methods.teach_event(array[0], props.eventIdentifier, props.eventIndex)
+    // make sure parameters have been read for the taught node in case the variables get edited
+    checkNodeParameters(array[0])
+    newNode.value = undefined
+  }
+}
+
+const clickVariables = (nodeNumber, eventIndex, eventIdentifier) => {
+  console.log(name + `: clickVariables ` + nodeNumber + ' ' + eventIndex + ' ' + eventIdentifier)
+  readEventVariables(nodeNumber, eventIndex)
+  selected_event_node.value = nodeNumber
+  selected_event_index.value = eventIndex
+  selected_event_Identifier.value = eventIdentifier
+  console.log(name + `: clickVariables: node, index ` + nodeNumber + ' ' + selected_event_index.value)
+  console.log(name + `: showEventVariablesDialog: node ` + selected_event_node.value +
+   ' eventIndex ' + selected_event_index.value +
+   ' eventIdentifier ' + selected_event_Identifier.value)
+  showEventVariablesDialog.value = true
+}
 
 
 </script>

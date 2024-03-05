@@ -94,7 +94,7 @@ onMounted(() => {
   for (var i in props.options){
     console.log(`EventVariableComplexSelect: item: ${i}`)
     if (props.options[i].overload != undefined) {   
-      var label = overloadedLabel(props.options[i].overload, store) 
+      var label = overloadedLabel(props.nodeNumber, props.options[i].overload, store) 
       if (label) {
         var entry = {"value": props.options[i].value, "label": label}
         items.value.push(entry)

@@ -1,7 +1,7 @@
-export function overloadedLabel (element, store) {
+export function overloadedLabel (nodeNumber, element, store) {
   var result = null
   if (element.nv){
-    var value = store.state.nodes[store.state.selected_node].nodeVariables[element.nv]
+    var value = store.state.nodes[nodeNumber].nodeVariables[element.nv]
     for (var i in element.labels){
       if (value == element.labels[i].value){
         result = element.labels[i].label
@@ -18,14 +18,14 @@ export function overloadedLabel (element, store) {
 // The use of argument3 is depenadant on the specific logic case (as defined by the logic variable)
 // So check the individual logic cases to see if it's necessary, and what it should contain
 //
-export function parseLogicElement (logic, store, argument3) {
+export function parseLogicElement (nodeNumber, logic, store, argument3) {
   var result = true
 
   //logic for event variable bits
   if (logic.evBit != undefined){
     if (argument3 != undefined){
       // in this logic case, argument3 is the event index
-      var eventVariables = store.state.nodes[store.state.selected_node].storedEvents[argument3]
+      var eventVariables = store.state.nodes[nodeNumber].storedEvents[argument3]
       if (eventVariables){
         var value = eventVariables.variables[logic.evBit.index]
         value = (value & 2 ** logic.evBit.bit) >> logic.evBit.bit
@@ -37,7 +37,7 @@ export function parseLogicElement (logic, store, argument3) {
 
   //logic for event variables
   if (logic.ev != undefined){
-    var eventVariables = store.state.nodes[store.state.selected_node].storedEvents[argument3]
+    var eventVariables = store.state.nodes[nodeNumber].storedEvents[argument3]
     if (eventVariables){
       var value = eventVariables.variables[logic.ev]
       result = testCondition(value, logic)
@@ -47,7 +47,7 @@ export function parseLogicElement (logic, store, argument3) {
 
   //logic for node variable bits
   if (logic.nvBit != undefined){
-    var value = store.state.nodes[store.state.selected_node].nodeVariables[logic.nvBit.index]
+    var value = store.state.nodes[nodeNumber].nodeVariables[logic.nvBit.index]
     value = (value & 2 ** logic.nvBit.bit) >> logic.nvBit.bit
     result = testCondition(value, logic)
     console.log(`parseLogicElement: nvBit result = ` + result)
@@ -55,7 +55,7 @@ export function parseLogicElement (logic, store, argument3) {
 
   // logic for node variables
   if (logic.nv != undefined){
-    var value = store.state.nodes[store.state.selected_node].nodeVariables[logic.nv]
+    var value = store.state.nodes[nodeNumber].nodeVariables[logic.nv]
     result = testCondition(value, logic)
     console.log(`parseLogicElement: nv result = ` + result)
   }

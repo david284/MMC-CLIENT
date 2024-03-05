@@ -89,7 +89,7 @@ const name = "NodeVariables"
 function isVisible(item){
   var result = true
   if (item.visibilityLogic) {
-    result = parseLogicElement(item.visibilityLogic, store)
+    result = parseLogicElement(store.state.selected_node, item.visibilityLogic, store)
   }
   console.log(name + `: isVisible: ` + result + ' ' + item.type)
   return result

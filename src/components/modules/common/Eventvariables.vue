@@ -96,7 +96,7 @@ const name = "EventVariables"
 const isVisible = (item) =>{
   var result = true
   if (item.visibilityLogic) {
-    result = parseLogicElement(item.visibilityLogic, store, props.eventIndex)
+    result = parseLogicElement(props.nodeNumber, item.visibilityLogic, store, props.eventIndex)
     console.log(name + `: isVisible: eventIndex ` + props.eventIndex + ' result ' + result)
   }
   return result
