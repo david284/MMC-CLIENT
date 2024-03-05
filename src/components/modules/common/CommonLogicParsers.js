@@ -60,6 +60,7 @@ export function parseLogicElement (logic, store, argument3) {
     console.log(`parseLogicElement: nv result = ` + result)
   }
 
+  /*
   // logic for slot - slot is an alias for event index
   // where fixed event index 'slots' are used
   if (logic.slot != undefined){
@@ -67,6 +68,7 @@ export function parseLogicElement (logic, store, argument3) {
     result = testCondition(value, logic)
     console.log(`parseLogicElement: slot result = ` + result)
   }
+*/
 
   return result
 }

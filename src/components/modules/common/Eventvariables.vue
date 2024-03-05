@@ -12,7 +12,7 @@
       </EventVariableBitArray>
       <EventVariableBitSingle v-if="(item.type=='EventVariableBitSingle') && (isVisible(item))"
                             :nodeNumber = "props.nodeNumber"
-                            :eventIndex = props.eventIndex
+                            :eventIndex = "props.eventIndex"
                             :eventVariableIndex=item.eventVariableIndex
                             :bit = "item.bit"
                             :displayTitle="item.displayTitle"
@@ -96,9 +96,9 @@ const name = "EventVariables"
 const isVisible = (item) =>{
   var result = true
   if (item.visibilityLogic) {
-    result = parseLogicElement(item.visibilityLogic, store, store.state.selected_event_index)
+    result = parseLogicElement(item.visibilityLogic, store, props.eventIndex)
+    console.log(name + `: isVisible: eventIndex ` + props.eventIndex + ' result ' + result)
   }
-  console.log(name + `: isVisible: ` + result + ' ' + item.type)
   return result
 }
 

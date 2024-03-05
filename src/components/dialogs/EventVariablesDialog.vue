@@ -5,7 +5,9 @@
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
           <div class="text-h6">
-            Event Variables for event :  {{ store.getters.event_name(props.eventIdentifier) }}
+            Node: {{ store.getters.node_name(props.nodeNumber)}}
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            Event: {{ store.getters.event_name(props.eventIdentifier) }}
           </div>
           <template v-slot:action>
             <q-btn color="cyan-1" size="sm" text-color="black" 
@@ -31,7 +33,7 @@
           <div class="q-pa-xs row">
 
             <EventVariables
-              :configuration = store.state.nodeDescriptors[store.state.selected_node].eventVariables
+              :configuration = store.state.nodeDescriptors[props.nodeNumber].eventVariables
               :nodeNumber = nodeNumber
               :eventIndex = eventIndex
               :eventIdentifier = eventIdentifier>
@@ -136,13 +138,11 @@ watch(props.nodeNumber, () => {
   console.log(name +': - watch nodeNumber')
 })
 
+
 watch(props.eventIndex, () => {
   console.log(name +': - watch eventIndex')
-  if (props.eventIndex){
-    store.state.selected_event_index = props.eventIndex
-    console.log(name + ': selected_event_index: ' + JSON.stringify(store.state.selected_event_index))
-  }
 })
+
 
 
 onBeforeMount(() => {
@@ -164,8 +164,6 @@ onUpdated(() => {
       showDescriptorWarning.value = true
     }
     checkFileLoad()
-    // many downstream components depend on selected_event_index being set
-    store.state.selected_event_index = props.eventIndex
   }
 })
 
