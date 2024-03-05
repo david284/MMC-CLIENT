@@ -242,24 +242,12 @@ const event_group = (eventIdentifier) => {
 }
 
 
-
-
-
-
-
 onBeforeMount(() => {
   store.methods.query_all_nodes()
 })
 
 onMounted(() => {
   store.methods.refresh_bus_events()
-  /*
-  for (var node in store.state.nodes){
-    // refresh event list
-    console.log(name + `: request Events for node ` + node)
-    store.methods.request_all_node_events(node)
-  }
-  */
 })
 
 /*/////////////////////////////////////////////////////////////////////////////
