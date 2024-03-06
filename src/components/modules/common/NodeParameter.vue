@@ -6,9 +6,10 @@
 
 <script setup>
 
-const props = defineProps({
-  "Name": String,
-  "Value": String
-})
+// note use of array, not object so the type isn't defined
+// this is so it can handle a mix of text & numbers
+const props = defineProps([
+  "Name", "Value"
+])
 
 </script>

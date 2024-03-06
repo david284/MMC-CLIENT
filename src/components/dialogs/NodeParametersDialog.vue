@@ -15,10 +15,10 @@
 
        <q-card-section>
         <node-parameter Name="Node Number"
-                        :Value=store.state.nodes[props.nodeNumber].nodeNumber.toString()>
+                        :Value=store.state.nodes[props.nodeNumber].nodeNumber>
         </node-parameter>
         <node-parameter Name="Events Currently Stored"
-                        :Value=store.state.nodes[props.nodeNumber].eventCount.toString()>
+                        :Value=store.state.nodes[props.nodeNumber].eventCount>
         </node-parameter>
         <node-parameter Name="Manufacturer"
                         :Value="store.state.nodes[props.nodeNumber].moduleManufacturerName">
@@ -30,25 +30,25 @@
                         :Value="store.state.nodes[props.nodeNumber].moduleIdentifier">
         </node-parameter>
         <node-parameter Name="Producer"
-                        :Value=store.state.nodes[props.nodeNumber].producer.toString()>
+                        :Value=store.state.nodes[props.nodeNumber].producer>
         </node-parameter>
         <node-parameter Name="Consumer"
-                        :Value=store.state.nodes[props.nodeNumber].consumer.toString()>
+                        :Value=store.state.nodes[props.nodeNumber].consumer>
         </node-parameter>
         <node-parameter Name="Consume own Events"
-                        :Value=store.state.nodes[props.nodeNumber].coe.toString()>
+                        :Value=store.state.nodes[props.nodeNumber].coe>
         </node-parameter>
         <node-parameter Name="VLCB"
-                        :Value=store.state.nodes[props.nodeNumber].VLCB.toString()>
+                        :Value=store.state.nodes[props.nodeNumber].VLCB>
         </node-parameter>
         <node-parameter Name="Node Variables"
-                        :Value=store.state.nodes[props.nodeNumber].parameters[6].toString()>
+                        :Value=store.state.nodes[props.nodeNumber].parameters[6]>
         </node-parameter>
         <node-parameter Name="Events Supported"
-                        :Value=store.state.nodes[props.nodeNumber].parameters[4].toString()>
+                        :Value=store.state.nodes[props.nodeNumber].parameters[4]>
         </node-parameter>
         <node-parameter Name="Event Variables"
-                        :Value=store.state.nodes[props.nodeNumber].parameters[5].toString()>
+                        :Value=store.state.nodes[props.nodeNumber].parameters[5]>
         </node-parameter>
         <node-parameter Name="CPU Name"
                         :Value="store.state.nodes[props.nodeNumber].cpuName">
@@ -61,7 +61,7 @@
 							String.fromCharCode(store.state.nodes[props.nodeNumber].parameters[2])">
         </node-parameter>
         <node-parameter Name="Beta Version"
-                        :Value=store.state.nodes[props.nodeNumber].parameters[20].toString()>
+                        :Value=store.state.nodes[props.nodeNumber].parameters[20]>
         </node-parameter>
         <node-parameter Name="Module Descriptor Filename"
                         :Value="moduleDescriptorFilename">
