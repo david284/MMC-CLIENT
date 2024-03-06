@@ -6,12 +6,13 @@
         <q-btn flat color="white" size="sm" label="Refresh" @click="clickRefresh()"/>
       </template>
     </q-banner>
+
     <div>
         <q-table
         class="my-sticky-header-table"
-        :rows=rows
         bordered
         dense
+        :rows=rows
         :columns="columns"
         :filter="filter"
         row-key="nodeNumber"
@@ -26,12 +27,12 @@
           <q-td key="nodeName" :props="props">{{ props.row.nodeName }} </q-td>
           <q-td key="moduleName" :props="props">{{ props.row.moduleName }}</q-td>
           <q-td key="mode" :props="props">
-            <q-chip color="white" text-color="blue" v-if="props.row.mode">Flim</q-chip>
-            <q-chip color="white" text-color="red" v-else>Slim</q-chip>
+            <q-chip dense color="white" text-color="blue" v-if="props.row.mode">Flim</q-chip>
+            <q-chip dense color="white" text-color="red" v-else>Slim</q-chip>
           </q-td>
           <q-td key="status" :props="props">
-            <q-chip color="white" text-color="green" v-if="props.row.status">OK</q-chip>
-            <q-chip color="white" text-color="red" v-else>Error</q-chip>
+            <q-chip dense color="white" text-color="green" v-if="props.row.status">OK</q-chip>
+            <q-chip dense color="white" text-color="red" v-else>Error</q-chip>
           </q-td>
           <q-td key="events" :props="props">{{ props.row.events }}</q-td>
           <q-td key="actions">
