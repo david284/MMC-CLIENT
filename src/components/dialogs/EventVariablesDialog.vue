@@ -8,6 +8,8 @@
             Node: {{ store.getters.node_name(props.nodeNumber)}}
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             Event: {{ store.getters.event_name(props.eventIdentifier) }}
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            Event index: {{ store.getters.event_name(props.eventIndex) }}
           </div>
           <template v-slot:action>
             <q-btn color="cyan-1" size="sm" text-color="black" 

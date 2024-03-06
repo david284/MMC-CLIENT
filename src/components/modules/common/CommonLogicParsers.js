@@ -37,12 +37,14 @@ export function parseLogicElement (nodeNumber, logic, store, argument3) {
 
   //logic for event variables
   if (logic.ev != undefined){
-    var eventVariables = store.state.nodes[nodeNumber].storedEvents[argument3]
-    if (eventVariables){
-      var value = eventVariables.variables[logic.ev]
-      result = testCondition(value, logic)
-      console.log(`parseLogicElement: ev result = ` + result)
-    } else { console.log(`parseLogicElement: ERROR: ev - event variables undefined ` ) }
+    if (argument3 != undefined){
+      var eventVariables = store.state.nodes[nodeNumber].storedEvents[argument3]
+      if (eventVariables){
+        var value = eventVariables.variables[logic.ev]
+        result = testCondition(value, logic)
+        console.log(`parseLogicElement: ev result = ` + result)
+      } else { console.log(`parseLogicElement: ERROR: ev - event variables undefined ` ) }
+    } else { console.log(`parseLogicElement: ERROR: ev - event index (argument3) not defined `) }
   }
 
   //logic for node variable bits
