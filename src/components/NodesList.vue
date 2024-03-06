@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-banner  inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin no-padding" >
+    <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin no-padding" >
       <div class="text-h6">Nodes list</div>
       <template v-slot:action>
         <q-btn flat color="white" size="sm" label="Refresh" @click="clickRefresh()"/>
@@ -21,7 +21,7 @@
         hide-bottom
       >
       <template v-slot:body="props" >
-          <q-tr :props="props" :class="selected_nodeNumber==props.row.nodeNumber?'bg-blue-1':'bg-white'">
+          <q-tr :props="props" :class="selected_nodeNumber==props.row.nodeNumber?'bg-blue-1':'bg-white'" class="q-my-none q-py-none">
           <q-td key="nodeNumber" :class="'text-'+nodeColour(props.row.nodeNumber)" :props="props">{{ props.row.nodeNumber }}</q-td>
           <q-td key="nodeName" :props="props">{{ props.row.nodeName }} </q-td>
           <q-td key="moduleName" :props="props">{{ props.row.moduleName }}</q-td>
@@ -35,21 +35,21 @@
           </q-td>
           <q-td key="events" :props="props">{{ props.row.events }}</q-td>
           <q-td key="actions">
-            <q-btn dense class="q-mx-xs" color="cyan-1" text-color="black" size="md" label="Events"
+            <q-btn dense class="q-mx-xs q-my-none" color="cyan-1" text-color="black" size="md" label="Events"
               @click="clickEvents(props.row.nodeNumber)" no-caps/>
-            <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Name"
+            <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="md" label="Name"
               @click="clickNameNode(props.row.nodeNumber)" no-caps/>
-            <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Parameters"
+            <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="md" label="Parameters"
               @click="clickParameters(props.row.nodeNumber)" no-caps/>
-            <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Variables"
+            <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="md" label="Variables"
               @click="clickVariables(props.row.nodeNumber)" no-caps/>
-            <q-btn dense class="q-mx-xs" outline v-if="(!props.row.vlcb)" disabled color="primary" size="md" label="CBUS"
+            <q-btn dense class="q-mx-xs q-my-none" outline v-if="(!props.row.vlcb)" disabled color="primary" size="md" label="CBUS"
               @click="clickVLCB(props.row.nodeNumber)" no-caps/>
-            <q-btn dense class="q-mx-xs" outline v-if="(props.row.vlcb)" color="primary" size="md" label="VLCB"
+            <q-btn dense class="q-mx-xs q-my-none" outline v-if="(props.row.vlcb)" color="primary" size="md" label="VLCB"
               @click="clickVLCB(props.row.nodeNumber)" no-caps/>
-            <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Add Event"
+            <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="md" label="Add Event"
               @click="clickAddEvent(props.row.nodeNumber)" no-caps/>
-            <q-btn dense class="q-mx-xs" outline color="negative" size="md" label="Delete"
+            <q-btn dense class="q-mx-xs q-my-none" outline color="negative" size="md" label="Delete"
               @click="clickDeleteNode(props.row.nodeNumber)" no-caps/>
 
           </q-td>

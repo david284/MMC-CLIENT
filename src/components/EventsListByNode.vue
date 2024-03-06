@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+    <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin no-padding">
       <div class="text-h6">
         Events for node :  {{ store.getters.node_name(store.state.selected_node) }}
       </div>
@@ -23,7 +23,7 @@
       hide-bottom
     >
       <template v-slot:body="props">
-        <q-tr :props="props" class="q-my-none q-py-none">
+        <q-tr :props="props" :class="selected_event_Identifier==props.row.eventIdentifier?'bg-blue-1':'bg-white'" class="q-my-none q-py-none">
           <q-td key="eventIdentifier" :props="props">{{ props.row.eventIdentifier }}</q-td>
           <q-td key="eventName" :props="props">{{ props.row.eventName}}</q-td>
           <q-td key="nodeNumber" :props="props">{{ props.row.nodeNumber }}</q-td>
