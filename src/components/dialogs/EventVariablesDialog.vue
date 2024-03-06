@@ -32,7 +32,7 @@
 
           <div class="q-pa-xs row">
 
-            <EventVariables
+            <EventVariables v-if="store.state.nodeDescriptors[props.nodeNumber]"
               :configuration = store.state.nodeDescriptors[props.nodeNumber].eventVariables
               :nodeNumber = nodeNumber
               :eventIndex = eventIndex

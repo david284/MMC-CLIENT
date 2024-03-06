@@ -79,8 +79,6 @@ import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js
 
 const props = defineProps({
   configuration: Object,
-  level: {Number, default: 0},
-  source: {String, default:"unsourced"}
 })
 
 const store = inject('store')
@@ -95,16 +93,6 @@ function isVisible(item){
   return result
 }
 
-
-const level = computed(() =>{
-    return props.level
-})
-
-
-
-watch(level, () => {
-  console.log(name + ': watch source ' + props.source + ' level ' + level.value)
-})
 
 onBeforeMount(() => {
   console.log(name + `: onBeforeMount source ` + props.source + ` level ` + props.level)

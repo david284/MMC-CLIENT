@@ -243,10 +243,6 @@ const clickVariables = (nodeNumber, eventIndex, eventIdentifier) => {
   selected_event_node.value = nodeNumber
   selected_event_index.value = eventIndex
   selected_event_Identifier.value = eventIdentifier
-  console.log(name + `: clickVariables: node, index ` + nodeNumber + ' ' + selected_event_index.value)
-  console.log(name + `: showEventVariablesDialog: node ` + selected_event_node.value +
-   ' eventIndex ' + selected_event_index.value +
-   ' eventIdentifier ' + selected_event_Identifier.value)
   showEventVariablesDialog.value = true
 }
 

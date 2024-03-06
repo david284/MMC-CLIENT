@@ -27,11 +27,9 @@
             </div>
           </q-card-section>
 
-          <NodeVariables
-            :configuration = store.state.nodeDescriptors[store.state.selected_node].nodeVariables
-            :level=1
-            :source="sourceName">
-          </NodeVariables>
+          <NodeVariables v-if="store.state.nodeDescriptors[props.nodeNumber]"
+            :configuration = store.state.nodeDescriptors[props.nodeNumber].nodeVariables
+          />
 
           <div class="q-pa-none row" v-if="showRawVariables">
             <NodeVariableRaw :node-variable-index="n"
@@ -91,7 +89,6 @@ const showRawVariables = ref(false)
 const showNoVariablesMessage = ref(false)
 const showManageModuleDescriptorsDialog = ref(false)
 const showVariableDescriptor = ref(false)
-const sourceName=ref("nvDialog")
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -187,6 +184,12 @@ const checkFileLoad = () => {
     if (store.state.loadFile_notification_raised[props.nodeNumber]) {
        console.log(name + `: checkLoadFile notification raised`) 
     }
+  }
+  if (variablesDescriptor.value == undefined){
+    showRawVariables.value = true
+    showDescriptorWarning.value = true
+  } else {
+    showDescriptorWarning.value = false
   }
 }
   
