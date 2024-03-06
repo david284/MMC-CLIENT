@@ -25,8 +25,7 @@
                         :displaySubTitle="item.displaySubTitle">
       </NodeVariableDual>
       <NodeVariableGroup v-if="(item.type=='NodeVariableGroup') && (isVisible(item))"
-                    :configuration = item
-                    :level=level>
+                    :configuration = item>
       </NodeVariableGroup>
       <NodeVariableNumber v-if="(item.type=='NodeVariableNumber') && (isVisible(item))"
                     :node-number=store.state.selected_node
@@ -57,8 +56,7 @@
                             :configuration = "item">
       </node-variable-slider>
       <NodeVariableTabs v-if="(item.type=='NodeVariableTabs') && (isVisible(item))"
-                  :configuration=item
-                  :level=level>
+                  :configuration=item>
       </NodeVariableTabs>
     </div>
   </div>
@@ -95,15 +93,15 @@ function isVisible(item){
 
 
 onBeforeMount(() => {
-  console.log(name + `: onBeforeMount source ` + props.source + ` level ` + props.level)
+//  console.log(name + `: onBeforeMount`)
 })
 
 onMounted(() => {
-//  console.log(name + `: onMounted source ` + props.source + ` level ` + props.level)
+//  console.log(name + `: onMounted`)
 })
 
 onUpdated(() => {
-  console.log(name + `: onUpdated`)
+//  console.log(name + `: onUpdated`)
 })
 
 </script>

@@ -14,11 +14,7 @@
       <q-tab-panel v-for="tab in tabPanels" :key="tab.displayTitle" :name="tab.displayTitle"  class="no-padding no-margin">
 
           <div class="no-padding no-margin row"  style="border:1px solid grey">
-            <NodeVariables
-              :configuration = tab.items
-              :source="sourceName"
-              :level=level+1>
-            </NodeVariables>
+            <NodeVariables :configuration = tab.items />
           </div>
 
       </q-tab-panel>
@@ -38,8 +34,7 @@
 
 
   const props = defineProps({
-    configuration: Object,
-    level: {Number, default:-8}
+    configuration: Object
   })
 
   const name = 'NodeVariableTabsA'

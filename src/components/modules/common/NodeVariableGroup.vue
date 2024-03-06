@@ -4,11 +4,8 @@
     <div style="border:2px solid grey" class="q-pa-xs no-margin">
       <div class = "GroupTitle q-py-none"> {{ configuration.displayTitle }}</div>
 
-      <NodeVariables
-              :configuration = configuration.groupItems
-              :source="sourceName"
-              :level=level+1>
-      </NodeVariables>
+      <NodeVariables :configuration = configuration.groupItems />
+
     </div>
 
   </div>
@@ -20,8 +17,7 @@
   import NodeVariables from "components/modules/common/NodeVariables"
 
   const props = defineProps({
-    configuration: Object,
-    level: {Number, default:-9}
+    configuration: Object
   })
 
   const store = inject('store')

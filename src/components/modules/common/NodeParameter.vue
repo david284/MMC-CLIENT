@@ -8,7 +8,7 @@
 
 const props = defineProps({
   "Name": String,
-  "Value": Number
+  "Value": String
 })
 
 </script>
