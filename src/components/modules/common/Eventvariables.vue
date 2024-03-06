@@ -2,7 +2,8 @@
   <div class="q-pa-xs row">
 
     <div v-for="item in configuration" :key="item">
-      <EventVariableBitArray v-if="(item.type=='EventVariableBitArray') && (isVisible(item))"
+
+       <EventVariableBitArray v-if="(item.type=='EventVariableBitArray') && (isVisible(item))"
                             :nodeNumber = "props.nodeNumber"
                             :eventIndex = "props.eventIndex"
                             :eventVariableIndex=item.eventVariableIndex
@@ -10,6 +11,7 @@
                             :displayTitle="item.displayTitle"
                             :displaySubTitle="item.displaySubTitle">
       </EventVariableBitArray>
+
       <EventVariableBitSingle v-if="(item.type=='EventVariableBitSingle') && (isVisible(item))"
                             :nodeNumber = "props.nodeNumber"
                             :eventIndex = "props.eventIndex"
@@ -18,12 +20,14 @@
                             :displayTitle="item.displayTitle"
                             :displaySubTitle="item.displaySubTitle">
       </EventVariableBitSingle>
+
       <EventVariableGroup v-if="(item.type=='EventVariableGroup') && (isVisible(item))"
         :node-number=props.nodeNumber
         :eventIndex = props.eventIndex
         :eventIdentifier= props.eventIdentifier
         :configuration = item>
       </EventVariableGroup>
+
       <EventVariableNumber v-if="(item.type=='EventVariableNumber') && (isVisible(item))"
                   :node-number=props.nodeNumber
                   :eventIndex = props.eventIndex
@@ -105,6 +109,7 @@ const isVisible = (item) =>{
 
 onBeforeMount(() => {
   console.log(name + `: onBeforeMount`)
+//  console.log(name + `: onBeforeMount: props: ` + JSON.stringify(props))
 })
 
 onMounted(() => {
@@ -113,6 +118,7 @@ onMounted(() => {
 
 onUpdated(() => {
   console.log(name + `: onUpdated`)
+//  console.log(name + `: onUpdated: props: ` + JSON.stringify(props))
 })
 
 </script>

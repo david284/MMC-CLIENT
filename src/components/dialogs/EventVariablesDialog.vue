@@ -36,9 +36,9 @@
 
             <EventVariables v-if="store.state.nodeDescriptors[props.nodeNumber]"
               :configuration = store.state.nodeDescriptors[props.nodeNumber].eventVariables
-              :nodeNumber = nodeNumber
-              :eventIndex = eventIndex
-              :eventIdentifier = eventIdentifier>
+              :nodeNumber = props.nodeNumber
+              :eventIndex = props.eventIndex
+              :eventIdentifier = props.eventIdentifier>
             </EventVariables>
 
           </div>
@@ -133,16 +133,17 @@ watch(model, () => {
   console.log(name + `: WATCH model`)
   showRawVariables.value = false
   showVariablesDescriptor.value = false
+  console.log(name + ': watch model: props: ' + JSON.stringify(props))
 })
 
 
 watch(props.nodeNumber, () => {
-  console.log(name +': - watch nodeNumber')
+  console.log(name +': watch nodeNumber')
 })
 
 
 watch(props.eventIndex, () => {
-  console.log(name +': - watch eventIndex')
+  console.log(name +': watch eventIndex')
 })
 
 
@@ -154,16 +155,17 @@ onMounted(() => {
 })
 
 onUpdated(() => {
-  console.log(name + ': onUpdated')
+  console.log(name + ': onUpdated: props: ' + JSON.stringify(props))
   if ((props.nodeNumber) && (props.eventIndex)){
-    console.log(name + ': onUpdated - nodeNumber ' + props.nodeNumber)
     if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
       variablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].eventVariables
       showDescriptorWarning.value = false
+      console.log(name + ': onUpdated: variablesDescriptor valid')
     } else {
       variablesDescriptor.value = {}
       showRawVariables.value = true
       showDescriptorWarning.value = true
+      console.log(name + ': onUpdated: variablesDescriptor empty')
     }
     checkFileLoad()
   }

@@ -4,11 +4,10 @@
       <div class="text-h6">{{ displayTitle }}</div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
       <EventVariableBit
-        :nodeNumber="store.state.selected_node"
+        :nodeNumber=nodeNumber
         :eventIndex=eventIndex
         :eventVariableIndex=eventVariableIndex
         :bit=bit
-        :name="name"
       >
       </EventVariableBit>
     </q-card-section>
@@ -25,6 +24,10 @@ import {onMounted} from "vue";
 const store = inject('store')
 
 const props = defineProps({
+  "nodeNumber":{
+    type: Number,
+    required: true
+  },
   "eventIndex": {
     type: Number,
     required: true
@@ -44,10 +47,6 @@ const props = defineProps({
   "bit": {
     type: Number,
     required: true
-  },
-  "name": {
-    type: String,
-    required: false
   }
 })
 

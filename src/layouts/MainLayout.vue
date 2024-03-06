@@ -90,15 +90,6 @@
 
     <q-page-container class="main-page no-shadow">
       <q-page>
-        <!--      <p>{{ store.state.display_component }}</p>-->
-        <div v-if="store.state.debug">
-          display_component : {{ store.state.display_component }}<br>
-          events_component : {{ store.state.events_component }}<br>
-          services_component : {{ store.state.services_component }}<br>
-          selected_node : {{ store.state.selected_node }}<br>
-          selected_events_index : {{ store.state.selected_event_index }}<br>
-          selected_service_index : {{ store.state.selected_service_index }}<br>
-        </div>
         <nodesList />
       </q-page>
     </q-page-container>

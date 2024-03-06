@@ -20,12 +20,7 @@ const state = reactive({
   dcc_errors: {},
   layout: {},
   layouts_list: [],
-  display_component: "NodePage",
-  events_component: "DefaultEventsList",
-  services_component: "Default2NodeServicesList",
   selected_node: 0,
-  selected_event_index: 0,
-  selected_event_indentifier: "",
   selected_service_index: 0,
   loadFile_notification_raised: {},
   title: "MMC",
@@ -193,7 +188,7 @@ const methods = {
     console.log(`REQUEST_ALL_NODE_EVENTS`)
   },
   request_all_event_variables(nodeNumber, eventIndex, delay, variables) {
-    console.log(`REQUEST_ALL_EVENT_VARIABLES: eventIndex ` + eventIndex)
+    console.log(name + `: REQUEST_ALL_EVENT_VARIABLES: nodeNumber: ` + nodeNumber + ` eventIndex: ` + eventIndex)
     socket.emit('REQUEST_ALL_EVENT_VARIABLES', {
       "nodeNumber": nodeNumber,
       "eventIndex": eventIndex,

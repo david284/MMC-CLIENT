@@ -55,6 +55,7 @@
                 <q-tr :props="props" class="q-my-none q-py-none">
                   <q-td key="number" :props="props">{{ props.row.number }}</q-td>
                   <q-td key="name" :props="props">{{ props.row.name }}</q-td>
+                  <!-- <q-td key="index" :props="props">{{ props.row.eventIndex }}</q-td> -->
                   <q-td key="actions" :props="props">
                     <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Variables"
                     @click="clickVariables(props.row.number, props.row.eventIndex, props.row.eventIdentifier)" no-caps/>
@@ -117,6 +118,7 @@ const teRows = ref([])
 const teColumns = [
   {name: 'number', field: 'number', required: true, label: 'Number', align: 'left', sortable: true},
   {name: 'name', field: 'name', required: true, label: 'Name', align: 'left', sortable: true},
+  {name: 'index', field: 'index', required: true, label: 'Index', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
@@ -143,6 +145,8 @@ const update_taught_nodes = () => {
           taughtNodes.value.push(event.node)
           var nodeName = store.state.layout.nodeDetails[node.nodeNumber].name
           teRows.value.push({"number" : node.nodeNumber, "name" : nodeName, "eventIndex":event.eventIndex, "eventIdentifier":event.eventIdentifier})
+          checkNodeParameters(node.nodeNumber)
+          readEventVariables(node.nodeNumber, event.eventIndex)
         }
       })
     }
@@ -195,7 +199,7 @@ onUpdated(() => {
 
 const readEventVariables = (nodeNumber, eventIndex) => {
   // refresh event list
-  console.log(name + `: readEventVariables - eventIndex ` + eventIndex)
+  console.log(name + `: readEventVariables: node: ` + nodeNumber + ` eventIndex: ` + eventIndex)
   store.methods.request_all_event_variables(
     nodeNumber,
     eventIndex,
