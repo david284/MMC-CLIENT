@@ -51,9 +51,9 @@
     const name = 'EventVariableTabs'
 
     onMounted(() => {
-      console.log(name + ': props: ' + JSON.stringify(props))
+//      console.log(name + ': props: ' + JSON.stringify(props))
       tabPanels.value = props.configuration.tabPanels
-      console.log(name + ': tabPanels: ' + JSON.stringify(tabPanels.value))
+//      console.log(name + ': tabPanels: ' + JSON.stringify(tabPanels.value))
       selectedTab.value = tabPanels.value[0].displayTitle
     })
 

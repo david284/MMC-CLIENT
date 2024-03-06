@@ -60,7 +60,7 @@ watch(variables, () => {
 
 onMounted(() => {
   console.log(`NodeVariableBitArray onMounted:`)
-  console.log(`NodeVariableBitArray: props: ${JSON.stringify(props)}`)
+//  console.log(`NodeVariableBitArray: props: ${JSON.stringify(props)}`)
   refeshArray();
 })
 

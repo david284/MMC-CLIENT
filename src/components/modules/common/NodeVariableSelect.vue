@@ -88,7 +88,7 @@ const update_variable = (newValue) => {
 onMounted(() => {
   console.log(`NodeVariableSelect: onMounted`)
   selectValue.value = nodeVariable.value & props.bitMask
-  console.log(`NodeVariableSelect: props: ${JSON.stringify(props)}`)
+//  console.log(`NodeVariableSelect: props: ${JSON.stringify(props)}`)
 })
 
 

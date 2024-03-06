@@ -33,7 +33,7 @@
 
   onMounted(() => {
     console.log(name + ": onMounted")
-    console.log(name + ':  props: ' + JSON.stringify(props))
+//    console.log(name + ':  props: ' + JSON.stringify(props))
   })
 
 

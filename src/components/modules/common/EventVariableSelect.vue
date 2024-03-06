@@ -89,7 +89,7 @@ const update_variable = (newValue) => {
 onMounted(() => {
   console.log(`EventVariableSelect: onMounted`)
   selectVariable.value = variableValue.value & props.bitMask
-  console.log(`EventVariableSelect: props: ${JSON.stringify(props)}`)
+//  console.log(`EventVariableSelect: props: ${JSON.stringify(props)}`)
   items.value = []
   for (var i in props.options){
     console.log(`EventVariableComplexSelect: item: ${i}`)

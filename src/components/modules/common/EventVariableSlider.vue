@@ -76,7 +76,7 @@ const store = inject('store')
 const error = ref(false)
 const error_message = ref('')
 let eventIdentifier = store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].eventIdentifier
-console.log(`EventVariableSlider Props : ${JSON.stringify(props)}`)
+//console.log(`EventVariableSlider Props : ${JSON.stringify(props)}`)
 const bitMask = computed(() => {
   var bitMask = 0;
   for (var i=props.startBit; i<= props.endBit; i++){
