@@ -314,7 +314,7 @@ const clickVLCB = (nodeNumber) => {
 <style lang="sass">
 .my-sticky-header-table
   /* height or max-height is important */
-  height: 330px
+  height: 300px
 
   .q-table__top,
   .q-table__bottom,

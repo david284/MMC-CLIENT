@@ -333,7 +333,7 @@ const clickTeach = (eventIndentifier) => {
 <style lang="sass">
 .my-sticky-header-table
   /* height or max-height is important */
-  height: 340px
+  height: 300px
 
   .q-table__top,
   .q-table__bottom,
