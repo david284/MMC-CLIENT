@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh lpR fFf">
     <q-header style="min-height: 0;" class="row bg-primary text-white no-margin no-padding">
-      <q-toolbar class="col">
+      <q-toolbar class="col no-margin no-padding">
 
         <q-btn flat dense icon="menu">
         <q-menu auto-close>
@@ -32,23 +32,23 @@
       </q-btn>
 
             
-        <q-toolbar-title style="min-height: 0;" >
-          <span style="min-height: 0;" class="text-h6">
+        <q-toolbar-title style="min-height: 0;" class="no-margin no-padding">
+          <span style="min-height: 0;" class="text-h6 no-margin no-padding">
             <!-- <span style="min-height: 0;" class="page-title no-margin no-padding text-h6"> -->
             Module Management Console
           </span>
         </q-toolbar-title>
       </q-toolbar>
 
-      <q-toolbar class="col">
-        <div class="text-h6">{{ store.state.layout.layoutDetails.title }}</div>
+      <q-toolbar class="col no-margin no-padding">
+        <div class="text-h6 no-margin no-padding">{{ store.state.layout.layoutDetails.title }}</div>
       </q-toolbar>
 
 
-      <q-toolbar class="col">
+      <q-toolbar class="col no-margin q-py-none">
         <q-space />
         <div class="text-h6 float-right">
-          <q-btn color="negative" label="Exit" @click="clickExit()" no-caps/>
+          <q-btn size="md" color="negative" label="Exit" @click="clickExit()" no-caps/>
         </div>
       </q-toolbar>
 
@@ -58,7 +58,8 @@
     <q-drawer 
       v-model="leftDrawerOpen" 
       show-if-above side="left" 
-      :width="120" 
+      :width="130"
+      dense 
       bordered
       >
       <q-card>
@@ -73,13 +74,17 @@
             v-for="message in store.state.nodeTraffic" 
             :key="message" 
             clickable 
+            dense
             v-ripple
             @click=clickSingleBusEvent(message) 
             >
-          <q-item-label class="q-pa-none q-ma-xs">{{ message.direction + "&nbsp;&nbsp;&nbsp;" + message.json.mnemonic }}</q-item-label>
+          <q-item-label dense class="q-pa-none q-my-none">{{ message.direction + "&nbsp;&nbsp;&nbsp;" + message.json.mnemonic }}</q-item-label>
           </q-item>
         </q-list>
       </q-card>
+      <div>
+          Click message for details
+      </div>
 
     </q-drawer>
 
