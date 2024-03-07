@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin no-padding">
+    <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
       <div class="text-h6">
         Events for node :  {{ store.getters.node_name(store.state.selected_node) }}
       </div>

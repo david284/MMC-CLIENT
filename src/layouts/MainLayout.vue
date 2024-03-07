@@ -4,33 +4,32 @@
       <q-toolbar class="col no-margin no-padding">
 
         <q-btn flat dense icon="menu">
-        <q-menu auto-close>
-          <q-list style="min-width: 100px">
-            <q-item clickable @click="clickLayout()">
-              <q-item-section>Layout</q-item-section>
-            </q-item>
-            <q-item clickable @click="clickBusEvents()">
-              <q-item-section>Bus events</q-item-section>
-            </q-item>
-            <q-item clickable @click="clickJson()">
-              <q-item-section>JSON</q-item-section>
-            </q-item>
-            <q-item clickable @click="clickCbusErrors()">
-              <q-item-section>CBUS errors</q-item-section>
-            </q-item>
-            <q-item clickable @click="clickSystem()">
-              <q-item-section>System</q-item-section>
-            </q-item>
-            <q-item v-if="(store.state.develop)" clickable @click="clickExample()">
-              <q-item-section>Example</q-item-section>
-            </q-item>
-            <q-item v-if="(store.state.develop)" clickable @click="clickiframe()">
-              <q-item-section>Example iFrame</q-item-section>
-            </q-item>
-          </q-list>
-        </q-menu>
-      </q-btn>
-
+          <q-menu auto-close>
+            <q-list style="min-width: 100px">
+              <q-item clickable @click="clickLayout()">
+                <q-item-section>Layout</q-item-section>
+              </q-item>
+              <q-item clickable @click="clickBusEvents()">
+                <q-item-section>Bus events</q-item-section>
+              </q-item>
+              <q-item clickable @click="clickJson()">
+                <q-item-section>JSON</q-item-section>
+              </q-item>
+              <q-item clickable @click="clickCbusErrors()">
+                <q-item-section>CBUS errors</q-item-section>
+              </q-item>
+              <q-item clickable @click="clickSystem()">
+                <q-item-section>System</q-item-section>
+              </q-item>
+              <q-item v-if="(store.state.develop)" clickable @click="clickExample()">
+                <q-item-section>Example</q-item-section>
+              </q-item>
+              <q-item v-if="(store.state.develop)" clickable @click="clickiframe()">
+                <q-item-section>Example iFrame</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
             
         <q-toolbar-title style="min-height: 0;" class="no-margin no-padding">
           <span style="min-height: 0;" class="text-h6 no-margin no-padding">
@@ -38,12 +37,12 @@
             Module Management Console
           </span>
         </q-toolbar-title>
+
       </q-toolbar>
 
       <q-toolbar class="col no-margin no-padding">
         <div class="text-h6 no-margin no-padding">{{ store.state.layout.layoutDetails.title }}</div>
       </q-toolbar>
-
 
       <q-toolbar class="col no-margin q-py-none">
         <q-space />
@@ -54,41 +53,40 @@
 
     </q-header>
 
-
     <q-drawer 
       v-model="leftDrawerOpen" 
-      show-if-above side="left" 
-      :width="130"
+      show-if-above
+      side="left" 
+      :width="125"
       dense 
       bordered
       >
-      <q-card>
-        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
-          <div class="text-h6">
-          Bus traffic
-        </div>
-        </q-banner>
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none q-px-xs">
+        <div class="text-h6">
+        Bus traffic
+      </div>
+      </q-banner>
 
-        <q-list bordered >
-          <q-item 
-            v-for="message in store.state.nodeTraffic" 
-            :key="message" 
-            clickable 
-            dense
-            v-ripple
-            @click=clickSingleBusEvent(message) 
-            >
-          <q-item-label dense class="q-pa-none q-my-none">{{ message.direction + "&nbsp;&nbsp;&nbsp;" + message.json.mnemonic }}</q-item-label>
-          </q-item>
-        </q-list>
-      </q-card>
+      <q-list bordered >
+        <q-item 
+          v-for="message in store.state.nodeTraffic" 
+          :key="message" 
+          clickable 
+          dense
+          v-ripple
+          @click=clickSingleBusEvent(message) 
+          >
+        <q-item-label dense class="q-pa-none q-my-none">{{ message.direction + "&nbsp;&nbsp;&nbsp;" + message.json.mnemonic }}</q-item-label>
+        </q-item>
+      </q-list>
+      
       <div>
           Click message for details
       </div>
 
     </q-drawer>
 
-    <q-page-container class="main-page no-shadow">
+    <q-page-container class="main-page no-shadow no-margin q-pa-none">
       <q-page>
         <nodesList />
       </q-page>

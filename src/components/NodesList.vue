@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin no-padding" >
+    <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none" >
       <div class="text-h6">Nodes list</div>
       <template v-slot:action>
         <q-btn flat color="white" size="sm" label="Refresh" @click="clickRefresh()"/>
