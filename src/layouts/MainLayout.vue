@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header style="min-height: 0;" class="row bg-primary text-white no-margin no-padding">
+    <q-header class="row bg-primary text-white no-margin no-padding" style="height: 7vh;">
       <q-toolbar class="col no-margin no-padding">
 
         <q-btn flat dense icon="menu">
@@ -141,7 +141,7 @@ const busMessage = ref({})
 const previousNodeNumber = ref(0)
 const showDialogExampleCompositionAPI = ref(false)
 const showiFrameDialog = ref(false)
-const exampleURL = ref("http://192.168.1.50")
+const exampleURL = ref("dummyModule/index.html")
 
 
 onMounted(() => {

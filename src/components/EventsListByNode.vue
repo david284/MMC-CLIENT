@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height: 45vh;">
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
       <div class="text-h6">
         Events for node :  {{ store.getters.node_name(store.state.selected_node) }}
@@ -333,7 +333,7 @@ const clickTeach = (eventIndentifier) => {
 <style lang="sass">
 .my-sticky-header-table
   /* height or max-height is important */
-  height: 300px
+  height: 43vh
 
   .q-table__top,
   .q-table__bottom,

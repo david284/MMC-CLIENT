@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height: 45vh;">
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none" >
       <div class="text-h6">Nodes list</div>
       <template v-slot:action>
@@ -89,6 +89,9 @@
 
       <vlcbServicesDialog  v-model='showVLCBServicesDialog' />
 
+      <iFrameDialog v-model='showiFrameDialog' 
+        :URL=exampleURL />
+
       <p v-if="store.state.debug">
         {{ Object.values(store.state.nodes) }}
       </p>
@@ -107,6 +110,7 @@ import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
 import nodeVariablesDialog from "components/dialogs/NodeVariablesDialog"
 import parametersLoadingDialog from "components/dialogs/parametersLoadingDialog"
 import vlcbServicesDialog from "components/dialogs/VLCBServicesDialog"
+import iFrameDialog from "components/dialogs/iFrameDialog";
 
 
 const columns = [
@@ -134,6 +138,8 @@ const showNodeVariablesDialog = ref(false)
 const selected_nodeNumber = ref()
 const showParametersLoadingDialog = ref(false)
 const showVLCBServicesDialog = ref(false)
+const showiFrameDialog = ref(false)
+const exampleURL = ref("dummyModule/index.html")
 
 const nodeList = computed(() => {
   return Object.values(store.state.nodes)
@@ -286,17 +292,21 @@ const clickVariables = (nodeNumber) => {
   checkNodeParameters(nodeNumber)
   select_node_row(nodeNumber)
   console.log(name + `: clickVariables: node ` + nodeNumber)
-  if(store.state.nodes[nodeNumber].parameters[9]) {
-    // parameters loaded, so read variables & showNodeVariablesDialog
-    store.methods.request_all_node_variables(
-      nodeNumber, 
-      store.state.nodes[nodeNumber].parameters[6], 
-      100, 
-      1)
-    showNodeVariablesDialog.value = true
+  if ((nodeNumber == 1000) && store.state.develop){
+    showiFrameDialog.value = true
   } else {
-    // parameters not loaded, so showParametersLoadingDialog
-    showParametersLoadingDialog.value = true
+    if(store.state.nodes[nodeNumber].parameters[9]) {
+      // parameters loaded, so read variables & showNodeVariablesDialog
+      store.methods.request_all_node_variables(
+        nodeNumber, 
+        store.state.nodes[nodeNumber].parameters[6], 
+        100, 
+        1)
+      showNodeVariablesDialog.value = true
+    } else {
+      // parameters not loaded, so showParametersLoadingDialog
+      showParametersLoadingDialog.value = true
+    }
   }
 }
 
@@ -314,7 +324,7 @@ const clickVLCB = (nodeNumber) => {
 <style lang="sass">
 .my-sticky-header-table
   /* height or max-height is important */
-  height: 300px
+  height: 42vh
 
   .q-table__top,
   .q-table__bottom,
