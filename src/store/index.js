@@ -332,7 +332,7 @@ socket.on("CBUS_NO_SUPPORT", (data) => {
 socket.on("CBUS_TRAFFIC", (data) => {
 //  console.log(`RECEIVED CBUS_TRAFFIC`)
   state.nodeTraffic.push(data)
-  if (state.nodeTraffic.length > 18) {
+  if (state.nodeTraffic.length > 32) {
     state.nodeTraffic.shift()
   }
 })

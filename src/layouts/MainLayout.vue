@@ -53,11 +53,12 @@
 
     </q-header>
 
-    <q-drawer 
+
+    <q-drawer class="no-margin no-padding"
       v-model="leftDrawerOpen" 
       show-if-above
       side="left" 
-      :width="125"
+      :width="250"
       dense 
       bordered
       >
@@ -67,23 +68,26 @@
       </div>
       </q-banner>
 
-      <q-list bordered >
-        <q-item 
-          v-for="message in store.state.nodeTraffic" 
-          :key="message" 
-          clickable 
-          dense
-          v-ripple
-          @click=clickSingleBusEvent(message) 
-          >
-        <q-item-label dense class="q-pa-none q-my-none">{{ message.direction + "&nbsp;&nbsp;&nbsp;" + message.json.mnemonic }}</q-item-label>
-        </q-item>
-      </q-list>
-      
-      <div>
-          Click message for details
-      </div>
-
+      <q-card class="no-margin no-padding" style="height: 83vh;">
+        <q-scroll-area id="demo" ref="scrollAreaRef" style="height: 82vh;">
+          <q-list>
+            <q-item 
+              v-for="message in store.state.nodeTraffic" 
+              :key="message" 
+              clickable 
+              dense
+              @click=clickSingleBusEvent(message) 
+              >
+              <q-item-label dense caption class="q-pa-none q-my-none">
+                <span class="text-bold text-blue">{{ message.direction }}</span>
+                <span>:&nbsp;</span>
+                <span class="text-bold">{{ message.json.text }}</span>
+              </q-item-label>
+            </q-item>
+          </q-list>
+        </q-scroll-area>
+      </q-card>
+      Click message to show encoding
     </q-drawer>
 
     <q-page-container class="main-page no-shadow no-margin q-pa-none">
@@ -95,6 +99,7 @@
 
 
   <busEventsDialog v-model='showBusEventsDialog' />
+  <busTrafficDialog v-model='showBusTrafficDialog' />
   <cbusErrorsDialog v-model='showCbusErrorsDialog' />
   <jsonDialog v-model='showJsonDialog' />
   <layoutDialog v-model='showLayoutDialog' />
@@ -113,10 +118,11 @@
 </template>
 
 <script setup>
-import {computed, inject, onBeforeMount, onMounted, ref, watch} from "vue";
-import { date, useQuasar } from 'quasar'
+import {computed, inject, onBeforeMount, onMounted, onUpdated, ref, watch} from "vue";
+import { date, useQuasar, scroll } from 'quasar'
 import nodesList from "components/NodesList"
 import busEventsDialog from "components/dialogs/BusEventsDialog";
+import busTrafficDialog from "components/dialogs/BusTrafficDialog";
 import cbusErrorsDialog from "components/dialogs/CbusErrorsDialog";
 import jsonDialog from "components/dialogs/JsonDialog";
 import layoutDialog from "components/dialogs/LayoutDialog";
@@ -126,11 +132,13 @@ import systemDialog from "components/dialogs/SystemDialog";
 import dialogExampleCompositionAPI from "components/dialogs/DialogExampleCompositionAPI";
 import iFrameDialog from "components/dialogs/iFrameDialog";
 
+const { getVerticalScrollPosition, setVerticalScrollPosition } = scroll
 const $q = useQuasar()
 const store = inject('store')
 const name = "MainLayout"
 const leftDrawerOpen = ref(false);
 const showBusEventsDialog = ref(false)
+const showBusTrafficDialog = ref(false)
 const showCbusErrorsDialog = ref(false)
 const showJsonDialog = ref(false)
 const showLayoutDialog = ref(false)
@@ -142,6 +150,18 @@ const previousNodeNumber = ref(0)
 const showDialogExampleCompositionAPI = ref(false)
 const showiFrameDialog = ref(false)
 const exampleURL = ref("dummyModule/index.html")
+const scrollAreaRef = ref(null)
+var oneShotScroll
+
+const nodeTraffic = computed(() => {
+  return Object.values(store.state.nodeTraffic)
+})
+
+watch(nodeTraffic, () => {
+  console.log(name + `: WATCH nodeTraffic`)
+  scrollAreaRef.value.setScrollPercentage('vertical', 1)
+  oneShotScroll = setTimeout(scrollFunc,200);
+})
 
 
 onMounted(() => {
@@ -149,10 +169,22 @@ onMounted(() => {
   setInterval(eventIntervalFunc,5000);
 })
 
-const eventIntervalFunc = (nodeNumber) => {
+onUpdated(() =>{
+  scrollAreaRef.value.setScrollPercentage('vertical', 1)
+//  oneShotScroll = setInterval(scrollIntervalFunc,1000);
+})
+
+const eventIntervalFunc = () => {
 //  console.log(name + ": interval " + Date.now())
   store.methods.request_bus_connection()
 }
+
+const scrollFunc = () => {
+  console.log(name + ": scroll timeout " + Date.now())
+//  clearInterval(oneShotScroll)
+  scrollAreaRef.value.setScrollPercentage('vertical', 1)
+}
+
 
 
 store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber) => {
@@ -229,8 +261,12 @@ const clickLayout = () => {
 
 const clickSingleBusEvent = (message) => {
   console.log(name + ': clickSingleBusEvent')
+  console.log(name + ': clickSingleBusEvent: scroll ' + getVerticalScrollPosition(document.getElementById("demo")))
   busMessage.value = message
+  scrollAreaRef.value.setScrollPercentage('vertical', 1)
   showModifiedGridConnectDialog.value = true
+
+//  showBusTrafficDialog.value = true
 }
 
 const clickSystem = () => {
