@@ -24,6 +24,7 @@
       <template v-slot:body="props" >
           <q-tr :props="props" :class="selected_nodeNumber==props.row.nodeNumber?'bg-blue-1':'bg-white'" class="q-my-none q-py-none">
           <q-td key="nodeNumber" :class="'text-'+nodeColour(props.row.nodeNumber)" :props="props">{{ props.row.nodeNumber }}</q-td>
+          <q-td key="CANID" :props="props">{{ props.row.CANID }} </q-td>
           <q-td key="nodeName" :props="props">{{ props.row.nodeName }} </q-td>
           <q-td key="moduleName" :props="props">{{ props.row.moduleName }}</q-td>
           <q-td key="mode" :props="props">
@@ -74,7 +75,7 @@
        <nameNodeDialog v-model='showNameNodeDialog'
         :nodeNumber = store.state.selected_node
       />
- 
+
        <nodeParametersDialog v-model='showNodeParametersDialog'
         :nodeNumber = store.state.selected_node
       />
@@ -89,7 +90,7 @@
 
       <vlcbServicesDialog  v-model='showVLCBServicesDialog' />
 
-      <iFrameDialog v-model='showiFrameDialog' 
+      <iFrameDialog v-model='showiFrameDialog'
         :URL=exampleURL />
 
       <p v-if="store.state.debug">
@@ -115,6 +116,7 @@ import iFrameDialog from "components/dialogs/iFrameDialog";
 
 const columns = [
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node number', align: 'left', sortable: true},
+  {name: 'CANID', field: 'CANID', required: true, label: 'CAN ID', align: 'left', sortable: true},
   {name: 'nodeName', field: 'nodeName', required: true, label: 'Name', align: 'left', sortable: true},
 //  {name: 'group', field: 'group', required: true, label: 'Group', align: 'left', sortable: true},
   {name: 'moduleName', field: 'moduleName', required: true, label: 'Module name', align: 'left', sortable: true},
@@ -167,6 +169,7 @@ const update_rows = () => {
   nodeList.value.forEach(node => {
     let output = {}
     output['nodeNumber'] = node.nodeNumber
+    output['CANID'] = node.CANID
     output['nodeName'] = getNodeName(node.nodeNumber)
 //    output['group'] = nodeGroup(node.nodeNumber)
     output['moduleName'] = node.moduleName
@@ -219,7 +222,7 @@ const select_node_row = (nodeNumber) => {
     store.state.selected_node = nodeNumber
     store.methods.request_all_node_events(store.state.selected_node)
     selected_nodeNumber.value = nodeNumber    // used to highlight row
-    selected_node_valid.value = true 
+    selected_node_valid.value = true
     store.methods.request_service_discovery(store.state.selected_node)
     console.log(name + ': node row ', store.state.selected_node + " selected")
   }
@@ -298,9 +301,9 @@ const clickVariables = (nodeNumber) => {
     if(store.state.nodes[nodeNumber].parameters[9]) {
       // parameters loaded, so read variables & showNodeVariablesDialog
       store.methods.request_all_node_variables(
-        nodeNumber, 
-        store.state.nodes[nodeNumber].parameters[6], 
-        100, 
+        nodeNumber,
+        store.state.nodes[nodeNumber].parameters[6],
+        100,
         1)
       showNodeVariablesDialog.value = true
     } else {
