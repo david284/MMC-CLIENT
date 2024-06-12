@@ -61,10 +61,18 @@
     </q-card>
   </q-dialog>
 
+  <eventVariablesDialog v-model='showEventVariablesDialog'
+        :nodeNumber = store.state.selected_node
+        :eventIndex = selected_event_index
+        :eventIdentifier = selected_event_Identifier
+  />
+
+
 </template>
 
 <script setup>
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
+import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 
 const store = inject('store')
 const name = "AddEventDialog"
@@ -72,6 +80,12 @@ const newNodeNumber = ref()
 const newEventNumber = ref()
 const addEventEnabled = ref(true)
 var eventType = ref()
+const showEventVariablesDialog = ref(false)
+const selected_event_Identifier = ref("") // Dialog will complain if null
+const selected_event_node = ref(0) // Dialog will complain if null
+const selected_event_number = ref(0) // Dialog will complain if null
+const selected_event_index = ref(0) // Dialog will complain if null
+
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true }
@@ -109,13 +123,16 @@ onUpdated(() =>{
 
 const createEvent = () => {
   var eventIndex = getFreeEventIndex()
+  selected_event_index.value = eventIndex
   // to program a short event, the node number must be zero
   if (eventType.value == 'short'){newNodeNumber.value = 0}
   var eventIdentifier = parseInt(newNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
                + parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
+  selected_event_Identifier.value = eventIdentifier
   console.log(`createEvent - index ` + eventIndex + ` eventIdentifier ` + eventIdentifier)
-  store.methods.teach_event(store.state.selected_node, eventIdentifier, eventIndex, )
+//  store.methods.teach_event(store.state.selected_node, eventIdentifier, eventIndex, )
   // event list will be refreshed on acknowledge (WRACK, GRSP) from node
+  showEventVariablesDialog.value = true
 }
 
 const getFreeEventIndex = () => {
@@ -129,7 +146,7 @@ const getFreeEventIndex = () => {
     } else {
       eventIndex = i + 1
       break
-    }        
+    }
   }
   return eventIndex
 }

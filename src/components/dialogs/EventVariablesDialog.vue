@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model='model' persistent full-width full-height> 
+  <q-dialog v-model='model' persistent full-width full-height>
     <q-card class="q-pa-none q-ma-none">
 
       <q-card-section class="q-pa-none q-ma-none">
@@ -12,7 +12,7 @@
             Event index: {{ store.getters.event_name(props.eventIndex) }}
           </div>
           <template v-slot:action>
-            <q-btn color="cyan-1" size="sm" text-color="black" 
+            <q-btn color="cyan-1" size="sm" text-color="black"
               label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
               <q-btn flat color="white" size="md" label="Close" v-close-popup/>
           </template>
@@ -27,7 +27,7 @@
               *** Descriptor not loaded for this node ***
             </div>
             <template v-slot:action>
-              <q-btn color="cyan-1" size="sm" text-color="black" 
+              <q-btn color="cyan-1" size="sm" text-color="black"
                 label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
             </template>
           </q-card-section>
@@ -134,6 +134,15 @@ watch(model, () => {
   showRawVariables.value = false
   showVariablesDescriptor.value = false
   console.log(name + ': watch model: props: ' + JSON.stringify(props))
+
+  if (!(props.eventIndex in store.state.nodes[props.nodeNumber].storedEvents)) {
+    store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex] = {
+        "eventIdentifier": props.eventIdentifier,
+        "eventIndex": props.eventIndex,
+        "node": props.nodeNumber,
+        "variables": {}
+    }
+  }
 })
 
 
@@ -185,9 +194,9 @@ const checkFileLoad = () => {
         actions: [ { label: 'Dismiss' } ]
       })
       store.state.loadFile_notification_raised[props.nodeNumber] = true;
-    } 
-    else if ((store.state.nodes[props.nodeNumber].moduleDescriptorFilename != undefined)  
-      && (store.state.nodeDescriptors[props.nodeNumber] == undefined)) 
+    }
+    else if ((store.state.nodes[props.nodeNumber].moduleDescriptorFilename != undefined)
+      && (store.state.nodeDescriptors[props.nodeNumber] == undefined))
     {
       $q.notify({
         message: 'Failed to load module file ' + store.state.nodes[props.nodeNumber].moduleDescriptorFilename,
@@ -199,11 +208,11 @@ const checkFileLoad = () => {
       store.state.loadFile_notification_raised[props.nodeNumber] = true;
     }
     if (store.state.loadFile_notification_raised[props.nodeNumber]) {
-       console.log(name + `: checkLoadFile notification raised`) 
+       console.log(name + `: checkLoadFile notification raised`)
     }
   }
 }
-  
+
 
 
 
