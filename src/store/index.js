@@ -21,6 +21,7 @@ const state = reactive({
   layout: {},
   layouts_list: [],
   selected_node: 0,
+  selected_event_index: 0,
   selected_service_index: 0,
   loadFile_notification_raised: {},
   title: "MMC",
@@ -123,6 +124,17 @@ const methods = {
       "eventVariableValue": parseInt(eventVariableValue)
     })
   },
+
+  event_teach_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex, eventVariableValue){
+    console.log(name + `: event_teach_by_identifier : ${nodeNumber} : ${eventIdentifier} : ${eventVariableIndex} : ${eventVariableValue} `)
+    socket.emit('EVENT_TEACH_BY_IDENTIFIER',{
+      "nodeNumber": nodeNumber,
+      "eventIdentifier": eventIdentifier,
+      "eventVariableIndex": eventVariableIndex,
+      "eventVariableValue": parseInt(eventVariableValue)
+    })
+  },
+
   remove_event(nodeNumber, eventName) {
     socket.emit('REMOVE_EVENT', {
         "nodeNumber": nodeNumber,
@@ -216,9 +228,9 @@ const methods = {
     window.close()
   },
   request_bus_connection() {
-//    console.log(name + `: request_bus_connection`)
+    console.log(name + `: REQUEST_BUS_CONNECTION`)
     socket.emit('REQUEST_BUS_CONNECTION')
-  },
+    },
   request_version(){
     socket.emit('REQUEST_VERSION')
   },
@@ -269,11 +281,14 @@ const getters = {
     }
   },
   node_name(nodeNumber){
-    if (nodeNumber in state.layout.nodeDetails === false){
+    if (nodeNumber in state.layout.nodeDetails == false){
       state.layout.nodeDetails[nodeNumber] = {}
-      state.layout.nodeDetails[nodeNumber].name = nodeNumber
+      state.layout.nodeDetails[nodeNumber].name = nodeNumber.toString()
       state.layout.nodeDetails[nodeNumber].colour = "black"
       state.layout.nodeDetails[nodeNumber].group = ""
+    }
+    if (state.layout.nodeDetails[nodeNumber].name == undefined){
+      state.layout.nodeDetails[nodeNumber].name = nodeNumber.toString()
     }
     return state.layout.nodeDetails[nodeNumber].name
   }

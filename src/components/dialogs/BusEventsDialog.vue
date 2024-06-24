@@ -167,7 +167,7 @@ const model = computed({
 
 // model changes when Dialog opened & closed
 watch(model, () => {
-  console.log(name + `: WATCH model`)
+//  console.log(name + `: WATCH model`)
 })
 
 
@@ -191,7 +191,7 @@ watch(eventDetails, () => {
 })
 
 const update_bus_events = () => {
-  console.log(name + `:Update busEvents`)
+//  console.log(name + `:Update busEvents`)
   let displayEventListLocal = []
   let busEvents = store.state.busEvents
   // order keys

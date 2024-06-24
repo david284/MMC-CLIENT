@@ -164,13 +164,13 @@ watch(nodeDetails, () => {
 
 
 const update_rows = () => {
-  console.log(name + ': update_rows')
+//  console.log(name + ': update_rows')
   rows.value = []
   nodeList.value.forEach(node => {
     let output = {}
     output['nodeNumber'] = node.nodeNumber
     output['CANID'] = node.CANID
-    output['nodeName'] = getNodeName(node.nodeNumber)
+    output['nodeName'] = store.getters.node_name(node.nodeNumber)
 //    output['group'] = nodeGroup(node.nodeNumber)
     output['moduleName'] = node.moduleName
     output['component'] = node.component
@@ -182,13 +182,6 @@ const update_rows = () => {
   })
 }
 
-const getNodeName = (nodeNumber) => {
-  if (nodeNumber in store.state.layout.nodeDetails) {
-    return store.state.layout.nodeDetails[nodeNumber].name
-  } else {
-    return nodeNumber.toString()+' - '+store.state.nodes[nodeNumber].moduleName
-  }
-}
 
 const nodeColour = (nodeNumber) => {
   if (nodeNumber in store.state.layout.nodeDetails) {
@@ -208,9 +201,9 @@ onBeforeMount(() => {
 const checkNodeParameters = (nodeNumber) => {
   // param9 - cpu type to check if parameters have been fully retrieved
   if(store.state.nodes[nodeNumber].parameters[9]){
-    console.log(name + ": parameters exist")
+//    console.log(name + ": parameters exist")
   } else {
-    console.log(name + ": need to read parameters")
+//    console.log(name + ": need to read parameters")
     store.methods.request_all_node_parameters(nodeNumber, 20, 100)
   }
 }

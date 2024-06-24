@@ -66,7 +66,7 @@
     />
 
     <eventVariablesDialog v-model='showEventVariablesDialog'
-        :nodeNumber = store.state.selected_node
+        :nodeNumber = props.nodeNumber
         :eventIndex = selected_event_index
         :eventIdentifier = selected_event_Identifier
       />
@@ -127,7 +127,7 @@ const selected_node = computed(() =>{
   return store.state.selected_node
 })
 watch(selected_node, () => {
-  console.log(name + `: WATCH selected_node`)
+//  console.log(name + `: WATCH selected_node`)
   update_rows()
 })
 
@@ -137,7 +137,7 @@ const nodeEvents = computed(() =>{
   return Object.values(store.state.nodes[store.state.selected_node].storedEvents)
 })
 watch(nodeEvents, () => {
-  console.log(name + `: WATCH nodeEvents`)
+//  console.log(name + `: WATCH nodeEvents`)
   update_rows()
 })
 
@@ -147,7 +147,7 @@ const busEvents = computed(() =>{
   return Object.values(store.state.busEvents)
 })
 watch(busEvents, () => {
-  console.log(name + `: WATCH busEvents`)
+//  console.log(name + `: WATCH busEvents`)
   update_rows()
 })
 
@@ -157,13 +157,13 @@ const eventDetails = computed(() => {
   return store.state.layout.eventDetails
 })
 watch(eventDetails, () => {
-  console.log(name + `: WATCH eventDetails`)
+//  console.log(name + `: WATCH eventDetails`)
   update_rows()
 })
 
 
 const update_rows = () => {
-  console.log(name + ': update_rows ' + store.state.selected_node)
+//  console.log(name + ': update_rows ' + store.state.selected_node)
   rows.value = []
 
 //  console.log(name + ': update_rows: storedEvents ' + JSON.stringify(store.state.nodes[store.state.selected_node].storedEvents))
@@ -316,6 +316,7 @@ const clickTest = (nodeNumber, eventNumber, eventIndentifer) => {
 const clickVariables = (eventIndex, eventIdentifier) => {
   readEventVariables(eventIndex)
   selected_event_index.value = eventIndex
+  store.state.selected_event_index = eventIndex
   selected_event_Identifier.value = eventIdentifier
   console.log(name + `: clickVariables: node, index ` + store.state.selected_node + ' ' + selected_event_index.value)
   showEventVariablesDialog.value = true

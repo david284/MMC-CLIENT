@@ -63,7 +63,7 @@
 
   <eventVariablesDialog v-model='showEventVariablesDialog'
         :nodeNumber = store.state.selected_node
-        :eventIndex = selected_event_index
+        :eventIndex = store.state.selected_event_index
         :eventIdentifier = selected_event_Identifier
   />
 
@@ -124,6 +124,7 @@ onUpdated(() =>{
 const createEvent = () => {
   var eventIndex = getFreeEventIndex()
   selected_event_index.value = eventIndex
+  store.state.selected_event_index = eventIndex
   // to program a short event, the node number must be zero
   if (eventType.value == 'short'){newNodeNumber.value = 0}
   var eventIdentifier = parseInt(newNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
@@ -144,7 +145,7 @@ const getFreeEventIndex = () => {
     if (store.state.nodes[store.state.selected_node].storedEvents[i]) {
       continue
     } else {
-      eventIndex = i + 1
+      eventIndex = i + 3
       break
     }
   }

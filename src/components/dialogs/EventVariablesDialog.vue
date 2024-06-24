@@ -9,7 +9,7 @@
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             Event: {{ store.getters.event_name(props.eventIdentifier) }}
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            Event index: {{ store.getters.event_name(props.eventIndex) }}
+            Event index: {{ store.state.selected_event_index }}
           </div>
           <template v-slot:action>
             <q-btn color="cyan-1" size="sm" text-color="black"
@@ -70,7 +70,7 @@
             <div class="q-pa-xs row">
               <div class="text-body1">Stored event<br></div>
               <div class="text-body2">
-                <pre>{{ store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex] }}</pre>
+                <pre>{{ store.state.nodes[props.nodeNumber].storedEvents }}</pre>
               </div>
             </div>
             <q-separator />
@@ -113,7 +113,6 @@ const showManageModuleDescriptorsDialog = ref(false)
 const showVariablesDescriptor = ref(false)
 const showStoredEventJSON = ref(false)
 
-
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
   nodeNumber: {type: Number, required: true },
@@ -130,10 +129,10 @@ const model = computed({
     })
 
 watch(model, () => {
-  console.log(name + `: WATCH model`)
+//  console.log(name + `: WATCH model`)
   showRawVariables.value = false
   showVariablesDescriptor.value = false
-  console.log(name + ': watch model: props: ' + JSON.stringify(props))
+//  console.log(name + ': watch model: props: ' + JSON.stringify(props))
 
   if (!(props.eventIndex in store.state.nodes[props.nodeNumber].storedEvents)) {
     store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex] = {
@@ -147,12 +146,12 @@ watch(model, () => {
 
 
 watch(props.nodeNumber, () => {
-  console.log(name +': watch nodeNumber')
+//  console.log(name +': watch nodeNumber')
 })
 
 
 watch(props.eventIndex, () => {
-  console.log(name +': watch eventIndex')
+//  console.log(name +': watch eventIndex')
 })
 
 
@@ -164,17 +163,17 @@ onMounted(() => {
 })
 
 onUpdated(() => {
-  console.log(name + ': onUpdated: props: ' + JSON.stringify(props))
+//  console.log(name + ': onUpdated: props: ' + JSON.stringify(props))
   if ((props.nodeNumber) && (props.eventIndex)){
     if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
       variablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].eventVariables
       showDescriptorWarning.value = false
-      console.log(name + ': onUpdated: variablesDescriptor valid')
+//      console.log(name + ': onUpdated: variablesDescriptor valid')
     } else {
       variablesDescriptor.value = {}
       showRawVariables.value = true
       showDescriptorWarning.value = true
-      console.log(name + ': onUpdated: variablesDescriptor empty')
+//      console.log(name + ': onUpdated: variablesDescriptor empty')
     }
     checkFileLoad()
   }
@@ -182,7 +181,7 @@ onUpdated(() => {
 
 // raise notification if nodeDescriptor file not present
 const checkFileLoad = () => {
-  console.log(name + `: checkFileLoad`)
+//  console.log(name + `: checkFileLoad`)
   if (store.state.loadFile_notification_raised[props.nodeNumber] != true) {
     // module descriptor filename won't be created if there's no moduleName
     if( store.state.nodes[props.nodeNumber].moduleName == 'Unknown'){
@@ -208,7 +207,7 @@ const checkFileLoad = () => {
       store.state.loadFile_notification_raised[props.nodeNumber] = true;
     }
     if (store.state.loadFile_notification_raised[props.nodeNumber]) {
-       console.log(name + `: checkLoadFile notification raised`)
+//       console.log(name + `: checkLoadFile notification raised`)
     }
   }
 }
@@ -247,7 +246,7 @@ const clickToggleRaw = () => {
 }
 
 const clickToggleStoredEvent = () => {
-  console.log(name + `: clickToggleStoredEvent`)
+  console.log(name + `: clickToggleStoredEvent: selected_event_index ` + store.state.selected_event_index)
   showStoredEventJSON.value = showStoredEventJSON.value ? false : true
 }
 

@@ -45,10 +45,31 @@ const eventValue = ref()
 let eventIdentifier = store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].eventIdentifier
 
 
+
+
 const eventVariableValue = computed(() => {
-  return store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].variables[props.eventVariableIndex]
+  var value
+  for (let key in store.state.nodes[props.nodeNumber].storedEvents) {
+    if (store.state.nodes[props.nodeNumber].storedEvents[key].eventIdentifier === eventIdentifier){
+      var value = store.state.nodes[props.nodeNumber].storedEvents[key].variables[props.eventVariableIndex]
+    }
+  }
+  return value
 })
 
+const updated_event_index = computed(() => {
+  var value
+  for (let key in store.state.nodes[props.nodeNumber].storedEvents) {
+    if (store.state.nodes[props.nodeNumber].storedEvents[key].eventIdentifier === eventIdentifier){
+      var value = key
+    }
+  }
+  return value
+})
+
+watch(updated_event_index, () => {
+  store.state.selected_event_index = parseInt(updated_event_index.value)
+})
 
 watch(eventVariableValue, () => {
 eventValue.value = eventVariableValue.value
@@ -61,7 +82,8 @@ const update_event = (newValue) => {
   } else {
     error_message.value = ''
     error.value = false
-    store.methods.update_event_variable(props.nodeNumber, eventIdentifier, props.eventIndex, props.eventVariableIndex, newValue)
+//    store.methods.update_event_variable(props.nodeNumber, eventIdentifier, props.eventIndex, props.eventVariableIndex, newValue)
+    store.methods.event_teach_by_identifier(props.nodeNumber, eventIdentifier, props.eventVariableIndex, newValue)
   }
 }
 
