@@ -21,7 +21,7 @@ const state = reactive({
   layout: {},
   layouts_list: [],
   selected_node: 0,
-  selected_event_index: 0,
+//  selected_event_index: 0,
   selected_service_index: 0,
   loadFile_notification_raised: {},
   title: "MMC",
@@ -385,7 +385,8 @@ socket.on('LAYOUTS_LIST', (data) => {
 })
 
 socket.on("NODE", (data) => {
-  console.log(`RECEIVED NODE : ${data.nodeNumber} Data`)
+  console.log(`RECEIVED NODE : ${data.nodeNumber}`)
+//  console.log(`RECEIVED NODE : ${data.nodeNumber} Data: ` + JSON.stringify(data))
   state.nodes[data.nodeNumber] = data
 })
 

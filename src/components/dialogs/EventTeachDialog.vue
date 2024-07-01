@@ -146,7 +146,7 @@ const update_taught_nodes = () => {
           var nodeName = store.state.layout.nodeDetails[node.nodeNumber].name
           teRows.value.push({"number" : node.nodeNumber, "name" : nodeName, "eventIndex":event.eventIndex, "eventIdentifier":event.eventIdentifier})
           checkNodeParameters(node.nodeNumber)
-          readEventVariables(node.nodeNumber, event.eventIndex)
+//temp          readEventVariables(node.nodeNumber, event.eventIndex)
         }
       })
     }
@@ -199,7 +199,7 @@ onUpdated(() => {
 
 const readEventVariables = (nodeNumber, eventIndex) => {
   // refresh event list
-  console.log(name + `: readEventVariables: node: ` + nodeNumber + ` eventIndex: ` + eventIndex)
+//  console.log(name + `: readEventVariables: node: ` + nodeNumber + ` eventIndex: ` + eventIndex)
   store.methods.request_all_event_variables(
     nodeNumber,
     eventIndex,
@@ -221,6 +221,21 @@ const checkNodeParameters = (nodeNumber) => {
   }
 }
 
+const getFreeEventIndex = (nodeNumber) => {
+  // need to find first free event index - node parameter [4]
+  var maxEventCount = store.state.nodes[nodeNumber].parameters[4]
+  var eventIndex = null
+  for (var i=1; i < maxEventCount; i++ ){
+//    console.log(name + ': getFreeEventIndex: index ' + i)
+    if (store.state.nodes[nodeNumber].storedEvents[i]) {
+      continue
+    } else {
+      eventIndex = i + 3
+      break
+    }
+  }
+  return eventIndex
+}
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -233,17 +248,27 @@ const clickTeachEvent = () => {
   if (newNode.value != "") {
     // get node number from input value
     var array = newNode.value.split(':')
-    console.log(`teach_event : ${array[0]} : ${props.eventIdentifier}`)
+    var nodeNumberToBeTaught = parseInt(array[0])
+    var eventIndexToBeTaught = getFreeEventIndex(parseInt(array[0]))
+    console.log(`teach_event : ${nodeNumberToBeTaught} : ${eventIndexToBeTaught} : ${props.eventIdentifier}`)
+    /*
     store.methods.teach_event(array[0], props.eventIdentifier, props.eventIndex)
     // make sure parameters have been read for the taught node in case the variables get edited
     checkNodeParameters(array[0])
     newNode.value = undefined
+    */
+
+    selected_event_node.value = nodeNumberToBeTaught
+    selected_event_index.value = eventIndexToBeTaught
+    selected_event_Identifier.value = props.eventIdentifier
+    showEventVariablesDialog.value = true
+
   }
 }
 
 const clickVariables = (nodeNumber, eventIndex, eventIdentifier) => {
   console.log(name + `: clickVariables ` + nodeNumber + ' ' + eventIndex + ' ' + eventIdentifier)
-  readEventVariables(nodeNumber, eventIndex)
+//temp  readEventVariables(nodeNumber, eventIndex)
   selected_event_node.value = nodeNumber
   selected_event_index.value = eventIndex
   selected_event_Identifier.value = eventIdentifier

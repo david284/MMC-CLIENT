@@ -108,16 +108,16 @@ const isVisible = (item) =>{
 
 
 onBeforeMount(() => {
-  console.log(name + `: onBeforeMount`)
+//  console.log(name + `: onBeforeMount`)
 //  console.log(name + `: onBeforeMount: props: ` + JSON.stringify(props))
 })
 
 onMounted(() => {
-  console.log(name + `: onMounted`)
+//  console.log(name + `: onMounted`)
 })
 
 onUpdated(() => {
-  console.log(name + `: onUpdated`)
+//  console.log(name + `: onUpdated`)
 //  console.log(name + `: onUpdated: props: ` + JSON.stringify(props))
 })
 

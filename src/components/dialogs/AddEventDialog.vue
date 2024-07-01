@@ -63,7 +63,7 @@
 
   <eventVariablesDialog v-model='showEventVariablesDialog'
         :nodeNumber = store.state.selected_node
-        :eventIndex = store.state.selected_event_index
+        :eventIndex = selected_event_index
         :eventIdentifier = selected_event_Identifier
   />
 
@@ -124,12 +124,19 @@ onUpdated(() =>{
 const createEvent = () => {
   var eventIndex = getFreeEventIndex()
   selected_event_index.value = eventIndex
-  store.state.selected_event_index = eventIndex
   // to program a short event, the node number must be zero
   if (eventType.value == 'short'){newNodeNumber.value = 0}
   var eventIdentifier = parseInt(newNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
                + parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
   selected_event_Identifier.value = eventIdentifier
+  if (!(eventIndex in store.state.nodes[store.state.selected_node].storedEvents)) {
+    store.state.nodes[store.state.selected_node].storedEvents[eventIndex] = {
+        "eventIdentifier": eventIdentifier,
+        "eventIndex": eventIndex,
+        "node": store.state.selected_node,
+        "variables": {}
+    }
+  }
   console.log(`createEvent - index ` + eventIndex + ` eventIdentifier ` + eventIdentifier)
 //  store.methods.teach_event(store.state.selected_node, eventIdentifier, eventIndex, )
   // event list will be refreshed on acknowledge (WRACK, GRSP) from node
@@ -141,7 +148,7 @@ const getFreeEventIndex = () => {
   var maxEventCount = store.state.nodes[store.state.selected_node].parameters[4]
   var eventIndex = null
   for (var i=1; i < maxEventCount; i++ ){
-    console.log('i ' + i)
+//    console.log(name + ': i ' + i)
     if (store.state.nodes[store.state.selected_node].storedEvents[i]) {
       continue
     } else {

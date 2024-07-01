@@ -275,7 +275,8 @@ const clickDelete = (eventIndentifier) => {
 
 const clickRefresh = () => {
   console.log(name + `: clickRefresh`)
-  store.methods.request_all_node_events(store.state.selected_node)
+//  store.methods.request_all_node_events(store.state.selected_node)
+update_rows()
 }
 
 const clickSendOff = (eventIdentifier) => {
@@ -316,7 +317,6 @@ const clickTest = (nodeNumber, eventNumber, eventIndentifer) => {
 const clickVariables = (eventIndex, eventIdentifier) => {
   readEventVariables(eventIndex)
   selected_event_index.value = eventIndex
-  store.state.selected_event_index = eventIndex
   selected_event_Identifier.value = eventIdentifier
   console.log(name + `: clickVariables: node, index ` + store.state.selected_node + ' ' + selected_event_index.value)
   showEventVariablesDialog.value = true

@@ -9,7 +9,7 @@
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             Event: {{ store.getters.event_name(props.eventIdentifier) }}
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            Event index: {{ store.state.selected_event_index }}
+            <!-- Event index: {{ storedEventsIndex }} -->
           </div>
           <template v-slot:action>
             <q-btn color="cyan-1" size="sm" text-color="black"
@@ -37,7 +37,7 @@
             <EventVariables v-if="store.state.nodeDescriptors[props.nodeNumber]"
               :configuration = store.state.nodeDescriptors[props.nodeNumber].eventVariables
               :nodeNumber = props.nodeNumber
-              :eventIndex = props.eventIndex
+              :eventIndex = storedEventsIndex
               :eventIdentifier = props.eventIdentifier>
             </EventVariables>
 
@@ -48,7 +48,7 @@
             <EventVariableRaw
               :eventVariableIndex="n"
               :nodeNumber="props.nodeNumber"
-              :eventIndex = props.eventIndex
+              :eventIndex = storedEventsIndex
               v-for="n in store.state.nodes[props.nodeNumber].parameters[5]"
               :key="n">
             </EventVariableRaw>
@@ -81,7 +81,7 @@
       </q-card>
 
       <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Toggle stored event view" @click="clickToggleStoredEvent()"/>
+        <q-btn flat label="Toggle stored events view" @click="clickToggleStoredEvents()"/>
         <q-btn flat label="Toggle variable descriptor view" @click="clickToggleVariablesDescriptor()"/>
         <q-btn flat label="Toggle raw view" @click="clickToggleRaw()"/>
       </q-card-actions>
@@ -112,6 +112,7 @@ const showDescriptorWarning = ref(false)
 const showManageModuleDescriptorsDialog = ref(false)
 const showVariablesDescriptor = ref(false)
 const showStoredEventJSON = ref(false)
+const storedEventsIndex = ref(null)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -132,16 +133,8 @@ watch(model, () => {
 //  console.log(name + `: WATCH model`)
   showRawVariables.value = false
   showVariablesDescriptor.value = false
+  storedEventsIndex.value = props.eventIndex
 //  console.log(name + ': watch model: props: ' + JSON.stringify(props))
-
-  if (!(props.eventIndex in store.state.nodes[props.nodeNumber].storedEvents)) {
-    store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex] = {
-        "eventIdentifier": props.eventIdentifier,
-        "eventIndex": props.eventIndex,
-        "node": props.nodeNumber,
-        "variables": {}
-    }
-  }
 })
 
 
@@ -155,6 +148,22 @@ watch(props.eventIndex, () => {
 })
 
 
+const eventIndex = computed(() => {
+  var value
+  for (let key in store.state.nodes[props.nodeNumber].storedEvents) {
+    if (store.state.nodes[props.nodeNumber].storedEvents[key].eventIdentifier === props.eventIdentifier){
+      value = parseInt(key)
+    }
+  }
+  return value
+})
+/*
+watch(eventIndex, () => {
+//  console.log(name +': watch eventIndex: ' + eventIndex.value)
+})
+*/
+
+
 
 onBeforeMount(() => {
 })
@@ -163,7 +172,14 @@ onMounted(() => {
 })
 
 onUpdated(() => {
+  console.log(name + ': onUpdated:')
 //  console.log(name + ': onUpdated: props: ' + JSON.stringify(props))
+  // check if storedEventIndex has been changed by the module itself
+  for (let key in store.state.nodes[props.nodeNumber].storedEvents) {
+    if (store.state.nodes[props.nodeNumber].storedEvents[key].eventIdentifier === props.eventIdentifier){
+      storedEventsIndex.value = parseInt(key)
+    }
+  }
   if ((props.nodeNumber) && (props.eventIndex)){
     if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
       variablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].eventVariables
@@ -245,8 +261,8 @@ const clickToggleRaw = () => {
   }
 }
 
-const clickToggleStoredEvent = () => {
-  console.log(name + `: clickToggleStoredEvent: selected_event_index ` + store.state.selected_event_index)
+const clickToggleStoredEvents = () => {
+  console.log(name + `: clickToggleStoredEvents:`)
   showStoredEventJSON.value = showStoredEventJSON.value ? false : true
 }
 
