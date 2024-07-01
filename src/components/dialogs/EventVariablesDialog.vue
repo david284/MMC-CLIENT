@@ -49,6 +49,7 @@
               :eventVariableIndex="n"
               :nodeNumber="props.nodeNumber"
               :eventIndex = storedEventsIndex
+              :eventIdentifier = props.eventIdentifier
               v-for="n in store.state.nodes[props.nodeNumber].parameters[5]"
               :key="n">
             </EventVariableRaw>
@@ -149,21 +150,20 @@ watch(props.eventIndex, () => {
 
 
 const eventIndex = computed(() => {
-  var value
+  var value = undefined
+  /*
   for (let key in store.state.nodes[props.nodeNumber].storedEvents) {
     if (store.state.nodes[props.nodeNumber].storedEvents[key].eventIdentifier === props.eventIdentifier){
       value = parseInt(key)
     }
   }
+    */
   return value
 })
-/*
+
 watch(eventIndex, () => {
 //  console.log(name +': watch eventIndex: ' + eventIndex.value)
 })
-*/
-
-
 
 onBeforeMount(() => {
 })

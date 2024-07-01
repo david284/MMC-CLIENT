@@ -17,6 +17,8 @@
 
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
+import {getStoredEventIndex} from "components/functions/EventFunctions.js"
+
 
 const props = defineProps({
   "nodeNumber": {
@@ -25,6 +27,10 @@ const props = defineProps({
   },
   "eventIndex": {
     type: Number,
+    required: true
+  },
+  "eventIdentifier": {
+    type: String,
     required: true
   },
   "eventVariableIndex": {
@@ -37,27 +43,31 @@ const props = defineProps({
   }
 })
 
+const name = 'EventVariableRaw'
 const label = props.name ? props.name : "Event Variable " + props.eventVariableIndex
 const store = inject('store')
 const error = ref(false)
 const error_message = ref('')
 const eventValue = ref()
-let eventIdentifier = store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].eventIdentifier
-
 
 const eventVariableValue = computed(() => {
   var value
-  for (let key in store.state.nodes[props.nodeNumber].storedEvents) {
-    if (store.state.nodes[props.nodeNumber].storedEvents[key].eventIdentifier === eventIdentifier){
-      var value = store.state.nodes[props.nodeNumber].storedEvents[key].variables[props.eventVariableIndex]
-    }
+  try {
+  // get position in array - it may have changed
+  var key = getStoredEventIndex(store, props.nodeNumber, props.eventIdentifier)
+//  console.log(name +': eventVariableValue: index ' + key)
+  // get value 
+  value = store.state.nodes[props.nodeNumber].storedEvents[key].variables[props.eventVariableIndex]
+  } catch (err){
+//    console.log(name +': eventVariableValue ' + err) 
   }
-  return value
+  return value 
 })
 
 
 watch(eventVariableValue, () => {
-eventValue.value = eventVariableValue.value
+  eventValue.value = eventVariableValue.value
+  console.log(name +': watch eventVariableValue')
 })
 
 
@@ -68,12 +78,13 @@ const update_event = (newValue) => {
   } else {
     error_message.value = ''
     error.value = false
-    store.methods.event_teach_by_identifier(props.nodeNumber, eventIdentifier, props.eventVariableIndex, newValue)
+    store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex, newValue)
   }
 }
 
 onMounted(() => {
   eventValue.value = store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].variables[props.eventVariableIndex]
+  console.log(name +': onMounted: eventValue ' + eventValue.value)
 })
 
 </script>

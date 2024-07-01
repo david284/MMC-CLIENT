@@ -1,13 +1,28 @@
 
 import {inject} from "vue";
 
-const name = "EventListFunction"
+const name = "EventFunctions"
 
 export function  getEventCount (nodeNumber, store) {
   console.log (name + " getEventList " + nodeNumber)
   var count = Object.keys(geteventslist(nodeNumber, store)).length
   console.log (name + " getEventList - count " + count)
   return count
+}
+
+
+export function getStoredEventIndex (store, nodeNumber, eventIdentifier) {
+//  console.log(name +': getStoredEventIndex: ' + nodeNumber, eventIdentifier) 
+  var index = undefined
+  try {
+    for (let key in store.state.nodes[nodeNumber].storedEvents) {
+      if (store.state.nodes[nodeNumber].storedEvents[key].eventIdentifier === eventIdentifier){
+        index = parseInt(key)
+      }
+    }
+  } catch (err){}
+  console.log(name +': getStoredEventIndex: result ' + index) 
+  return index
 }
 
 
