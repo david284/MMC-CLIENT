@@ -56,15 +56,15 @@
       </div>
     </div>
       <q-card-actions align="right" class="text-primary">
-        <q-btn v-if="(addEventEnabled)" flat label="Add Event" v-close-popup @click="createEvent()"/>
+        <q-btn v-if="(addEventEnabled)" flat label="Add Event" v-close-popup @click="createNewEvent()"/>
       </q-card-actions>
     </q-card>
   </q-dialog>
 
   <eventVariablesDialog v-model='showEventVariablesDialog'
         :nodeNumber = store.state.selected_node
-        :eventIndex = selected_event_index
-        :eventIdentifier = selected_event_Identifier
+        :eventIndex = new_event_index
+        :eventIdentifier = new_event_Identifier
   />
 
 
@@ -81,10 +81,8 @@ const newEventNumber = ref()
 const addEventEnabled = ref(true)
 var eventType = ref()
 const showEventVariablesDialog = ref(false)
-const selected_event_Identifier = ref("") // Dialog will complain if null
-const selected_event_node = ref(0) // Dialog will complain if null
-const selected_event_number = ref(0) // Dialog will complain if null
-const selected_event_index = ref(0) // Dialog will complain if null
+const new_event_Identifier = ref("") // Dialog will complain if null
+const new_event_index = ref(0) // Dialog will complain if null
 
 
 const props = defineProps({
@@ -121,24 +119,22 @@ onUpdated(() =>{
   }
 })
 
-const createEvent = () => {
-  var eventIndex = getFreeEventIndex()
-  selected_event_index.value = eventIndex
+const createNewEvent = () => {
+//  var eventIndex = getFreeEventIndex()
+  new_event_index.value = getFreeEventIndex()
   // to program a short event, the node number must be zero
   if (eventType.value == 'short'){newNodeNumber.value = 0}
-  var eventIdentifier = parseInt(newNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
+  // need to create an eventIdentifier from entered values
+  new_event_Identifier.value = parseInt(newNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
                + parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
-  selected_event_Identifier.value = eventIdentifier
-  if (!(eventIndex in store.state.nodes[store.state.selected_node].storedEvents)) {
-    store.state.nodes[store.state.selected_node].storedEvents[eventIndex] = {
-        "eventIdentifier": eventIdentifier,
-        "eventIndex": eventIndex,
-        "node": store.state.selected_node,
-        "variables": {}
-    }
+  // create temporary event entry in storedEvent table (will be overwritten when module read after teach)
+  store.state.nodes[store.state.selected_node].storedEvents[new_event_index.value] = {
+      "eventIdentifier": new_event_Identifier.value,
+      "eventIndex": new_event_index.value,
+      "node": store.state.selected_node,
+      "variables": {}
   }
-  console.log(`createEvent - index ` + eventIndex + ` eventIdentifier ` + eventIdentifier)
-//  store.methods.teach_event(store.state.selected_node, eventIdentifier, eventIndex, )
+  console.log(`createNewEvent - newEventIndex ` + new_event_index.value + ` newEventIdentifier ` + new_event_Identifier.value)
   // event list will be refreshed on acknowledge (WRACK, GRSP) from node
   showEventVariablesDialog.value = true
 }
