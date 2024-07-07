@@ -18,6 +18,7 @@
 
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
+import {getStoredEventIndex} from "components/functions/EventFunctions.js"
 
 const props = defineProps({
   "nodeNumber": {
@@ -26,6 +27,10 @@ const props = defineProps({
   },
   "eventIndex": {
     type: Number,
+    required: true
+  },
+  "eventIdentifier": {
+    type: String,
     required: true
   },
   "eventVariableIndex": {
@@ -71,7 +76,6 @@ const store = inject('store')
 const error = ref(false)
 const error_message = ref('')
 const eventValue = ref()
-let eventIdentifier = store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].eventIdentifier
 //console.log(`EventVariableNumber: Props : ${JSON.stringify(props)}`)
 const bitMask = computed(() => {
   var bitMask = 0;
@@ -84,7 +88,17 @@ console.log(`EventVariableNumber: bitMask2 : ${bitMask.value}`)
 
 
 const eventVariableValue = computed(() => {
-  return store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].variables[props.eventVariableIndex]
+  var value
+  try {
+  // get position in array - it may have changed
+  var key = getStoredEventIndex(store, props.nodeNumber, props.eventIdentifier)
+  //  console.log(name +': eventVariableValue: index ' + key)
+  // get value 
+  value = store.state.nodes[props.nodeNumber].storedEvents[key].variables[props.eventVariableIndex]
+  } catch (err){
+  //    console.log(name +': eventVariableValue ' + err) 
+  }
+  return value 
 })
 
 watch(eventVariableValue, () => {
@@ -113,15 +127,16 @@ const update_event = (newValue) => {
 
     error_message.value = ''
     error.value = false
-    store.methods.update_event_variable(props.nodeNumber, eventIdentifier, props.eventIndex, props.eventVariableIndex, byteValue)
+    //store.methods.update_event_variable(props.nodeNumber, eventIdentifier, props.eventIndex, props.eventVariableIndex, byteValue)
+    store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex, byteValue)
   }
 }
 
 
 onMounted(() => {
   console.log(`EventVariableNumber: onMounted`)
-  let startValue = store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].variables[props.eventVariableIndex]
-  eventValue.value = ((startValue  & bitMask.value)  >> props.startBit) + props.displayOffset
+//  let startValue = store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].variables[props.eventVariableIndex]
+//  eventValue.value = ((startValue  & bitMask.value)  >> props.startBit) + props.displayOffset
   //eventValue.value = ((startValue & bitMask.value) >> props.startBit) + props.displayOffset
 })
 

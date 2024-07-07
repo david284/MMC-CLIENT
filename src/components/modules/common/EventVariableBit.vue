@@ -9,6 +9,7 @@
 
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
+import {getStoredEventIndex} from "components/functions/EventFunctions.js"
 
 //name: "EventVariable"
 const props = defineProps({
@@ -18,6 +19,10 @@ const props = defineProps({
   },
   "eventIndex": {
     type: Number,
+    required: true
+  },
+  "eventIdentifier": {
+    type: String,
     required: true
   },
   "eventVariableIndex": {
@@ -51,11 +56,21 @@ let eventIdentifier = store.state.nodes[props.nodeNumber].storedEvents[props.eve
 
 
 const eventVariableValue = computed(() => {
-  return store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].variables[props.eventVariableIndex]
+  var value
+  try {
+  // get position in array - it may have changed
+  var key = getStoredEventIndex(store, props.nodeNumber, props.eventIdentifier)
+  //  console.log(name +': eventVariableValue: index ' + key)
+  // get value 
+  value = store.state.nodes[props.nodeNumber].storedEvents[key].variables[props.eventVariableIndex]
+  } catch (err){
+  //    console.log(name +': eventVariableValue ' + err) 
+  }
+  return value 
 })
 
 watch(eventVariableValue, () => {
-  checked.value = store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].variables[props.eventVariableIndex] & bitArray[props.bit] ? true : false
+  checked.value = eventVariableValue.value & bitArray[props.bit] ? true : false
 })
 
 const update_checked = () => {
@@ -69,7 +84,8 @@ const update_checked = () => {
   }
   console.log(`EventVariableBit update_checked-2 ${checked.value} ${byteValue}`)
   //store.methods.update_node_variable(props.NodeNumber, props.VariableIndex, byteValue)
-  store.methods.update_event_variable(props.nodeNumber, eventIdentifier, props.eventIndex, props.eventVariableIndex, byteValue)
+//  store.methods.update_event_variable(props.nodeNumber, eventIdentifier, props.eventIndex, props.eventVariableIndex, byteValue)
+  store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex, byteValue)
 }
 
 //console.log(`EventVariableBit ` + eventVariableValue.value)

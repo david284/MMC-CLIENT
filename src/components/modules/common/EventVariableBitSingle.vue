@@ -6,6 +6,7 @@
       <EventVariableBit
         :nodeNumber=nodeNumber
         :eventIndex=eventIndex
+        :eventIdentifier=eventIdentifier
         :eventVariableIndex=eventVariableIndex
         :bit=bit
       >
@@ -17,7 +18,6 @@
 
 <script setup>
 import EventVariableBit from "components/modules/common/EventVariableBit"
-
 import {inject} from "vue";
 import {onMounted} from "vue";
 
@@ -30,6 +30,10 @@ const props = defineProps({
   },
   "eventIndex": {
     type: Number,
+    required: true
+  },
+  "eventIdentifier": {
+    type: String,
     required: true
   },
   "eventVariableIndex": {

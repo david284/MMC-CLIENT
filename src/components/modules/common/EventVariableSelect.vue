@@ -18,6 +18,7 @@
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
 import {overloadedLabel} from "components/modules/common/CommonLogicParsers.js";
+import {getStoredEventIndex} from "components/functions/EventFunctions.js"
 
 const props = defineProps({
   "nodeNumber": {
@@ -26,6 +27,10 @@ const props = defineProps({
   },
   "eventIndex": {
     type: Number,
+    required: true
+  },
+  "eventIdentifier": {
+    type: String,
     required: true
   },
   "eventVariableIndex": {
@@ -64,7 +69,17 @@ let eventIdentifier = store.state.nodes[props.nodeNumber].storedEvents[props.eve
 var items = ref();
 
 const variableValue = computed(() =>{
-  return store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].variables[props.eventVariableIndex]
+  var value
+  try {
+  // get position in array - it may have changed
+  var key = getStoredEventIndex(store, props.nodeNumber, props.eventIdentifier)
+  //  console.log(name +': eventVariableValue: index ' + key)
+  // get value 
+  value = store.state.nodes[props.nodeNumber].storedEvents[key].variables[props.eventVariableIndex]
+  } catch (err){
+  //    console.log(name +': eventVariableValue ' + err) 
+  }
+  return value 
 })
 
 watch(variableValue, () => {

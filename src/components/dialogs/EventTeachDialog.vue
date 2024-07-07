@@ -257,6 +257,13 @@ const clickTeachEvent = () => {
     checkNodeParameters(array[0])
     newNode.value = undefined
     */
+  // create temporary event entry in storedEvent table (will be overwritten when module read after teach)
+  store.state.nodes[nodeNumberToBeTaught].storedEvents[eventIndexToBeTaught] = {
+      "eventIdentifier": props.eventIdentifier,
+      "eventIndex": eventIndexToBeTaught,
+      "node": nodeNumberToBeTaught,
+      "variables": {}
+  }
 
     selected_event_node.value = nodeNumberToBeTaught
     selected_event_index.value = eventIndexToBeTaught

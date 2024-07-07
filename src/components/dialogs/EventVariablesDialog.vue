@@ -173,25 +173,29 @@ onMounted(() => {
 
 onUpdated(() => {
   console.log(name + ': onUpdated:')
-//  console.log(name + ': onUpdated: props: ' + JSON.stringify(props))
-  // check if storedEventIndex has been changed by the module itself
-  for (let key in store.state.nodes[props.nodeNumber].storedEvents) {
-    if (store.state.nodes[props.nodeNumber].storedEvents[key].eventIdentifier === props.eventIdentifier){
-      storedEventsIndex.value = parseInt(key)
+  try {
+  //  console.log(name + ': onUpdated: props: ' + JSON.stringify(props))
+    // check if storedEventIndex has been changed by the module itself
+    for (let key in store.state.nodes[props.nodeNumber].storedEvents) {
+      if (store.state.nodes[props.nodeNumber].storedEvents[key].eventIdentifier === props.eventIdentifier){
+        storedEventsIndex.value = parseInt(key)
+      }
     }
-  }
-  if ((props.nodeNumber) && (props.eventIndex)){
-    if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
-      variablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].eventVariables
-      showDescriptorWarning.value = false
-//      console.log(name + ': onUpdated: variablesDescriptor valid')
-    } else {
-      variablesDescriptor.value = {}
-      showRawVariables.value = true
-      showDescriptorWarning.value = true
-//      console.log(name + ': onUpdated: variablesDescriptor empty')
+    if ((props.nodeNumber) && (props.eventIndex)){
+      if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
+        variablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].eventVariables
+        showDescriptorWarning.value = false
+  //      console.log(name + ': onUpdated: variablesDescriptor valid')
+      } else {
+        variablesDescriptor.value = {}
+        showRawVariables.value = true
+        showDescriptorWarning.value = true
+  //      console.log(name + ': onUpdated: variablesDescriptor empty')
+      }
+      checkFileLoad()
     }
-    checkFileLoad()
+  } catch (err ) {
+    console.log(name + ': onUpdated: error: ' + err)    
   }
 })
 
