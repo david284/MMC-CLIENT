@@ -22,10 +22,10 @@ export function parseLogicElement (nodeNumber, logic, store, argument3) {
   var result = true
 
   //logic for event variable bits
+  // in this logic case, argument3 is the event identifier
   if (logic.evBit != undefined){
     if (argument3 != undefined){
-      // in this logic case, argument3 is the event index
-      var eventVariables = store.state.nodes[nodeNumber].storedEvents[argument3]
+      var eventVariables = store.state.nodes[nodeNumber].storedEventsNI[argument3]
       if (eventVariables){
         var value = eventVariables.variables[logic.evBit.index]
         value = (value & 2 ** logic.evBit.bit) >> logic.evBit.bit
@@ -36,9 +36,10 @@ export function parseLogicElement (nodeNumber, logic, store, argument3) {
   }
 
   //logic for event variables
+  // in this logic case, argument3 is the event identifier
   if (logic.ev != undefined){
     if (argument3 != undefined){
-      var eventVariables = store.state.nodes[nodeNumber].storedEvents[argument3]
+      var eventVariables = store.state.nodes[nodeNumber].storedEventsNI[argument3]
       if (eventVariables){
         var value = eventVariables.variables[logic.ev]
         result = testCondition(value, logic)
