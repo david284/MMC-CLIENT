@@ -17,15 +17,9 @@
 
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
-import {getStoredEventIndex} from "components/functions/EventFunctions.js"
-
 
 const props = defineProps({
   "nodeNumber": {
-    type: Number,
-    required: true
-  },
-  "eventIndex": {
     type: Number,
     required: true
   },
@@ -51,39 +45,33 @@ const error_message = ref('')
 const eventValue = ref()
 
 const eventVariableValue = computed(() => {
-  var value
-  try {
-  // get position in array - it may have changed
-  var key = getStoredEventIndex(store, props.nodeNumber, props.eventIdentifier)
-//  console.log(name +': eventVariableValue: index ' + key)
-  // get value 
-  value = store.state.nodes[props.nodeNumber].storedEvents[key].variables[props.eventVariableIndex]
-  } catch (err){
-//    console.log(name +': eventVariableValue ' + err) 
-  }
-  return value 
+  return store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
 })
 
 
 watch(eventVariableValue, () => {
   eventValue.value = eventVariableValue.value
-  console.log(name +': watch eventVariableValue')
+//  console.log(name +': watch eventVariableValue')
 })
 
 
 const update_event = (newValue) => {
-  if (newValue < 0 || newValue > 255 ||newValue =='') {
-    error.value = true
-    error_message.value = 'Invalid Value'
-  } else {
-    error_message.value = ''
-    error.value = false
-    store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex, newValue)
+  try{
+    if (newValue < 0 || newValue > 255 ||newValue =='') {
+      error.value = true
+      error_message.value = 'Invalid Value'
+    } else {
+      error_message.value = ''
+      error.value = false
+      store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex, newValue)
+    }
+  } catch (err){
+    console.log(name +': update_event : ' + err)    
   }
 }
 
 onMounted(() => {
-  eventValue.value = store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].variables[props.eventVariableIndex]
+  eventValue.value = store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
   console.log(name +': onMounted: eventValue ' + eventValue.value)
 })
 

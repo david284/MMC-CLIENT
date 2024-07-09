@@ -26,10 +26,6 @@ const props = defineProps({
     type: Number,
     required: true
   },
-  "eventIndex": {
-    type: Number,
-    required: true
-  },
   "eventIdentifier": {
     type: String,
     required: true
@@ -80,7 +76,6 @@ const label = props.name ? props.name : "Event Variable " + props.eventVariableI
 const store = inject('store')
 const error = ref(false)
 const error_message = ref('')
-let eventIdentifier = store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].eventIdentifier
 //console.log(`EventVariableSlider Props : ${JSON.stringify(props)}`)
 const bitMask = computed(() => {
   var bitMask = 0;
@@ -93,15 +88,11 @@ console.log(`EventVariableSlider: bitMask : ${bitMask.value}`)
 
 const sliderValue = computed({
   get() {
-    // get position in array - it may have changed
-    var key = getStoredEventIndex(store, props.nodeNumber, props.eventIdentifier)
-    return ((store.state.nodes[props.nodeNumber].storedEvents[key].variables[props.eventVariableIndex] & bitMask.value) >> props.startBit)
+    return store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
   },
   set(newValue) {
-    // get position in array - it may have changed
-    var key = getStoredEventIndex(store, props.nodeNumber, props.eventIdentifier)
     // get previous value, as starting point for updated byte value
-    let newByteValue = store.state.nodes[props.nodeNumber].storedEvents[key].variables[props.eventVariableIndex]
+    let newByteValue = store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
     console.log(`OldByteValue : ${newByteValue}`)
     console.log(`NewValue : ${newValue}`)
     // not sure we need to do a range check as the slider control uses max & min anyway...
@@ -116,7 +107,6 @@ const sliderValue = computed({
 
       error.value = false
       error_message.value = ''
-//      store.methods.update_event_variable(props.nodeNumber, eventIdentifier, props.eventIndex, props.eventVariableIndex, newByteValue)
       store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex, newByteValue)
     } else {
       console.log(`Invalid Value : ${newValue}`)

@@ -5,7 +5,6 @@
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
       <EventVariableBit
         :nodeNumber=nodeNumber
-        :eventIndex=eventIndex
         :eventIdentifier=eventIdentifier
         :eventVariableIndex=eventVariableIndex
         :bit=bit

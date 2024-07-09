@@ -25,10 +25,6 @@ const props = defineProps({
     type: Number,
     required: true
   },
-  "eventIndex": {
-    type: Number,
-    required: true
-  },
   "eventIdentifier": {
     type: String,
     required: true
@@ -88,21 +84,10 @@ console.log(`EventVariableNumber: bitMask2 : ${bitMask.value}`)
 
 
 const eventVariableValue = computed(() => {
-  var value
-  try {
-  // get position in array - it may have changed
-  var key = getStoredEventIndex(store, props.nodeNumber, props.eventIdentifier)
-  //  console.log(name +': eventVariableValue: index ' + key)
-  // get value 
-  value = store.state.nodes[props.nodeNumber].storedEvents[key].variables[props.eventVariableIndex]
-  } catch (err){
-  //    console.log(name +': eventVariableValue ' + err) 
-  }
-  return value 
+  return store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
 })
 
 watch(eventVariableValue, () => {
-//eventValue.value = ((eventVariableValue.value & bitMask.value) >> props.startBit) + props.displayOffset
 eventValue.value = ((eventVariableValue.value & bitMask.value) >> props.startBit)  + props.displayOffset
 })
 
@@ -127,7 +112,6 @@ const update_event = (newValue) => {
 
     error_message.value = ''
     error.value = false
-    //store.methods.update_event_variable(props.nodeNumber, eventIdentifier, props.eventIndex, props.eventVariableIndex, byteValue)
     store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex, byteValue)
   }
 }
@@ -135,9 +119,8 @@ const update_event = (newValue) => {
 
 onMounted(() => {
   console.log(`EventVariableNumber: onMounted`)
-//  let startValue = store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].variables[props.eventVariableIndex]
-//  eventValue.value = ((startValue  & bitMask.value)  >> props.startBit) + props.displayOffset
-  //eventValue.value = ((startValue & bitMask.value) >> props.startBit) + props.displayOffset
+  let startValue = store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
+  eventValue.value = ((startValue & bitMask.value) >> props.startBit) + props.displayOffset
 })
 
 </script>

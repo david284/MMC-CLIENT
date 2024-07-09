@@ -279,6 +279,15 @@ const getters = {
       return ""
     }
   },
+  event_variable_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex){
+    try{
+      return state.nodes[nodeNumber].storedEventsNI[eventIdentifier].variables[eventVariableIndex]
+    } catch (err){
+      console.log(name + `: event_variable_by_identifier: ${err}`)
+      return 0
+    }
+  },
+
   node_name(nodeNumber){
     if (nodeNumber in state.layout.nodeDetails == false){
       state.layout.nodeDetails[nodeNumber] = {}

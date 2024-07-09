@@ -48,12 +48,11 @@
             <EventVariableRaw
               :eventVariableIndex="n"
               :nodeNumber="props.nodeNumber"
-              :eventIndex = storedEventsIndex
               :eventIdentifier = props.eventIdentifier
               v-for="n in store.state.nodes[props.nodeNumber].parameters[5]"
               :key="n">
             </EventVariableRaw>
-            <q-separator />
+          <q-separator />
           </q-card-section>
 
           <q-card-section class="q-pa-xs" v-if="showVariablesDescriptor">
@@ -69,9 +68,9 @@
 
           <q-card-section class="q-pa-xs" v-if="showStoredEventJSON">
             <div class="q-pa-xs row">
-              <div class="text-body1">Stored event<br></div>
+              <div class="text-body1">Stored events<br></div>
               <div class="text-body2">
-                <pre>{{ store.state.nodes[props.nodeNumber].storedEvents }}</pre>
+                <pre>{{ store.state.nodes[props.nodeNumber].storedEventsNI }}</pre>
               </div>
             </div>
             <q-separator />
@@ -144,26 +143,6 @@ watch(props.nodeNumber, () => {
 })
 
 
-watch(props.eventIndex, () => {
-//  console.log(name +': watch eventIndex')
-})
-
-
-const eventIndex = computed(() => {
-  var value = undefined
-  /*
-  for (let key in store.state.nodes[props.nodeNumber].storedEvents) {
-    if (store.state.nodes[props.nodeNumber].storedEvents[key].eventIdentifier === props.eventIdentifier){
-      value = parseInt(key)
-    }
-  }
-    */
-  return value
-})
-
-watch(eventIndex, () => {
-//  console.log(name +': watch eventIndex: ' + eventIndex.value)
-})
 
 onBeforeMount(() => {
 })
@@ -171,17 +150,21 @@ onBeforeMount(() => {
 onMounted(() => {
 })
 
+
 onUpdated(() => {
   console.log(name + ': onUpdated:')
   try {
   //  console.log(name + ': onUpdated: props: ' + JSON.stringify(props))
     // check if storedEventIndex has been changed by the module itself
     for (let key in store.state.nodes[props.nodeNumber].storedEvents) {
+      /*
       if (store.state.nodes[props.nodeNumber].storedEvents[key].eventIdentifier === props.eventIdentifier){
         storedEventsIndex.value = parseInt(key)
       }
+        */
     }
     if ((props.nodeNumber) && (props.eventIndex)){
+    
       if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
         variablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].eventVariables
         showDescriptorWarning.value = false
@@ -193,11 +176,15 @@ onUpdated(() => {
   //      console.log(name + ': onUpdated: variablesDescriptor empty')
       }
       checkFileLoad()
+      
+    } else {
+      showRawVariables.value = true
     }
   } catch (err ) {
     console.log(name + ': onUpdated: error: ' + err)    
   }
 })
+
 
 // raise notification if nodeDescriptor file not present
 const checkFileLoad = () => {

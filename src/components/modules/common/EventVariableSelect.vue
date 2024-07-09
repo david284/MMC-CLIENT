@@ -25,10 +25,6 @@ const props = defineProps({
     type: Number,
     required: true
   },
-  "eventIndex": {
-    type: Number,
-    required: true
-  },
   "eventIdentifier": {
     type: String,
     required: true
@@ -65,21 +61,10 @@ const props = defineProps({
 const label = props.name ? props.name : "Variable" + props.eventVariableIndex
 const store = inject('store')
 const selectVariable = ref()
-let eventIdentifier = store.state.nodes[props.nodeNumber].storedEvents[props.eventIndex].eventIdentifier
 var items = ref();
 
 const variableValue = computed(() =>{
-  var value
-  try {
-  // get position in array - it may have changed
-  var key = getStoredEventIndex(store, props.nodeNumber, props.eventIdentifier)
-  //  console.log(name +': eventVariableValue: index ' + key)
-  // get value 
-  value = store.state.nodes[props.nodeNumber].storedEvents[key].variables[props.eventVariableIndex]
-  } catch (err){
-  //    console.log(name +': eventVariableValue ' + err) 
-  }
-  return value 
+  return store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
 })
 
 watch(variableValue, () => {
@@ -98,12 +83,13 @@ const update_variable = (newValue) => {
 
   console.log(`EventVariableSelect: byteValue ${byteValue}`);
   
-  store.methods.update_event_variable(props.nodeNumber, eventIdentifier, props.eventIndex, props.eventVariableIndex, byteValue)
+  store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex, byteValue)
 }
 
 onMounted(() => {
   console.log(`EventVariableSelect: onMounted`)
-  selectVariable.value = variableValue.value & props.bitMask
+  let startValue = store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
+  selectVariable.value = startValue & props.bitMask
 //  console.log(`EventVariableSelect: props: ${JSON.stringify(props)}`)
   items.value = []
   for (var i in props.options){

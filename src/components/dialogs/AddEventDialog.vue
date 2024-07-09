@@ -120,39 +120,27 @@ onUpdated(() =>{
 })
 
 const createNewEvent = () => {
-//  var eventIndex = getFreeEventIndex()
-  new_event_index.value = getFreeEventIndex()
   // to program a short event, the node number must be zero
   if (eventType.value == 'short'){newNodeNumber.value = 0}
   // need to create an eventIdentifier from entered values
   new_event_Identifier.value = parseInt(newNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
                + parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
-  // create temporary event entry in storedEvent table (will be overwritten when module read after teach)
-  store.state.nodes[store.state.selected_node].storedEvents[new_event_index.value] = {
+  // lets create a shortcut to the node entry for readability
+  var nodeEntry = store.state.nodes[store.state.selected_node]
+  // create temporary event entry in storedEventNI table (will be overwritten when module read after teach)
+  nodeEntry.storedEventsNI[new_event_Identifier.value] = {
       "eventIdentifier": new_event_Identifier.value,
-      "eventIndex": new_event_index.value,
+      "eventIndex": 1,
       "node": store.state.selected_node,
       "variables": {}
   }
-  console.log(`createNewEvent - newEventIndex ` + new_event_index.value + ` newEventIdentifier ` + new_event_Identifier.value)
+  nodeEntry.storedEventsNI[new_event_Identifier.value].variables[0] = nodeEntry.parameters[5]
+  for (var i = 1; i<= nodeEntry.parameters[5]; i++){
+    nodeEntry.storedEventsNI[new_event_Identifier.value].variables[i] = 0
+  }
+  console.log(`createNewEvent - newEventIdentifier ` + new_event_Identifier.value)
   // event list will be refreshed on acknowledge (WRACK, GRSP) from node
   showEventVariablesDialog.value = true
-}
-
-const getFreeEventIndex = () => {
-  // need to find first free event index - node parameter [4]
-  var maxEventCount = store.state.nodes[store.state.selected_node].parameters[4]
-  var eventIndex = null
-  for (var i=1; i < maxEventCount; i++ ){
-//    console.log(name + ': i ' + i)
-    if (store.state.nodes[store.state.selected_node].storedEvents[i]) {
-      continue
-    } else {
-      eventIndex = i + 3
-      break
-    }
-  }
-  return eventIndex
 }
 
 

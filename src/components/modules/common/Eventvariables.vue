@@ -5,7 +5,6 @@
 
        <EventVariableBitArray v-if="(item.type=='EventVariableBitArray') && (isVisible(item))"
                             :nodeNumber = "props.nodeNumber"
-                            :eventIndex = "props.eventIndex"
                             :eventIdentifier = "props.eventIdentifier"
                             :eventVariableIndex=item.eventVariableIndex
                             :bitCollection = item.bitCollection
@@ -15,7 +14,6 @@
 
       <EventVariableBitSingle v-if="(item.type=='EventVariableBitSingle') && (isVisible(item))"
                             :nodeNumber = "props.nodeNumber"
-                            :eventIndex = "props.eventIndex"
                             :eventIdentifier = "props.eventIdentifier"
                             :eventVariableIndex=item.eventVariableIndex
                             :bit = "item.bit"
@@ -32,7 +30,6 @@
 
       <EventVariableNumber v-if="(item.type=='EventVariableNumber') && (isVisible(item))"
                   :node-number=props.nodeNumber
-                  :eventIndex = props.eventIndex
                   :eventIdentifier = "props.eventIdentifier"
                   :eventVariableIndex= "item.eventVariableIndex"
                   :displayTitle="item.displayTitle"
@@ -46,7 +43,6 @@
       </EventVariableNumber>
       <EventVariableSelect v-if="(item.type=='EventVariableSelect') && (isVisible(item))"
                         :nodeNumber="props.nodeNumber"
-                        :eventIndex = "props.eventIndex"
                         :eventIdentifier = "props.eventIdentifier"
                         :eventVariableIndex= "item.eventVariableIndex"
                         :bitMask = "item.bitMask"
@@ -56,7 +52,6 @@
       </EventVariableSelect>
       <EventVariableSlider v-if="(item.type=='EventVariableSlider') && (isVisible(item))"
                             :node-number="props.nodeNumber"
-                            :eventIndex = "props.eventIndex"
                             :eventIdentifier = "props.eventIdentifier"
                             :eventVariableIndex= "item.eventVariableIndex"
                             :displayTitle="item.displayTitle"
@@ -105,7 +100,7 @@ const name = "EventVariables"
 const isVisible = (item) =>{
   var result = true
   if (item.visibilityLogic) {
-    result = parseLogicElement(props.nodeNumber, item.visibilityLogic, store, props.eventIndex)
+//    result = parseLogicElement(props.nodeNumber, item.visibilityLogic, store, props.eventIndex)
     console.log(name + `: isVisible: eventIndex ` + props.eventIndex + ' result ' + result)
   }
   return result

@@ -158,7 +158,7 @@ export default {
     function isVisible(item){
       var result = true
       if (item.visibilityLogic) {
-        result = parseLogicElement(item.visibilityLogic, store, store.state.selected_event_index)
+//        result = parseLogicElement(item.visibilityLogic, store, store.state.selected_event_index)
       }
       console.log(`isVisible: ` + result + ' ' + item.type)
       return result

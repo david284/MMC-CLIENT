@@ -8,7 +8,6 @@
         <event-variable-bit
           :nodeNumber=nodeNumber
           :eventVariableIndex=eventVariableIndex
-          :eventIndex=eventIndex
           :eventIdentifier=eventIdentifier
           :bit=item.bitPosition
           :name=item.label
@@ -27,10 +26,6 @@ const store = inject('store')
 
 const props = defineProps({
   "nodeNumber": {
-    type: Number,
-    required: true
-  },
-  "eventIndex": {
     type: Number,
     required: true
   },
