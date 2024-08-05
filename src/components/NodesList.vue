@@ -102,7 +102,8 @@
 </template>
 
 <script setup>
-import {inject, ref, onBeforeMount, onMounted, computed, watch} from "vue";
+import {inject, ref, onBeforeMount, onMounted, computed, watch} from "vue"
+import {sleep} from "components/functions/utils.js"
 import EventsListByNode from "components/EventsListByNode"
 import addEventDialog from "components/dialogs/AddEventDialog"
 import deleteNodeDialog from "components/dialogs/DeleteNodeDialog"
@@ -198,13 +199,26 @@ onBeforeMount(() => {
 })
 
 
-const checkNodeParameters = (nodeNumber) => {
+const checkNodeParameters = async (nodeNumber) => {
   // param9 - cpu type to check if parameters have been fully retrieved
   if(store.state.nodes[nodeNumber].parameters[9]){
 //    console.log(name + ": parameters exist")
   } else {
 //    console.log(name + ": need to read parameters")
     store.methods.request_all_node_parameters(nodeNumber, 20, 100)
+    showParametersLoadingDialog.value = true
+    var count = 0
+    try {
+      while (store.state.nodes[nodeNumber].parameters[9] == undefined){
+        await sleep(10)
+        count++
+        // if 5 seconds elapsed, then exit by thowing error
+        if (count >500) throw "failed to read Node Parameters"
+      }
+      showParametersLoadingDialog.value = false
+    } catch (err){
+      console.log(name + ": checkNodeParameters: " + err)
+    }
   }
 }
 
@@ -237,42 +251,39 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 
-const clickAddEvent = (nodeNumber) => {
+const clickAddEvent = async (nodeNumber) => {
   console.log(name + ': clickAddEvent: node', store.state.selected_node)
-  checkNodeParameters(nodeNumber)
+  await checkNodeParameters(nodeNumber)
   select_node_row(nodeNumber)
   console.log('add event', nodeNumber)
   if(store.state.nodes[nodeNumber].parameters[9]) {
     // parameters loaded, so showAddEventDialog
     showAddEventDialog.value = true
-  } else {
-    // parameters not loaded, so showParametersLoadingDialog
-    showParametersLoadingDialog.value = true
   }
 }
 
-const clickDeleteNode = (nodeNumber) => {
-  checkNodeParameters(nodeNumber)
+const clickDeleteNode = async (nodeNumber) => {
+  await checkNodeParameters(nodeNumber)
   select_node_row(nodeNumber)
   showDeleteNodeDialog.value=true
   console.log(name + ': clickDeleteNode: node' + store.state.selected_node)
 }
 
-const clickEvents = (nodeNumber) => {
-  checkNodeParameters(nodeNumber)
+const clickEvents = async (nodeNumber) => {
+  await checkNodeParameters(nodeNumber)
   select_node_row(nodeNumber)
   console.log(name + ': clickEvents: node', nodeNumber)
 }
 
-const clickNameNode = (nodeNumber) => {
-  checkNodeParameters(nodeNumber)
+const clickNameNode = async (nodeNumber) => {
+  await checkNodeParameters(nodeNumber)
   select_node_row(nodeNumber)
   console.log(name + `: clickNameNode: node ` + nodeNumber)
   showNameNodeDialog.value = true;
 }
 
-const clickParameters = (nodeNumber) => {
-  checkNodeParameters(nodeNumber)
+const clickParameters = async (nodeNumber) => {
+  await checkNodeParameters(nodeNumber)
   select_node_row(nodeNumber)
   console.log(name + `: clickParameters: node ` + nodeNumber)
   showNodeParametersDialog.value = true
@@ -284,8 +295,8 @@ const clickRefresh = () => {
 }
 
 
-const clickVariables = (nodeNumber) => {
-  checkNodeParameters(nodeNumber)
+const clickVariables = async (nodeNumber) => {
+  await checkNodeParameters(nodeNumber)
   select_node_row(nodeNumber)
   console.log(name + `: clickVariables: node ` + nodeNumber)
   if ((nodeNumber == 1000) && store.state.develop){
@@ -299,9 +310,6 @@ const clickVariables = (nodeNumber) => {
         100,
         1)
       showNodeVariablesDialog.value = true
-    } else {
-      // parameters not loaded, so showParametersLoadingDialog
-      showParametersLoadingDialog.value = true
     }
   }
 }

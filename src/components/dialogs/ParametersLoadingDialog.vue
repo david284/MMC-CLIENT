@@ -4,7 +4,7 @@
       <q-card style="min-width: 350px">
         <q-card-section>
           <div class="text-h6">Node parameters are still loading</div>
-          <div class="text-h6">Please close this dialog and try again</div>
+          <div class="text-h6">Please wait</div>
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Close" v-close-popup/>
