@@ -242,7 +242,7 @@ const checkNodeVariables = async (nodeNumber) => {
     showNodeVariablesLoadingDialog.value = true
     // set a count down based on number of node variables
     // but add minimum offset
-    var countDown = (maxNodeVariableIndex * 5) + 20
+    var countDown = (maxNodeVariableIndex * 10) + 20
     try {
       while (store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex] == undefined){
         await sleep(10)
