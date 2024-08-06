@@ -88,6 +88,10 @@
         :nodeNumber = store.state.selected_node
       />
 
+      <nodeVariablesLoadingDialog v-model='showNodeVariablesLoadingDialog'
+        :nodeNumber = store.state.selected_node
+      />
+
       <vlcbServicesDialog  v-model='showVLCBServicesDialog' />
 
       <iFrameDialog v-model='showiFrameDialog'
@@ -111,6 +115,7 @@ import nameNodeDialog from "components/dialogs/NameNodeDialog"
 import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
 import nodeVariablesDialog from "components/dialogs/NodeVariablesDialog"
 import parametersLoadingDialog from "components/dialogs/parametersLoadingDialog"
+import nodeVariablesLoadingDialog from "components/dialogs/NodevariablesLoadingDialog"
 import vlcbServicesDialog from "components/dialogs/VLCBServicesDialog"
 import iFrameDialog from "components/dialogs/iFrameDialog";
 
@@ -140,6 +145,7 @@ const showNodeParametersDialog = ref(false)
 const showNodeVariablesDialog = ref(false)
 const selected_nodeNumber = ref()
 const showParametersLoadingDialog = ref(false)
+const showNodeVariablesLoadingDialog = ref(false)
 const showVLCBServicesDialog = ref(false)
 const showiFrameDialog = ref(false)
 const exampleURL = ref("dummyModule/index.html")
@@ -218,6 +224,36 @@ const checkNodeParameters = async (nodeNumber) => {
       showParametersLoadingDialog.value = false
     } catch (err){
       console.log(name + ": checkNodeParameters: " + err)
+      showParametersLoadingDialog.value = false
+    }
+  }
+}
+
+const checkNodeVariables = async (nodeNumber) => {
+  var maxNodeVariableIndex = store.state.nodes[nodeNumber].parameters[6]
+  if(store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex]){
+  } else {
+    store.methods.request_all_node_variables(
+      nodeNumber,
+      store.state.nodes[nodeNumber].parameters[6],
+      100,
+      1
+    )
+    showNodeVariablesLoadingDialog.value = true
+    // set a count down based on number of node variables
+    // but add minimum offset
+    var countDown = (maxNodeVariableIndex * 5) + 20
+    try {
+      while (store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex] == undefined){
+        await sleep(10)
+        countDown--
+        // 
+        if (countDown <0 ) throw "failed to read Node Variables"
+      }
+      showNodeVariablesLoadingDialog.value = false
+    } catch (err){
+      console.log(name + ": checkNodeParameters: " + err)
+      showNodeVariablesLoadingDialog.value = false
     }
   }
 }
@@ -271,6 +307,7 @@ const clickDeleteNode = async (nodeNumber) => {
 
 const clickEvents = async (nodeNumber) => {
   await checkNodeParameters(nodeNumber)
+  await checkNodeVariables(nodeNumber)
   select_node_row(nodeNumber)
   console.log(name + ': clickEvents: node', nodeNumber)
 }
