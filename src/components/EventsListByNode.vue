@@ -5,6 +5,7 @@
         Events for node :  {{ store.getters.node_name(store.state.selected_node) }}
       </div>
       <template v-slot:action>
+        <q-btn flat color="white" size="sm" label="Add Event" @click="clickAddEvent()"/>
         <q-btn flat color="white" size="sm" label="Advanced" @click="clickAdvanced()"/>
         <q-btn flat color="white" size="sm" label="Refresh" @click="clickRefresh()"/>
       </template>
@@ -46,6 +47,8 @@
       </template>
     </q-table>
     </div>
+
+    <addEventDialog v-model='showAddEventDialog' />
 
     <advancedEventsDialog v-model='showAdvancedEventDialog'
       :nodeNumber = store.state.selected_node
@@ -91,6 +94,7 @@ set the selected_node element
 /////////////////////////////////////////////////////////////////////////////////////*/
 
 import {computed, inject, ref, watch, onBeforeMount, onMounted, onUpdated} from "vue"
+import addEventDialog from "components/dialogs/AddEventDialog"
 import advancedEventsDialog from "components/dialogs/AdvancedEventsDialog"
 import sendEventDialog from "components/dialogs/SendEventDialog"
 import deleteEventDialog from "components/dialogs/DeleteEventDialog"
@@ -101,12 +105,13 @@ import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 const store = inject('store')
 const name = "EventsListByNode"
 const rows = ref([])
-const showNameEventDialog = ref(false)
-const showSendEventDialog = ref(false)
-const showDeleteEventDialog = ref(false)
+const showAddEventDialog = ref(false)
 const showAdvancedEventDialog = ref(false)
+const showDeleteEventDialog = ref(false)
 const showEventTeachDialog = ref(false)
 const showEventVariablesDialog = ref(false)
+const showNameEventDialog = ref(false)
+const showSendEventDialog = ref(false)
 const newEventName = ref()
 const selected_event_Identifier = ref("") // Dialog will complain if null
 const selected_event_node = ref(0) // Dialog will complain if null
@@ -266,12 +271,17 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
-const clickEventName = (eventIdentifier) => {
-  console.log(name + `: clickEventName ` + eventIdentifier)
-  selected_event_Identifier.value = eventIdentifier
-  newEventName.value = store.getters.event_name(eventIdentifier)
-  showNameEventDialog.value = true;
+const clickAddEvent = () => {
+  console.log(name + `: clickAddEvent`)
+  showAddEventDialog.value = true
 }
+
+
+const clickAdvanced = () => {
+  console.log(name + `: clickAdvanced`)
+  showAdvancedEventDialog.value = true
+}
+
 
 const clickDelete = (eventIndentifier) => {
   console.log(name + `: clickDelete`)
@@ -279,9 +289,12 @@ const clickDelete = (eventIndentifier) => {
   selected_event_Identifier.value = eventIndentifier
 }
 
-const clickAdvanced = () => {
-  console.log(name + `: clickAdvanced`)
-  showAdvancedEventDialog.value = true
+
+const clickEventName = (eventIdentifier) => {
+  console.log(name + `: clickEventName ` + eventIdentifier)
+  selected_event_Identifier.value = eventIdentifier
+  newEventName.value = store.getters.event_name(eventIdentifier)
+  showNameEventDialog.value = true;
 }
 
 
@@ -315,6 +328,13 @@ const clickSendOn = (eventIdentifier) => {
 }
 
 
+const clickTeach = (eventIndentifier) => {
+  console.log(name + `: clickTeach`)
+  selected_event_Identifier.value = eventIndentifier
+  showEventTeachDialog.value = true
+}
+
+
 const clickTest = (nodeNumber, eventNumber, eventIndentifer) => {
   selected_event_node.value = nodeNumber
   selected_event_number.value = eventNumber
@@ -333,13 +353,6 @@ const clickVariables = (eventIndex, eventIdentifier) => {
   console.log(name + `: clickVariables: node, index ` + store.state.selected_node + ' ' + selected_event_index.value)
   showEventVariablesDialog.value = true
 }
-
-const clickTeach = (eventIndentifier) => {
-  console.log(name + `: clickTeach`)
-  selected_event_Identifier.value = eventIndentifier
-  showEventTeachDialog.value = true
-}
-
 
 </script>
 
