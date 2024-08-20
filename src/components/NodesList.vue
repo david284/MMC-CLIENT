@@ -3,7 +3,7 @@
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none" >
       <div class="text-h6">Nodes list</div>
       <template v-slot:action>
-        <q-btn flat color="white" size="sm" label="Refresh" @click="clickRefresh()"/>
+        <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
       </template>
     </q-banner>
 
@@ -49,8 +49,6 @@
               @click="clickVLCB(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline v-if="(props.row.vlcb)" color="primary" size="md" label="VLCB"
               @click="clickVLCB(props.row.nodeNumber)" no-caps/>
-            <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="md" label="Add Event"
-              @click="clickAddEvent(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline color="negative" size="md" label="Delete"
               @click="clickDeleteNode(props.row.nodeNumber)" no-caps/>
 
@@ -64,9 +62,6 @@
         :nodeNumber = store.state.selected_node
       />
 
-
-
-      <addEventDialog v-model='showAddEventDialog' />
 
       <deleteNodeDialog v-model='showDeleteNodeDialog'
         :nodeNumber = store.state.selected_node
@@ -109,7 +104,6 @@
 import {inject, ref, onBeforeMount, onMounted, computed, watch} from "vue"
 import {sleep} from "components/functions/utils.js"
 import EventsListByNode from "components/EventsListByNode"
-import addEventDialog from "components/dialogs/AddEventDialog"
 import deleteNodeDialog from "components/dialogs/DeleteNodeDialog"
 import nameNodeDialog from "components/dialogs/NameNodeDialog"
 import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
@@ -138,7 +132,6 @@ const name = "NodesList"
 const filter = ref('')
 const rows = ref([])
 const selected_node_valid = ref(false)
-const showAddEventDialog = ref(false)
 const showDeleteNodeDialog = ref(false)
 const showNameNodeDialog = ref(false)
 const showNodeParametersDialog = ref(false)
@@ -287,16 +280,6 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 
-const clickAddEvent = async (nodeNumber) => {
-  console.log(name + ': clickAddEvent: node', store.state.selected_node)
-  await checkNodeParameters(nodeNumber)
-  select_node_row(nodeNumber)
-  console.log('add event', nodeNumber)
-  if(store.state.nodes[nodeNumber].parameters[9]) {
-    // parameters loaded, so showAddEventDialog
-    showAddEventDialog.value = true
-  }
-}
 
 const clickDeleteNode = async (nodeNumber) => {
   await checkNodeParameters(nodeNumber)

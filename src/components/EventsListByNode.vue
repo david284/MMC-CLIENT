@@ -5,9 +5,9 @@
         Events for node :  {{ store.getters.node_name(store.state.selected_node) }}
       </div>
       <template v-slot:action>
-        <q-btn flat color="white" size="sm" label="Add Event" @click="clickAddEvent()"/>
-        <q-btn flat color="white" size="sm" label="Advanced" @click="clickAdvanced()"/>
-        <q-btn flat color="white" size="sm" label="Refresh" @click="clickRefresh()"/>
+        <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
+        <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Advanced" @click="clickAdvanced()"/>
+        <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
       </template>
     </q-banner>
 
