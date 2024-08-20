@@ -1,11 +1,11 @@
 <template>
 
     <q-dialog v-model='model' persistent>
-      <q-card style="min-width: 350px">
+      <q-card style="min-width: 600px">
 
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
           <div class="text-h6">
-            Advanced events functions for node {{ store.getters.event_name(props.eventIdentifier) }}
+            Advanced events functions for node {{ store.getters.node_name(store.state.selected_node) }}
           </div>
           <template v-slot:action>
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
