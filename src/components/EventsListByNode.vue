@@ -275,7 +275,7 @@ const clickDelete = (eventIndentifier) => {
 
 const clickRefresh = () => {
   console.log(name + `: clickRefresh`)
-//  store.methods.request_all_node_events(store.state.selected_node)
+  store.methods.request_all_node_events(store.state.selected_node)
 update_rows()
 }
 
