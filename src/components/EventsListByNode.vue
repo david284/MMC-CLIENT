@@ -5,6 +5,7 @@
         Events for node :  {{ store.getters.node_name(store.state.selected_node) }}
       </div>
       <template v-slot:action>
+        <q-btn flat color="white" size="sm" label="Advanced" @click="clickAdvanced()"/>
         <q-btn flat color="white" size="sm" label="Refresh" @click="clickRefresh()"/>
       </template>
     </q-banner>
@@ -46,6 +47,10 @@
     </q-table>
     </div>
 
+    <advancedEventsDialog v-model='showAdvancedEventDialog'
+      :nodeNumber = store.state.selected_node
+    />
+
     <nameEventDialog v-model='showNameEventDialog'
       :eventIdentifier = selected_event_Identifier
     />
@@ -86,6 +91,7 @@ set the selected_node element
 /////////////////////////////////////////////////////////////////////////////////////*/
 
 import {computed, inject, ref, watch, onBeforeMount, onMounted, onUpdated} from "vue"
+import advancedEventsDialog from "components/dialogs/AdvancedEventsDialog"
 import sendEventDialog from "components/dialogs/SendEventDialog"
 import deleteEventDialog from "components/dialogs/DeleteEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
@@ -98,6 +104,7 @@ const rows = ref([])
 const showNameEventDialog = ref(false)
 const showSendEventDialog = ref(false)
 const showDeleteEventDialog = ref(false)
+const showAdvancedEventDialog = ref(false)
 const showEventTeachDialog = ref(false)
 const showEventVariablesDialog = ref(false)
 const newEventName = ref()
@@ -270,6 +277,11 @@ const clickDelete = (eventIndentifier) => {
   console.log(name + `: clickDelete`)
   showDeleteEventDialog.value = true
   selected_event_Identifier.value = eventIndentifier
+}
+
+const clickAdvanced = () => {
+  console.log(name + `: clickAdvanced`)
+  showAdvancedEventDialog.value = true
 }
 
 
