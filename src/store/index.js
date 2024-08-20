@@ -31,6 +31,12 @@ const state = reactive({
 })
 
 const methods = {
+  delete_all_events(nodeNumber) {
+    socket.emit('DELETE_ALL_EVENTS', {
+        "nodeNumber": nodeNumber
+    })
+    console.log(name + `: DELETE_ALL_EVENTS ${nodeNumber}`)
+  },
   long_on_event(nodeNumber, eventNumber){
     console.log(`ACON ${nodeNumber} : ${eventNumber}`)
     socket.emit('ACCESSORY_LONG_ON', {

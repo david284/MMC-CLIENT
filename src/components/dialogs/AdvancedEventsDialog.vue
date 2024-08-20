@@ -13,7 +13,7 @@
         </q-banner>
 
         <q-card-actions align="left" class="text-primary">
-          <q-btn flat color="positive" label="Clear all events" @click="clearAllEvents()"/>
+          <q-btn flat color="positive" label="Delete all events" @click="deleteAllEvents()"/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -53,8 +53,9 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
-const clearAllEvents = () => {
+const deleteAllEvents = () => {
   console.log(`clearAllEvents ` + props.nodeNumber)
+  store.methods.delete_all_events(store.state.selected_node)
 }
 
 
