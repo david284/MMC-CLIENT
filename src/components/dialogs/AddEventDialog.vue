@@ -82,7 +82,6 @@ const addEventEnabled = ref(true)
 var eventType = ref()
 const showEventVariablesDialog = ref(false)
 const new_event_Identifier = ref("") // Dialog will complain if null
-const new_event_index = ref(0) // Dialog will complain if null
 
 
 const props = defineProps({
@@ -141,6 +140,17 @@ const createNewEvent = () => {
   console.log(`createNewEvent - newEventIdentifier ` + new_event_Identifier.value)
   // event list will be refreshed on acknowledge (WRACK, GRSP) from node
   showEventVariablesDialog.value = true
+
+  /*
+  // now ensure an event is created in case no variable was changed
+  // won't work for universal, but won't cause error
+  try {
+    var eventVariableValue = nodeEntry.storedEventsNI[new_event_Identifier.value].variables[1]
+    store.methods.event_teach_by_identifier(store.state.selected_node, new_event_Identifier.value, 1, eventVariableValue)
+  } catch (err){
+    console.log(name + ': addEvent ' + err)        
+  }
+  */
 }
 
 

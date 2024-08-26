@@ -117,7 +117,7 @@ const props = defineProps({
   modelValue: { type: Boolean, required: true },
   nodeNumber: {type: Number, required: true },
   eventIdentifier: {type: String, required: true },
-  newEvent: {type: Boolean, default: false}
+  newEvent:  { type: Boolean, default: false }
 })
 
 
@@ -132,9 +132,6 @@ watch(model, () => {
 //  console.log(name + `: WATCH model`)
   showRawVariables.value = false
   showVariablesDescriptor.value = false
-  if (props.newEvent){
-
-  }
 //  console.log(name + ': watch model: props: ' + JSON.stringify(props))
 })
 
@@ -188,9 +185,6 @@ onUpdated(() => {
   }
 })
 
-const addEvent = () => {
-  console.log(name +`: addEvent`)
-}
 
 // raise notification if nodeDescriptor file not present
 const checkFileLoad = () => {
@@ -236,6 +230,17 @@ Click event handlers
 
 const clickClose = () => {
   console.log(name +`: clickClose`)
+  if (props.newEvent){
+    // if it's a new event, ensure an event is created in case no variable was changed
+    // won't work for universal, but won't cause error
+    try {
+      var nodeEntry = store.state.nodes[props.nodeNumber]
+      var eventVariableValue = nodeEntry.storedEventsNI[props.eventIdentifier].variables[1]
+      store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, 1, eventVariableValue)
+    } catch (err){
+      console.log(name + ': clickClose ' + err)        
+    }
+  }
 }
 
 const clickToggleVariablesDescriptor = () => {
