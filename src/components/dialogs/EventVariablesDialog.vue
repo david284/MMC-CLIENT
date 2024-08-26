@@ -37,7 +37,6 @@
             <EventVariables v-if="store.state.nodeDescriptors[props.nodeNumber]"
               :configuration = store.state.nodeDescriptors[props.nodeNumber].eventVariables
               :nodeNumber = props.nodeNumber
-              :eventIndex = storedEventsIndex
               :eventIdentifier = props.eventIdentifier>
             </EventVariables>
 
@@ -117,7 +116,6 @@ const storedEventsIndex = ref(null)
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
   nodeNumber: {type: Number, required: true },
-  eventIndex: {type: Number, required: true },
   eventIdentifier: {type: String, required: true },
   newEvent: {type: Boolean, default: false}
 })
@@ -134,7 +132,6 @@ watch(model, () => {
 //  console.log(name + `: WATCH model`)
   showRawVariables.value = false
   showVariablesDescriptor.value = false
-  storedEventsIndex.value = props.eventIndex
   if (props.newEvent){
 
   }
@@ -169,7 +166,7 @@ onUpdated(() => {
       }
         */
     }
-    if ((props.nodeNumber) && (props.eventIndex)){
+    if (props.nodeNumber){
     
       if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
         variablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].eventVariables

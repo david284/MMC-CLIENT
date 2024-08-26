@@ -75,7 +75,6 @@
 
     <eventVariablesDialog v-model='showEventVariablesDialog'
         :nodeNumber = props.nodeNumber
-        :eventIndex = selected_event_index
         :eventIdentifier = selected_event_Identifier
       />
 
@@ -116,7 +115,6 @@ const newEventName = ref()
 const selected_event_Identifier = ref("") // Dialog will complain if null
 const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
-const selected_event_index = ref(0) // Dialog will complain if null
 var eventType = ref()
 
 const props = defineProps({
@@ -348,9 +346,8 @@ const clickTest = (nodeNumber, eventNumber, eventIndentifer) => {
 
 const clickVariables = (eventIndex, eventIdentifier) => {
   readEventVariables(eventIndex)
-  selected_event_index.value = eventIndex
   selected_event_Identifier.value = eventIdentifier
-  console.log(name + `: clickVariables: node, index ` + store.state.selected_node + ' ' + selected_event_index.value)
+  console.log(name + `: clickVariables: node ` + store.state.selected_node)
   showEventVariablesDialog.value = true
 }
 

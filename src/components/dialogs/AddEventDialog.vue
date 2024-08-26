@@ -63,7 +63,6 @@
 
   <eventVariablesDialog v-model='showEventVariablesDialog'
         :nodeNumber = store.state.selected_node
-        :eventIndex = new_event_index
         :eventIdentifier = new_event_Identifier
         :newEvent = true
   />
