@@ -23,7 +23,6 @@
 
       <EventVariableGroup v-if="(item.type=='EventVariableGroup') && (isVisible(item))"
         :node-number=props.nodeNumber
-        :eventIndex = props.eventIndex
         :eventIdentifier= props.eventIdentifier
         :configuration = item>
       </EventVariableGroup>
@@ -66,7 +65,6 @@
       </EventVariableSlider>
       <EventVariableTabs v-if="(item.type=='EventVariableTabs') && (isVisible(item))"
         :node-number=props.nodeNumber
-        :eventIndex = props.eventIndex
         :eventIdentifier= props.eventIdentifier
         :configuration=item>
       </EventVariableTabs>
@@ -90,7 +88,6 @@ import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js
 const props = defineProps({
   configuration: Object,
   nodeNumber: {type: Number, required: true },
-  eventIndex: {type: Number, required: true },
   eventIdentifier: {type: String, required: true },
 })
 
@@ -101,7 +98,7 @@ const isVisible = (item) =>{
   var result = true
   if (item.visibilityLogic) {
     result = parseLogicElement(props.nodeNumber, item.visibilityLogic, store, props.eventIdentifier)
-    console.log(name + `: isVisible: eventIndex ` + props.eventIndex + ' result ' + result)
+    console.log(name + `: isVisible: eventIdentifier ` + props.eventIdentifier + ' result ' + result)
   }
   return result
 }

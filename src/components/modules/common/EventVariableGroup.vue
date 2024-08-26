@@ -7,7 +7,6 @@
       <EventVariables
         :configuration = configuration.groupItems
         :nodeNumber = nodeNumber
-        :eventIndex = eventIndex
         :eventIdentifier = eventIdentifier>
       </EventVariables>
 
@@ -24,7 +23,6 @@
   const props = defineProps({
     configuration: Object,
     nodeNumber: {type: Number, required: true },
-    eventIndex: {type: Number, required: true },
     eventIdentifier: {type: String, required: true },
   })
 

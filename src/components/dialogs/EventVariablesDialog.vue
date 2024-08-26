@@ -14,7 +14,7 @@
           <template v-slot:action>
             <q-btn color="cyan-1" size="sm" text-color="black"
               label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
-              <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+              <q-btn flat color="white" size="md" label="Close" v-close-popup @click="clickClose"/>
           </template>
         </q-banner>
       </q-card-section>
@@ -118,7 +118,8 @@ const props = defineProps({
   modelValue: { type: Boolean, required: true },
   nodeNumber: {type: Number, required: true },
   eventIndex: {type: Number, required: true },
-  eventIdentifier: {type: String, required: true }
+  eventIdentifier: {type: String, required: true },
+  newEvent: {type: Boolean, default: false}
 })
 
 
@@ -134,6 +135,9 @@ watch(model, () => {
   showRawVariables.value = false
   showVariablesDescriptor.value = false
   storedEventsIndex.value = props.eventIndex
+  if (props.newEvent){
+
+  }
 //  console.log(name + ': watch model: props: ' + JSON.stringify(props))
 })
 
@@ -145,14 +149,16 @@ watch(props.nodeNumber, () => {
 
 
 onBeforeMount(() => {
+//  console.log(name +': onBeforeMount')
 })
 
 onMounted(() => {
+//  console.log(name +': onMounted')
 })
 
 
 onUpdated(() => {
-  console.log(name + ': onUpdated:')
+//  console.log(name + ': onUpdated:')
   try {
   //  console.log(name + ': onUpdated: props: ' + JSON.stringify(props))
     // check if storedEventIndex has been changed by the module itself
@@ -185,6 +191,9 @@ onUpdated(() => {
   }
 })
 
+const addEvent = () => {
+  console.log(name +`: addEvent`)
+}
 
 // raise notification if nodeDescriptor file not present
 const checkFileLoad = () => {
@@ -230,12 +239,10 @@ Click event handlers
 
 const clickClose = () => {
   console.log(name +`: clickClose`)
-  showRawVariables.value = false
-  variablesDescriptor.value={}
 }
 
 const clickToggleVariablesDescriptor = () => {
-  console.log(name + `: clickToggleVariablesDescriptor`)
+//  console.log(name + `: clickToggleVariablesDescriptor`)
   if (showVariablesDescriptor.value){
     showVariablesDescriptor.value = false
   } else {

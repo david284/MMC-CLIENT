@@ -18,7 +18,6 @@
             <EventVariables
               :configuration = tab.items
               :nodeNumber = props.nodeNumber
-              :eventIndex = props.eventIndex
               :eventIdentifier = props.eventIdentifier>
             </EventVariables>
           </div>
@@ -41,7 +40,6 @@
   const props = defineProps({
     configuration: Object,
     nodeNumber: {type: Number, required: true },
-    eventIndex: {type: Number, required: true },
     eventIdentifier: {type: String, required: true },
   })
 
