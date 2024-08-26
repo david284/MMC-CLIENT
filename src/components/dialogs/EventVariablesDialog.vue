@@ -232,7 +232,9 @@ const clickClose = () => {
   console.log(name +`: clickClose`)
   if (props.newEvent){
     // if it's a new event, ensure an event is created in case no variable was changed
-    // won't work for universal, but won't cause error
+    // need to do it here, as universal won't crete an event if nothing changed
+    // but will refresh the events, so we'll lose the temporary event initially created
+    // hence doing it as we leave this dialog
     try {
       var nodeEntry = store.state.nodes[props.nodeNumber]
       var eventVariableValue = nodeEntry.storedEventsNI[props.eventIdentifier].variables[1]
