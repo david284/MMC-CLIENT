@@ -27,10 +27,6 @@ const props = defineProps({
     type: Number,
     required: true
   },
-  "eventIndex": {
-    type: Number,
-    required: true
-  },
   "eventIdentifier": {
     type: String,
     required: true
