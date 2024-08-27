@@ -103,7 +103,7 @@ onMounted(() => {
 })
 
 onUpdated(() =>{
-  console.log(name + ` OnUpdated`)
+//  console.log(name + ` OnUpdated`)
   // check if this module actually supports any stored events
   if(store.state.nodes[store.state.selected_node].parameters[4] == 0) {
     addEventEnabled.value == false
@@ -114,7 +114,7 @@ onUpdated(() =>{
   // check if this module actually supports any stored events
   if(store.state.nodes[store.state.selected_node].parameters[4] == 0) {
     addEventEnabled.value = false
-    console.log(name + ` OnUpdated - addEvent disabled `)
+//    console.log(name + ` OnUpdated - addEvent disabled `)
   }
 })
 
@@ -137,20 +137,7 @@ const createNewEvent = () => {
   for (var i = 1; i<= nodeEntry.parameters[5]; i++){
     nodeEntry.storedEventsNI[new_event_Identifier.value].variables[i] = 0
   }
-  console.log(`createNewEvent - newEventIdentifier ` + new_event_Identifier.value)
-  // event list will be refreshed on acknowledge (WRACK, GRSP) from node
   showEventVariablesDialog.value = true
-
-  /*
-  // now ensure an event is created in case no variable was changed
-  // won't work for universal, but won't cause error
-  try {
-    var eventVariableValue = nodeEntry.storedEventsNI[new_event_Identifier.value].variables[1]
-    store.methods.event_teach_by_identifier(store.state.selected_node, new_event_Identifier.value, 1, eventVariableValue)
-  } catch (err){
-    console.log(name + ': addEvent ' + err)        
-  }
-  */
 }
 
 

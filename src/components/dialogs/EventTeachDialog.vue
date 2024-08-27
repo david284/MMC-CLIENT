@@ -190,7 +190,7 @@ onMounted(() => {
 })
 
 onUpdated(() => {
-  console.log("EventTeachDialog onUpdated")
+//  console.log("EventTeachDialog onUpdated")
   if (props.eventIdentifier){
     update_taught_nodes()
   }
@@ -211,12 +211,12 @@ const readEventVariables = (nodeNumber, eventIndex) => {
 
 // used to ensure the parameters have been read for a node
 const checkNodeParameters = (nodeNumber) => {
-  console.log(name + `: checkNodeParameters ` + nodeNumber)
+//  console.log(name + `: checkNodeParameters ` + nodeNumber)
   // param9 - cpu type to check if parameters have been fully retrieved
   if(store.state.nodes[nodeNumber].parameters[9]){
-    console.log(name + ": parameters exist")
+//    console.log(name + ": parameters exist")
   } else {
-    console.log(name + ": need to read parameters")
+//    console.log(name + ": need to read parameters")
     store.methods.request_all_node_parameters(nodeNumber, 20, 100)
   }
 }
@@ -244,7 +244,7 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 const clickTeachEvent = () => {
-  console.log(name + `: ${newNode.value} : ${props.eventIdentifier}`)
+//  console.log(name + `: ${newNode.value} : ${props.eventIdentifier}`)
   if (newNode.value != "") {
     // get node number from input value
     var array = newNode.value.split(':')

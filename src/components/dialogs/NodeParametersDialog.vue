@@ -83,6 +83,7 @@ import manageModuleDescriptorsDialog from "components/dialogs/ManageModuleDescri
 
 const store = inject('store')
 const showManageModuleDescriptorsDialog = ref(false)
+const name = "NodeParametersDialog"
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },

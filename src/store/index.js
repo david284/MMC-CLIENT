@@ -233,7 +233,7 @@ const methods = {
     window.close()
   },
   request_bus_connection() {
-    console.log(name + `: REQUEST_BUS_CONNECTION`)
+//    console.log(name + `: REQUEST_BUS_CONNECTION`)
     socket.emit('REQUEST_BUS_CONNECTION')
     },
   request_version(){

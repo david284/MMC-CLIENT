@@ -254,19 +254,19 @@ const checkNodeVariables = async (nodeNumber) => {
 
 const select_node_row = (nodeNumber) => {
   if (store.state.selected_node != nodeNumber) {
-    console.log(name + ': request_all_node_events')
+//    console.log(name + ': request_all_node_events')
     store.state.selected_node = nodeNumber
     store.methods.request_all_node_events(store.state.selected_node)
     selected_nodeNumber.value = nodeNumber    // used to highlight row
     selected_node_valid.value = true
     store.methods.request_service_discovery(store.state.selected_node)
-    console.log(name + ': node row ', store.state.selected_node + " selected")
+//    console.log(name + ': node row ', store.state.selected_node + " selected")
   }
 }
 
 
 store.eventBus.on('NODE_DELETED_EVENT', (nodeNumber) => {
-  console.log(name + ': NODE_DELETED_EVENT - node number ' + nodeNumber)
+//  console.log(name + ': NODE_DELETED_EVENT - node number ' + nodeNumber)
   if (store.state.selected_node == nodeNumber){
     selected_node_valid.value = false
   }

@@ -45,18 +45,24 @@ const model = computed({
     })
 
 
+onUpdated(() => {
+//  console.log("NameNodeDialog onUpdated")
+  if (store.state.layout.nodeDetails[props.nodeNumber]) {
+    newNodeName.value = store.state.layout.nodeDetails[props.nodeNumber].name
+  }
+})
+
+/*/////////////////////////////////////////////////////////////////////////////
+
+Click event handlers
+
+/////////////////////////////////////////////////////////////////////////////*/
+
 const clickAccept = () => {
   console.log("new node name: " + newNodeName.value)
   store.setters.node_name(props.nodeNumber, newNodeName.value)
 }
 
-
-onUpdated(() => {
-  console.log("NameNodeDialog onUpdated")
-  if (store.state.layout.nodeDetails[props.nodeNumber]) {
-    newNodeName.value = store.state.layout.nodeDetails[props.nodeNumber].name
-  }
-})
 
 
 

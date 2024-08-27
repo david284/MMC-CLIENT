@@ -104,7 +104,7 @@ const model = computed({
     })
 
 watch(model, () => {
-  console.log(name + `: WATCH model`)
+//  console.log(name + `: WATCH model`)
   showRawVariables.value = false
   showVariableDescriptor.value = false
 })
@@ -122,7 +122,7 @@ const variablesDescriptor = computed(() =>{
 })
 
 watch(variablesDescriptor, () => {
-  console.log(name + `: WATCH variablesDescriptor`)
+//  console.log(name + `: WATCH variablesDescriptor`)
   if (variablesDescriptor.value == undefined){
     showRawVariables.value = true
     showDescriptorWarning.value = true
@@ -133,17 +133,17 @@ watch(variablesDescriptor, () => {
 
 
 onBeforeMount(() => {
-  console.log(name + ': onBeforeMount')
+//  console.log(name + ': onBeforeMount')
 })
 
 onMounted(() => {
-  console.log(name + ': onMounted')
+//  console.log(name + ': onMounted')
 })
 
 onUpdated(() => {
-  console.log(name + ': onUpdated')
+//  console.log(name + ': onUpdated')
   if (props.nodeNumber){
-    console.log('NodeVariableDialog onUpdated - nodeNumber ' + props.nodeNumber)
+//    console.log('NodeVariableDialog onUpdated - nodeNumber ' + props.nodeNumber)
     checkFileLoad()
     if (store.state.nodes[props.nodeNumber].parameters[6] == 0){
       showNoVariablesMessage.value = true
@@ -156,7 +156,7 @@ onUpdated(() => {
 
 // raise notification if nodeDescriptor file not present
 const checkFileLoad = () => {
-  console.log(name + `: checkFileLoad`)
+//  console.log(name + `: checkFileLoad`)
   if (store.state.loadFile_notification_raised[props.nodeNumber] == undefined) {
     // module descriptor filename won't be created if there's no moduleName
     if( store.state.nodes[props.nodeNumber].moduleName == 'Unknown'){
@@ -182,7 +182,7 @@ const checkFileLoad = () => {
       store.state.loadFile_notification_raised[props.nodeNumber]=true;
     }
     if (store.state.loadFile_notification_raised[props.nodeNumber]) {
-       console.log(name + `: checkLoadFile notification raised`) 
+//       console.log(name + `: checkLoadFile notification raised`) 
     }
   }
   if (variablesDescriptor.value == undefined){

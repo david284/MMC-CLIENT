@@ -8,7 +8,7 @@ export function overloadedLabel (nodeNumber, element, store) {
       }
     }
   }
-  console.log('overloadedLabel: element ' + JSON.stringify(element) + ' result = ' + result)
+//  console.log('overloadedLabel: element ' + JSON.stringify(element) + ' result = ' + result)
   return result
 }
 
@@ -30,7 +30,7 @@ export function parseLogicElement (nodeNumber, logic, store, argument3) {
         var value = eventVariables.variables[logic.evBit.index]
         value = (value & 2 ** logic.evBit.bit) >> logic.evBit.bit
         result = testCondition(value, logic)
-        console.log(`parseLogicElement: evBit result = ` + result)
+//        console.log(`parseLogicElement: evBit result = ` + result)
       } else { console.log(`parseLogicElement: ERROR: evBit - event variables undefined ` ) }
     } else { console.log(`parseLogicElement: ERROR: evBit - event index (argument3) not defined `) }
   }
@@ -43,7 +43,7 @@ export function parseLogicElement (nodeNumber, logic, store, argument3) {
       if (eventVariables){
         var value = eventVariables.variables[logic.ev]
         result = testCondition(value, logic)
-        console.log(`parseLogicElement: ev result = ` + result)
+//        console.log(`parseLogicElement: ev result = ` + result)
       } else { console.log(`parseLogicElement: ERROR: ev - event variables undefined ` ) }
     } else { console.log(`parseLogicElement: ERROR: ev - event index (argument3) not defined `) }
   }
@@ -53,14 +53,14 @@ export function parseLogicElement (nodeNumber, logic, store, argument3) {
     var value = store.state.nodes[nodeNumber].nodeVariables[logic.nvBit.index]
     value = (value & 2 ** logic.nvBit.bit) >> logic.nvBit.bit
     result = testCondition(value, logic)
-    console.log(`parseLogicElement: nvBit result = ` + result)
+//    console.log(`parseLogicElement: nvBit result = ` + result)
   }
 
   // logic for node variables
   if (logic.nv != undefined){
     var value = store.state.nodes[nodeNumber].nodeVariables[logic.nv]
     result = testCondition(value, logic)
-    console.log(`parseLogicElement: nv result = ` + result)
+//    console.log(`parseLogicElement: nv result = ` + result)
   }
 
   /*
@@ -77,7 +77,7 @@ export function parseLogicElement (nodeNumber, logic, store, argument3) {
 }
 
 function testCondition(value, logic){
-  console.log(`testCondition: value ` + value + ' logic ' + JSON.stringify(logic))
+//  console.log(`testCondition: value ` + value + ' logic ' + JSON.stringify(logic))
   var result = true;
 
   if (logic.equals != undefined){

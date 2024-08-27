@@ -242,7 +242,7 @@ const update_rows = () => {
 
 const readEventVariables = (eventIndex) => {
   // refresh event list
-  console.log(name + `: readEventVariables - eventIndex ` + eventIndex)
+//  console.log(name + `: readEventVariables - eventIndex ` + eventIndex)
   store.methods.request_all_event_variables(
     store.state.selected_node,
     eventIndex,
@@ -252,7 +252,7 @@ const readEventVariables = (eventIndex) => {
 }
 
 onBeforeMount(() => {
-  console.log(name + ": onBeforeMount")
+//  console.log(name + ": onBeforeMount")
   update_rows()
 })
 

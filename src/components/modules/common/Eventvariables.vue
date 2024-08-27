@@ -98,7 +98,7 @@ const isVisible = (item) =>{
   var result = true
   if (item.visibilityLogic) {
     result = parseLogicElement(props.nodeNumber, item.visibilityLogic, store, props.eventIdentifier)
-    console.log(name + `: isVisible: eventIdentifier ` + props.eventIdentifier + ' result ' + result)
+//    console.log(name + `: isVisible: eventIdentifier ` + props.eventIdentifier + ' result ' + result)
   }
   return result
 }
