@@ -4,7 +4,7 @@
       <div class="text-h6">{{ displayTitle }}</div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
       <q-badge color="secondary">
-        {{ (sliderValue * displayScale) + displayOffset }} {{ displayUnits }}
+        {{ displayValue }} {{ displayUnits }}
       </q-badge>
       <q-slider
         v-model="sliderValue"
@@ -112,6 +112,20 @@ watch(outputOnWrite, () => {
   console.log(name + `: WATCH outputOnWrite: ` + outputOnWrite.value)
 })
 
+const displayValue = computed(() =>{
+  var value = (sliderValue.value * props.displayScale) + props.displayOffset
+  if (props.displayScale >= 1){
+    // do nothing, value will be good
+  } else if (props.displayScale >= 0.1){
+    value = value.toFixed(1)
+  } else if (props.displayScale >= 0.01){
+    value = value.toFixed(2)
+  } else {
+    // don't show more than 3 decimal places
+    value = value.toFixed(3)
+  }
+  return value
+})
 
 const sliderValue = computed({
   get() {
