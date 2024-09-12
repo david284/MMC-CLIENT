@@ -57,7 +57,10 @@
 
   </q-dialog>
 
-  <vlcbDiagnosticsDialog  v-model='showVLCBDiagnosticsDialog' />
+  <vlcbDiagnosticsDialog  v-model='showVLCBDiagnosticsDialog' 
+    :nodeNumber = store.state.selected_node
+    :serviceIndex = store.state.selected_service_index
+  />
 
 </template>
 

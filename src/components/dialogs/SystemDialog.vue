@@ -27,8 +27,8 @@
       </q-card>
 
       <q-card class="q-pa-md" flat>
-        <q-btn color="negative" label="stop Server" @click="clickStop()" no-caps/>
-        This will signal the server to stop and close the page
+        <q-btn color="positive" label="Backup" @click="clickBackup()" no-caps/>
+        &emsp; Open the dialog to manage backups
       </q-card>
 
 
@@ -43,8 +43,11 @@
       </q-card>
       <q-card class="q-pa-md" flat>
         <q-checkbox v-model="store.state.debug" label="Debug"></q-checkbox>
-        <q-checkbox v-model="store.state.advanced" label="Advanced"></q-checkbox>
+        &emsp;&emsp;&emsp;Enables debugging features
+      </q-card>
+      <q-card class="q-pa-md" flat>
         <q-checkbox v-model="store.state.develop" label="Develop"></q-checkbox>
+        &emsp;&emsp;&emsp;Enables development features
       </q-card>
 
       <q-card-actions align="right" class="text-primary">
@@ -53,6 +56,8 @@
     </q-card>
   </q-dialog>
 
+  <backupDialog v-model='showBackupDialog' />
+
 </template>
 
 
@@ -60,9 +65,11 @@
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref, version} from "vue";
 import packageInfo from './../../../package.json';
+import backupDialog from "components/dialogs/BackupDialog"
 
 const store = inject('store')
 const name = "SystemDialog"
+const showBackupDialog = ref(false)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true }
@@ -93,10 +100,9 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
-
-const clickStop = () => {
-  console.log(name + `: clickStop`)
-  store.methods.STOP_SERVER()
+const clickBackup = () => {
+  console.log(name + `: clickBackup`)
+  showBackupDialog.value = true
 }
 
 
