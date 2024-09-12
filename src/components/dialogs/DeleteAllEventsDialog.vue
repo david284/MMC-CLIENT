@@ -5,7 +5,7 @@
 
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
           <div class="text-h6">
-            Delete all events for node {{ store.getters.node_name(store.state.selected_node) }}
+            Delete all events for node {{ store.getters.node_name(nodeNumber) }}
           </div>
           <template v-slot:action>
           <q-btn flat color="white" size="md" label="Close" v-close-popup/>
@@ -59,7 +59,7 @@ Click event handlers
 
 const deleteAllEvents = () => {
   console.log(name + `: deleteAllEvents ` + props.nodeNumber)
-  store.methods.delete_all_events(store.state.selected_node)
+  store.methods.delete_all_events(nodeNumber)
 }
 
 
