@@ -17,8 +17,12 @@
 
       <q-card v-if="(store.state.develop)" class="q-pa-md" flat>
         <q-btn color="positive" label="Backup" @click="clickBackup()" no-caps/>
-        &emsp; backup system to user storage
+        &emsp; backup system to user storage        
       </q-card>
+      <q-card v-if="(store.state.develop)" class="q-pa-md" flat>
+        {{ backupConfirmation }}
+      </q-card>
+
 
 
     </q-card>
@@ -35,7 +39,7 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 
 const store = inject('store')
 const name = "BackupDialog"
-const showMore = ref(false)
+const backupConfirmation = ref("")
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true }
@@ -67,6 +71,7 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 const clickBackup = () => {
+  backupConfirmation.value = ""
   var fileName = "backup_" + Date.now()
   console.log(name + `: clickBackup ` + fileName)
   var data = {
@@ -74,6 +79,7 @@ const clickBackup = () => {
     layout: store.state.layout
   }
   store.methods.save_backup(data)
+  backupConfirmation.value = "Backup saved to " + fileName
 }
 
 
