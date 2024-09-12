@@ -21,7 +21,6 @@ const state = reactive({
   layout: {},
   layouts_list: [],
   selected_node: 0,
-  selected_service_index: 0,
   loadFile_notification_raised: {},
   title: "MMC",
   debug: false,

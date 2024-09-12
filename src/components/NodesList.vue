@@ -87,7 +87,9 @@
         :nodeNumber = store.state.selected_node
       />
 
-      <vlcbServicesDialog  v-model='showVLCBServicesDialog' />
+      <vlcbServicesDialog  v-model='showVLCBServicesDialog' 
+        :nodeNumber = store.state.selected_node
+      />
 
       <iFrameDialog v-model='showiFrameDialog'
         :URL=exampleURL />

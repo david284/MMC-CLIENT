@@ -42,7 +42,7 @@
           <div class="q-pa-xs row"  v-if="showServicesJSON">
             <div class="text-body1">Services<br></div>
             <div class="text-body2">
-              <pre>{{ store.state.nodes[store.state.selected_node].services }}</pre>
+              <pre>{{ store.state.nodes[nodeNumber].services }}</pre>
             </div>
           </div>
 
@@ -58,8 +58,8 @@
   </q-dialog>
 
   <vlcbDiagnosticsDialog  v-model='showVLCBDiagnosticsDialog' 
-    :nodeNumber = store.state.selected_node
-    :serviceIndex = store.state.selected_service_index
+    :nodeNumber = nodeNumber
+    :serviceIndex = selectedServiceIndex
   />
 
 </template>
@@ -75,9 +75,11 @@ const name = "VLCBServicesDialog"
 const showServicesJSON = ref(false)
 const showVLCBDiagnosticsDialog = ref(false)
 const rows = ref([])
+const selectedServiceIndex = ref(null)
 
 const props = defineProps({
-  modelValue: { type: Boolean, required: true }
+  modelValue: { type: Boolean, required: true },
+  nodeNumber: { type: Number, required: true }
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -104,8 +106,8 @@ const columns = [
 
 const nodeServices = computed(() =>{
   var obj = {}
-  if(store.state.selected_node){
-    obj = Object.values(store.state.nodes[store.state.selected_node].services)
+  if(props.nodeNumber){
+    obj = Object.values(store.state.nodes[props.nodeNumber].services)
   }
   return obj
 })
@@ -151,8 +153,8 @@ const clickToggleShowServicesJSON = () => {
 
 const clickDiagnostics = (serviceIndex) => {
   console.log(`clickiagnostics: index ${serviceIndex}`)
-  store.methods.request_diagnostics(store.state.selected_node, serviceIndex)
-  store.state.selected_service_index = serviceIndex
+  store.methods.request_diagnostics(props.nodeNumber, serviceIndex)
+  selectedServiceIndex.value = serviceIndex
   showVLCBDiagnosticsDialog.value = true
 }
 
