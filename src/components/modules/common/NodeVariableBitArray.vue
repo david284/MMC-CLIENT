@@ -5,10 +5,10 @@
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
       <div v-for="item in newBitCollection" :key="item">
         <node-variable-bit
-          :NodeNumber="store.state.selected_node"
-          :VariableIndex=VariableIndex
-          :Bit=item.bitPosition
-          :Name=item.label
+          :NodeNumber = nodeNumber
+          :VariableIndex = VariableIndex
+          :Bit = item.bitPosition
+          :Name = item.label
         ></node-variable-bit>
       </div>
     </q-card-section>
