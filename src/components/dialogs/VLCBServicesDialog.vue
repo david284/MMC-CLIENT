@@ -32,6 +32,7 @@
                 <q-td key="serviceIndex" :props="props">{{ props.row.serviceIndex }}</q-td>
                 <q-td key="serviceType" :props="props">{{ props.row.serviceType}}</q-td>
                 <q-td key="serviceName" :props="props">{{ props.row.serviceName}}</q-td>
+                <q-td key="serviceVersion" :props="props">{{ props.row.serviceVersion}}</q-td>
                 <q-td key="diagnostics" :props="props">
                   <q-btn color="primary" flat rounded label="diagnostics" @click="clickDiagnostics(props.row.serviceIndex)" no-caps/>
                 </q-td>
@@ -100,6 +101,7 @@ const columns = [
   {name: 'serviceIndex', field: 'serviceIndex', required: true, label: 'Service Index', align: 'left', sortable: true},
   {name: 'serviceType', field: 'serviceType', required: false, label: 'Service Type', align: 'left', sortable: true},
   {name: 'serviceName', field: 'serviceName', required: true, label: 'Name', align: 'left', sortable: true},
+  {name: 'serviceVersion', field: 'serviceVersion', required: true, label: 'Version', align: 'left', sortable: false},
   {name: 'diagnostics', field: 'diagnostics', required: true, label: '', align: 'left'}
 ]
 
@@ -125,6 +127,7 @@ const update_rows = () => {
     output['serviceIndex'] = service.ServiceIndex
     output['serviceType'] = service.ServiceType
     output['serviceName'] = service.ServiceName
+    output['serviceVersion'] = service.ServiceVersion
     rows.value.push(output)
   })
 }
