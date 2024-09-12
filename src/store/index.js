@@ -248,6 +248,10 @@ const methods = {
   import_module_descriptor(moduleDescriptor) {
     console.log(`import_module_descriptor : ` + moduleDescriptor.moduleDescriptorFilename)
     socket.emit('IMPORT_MODULE_DESCRIPTOR', moduleDescriptor)
+  },
+  save_backup(data){
+    console.log(`SAVE_BACKUP`)
+    socket.emit('SAVE_BACKUP', data)
   }
 }
 

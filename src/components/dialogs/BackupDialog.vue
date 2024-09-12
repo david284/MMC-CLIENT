@@ -6,7 +6,7 @@
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
           <div class="text-h6">
-            Example banner  
+            System backup  
           </div>
           <template v-slot:action>
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
@@ -14,29 +14,12 @@
         </q-banner>
       </q-card-section>
 
-      <q-card>
-        <q-card-section style="max-height: 50vh" class="scroll q-py-none no-margin">
-          <q-card>
-          <q-btn flat color="positive" label="example button"/>
-          <q-btn flat color="negative" label="example button"/>
-          </q-card>
 
-          <p v-for="n in 5" :key="n">Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum repellendus sit voluptate voluptas eveniet porro. Rerum blanditiis perferendis totam, ea at omnis vel numquam exercitationem aut, natus minima, porro labore.</p>
-          <div v-if="(showMore)" class="text-red">  
-            <p v-for="n in 5" :key="n">Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum repellendus sit voluptate voluptas eveniet porro. Rerum blanditiis perferendis totam, ea at omnis vel numquam exercitationem aut, natus minima, porro labore.</p>
-          </div>
-        </q-card-section>
-
-        <q-card-section class="q-py-none no-margin">
-          <div class="text-h6">
-              Example q-card
-            </div>
-        </q-card-section>
+      <q-card v-if="(store.state.develop)" class="q-pa-md" flat>
+        <q-btn color="positive" label="Backup" @click="clickBackup()" no-caps/>
+        &emsp; backup system to user storage
       </q-card>
 
-      <q-card-actions align="right" class="text-primary q-py-none no-margin">
-        <q-btn flat label="toggle show more" @click="clickShowMore()"/>
-      </q-card-actions>
 
     </q-card>
 
@@ -77,10 +60,22 @@ onBeforeMount(() => {
 onMounted(() => {
 })
 
+/*/////////////////////////////////////////////////////////////////////////////
 
-const clickShowMore = () => {
-  showMore.value = showMore.value ? false : true
+Click event handlers
+
+/////////////////////////////////////////////////////////////////////////////*/
+
+const clickBackup = () => {
+  var fileName = "backup_" + Date.now()
+  console.log(name + `: clickBackup ` + fileName)
+  var data = {
+    fileName: fileName,
+    layout: store.state.layout
+  }
+  store.methods.save_backup(data)
 }
+
 
 
 

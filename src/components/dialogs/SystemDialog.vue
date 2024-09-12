@@ -26,12 +26,10 @@
         <div>Vue version {{ version }}</div>
       </q-card>
 
-      <q-card class="q-pa-md" flat>
+      <q-card v-if="(store.state.develop)" class="q-pa-md" flat>
         <q-btn color="positive" label="Backup" @click="clickBackup()" no-caps/>
         &emsp; Open the dialog to manage backups
       </q-card>
-
-
 
       <q-card class="q-pa-md" flat v-show="store.state.advanced">
         <q-input
@@ -40,10 +38,6 @@
           v-model="store.state.layout.layoutDetails.baseNodeNumber"
           @change="store.methods.update_layout()">
         </q-input>
-      </q-card>
-      <q-card class="q-pa-md" flat>
-        <q-checkbox v-model="store.state.debug" label="Debug"></q-checkbox>
-        &emsp;&emsp;&emsp;Enables debugging features
       </q-card>
       <q-card class="q-pa-md" flat>
         <q-checkbox v-model="store.state.develop" label="Develop"></q-checkbox>

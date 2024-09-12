@@ -94,10 +94,6 @@
       <iFrameDialog v-model='showiFrameDialog'
         :URL=exampleURL />
 
-      <p v-if="store.state.debug">
-        {{ Object.values(store.state.nodes) }}
-      </p>
-
     </div>
   </div>
 </template>
