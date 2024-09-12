@@ -104,7 +104,7 @@ import manageModuleDescriptorsDialog from "components/dialogs/ManageModuleDescri
 
 const $q = useQuasar()
 const store = inject('store')
-const name = "EventVariablesdialog"
+const name = "EventVariablesDialog"
 const variablesDescriptor = ref()
 const showRawVariables = ref(false)
 const showDescriptorWarning = ref(false)
@@ -136,10 +136,11 @@ watch(model, () => {
 })
 
 
+/*
 watch(props.nodeNumber, () => {
 //  console.log(name +': watch nodeNumber')
 })
-
+*/
 
 
 onBeforeMount(() => {

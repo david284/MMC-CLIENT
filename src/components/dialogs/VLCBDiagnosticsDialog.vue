@@ -69,7 +69,7 @@ const rows = ref([])
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
   nodeNumber:  { type: Number, required: true },
-  serviceIndex:  { type: Number, required: true }
+  serviceIndex:  { type: Number, default: 0 }
 })
 
 const emit = defineEmits(['update:modelValue'])

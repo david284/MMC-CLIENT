@@ -75,7 +75,6 @@
 
   <eventVariablesDialog v-model='showEventVariablesDialog'
         :nodeNumber = selected_event_node
-        :eventIndex = selected_event_index
         :eventIdentifier = selected_event_Identifier
       />
 
