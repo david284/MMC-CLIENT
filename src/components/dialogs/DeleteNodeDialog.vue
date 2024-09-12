@@ -5,7 +5,7 @@
 
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
           <div class="text-h6">
-            Delete for node {{ store.getters.node_name(store.state.selected_node) }}
+            Delete node {{ store.getters.node_name(nodeNumber) }}
           </div>
           <template v-slot:action>
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>

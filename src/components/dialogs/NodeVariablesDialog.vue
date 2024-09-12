@@ -5,7 +5,7 @@
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin g-py-none">
           <div class="text-h6">
-            Node Variables for node :  {{ store.getters.node_name(store.state.selected_node) }}
+            Node Variables for node :  {{ store.getters.node_name(nodeNumber) }}
           </div>
           <template v-slot:action>
             <q-btn color="cyan-1" size="sm" text-color="black" 
