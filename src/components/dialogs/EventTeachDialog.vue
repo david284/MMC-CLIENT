@@ -76,6 +76,7 @@
   <eventVariablesDialog v-model='showEventVariablesDialog'
         :nodeNumber = selected_event_node
         :eventIdentifier = selected_event_Identifier
+        :newEvent = true
       />
 
 
@@ -94,7 +95,6 @@ const name = 'EventTeachDialog'
 
 const selected_event_Identifier = ref("") // Dialog will complain if null
 const selected_event_node = ref(0) // Dialog will complain if null
-const selected_event_index = ref(0) // Dialog will complain if null
 const showEventVariablesDialog = ref(false)
 
 
@@ -255,7 +255,6 @@ const clickTeachEvent = () => {
     createNewEvent(store, nodeNumberToBeTaught, props.eventIdentifier)             
 
     selected_event_node.value = nodeNumberToBeTaught
-    selected_event_index.value = eventIndexToBeTaught
     selected_event_Identifier.value = props.eventIdentifier
     showEventVariablesDialog.value = true
 
@@ -266,7 +265,6 @@ const clickVariables = (nodeNumber, eventIndex, eventIdentifier) => {
   console.log(name + `: clickVariables ` + nodeNumber + ' ' + eventIndex + ' ' + eventIdentifier)
 //temp  readEventVariables(nodeNumber, eventIndex)
   selected_event_node.value = nodeNumber
-  selected_event_index.value = eventIndex
   selected_event_Identifier.value = eventIdentifier
   showEventVariablesDialog.value = true
 }
