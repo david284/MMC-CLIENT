@@ -112,11 +112,14 @@ watch(nodeServiceDiagnostics, () => {
 const update_rows = () => {
   rows.value = []
   nodeServiceDiagnostics.value.forEach(diagnostic => {
-    let output = {}
+    if (diagnostic.DiagnosticCode != 0){
+      // don't display diagnostic code 0 - it's not really a diagnostic code
+      let output = {}
       output['diagnosticCode'] = diagnostic.DiagnosticCode
       output['diagnosticValue'] = diagnostic.DiagnosticValue
       output['diagnosticName'] = diagnostic.DiagnosticName
       rows.value.push(output)
+    }
   })
 }
 
