@@ -18,7 +18,6 @@
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
 import {overloadedLabel} from "components/modules/common/CommonLogicParsers.js";
-import {getStoredEventIndex} from "components/functions/EventFunctions.js"
 
 const props = defineProps({
   "nodeNumber": {

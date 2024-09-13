@@ -9,7 +9,6 @@
 
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
-import {getStoredEventIndex} from "components/functions/EventFunctions.js"
 
 //name: "EventVariable"
 const props = defineProps({

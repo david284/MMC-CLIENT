@@ -19,7 +19,6 @@
 
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
-import {getStoredEventIndex} from "components/functions/EventFunctions.js"
 
 const props = defineProps({
   "nodeNumber": {

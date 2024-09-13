@@ -155,15 +155,6 @@ onMounted(() => {
 onUpdated(() => {
 //  console.log(name + ': onUpdated:')
   try {
-  //  console.log(name + ': onUpdated: props: ' + JSON.stringify(props))
-    // check if storedEventIndex has been changed by the module itself
-    for (let key in store.state.nodes[props.nodeNumber].storedEvents) {
-      /*
-      if (store.state.nodes[props.nodeNumber].storedEvents[key].eventIdentifier === props.eventIdentifier){
-        storedEventsIndex.value = parseInt(key)
-      }
-        */
-    }
     if (props.nodeNumber){
     
       if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
