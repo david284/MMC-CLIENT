@@ -56,7 +56,7 @@
       </div>
     </div>
       <q-card-actions align="right" class="text-primary">
-        <q-btn v-if="(addEventEnabled)" flat label="Add Event" v-close-popup @click="createNewEvent()"/>
+        <q-btn v-if="(addEventEnabled)" flat label="Add Event" v-close-popup @click="clickAddEvent()"/>
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -73,6 +73,7 @@
 <script setup>
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
+import {createNewEvent} from "components/functions/EventFunctions.js"
 
 const store = inject('store')
 const name = "AddEventDialog"
@@ -118,25 +119,22 @@ onUpdated(() =>{
   }
 })
 
-const createNewEvent = () => {
+/*/////////////////////////////////////////////////////////////////////////////
+
+Click event handlers
+
+/////////////////////////////////////////////////////////////////////////////*/
+
+
+const clickAddEvent = () => {
   // to program a short event, the node number must be zero
   if (eventType.value == 'short'){newNodeNumber.value = 0}
   // need to create an eventIdentifier from entered values
   new_event_Identifier.value = parseInt(newNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
                + parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
-  // lets create a shortcut to the node entry for readability
-  var nodeEntry = store.state.nodes[store.state.selected_node]
-  // create temporary event entry in storedEventNI table (will be overwritten when module read after teach)
-  nodeEntry.storedEventsNI[new_event_Identifier.value] = {
-      "eventIdentifier": new_event_Identifier.value,
-      "eventIndex": 1,
-      "node": store.state.selected_node,
-      "variables": {}
-  }
-  nodeEntry.storedEventsNI[new_event_Identifier.value].variables[0] = nodeEntry.parameters[5]
-  for (var i = 1; i<= nodeEntry.parameters[5]; i++){
-    nodeEntry.storedEventsNI[new_event_Identifier.value].variables[i] = 0
-  }
+  
+  createNewEvent(store, store.state.selected_node, new_event_Identifier.value)             
+
   showEventVariablesDialog.value = true
 }
 
