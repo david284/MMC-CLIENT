@@ -122,7 +122,6 @@
 
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
-import EventDetails from "components/modules/common/EventDetails.vue"
 import sendEventDialog from "components/dialogs/SendEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
