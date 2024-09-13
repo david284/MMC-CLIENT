@@ -250,19 +250,20 @@ const clickTeachEvent = () => {
     var nodeNumberToBeTaught = parseInt(array[0])
     var eventIndexToBeTaught = getFreeEventIndex(parseInt(array[0]))
     console.log(`teach_event : ${nodeNumberToBeTaught} : ${eventIndexToBeTaught} : ${props.eventIdentifier}`)
-    /*
-    store.methods.teach_event(array[0], props.eventIdentifier, props.eventIndex)
-    // make sure parameters have been read for the taught node in case the variables get edited
-    checkNodeParameters(array[0])
-    newNode.value = undefined
-    */
-  // create temporary event entry in storedEvent table (will be overwritten when module read after teach)
-  store.state.nodes[nodeNumberToBeTaught].storedEvents[eventIndexToBeTaught] = {
+    // lets create a shortcut to the node entry for readability
+    var nodeEntry = store.state.nodes[nodeNumberToBeTaught]
+    // create temporary event entry in storedEventNI table (will be overwritten when module read after teach)
+    nodeEntry.storedEventsNI[props.eventIdentifier] = {
       "eventIdentifier": props.eventIdentifier,
       "eventIndex": eventIndexToBeTaught,
       "node": nodeNumberToBeTaught,
       "variables": {}
-  }
+    }
+
+    nodeEntry.storedEventsNI[props.eventIdentifier].variables[0] = nodeEntry.parameters[5]
+    for (var i = 1; i<= nodeEntry.parameters[5]; i++){
+      nodeEntry.storedEventsNI[props.eventIdentifier].variables[i] = 0
+    }
 
     selected_event_node.value = nodeNumberToBeTaught
     selected_event_index.value = eventIndexToBeTaught
