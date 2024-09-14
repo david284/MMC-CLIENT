@@ -251,6 +251,7 @@ const methods = {
   },
   save_backup(data){
     console.log(`SAVE_BACKUP`)
+    data['layoutName'] = state.layout.layoutDetails.title
     socket.emit('SAVE_BACKUP', data)
   }
 }
