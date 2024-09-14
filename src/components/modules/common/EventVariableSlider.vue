@@ -71,7 +71,7 @@ const props = defineProps({
   }
 })
 
-const label = props.name ? props.name : "Event Variable " + props.eventVariableIndex
+const name = "EventVariableSlider"
 const store = inject('store')
 const error = ref(false)
 const error_message = ref('')
@@ -83,7 +83,7 @@ const bitMask = computed(() => {
   }
   return bitMask;
 })
-console.log(`EventVariableSlider: bitMask : ${bitMask.value}`)
+// console.log(name +`: bitMask : ${bitMask.value}`)
 
 const displayValue = computed(() =>{
   var value = (sliderValue.value * props.displayScale) + props.displayOffset
@@ -102,16 +102,16 @@ const displayValue = computed(() =>{
 
 const sliderValue = computed({
   get() {
-    return store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
+    return ((store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex) & bitMask.value) >> props.startBit)
   },
   set(newValue) {
     // get previous value, as starting point for updated byte value
     let newByteValue = store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
-    console.log(`OldByteValue : ${newByteValue}`)
-    console.log(`NewValue : ${newValue}`)
+//    console.log(name +`: OldByteValue : ${newByteValue}`)
+//    console.log(name + `: NewValue : ${newValue}`)
     // not sure we need to do a range check as the slider control uses max & min anyway...
     if (newValue <= props.max && newValue >= props.min) {
-      console.log(`update_variable : ${newValue}`)
+//      console.log(name + `: update_variable : ${newValue}`)
       let processedValue = newValue                           // take a copy to change
       processedValue = processedValue << props.startBit       // shift to position in variable
       //set bits, but only if they match bits in the bitmask
@@ -123,7 +123,7 @@ const sliderValue = computed({
       error_message.value = ''
       store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex, newByteValue)
     } else {
-      console.log(`Invalid Value : ${newValue}`)
+      console.log(name + `: Invalid Value : ${newValue}`)
       error_message.value = 'Invalid Value'
       error.value = true
     }
@@ -132,14 +132,14 @@ const sliderValue = computed({
 
 const update_variable = (newValue) => {
   if (error.value) {
-    console.log(`Invalid Value : ${newValue}`)
+    console.log(name + `: Invalid Value : ${newValue}`)
   } else {
-    console.log(`update slider value : ${newValue}`)
+//    console.log(name + `: update slider value : ${newValue}`)
   }
 }
 
 onMounted(() => {
-  console.log(`EventVariableSlider onMounted`)
+//  console.log(name + `: EventVariableSlider onMounted`)
 })
 
 </script>
