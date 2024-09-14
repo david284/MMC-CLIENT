@@ -66,12 +66,13 @@ const props = defineProps({
   }
 })
 
+const name = "EventVariableNumber"
 const label = props.name ? props.name : "Event Variable " + props.eventVariableIndex
 const store = inject('store')
 const error = ref(false)
 const error_message = ref('')
 const eventValue = ref()
-//console.log(`EventVariableNumber: Props : ${JSON.stringify(props)}`)
+//console.log(name + `: Props : ${JSON.stringify(props)}`)
 const bitMask = computed(() => {
   var bitMask = 0;
   for (var i=props.startBit; i<= props.endBit; i++){
@@ -79,7 +80,7 @@ const bitMask = computed(() => {
   }
   return bitMask;
 })
-console.log(`EventVariableNumber: bitMask2 : ${bitMask.value}`)
+// console.log(name + `: bitMask2 : ${bitMask.value}`)
 
 
 const eventVariableValue = computed(() => {
@@ -117,7 +118,7 @@ const update_event = (newValue) => {
 
 
 onMounted(() => {
-  console.log(`EventVariableNumber: onMounted`)
+//  console.log(name + `: onMounted`)
   let startValue = store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
   eventValue.value = ((startValue & bitMask.value) >> props.startBit) + props.displayOffset
 })

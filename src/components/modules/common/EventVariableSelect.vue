@@ -57,6 +57,7 @@ const props = defineProps({
   }
 })
 
+const name = "EventVariableSelect"
 const label = props.name ? props.name : "Variable" + props.eventVariableIndex
 const store = inject('store')
 const selectVariable = ref()
@@ -71,7 +72,7 @@ watch(variableValue, () => {
 })
 
 const update_variable = (newValue) => {
-  console.log(`EventVariableSelect: newValue ${newValue.value}`);
+//  console.log(name +`: newValue ${newValue.value}`);
   
   // get previous value
   let byteValue = variableValue.value
@@ -86,13 +87,13 @@ const update_variable = (newValue) => {
 }
 
 onMounted(() => {
-  console.log(`EventVariableSelect: onMounted`)
+//  console.log(name + `: onMounted`)
   let startValue = store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
   selectVariable.value = startValue & props.bitMask
-//  console.log(`EventVariableSelect: props: ${JSON.stringify(props)}`)
+//  console.log(name + `: props: ${JSON.stringify(props)}`)
   items.value = []
   for (var i in props.options){
-    console.log(`EventVariableComplexSelect: item: ${i}`)
+//    console.log(name + `: ComplexSelect: item: ${i}`)
     if (props.options[i].overload != undefined) {   
       var label = overloadedLabel(props.nodeNumber, props.options[i].overload, store) 
       if (label) {
@@ -103,7 +104,7 @@ onMounted(() => {
       items.value.push(props.options[i])
     }
   }
-  console.log(`EventVariableSelect: items: ${JSON.stringify(items.value)}`)
+//  console.log(name + `: items: ${JSON.stringify(items.value)}`)
 })
 
 
