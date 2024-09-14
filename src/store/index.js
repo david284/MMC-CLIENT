@@ -152,15 +152,6 @@ const methods = {
       "eventIndex": eventIndex
     })
   },
-  update_display_component(component) {
-    state.display_component = component
-  },
-  update_event_component(component) {
-    state.events_component = component
-  },
-  update_services_component(component) {
-    state.services_component = component
-  },
   query_all_nodes() {
     console.log(`QUERY_ALL_NODES`)
     socket.emit('QUERY_ALL_NODES')
