@@ -9,6 +9,7 @@ const port = "5552"
 const name = "store"
 
 const state = reactive({
+  backups_list: [],
   version: {},
   nodes: {},
   nodeDescriptors: {},
@@ -73,8 +74,12 @@ const methods = {
     console.log(name + ': sent REMOVE_NODE ' + nodeNumber)
   },
   update_layout() {
-    console.log(`Update Layout Details : ` + state.title)
-    socket.emit('UPDATE_LAYOUT_DETAILS', state.layout)
+    console.log(`Update Layout Data : ` + state.title)
+    socket.emit('UPDATE_LAYOUT_DATA', state.layout)
+  },
+  request_backups_list(layoutName) {
+    console.log(`request_backups_list : ` + layoutName)
+    socket.emit('REQUEST_BACKUPS_LIST', {"layoutName":layoutName})
   },
   request_service_discovery(nodeNumber) {
     console.log(`Request Service Discovery : ` + nodeNumber)
@@ -233,7 +238,7 @@ const methods = {
     socket.emit('REQUEST_LAYOUTS_LIST')
   },
   change_layout(data){
-    console.log(`CHANGE_LAYOUT`)
+    console.log(name + `: CHANGE_LAYOUT: ` + JSON.stringify(data))
     socket.emit('CHANGE_LAYOUT', data)
   },
   import_module_descriptor(moduleDescriptor) {
@@ -344,6 +349,12 @@ socket.on("connect", () => {
   socket.emit('REQUEST_LAYOUTS_LIST')
 })
 
+socket.on('BACKUPS_LIST', (data) => {
+  console.log(name + `RECEIVED BACKUPS_LIST ` + JSON.stringify(data))
+  state.backups_list = data;
+})
+
+
 socket.on("CBUS_ERRORS", (data) => {
   console.log(`RECEIVED CBUS_ERRORS `)
   state.cbus_errors = data
@@ -383,8 +394,8 @@ socket.on("BUS_EVENTS", (data) => {
   state.busEvents = data
 })
 
-socket.on('LAYOUT_DETAILS', (data) => {
-  console.log(`RECEIVED Layout Details`)
+socket.on('LAYOUT_DATA', (data) => {
+  console.log(`RECEIVED Layout Data`)
   state.layout = data;
 })
 

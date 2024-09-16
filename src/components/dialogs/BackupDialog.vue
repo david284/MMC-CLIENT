@@ -55,6 +55,7 @@ const model = computed({
 // model changes when Dialog opened & closed
 watch(model, () => {
   console.log(name + `: WATCH model`)
+  store.methods.request_backups_list(store.state.layout.layoutDetails.title)
 })
 
 
