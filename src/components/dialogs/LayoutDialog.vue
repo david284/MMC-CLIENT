@@ -63,7 +63,6 @@
           </q-card>
 
 
-
           <q-card inline class="q-pa-md" flat style="max-width: 500px">
             <div class="text-h6 text-black">Edit layout details</div>      
             <q-input
