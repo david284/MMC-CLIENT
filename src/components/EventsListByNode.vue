@@ -2,7 +2,7 @@
   <div style="height: 45vh;">
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
       <div class="text-h6">
-        Events for node :  {{ store.getters.node_name(store.state.selected_node) }}
+        Events for node :  {{ store.getters.node_name(props.nodeNumber) }}
       </div>
       <template v-slot:action>
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
@@ -51,7 +51,7 @@
     <addEventDialog v-model='showAddEventDialog' />
 
     <advancedEventsDialog v-model='showAdvancedEventDialog'
-      :nodeNumber = store.state.selected_node
+      :nodeNumber = nodeNumber
     />
 
     <nameEventDialog v-model='showNameEventDialog'
@@ -63,18 +63,18 @@
     />
 
     <sendEventDialog v-model='showSendEventDialog'
-      :sendingNodeNumber = store.state.selected_node
+      :sendingNodeNumber = nodeNumber
       :eventNumber = selected_event_number
       :eventIdentifier = selected_event_Identifier
     />
 
     <deleteEventDialog v-model='showDeleteEventDialog'
-      :nodeNumber = store.state.selected_node
+      :nodeNumber = nodeNumber
       :eventIdentifier = selected_event_Identifier
     />
 
     <eventVariablesDialog v-model='showEventVariablesDialog'
-        :nodeNumber = props.nodeNumber
+        :nodeNumber = nodeNumber
         :eventIdentifier = selected_event_Identifier
       />
 
@@ -83,14 +83,6 @@
 </template>
 
 <script setup>
-
-/*/////////////////////////////////////////////////////////////////////////////////////
-
-This component uses store.state.selected_node, not a nodeNumber prop passed in
-This is becaue this componet is meant tobe driven from a nodelist, which will
-set the selected_node element
-
-/////////////////////////////////////////////////////////////////////////////////////*/
 
 import {computed, inject, ref, watch, onBeforeMount, onMounted, onUpdated} from "vue"
 import addEventDialog from "components/dialogs/AddEventDialog"
@@ -134,7 +126,7 @@ const columns = [
 
 // need to know if selected node changed
 const selected_node = computed(() =>{
-  return store.state.selected_node
+  return props.nodeNumber
 })
 watch(selected_node, () => {
 //  console.log(name + `: WATCH selected_node`)
@@ -144,7 +136,7 @@ watch(selected_node, () => {
 
 // need to know if new events added
 const nodeEvents = computed(() =>{
-  return Object.values(store.state.nodes[store.state.selected_node].storedEvents)
+  return Object.values(store.state.nodes[props.nodeNumber].storedEvents)
 })
 watch(nodeEvents, () => {
 //  console.log(name + `: WATCH nodeEvents`)
@@ -173,12 +165,12 @@ watch(eventDetails, () => {
 
 
 const update_rows = () => {
-//  console.log(name + ': update_rows ' + store.state.selected_node)
+//  console.log(name + ': update_rows ' + props.nodeNumber)
   rows.value = []
 
-//  console.log(name + ': update_rows: storedEvents ' + JSON.stringify(store.state.nodes[store.state.selected_node].storedEvents))
+//  console.log(name + ': update_rows: storedEvents ' + JSON.stringify(store.state.nodes[props.nodeNumber].storedEvents))
   // do stored events for this node first.....
-  var storedEvents = Object.values(store.state.nodes[store.state.selected_node].storedEvents)
+  var storedEvents = Object.values(store.state.nodes[props.nodeNumber].storedEvents)
 //  console.log(name + ': update_rows: storedEvents ' + JSON.stringify(storedEvents))
   storedEvents.forEach(event => {
 //    console.log(name + ': update_rows: event ' + JSON.stringify(event))
@@ -200,7 +192,7 @@ const update_rows = () => {
   // need to be careful with short events
   var busEvents = Object.values(store.state.busEvents)
   busEvents.forEach(busEvent => {
-    if (busEvent.nodeNumber == store.state.selected_node){
+    if (busEvent.nodeNumber == props.nodeNumber){
       // ok, it's an event matching this node
       // lets see if it's already in the stored events...
       // we need to match long and short events differently
@@ -244,10 +236,10 @@ const readEventVariables = (eventIndex) => {
   // refresh event list
 //  console.log(name + `: readEventVariables - eventIndex ` + eventIndex)
   store.methods.request_all_event_variables(
-    store.state.selected_node,
+    props.nodeNumber,
     eventIndex,
     100,
-    store.state.nodes[store.state.selected_node].parameters[5]
+    store.state.nodes[props.nodeNumber].parameters[5]
   );
 }
 
@@ -298,7 +290,7 @@ const clickEventName = (eventIdentifier) => {
 
 const clickRefresh = () => {
   console.log(name + `: clickRefresh`)
-  store.methods.request_all_node_events(store.state.selected_node)
+  store.methods.request_all_node_events(props.nodeNumber)
 update_rows()
 }
 
@@ -347,7 +339,7 @@ const clickTest = (nodeNumber, eventNumber, eventIndentifer) => {
 const clickVariables = (eventIndex, eventIdentifier) => {
   readEventVariables(eventIndex)
   selected_event_Identifier.value = eventIdentifier
-  console.log(name + `: clickVariables: node ` + store.state.selected_node)
+  console.log(name + `: clickVariables: node ` + props.nodeNumber)
   showEventVariablesDialog.value = true
 }
 

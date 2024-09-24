@@ -59,7 +59,7 @@ Click event handlers
 
 const deleteAllEvents = () => {
   console.log(name + `: deleteAllEvents ` + props.nodeNumber)
-  store.methods.delete_all_events(nodeNumber)
+  store.methods.delete_all_events(props.nodeNumber)
 }
 
 
