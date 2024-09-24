@@ -145,18 +145,18 @@ watch(nodeList, () => {
 })
 
 const update_taught_nodes = async () => {
+  console.log(name + `: update_taught_nodes`)
   teRows.value = []
   taughtNodes.value = []
   nodeList.value.forEach(node => {
-    if (Object.values(node.storedEvents).length > 0) {
-      let events = Object.values(node.storedEvents)
+    if (Object.values(node.storedEventsNI).length > 0) {
+      let events = Object.values(node.storedEventsNI)
       events.forEach(async event => {
         if (event.eventIdentifier == props.eventIdentifier) {
-          taughtNodes.value.push(event.node)
+          taughtNodes.value.push(node.nodeNumber)
           var nodeName = store.state.layout.nodeDetails[node.nodeNumber].name
           teRows.value.push({"number" : node.nodeNumber, "name" : nodeName, "eventIndex":event.eventIndex, "eventIdentifier":event.eventIdentifier})
-          await checkNodeParameters(node.nodeNumber)
-//temp          readEventVariables(node.nodeNumber, event.eventIndex)
+//          await checkNodeParameters(node.nodeNumber)
         }
       })
     }
@@ -166,17 +166,20 @@ const update_taught_nodes = async () => {
 
 
 const update_available_nodes = () =>{
+  console.log(name + `: update_available_nodes`)
   availableNodes.value = []
-  var nodes = store.state.nodes                       // contains all node numbers
+  var nodes = store.state.nodes
   // loop through json object properties with a for-in loop
   // returns top level property even if a nested object (not an index like an array)
   for (var nodeNumber in nodes) {
+//    console.log(name + `: update_available_nodes: node ` + nodeNumber)
+//    console.log(name + `: update_available_nodes: taughtNodes ` + JSON.stringify(taughtNodes.value))
     // don't add node if event already taught to this node
     var notAdded = true
     for (var index in taughtNodes.value){
       if (taughtNodes.value[index] == nodeNumber){
         notAdded = false
-//        console.log("update_available_nodes: event " + props.eventIdentifier + " already in node " + nodeNumber)
+//        console.log(name + "update_available_nodes: event " + props.eventIdentifier + " already in node " + nodeNumber)
       }
     }
     if (notAdded){
@@ -297,6 +300,7 @@ const clickTeachEvent = async () => {
     selected_event_Identifier.value = props.eventIdentifier
     isNewEvent.value=true
     showEventVariablesDialog.value = true
+    newNode.value = undefined
   }
 }
 
