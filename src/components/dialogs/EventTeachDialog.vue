@@ -241,6 +241,7 @@ const checkNodeParameters = async (nodeNumber) => {
       console.log(name + ": checkNodeParameters: " + err)
       showParametersLoadingDialog.value = false
     }
+    await sleep(1000)  // give system time to process all incoming data
 //    console.log(name + ": checkNodeParameters: end")
   }
 }
@@ -273,6 +274,7 @@ const checkNodeVariables = async (nodeNumber) => {
       console.log(name + ": checkNodeVariables: " + err)
       showNodeVariablesLoadingDialog.value = false
     }
+    await sleep(1000)  // give system time to process all incoming data
 //    console.log(name + ": checkNodeVariables: end")
   }
 }
