@@ -75,7 +75,7 @@ const geteventslist = (nodeNumber, store) => {
 
 
 export function createNewEvent (store, nodeNumber, eventIdentifier) {
-
+  console.log(name + `: createNewEvent: ${nodeNumber} : ${eventIdentifier}`)
   // lets create a shortcut to the node entry for readability
   var nodeEntry = store.state.nodes[nodeNumber]
   // create temporary event entry in storedEventNI table (will be overwritten when module read after teach)

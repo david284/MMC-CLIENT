@@ -101,7 +101,6 @@ import EventVariables from "components/modules/common/EventVariables"
 import EventVariableRaw from "components/modules/common/EventVariableRaw"
 import manageModuleDescriptorsDialog from "components/dialogs/ManageModuleDescriptorsDialog";
 
-
 const $q = useQuasar()
 const store = inject('store')
 const name = "EventVariablesDialog"
@@ -111,7 +110,6 @@ const showDescriptorWarning = ref(false)
 const showManageModuleDescriptorsDialog = ref(false)
 const showVariablesDescriptor = ref(false)
 const showStoredEventJSON = ref(false)
-const storedEventsIndex = ref(null)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -151,9 +149,9 @@ onMounted(() => {
 //  console.log(name +': onMounted')
 })
 
-
-onUpdated(() => {
-//  console.log(name + ': onUpdated:')
+onUpdated(async () => {
+//  console.log(name + ': onUpdated:') 
+//  console.log(name + ': onUpdated: storedEventsNI for node ' + props.nodeNumber + ' ' + JSON.stringify(store.state.nodes[props.nodeNumber].storedEventsNI))
   try {
     if (props.nodeNumber){
     
@@ -210,8 +208,6 @@ const checkFileLoad = () => {
     }
   }
 }
-
-
 
 
 /*/////////////////////////////////////////////////////////////////////////////

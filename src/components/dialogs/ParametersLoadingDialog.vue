@@ -17,9 +17,10 @@
 
 <script setup>
 
-import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
+import {inject, onBeforeMount, onMounted, computed, watch, ref, onUpdated} from "vue";
 
 const store = inject('store')
+const name = "ParametersLoadingDialog"
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true }
@@ -37,6 +38,10 @@ onBeforeMount(() => {
 })
 
 onMounted(() => {
+})
+
+onUpdated(() =>{
+//  console.log(name + ': onUpdated:')
 })
 
 </script>

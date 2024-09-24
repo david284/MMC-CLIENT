@@ -32,7 +32,7 @@
 import {inject, onUpdated, computed, watch, ref} from "vue";
 
 const store = inject('store')
-
+const name = "NameEventDialog"
 const newEventName = ref("")
 
 const props = defineProps({
@@ -47,23 +47,24 @@ const model = computed({
       set(newValue) { emit('update:modelValue', newValue) }
     })
 
-
-const clickAccept = () => {
-  console.log("new event name: " + props.eventIdentifier + ' ' + newEventName.value)
-  store.setters.event_name(props.eventIdentifier, newEventName.value)
-  newEventName.value = ""   // clear for next time
-}
-
-
 onUpdated(() => {
-  console.log("NameEventDialog onUpdated " + props.eventIdentifier)
+//  console.log(name + ": onUpdated " + props.eventIdentifier)
   if (store.state.layout.eventDetails[props.eventIdentifier]) {
     newEventName.value = store.state.layout.eventDetails[props.eventIdentifier].name
   }
 })
 
+/*/////////////////////////////////////////////////////////////////////////////
 
+Click event handlers
 
+/////////////////////////////////////////////////////////////////////////////*/
+
+const clickAccept = () => {
+  console.log(name + ": clickAccept: name: " + props.eventIdentifier + ' ' + newEventName.value)
+  store.setters.event_name(props.eventIdentifier, newEventName.value)
+  newEventName.value = ""   // clear for next time
+}
 
 </script>
 

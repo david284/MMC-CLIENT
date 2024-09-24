@@ -208,6 +208,13 @@ const methods = {
       "delay": delay
     })
   },
+  request_event_variables_by_identifier(nodeNumber, eventIdentifier) {
+    console.log(name + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER: nodeNumber: ` + nodeNumber + ` eventIdentifier: ` + eventIdentifier)
+    socket.emit('REQUEST_ALL_EVENT_VARIABLES', {
+      "nodeNumber": nodeNumber,
+      "eventIdentifier": eventIdentifier
+    })
+  },
   request_event_variable(nodeNumber, eventIndex, eventVariableId){
     console.log(`REQUEST_EVENT_VARIABLE ${eventIndex} ${eventVariableId}`)
     socket.emit('REQUEST_EVENT_VARIABLE', {
