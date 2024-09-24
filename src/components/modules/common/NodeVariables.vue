@@ -87,7 +87,7 @@ function isVisible(item){
   if (item.visibilityLogic) {
     result = parseLogicElement(store.state.selected_node, item.visibilityLogic, store)
   }
-  console.log(name + `: isVisible: ` + result + ' ' + item.type)
+//  console.log(name + `: isVisible: ` + result + ' ' + item.type)
   return result
 }
 

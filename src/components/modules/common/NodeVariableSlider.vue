@@ -89,7 +89,7 @@ const bitMask = computed(() => {
 })
 // get previous value, as starting point for updated byte value
 let newByteValue = store.state.nodes[props.nodeNumber].nodeVariables[props.nodeVariableIndex]
-console.log(`NodeVariableSlider: bitMask : ${bitMask.value}`)
+// console.log(`NodeVariableSlider: bitMask : ${bitMask.value}`)
 
 const cardHeight = computed(() => {
   if(outputOnWrite.value) {
@@ -106,10 +106,10 @@ const outputOnWrite = computed(() =>{
   }
   return result
 })
-console.log(name + `: computed outputOnWrite: ` + outputOnWrite.value)
+// console.log(name + `: computed outputOnWrite: ` + outputOnWrite.value)
 
 watch(outputOnWrite, () => {
-  console.log(name + `: WATCH outputOnWrite: ` + outputOnWrite.value)
+//  console.log(name + `: WATCH outputOnWrite: ` + outputOnWrite.value)
 })
 
 const displayValue = computed(() =>{
@@ -132,10 +132,10 @@ const sliderValue = computed({
     return ((store.state.nodes[props.nodeNumber].nodeVariables[props.nodeVariableIndex] & bitMask.value) >> props.startBit)
   },
   set(newValue) {
-    console.log(`OldByteValue : ${newByteValue}`)
+//    console.log(`OldByteValue : ${newByteValue}`)
     // not sure we need to do a range check as the slider control uses max & min anyway...
     if (newValue <= props.max && newValue >= props.min) {
-      console.log(`update_variable : ${newValue}`)
+//      console.log(`update_variable : ${newValue}`)
       let processedValue = newValue                           // take a copy to change
       processedValue = processedValue << props.startBit       // shift to position in variable
       //set bits, but only if they match bits in the bitmask
@@ -146,9 +146,9 @@ const sliderValue = computed({
       error.value = false
       error_message.value = ''
       store.methods.update_node_variable(props.nodeNumber, props.nodeVariableIndex, newByteValue)
-      console.log(`NewByteValue : ${newByteValue}`)
+//      console.log(`NewByteValue : ${newByteValue}`)
     } else {
-      console.log(`Invalid Value : ${newValue}`)
+      console.log(name + `: Invalid Value : ${newValue}`)
       error_message.value = 'Invalid Value'
       error.value = true
     }
@@ -157,9 +157,9 @@ const sliderValue = computed({
 
 const update_variable = (newValue) => {
   if (error.value) {
-    console.log(`Invalid Value : ${newValue}`)
+    console.log(name + `: Invalid Value : ${newValue}`)
   } else {
-    console.log(`update_variable : ${newValue}`)
+//    console.log(`update_variable : ${newValue}`)
   }
 }
 

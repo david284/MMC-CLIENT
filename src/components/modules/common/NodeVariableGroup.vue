@@ -25,11 +25,11 @@
   const sourceName=ref("nvGroup")
 
   onMounted(() => {
-    console.log(name + ": onMounted")
+//    console.log(name + ": onMounted")
   })
 
   onUpdated(() => {
-    console.log(name + `: onUpdated`)
+//    console.log(name + `: onUpdated`)
   })
 
 </script>

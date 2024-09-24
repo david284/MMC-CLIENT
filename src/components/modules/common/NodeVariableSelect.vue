@@ -16,6 +16,7 @@
 
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
+const name = "NodeVariableSelect"
 
 const props = defineProps({
   "nodeNumber": {
@@ -65,7 +66,7 @@ const nodeVariable = computed(() =>{
 
 watch(nodeVariable, () => {
   selectValue.value = nodeVariable.value & props.bitMask
-  console.log(`NodeVariableSelect watch variableValue ` + selectValue.value + ' bitMask ' + props.bitMask)
+//  console.log(name + `: watch variableValue ` + selectValue.value + ' bitMask ' + props.bitMask)
 })
 
 const update_variable = (newValue) => {
@@ -78,7 +79,7 @@ const update_variable = (newValue) => {
   // clear bits, but only if they match bits in the bitmask
   byteValue = byteValue & (newValue.value | ~props.bitMask)							// clear bit by 'and-ing' inverse bit value
 
-  console.log(`NodeVariableSelect: byteValue ${byteValue}`);
+  // console.log(`NodeVariableSelect: byteValue ${byteValue}`);
   
 
   store.methods.update_node_variable(props.nodeNumber, props.nodeVariableIndex, byteValue)
@@ -86,7 +87,7 @@ const update_variable = (newValue) => {
 
 
 onMounted(() => {
-  console.log(`NodeVariableSelect: onMounted`)
+//  console.log(`NodeVariableSelect: onMounted`)
   selectValue.value = nodeVariable.value & props.bitMask
 //  console.log(`NodeVariableSelect: props: ${JSON.stringify(props)}`)
 })

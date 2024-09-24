@@ -30,7 +30,7 @@
   const name = 'EventVariableGroup'
 
   onMounted(() => {
-    console.log(name + ": onMounted")
+//    console.log(name + ": onMounted")
 //    console.log(name + ':  props: ' + JSON.stringify(props))
   })
 

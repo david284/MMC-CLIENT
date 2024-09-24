@@ -50,7 +50,7 @@
   })
 
   watch(selectedTab, () => {
-    console.log(name + `: WATCH selectedTab ` + JSON.stringify(selectedTab.value))
+//    console.log(name + `: WATCH selectedTab ` + JSON.stringify(selectedTab.value))
   })
 
 

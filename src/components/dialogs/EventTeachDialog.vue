@@ -145,7 +145,7 @@ watch(nodeList, () => {
 })
 
 const update_taught_nodes = async () => {
-  console.log(name + `: update_taught_nodes`)
+//  console.log(name + `: update_taught_nodes`)
   teRows.value = []
   taughtNodes.value = []
   nodeList.value.forEach(node => {
@@ -166,7 +166,7 @@ const update_taught_nodes = async () => {
 
 
 const update_available_nodes = () =>{
-  console.log(name + `: update_available_nodes`)
+//  console.log(name + `: update_available_nodes`)
   availableNodes.value = []
   var nodes = store.state.nodes
   // loop through json object properties with a for-in loop

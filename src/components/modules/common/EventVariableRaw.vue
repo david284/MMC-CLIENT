@@ -72,7 +72,7 @@ const update_event = (newValue) => {
 
 onMounted(() => {
   eventValue.value = store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
-  console.log(name +': onMounted: eventValue ' + eventValue.value)
+//  console.log(name +': onMounted: eventValue ' + eventValue.value)
 })
 
 </script>

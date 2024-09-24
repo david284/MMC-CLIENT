@@ -93,7 +93,7 @@ onMounted(() => {
 
   variable.value = (store.state.nodes[props.NodeNumber].nodeVariables[props.NodeVariableIndexHigh] << 8)
     + store.state.nodes[props.NodeNumber].nodeVariables[props.NodeVariableIndexLow]
-  console.log(`NodeVariableDual ${variable.value}`)
+//  console.log(`NodeVariableDual ${variable.value}`)
 })
 
 

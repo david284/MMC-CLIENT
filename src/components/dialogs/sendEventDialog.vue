@@ -73,11 +73,11 @@ watch(model, () => {
 
 
 onBeforeMount(() => {
-  console.log("SendEventDialog onBeforeMount")
+//  console.log("SendEventDialog onBeforeMount")
 })
 
 onMounted(() => {
-  console.log("SendEventDialog onMounted")
+//  console.log("SendEventDialog onMounted")
 })
 
 const send_on = () => {
