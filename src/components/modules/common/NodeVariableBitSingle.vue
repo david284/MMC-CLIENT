@@ -4,11 +4,11 @@
       <div class="text-h6">{{ displayTitle }}</div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
       <node-variable-bit
-        :NodeNumber="store.state.selected_node"
-        :VariableIndex=VariableIndex
-        :Bit=Bit
-        :learn=learn
-        :Name="Name"
+        :nodeNumber = nodeNumber
+        :variableIndex = variableIndex
+        :bit = bit
+        :learn = learn
+        :name = name
       >
       </node-variable-bit>
     </q-card-section>
@@ -23,9 +23,14 @@ import {inject} from "vue";
 import {onMounted} from "vue";
 
 const store = inject('store')
+const name = "NodeVariableBitsingle"
 
 const props = defineProps({
-  "VariableIndex": {
+  "nodeNumber": {
+    type: Number,
+    required: true
+  },
+  "variableIndex": {
     type: Number,
     required: true
   },
@@ -37,11 +42,11 @@ const props = defineProps({
     type: String,
     default: ""
   },
-  "Bit": {
+  "bit": {
     type: Number,
     required: true
   },
-  "Name": {
+  "name": {
     type: String,
     required: false
   },
@@ -56,8 +61,7 @@ const props = defineProps({
 })
 
 onMounted(() => {
-  console.log(`NodeVariableBitSingle onMounted`)
-
+//  console.log(name + `: onMounted`)
 })
 </script>
 

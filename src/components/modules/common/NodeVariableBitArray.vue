@@ -5,10 +5,10 @@
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
       <div v-for="item in newBitCollection" :key="item">
         <node-variable-bit
-          :NodeNumber = nodeNumber
-          :VariableIndex = VariableIndex
-          :Bit = item.bitPosition
-          :Name = item.label
+          :nodeNumber = nodeNumber
+          :variableIndex = variableIndex
+          :bit = item.bitPosition
+          :name = item.label
         ></node-variable-bit>
       </div>
     </q-card-section>
@@ -21,6 +21,7 @@ import NodeVariableBit from "components/modules/common/NodeVariableBit"
 import {overloadedLabel} from "components/modules/common/CommonLogicParsers.js";
 
 import { inject, onMounted, ref, computed, watch } from "vue";
+const name = "NodeVariableBitArray"
 const store = inject('store')
 var items = ref();
 var newBitCollection = ref()
@@ -32,7 +33,7 @@ const props = defineProps({
     type: Number,
     required: true
   },
-  "VariableIndex": {
+  "variableIndex": {
     type: Number,
     required: true
   },
@@ -59,8 +60,7 @@ watch(variables, () => {
 
 
 onMounted(() => {
-  console.log(`NodeVariableBitArray onMounted:`)
-//  console.log(`NodeVariableBitArray: props: ${JSON.stringify(props)}`)
+//  console.log(name + `: onMounted`)
   refeshArray();
 })
 

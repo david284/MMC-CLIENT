@@ -234,21 +234,13 @@ const clickClose = () => {
 }
 
 const clickToggleVariablesDescriptor = () => {
-//  console.log(name + `: clickToggleVariablesDescriptor`)
-  if (showVariablesDescriptor.value){
-    showVariablesDescriptor.value = false
-  } else {
-    showVariablesDescriptor.value = true
-  }
+  console.log(name + `: clickToggleVariablesDescriptor`)
+  showVariablesDescriptor.value = showVariablesDescriptor.value ? false : true
 }
 
 const clickToggleRaw = () => {
   console.log(name + `: clickToggleRaw`)
-  if (showRawVariables.value){
-    showRawVariables.value = false
-  } else {
-    showRawVariables.value = true
-  }
+  showRawVariables.value = showRawVariables.value ? false : true
 }
 
 const clickToggleStoredEvents = () => {

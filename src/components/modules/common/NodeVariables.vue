@@ -3,18 +3,18 @@
     <div v-for="item in configuration" :key="item">
       <NodeVariableBitArray v-if="(item.type=='NodeVariableBitArray') && (isVisible(item))"
                             :nodeNumber=store.state.selected_node
-                            :VariableIndex=item.nodeVariableIndex
+                            :variableIndex=item.nodeVariableIndex
                             :bitCollection = item.bitCollection
                             :displayTitle="item.displayTitle"
                             :displaySubTitle="item.displaySubTitle"
                             :learn="false"
       ></NodeVariableBitArray>
       <NodeVariableBitSingle v-if="(item.type=='NodeVariableBitSingle') && (isVisible(item))"
-                                :NodeNumber=store.state.selected_node
-                                :VariableIndex=item.nodeVariableIndex
+                                :nodeNumber=store.state.selected_node
+                                :variableIndex=item.nodeVariableIndex
                                 :displayTitle="item.displayTitle"
                                 :displaySubTitle="item.displaySubTitle"
-                                :Bit=item.bit
+                                :bit=item.bit
       >
       </NodeVariableBitSingle>
       <NodeVariableDual v-if="(item.type=='NodeVariableDual') && (isVisible(item))"
