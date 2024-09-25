@@ -332,11 +332,13 @@ const clickVariables = async (nodeNumber) => {
   }
 }
 
-const clickVLCB = (nodeNumber) => {
+const clickVLCB = async (nodeNumber) => {
   console.log(name + ': clickVLCB')
   // don't need parameters for this
   select_node_row(nodeNumber)
   store.methods.request_diagnostics(nodeNumber)
+  // give the module chance to report it's services before we display them
+  await sleep(500)
   showVLCBServicesDialog.value = true
 }
 
