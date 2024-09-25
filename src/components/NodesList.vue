@@ -250,14 +250,18 @@ const checkNodeVariables = async (nodeNumber) => {
 }
 
 
-const select_node_row = (nodeNumber) => {
+const select_node_row = async (nodeNumber) => {
   if (store.state.selected_node != nodeNumber) {
 //    console.log(name + ': request_all_node_events')
     store.state.selected_node = nodeNumber
     store.methods.request_all_node_events(store.state.selected_node)
     selected_nodeNumber.value = nodeNumber    // used to highlight row
     selected_node_valid.value = true
+    // give the module chance to report it's events before we request services
+    await sleep(200)
     store.methods.request_service_discovery(store.state.selected_node)
+    // give the module chance to report it's services before we request diagnostics
+    await sleep(200)
 //    console.log(name + ': node row ', store.state.selected_node + " selected")
   }
 }
@@ -281,7 +285,7 @@ Click event handlers
 
 const clickDeleteNode = async (nodeNumber) => {
   await checkNodeParameters(nodeNumber)
-  select_node_row(nodeNumber)
+  await select_node_row(nodeNumber)
   showDeleteNodeDialog.value=true
   console.log(name + ': clickDeleteNode: node' + store.state.selected_node)
 }
@@ -289,7 +293,7 @@ const clickDeleteNode = async (nodeNumber) => {
 const clickEvents = async (nodeNumber) => {
   await checkNodeParameters(nodeNumber)
   await checkNodeVariables(nodeNumber)
-  select_node_row(nodeNumber)
+  await select_node_row(nodeNumber)
   console.log(name + ': clickEvents: node', nodeNumber)
 }
 
@@ -302,7 +306,7 @@ const clickNameNode = async (nodeNumber) => {
 
 const clickParameters = async (nodeNumber) => {
   await checkNodeParameters(nodeNumber)
-  select_node_row(nodeNumber)
+  await select_node_row(nodeNumber)
   console.log(name + `: clickParameters: node ` + nodeNumber)
   showNodeParametersDialog.value = true
 }
@@ -315,7 +319,7 @@ const clickRefresh = () => {
 
 const clickVariables = async (nodeNumber) => {
   await checkNodeParameters(nodeNumber)
-  select_node_row(nodeNumber)
+  await select_node_row(nodeNumber)
   console.log(name + `: clickVariables: node ` + nodeNumber)
   if ((nodeNumber == 1000) && store.state.develop){
     showiFrameDialog.value = true
@@ -335,10 +339,8 @@ const clickVariables = async (nodeNumber) => {
 const clickVLCB = async (nodeNumber) => {
   console.log(name + ': clickVLCB')
   // don't need parameters for this
-  select_node_row(nodeNumber)
+  await select_node_row(nodeNumber)
   store.methods.request_diagnostics(nodeNumber)
-  // give the module chance to report it's services before we display them
-  await sleep(500)
   showVLCBServicesDialog.value = true
 }
 
