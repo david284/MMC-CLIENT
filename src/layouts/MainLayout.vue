@@ -12,6 +12,9 @@
               <q-item clickable @click="clickBusEvents()">
                 <q-item-section>Bus events</q-item-section>
               </q-item>
+              <q-item v-if="(store.state.develop)" clickable @click="clickShortEvents()">
+                <q-item-section>Show all Events</q-item-section>
+              </q-item>
               <q-item clickable @click="clickJson()">
                 <q-item-section>JSON</q-item-section>
               </q-item>
@@ -111,6 +114,8 @@
 
   <dialogExampleCompositionAPI v-model='showDialogExampleCompositionAPI' />
 
+  <AllEventsDialog v-model='showAllEventsDialog' />
+
   <iFrameDialog v-model='showiFrameDialog' 
     :URL=exampleURL />
 
@@ -131,6 +136,7 @@ import newNodeDialog from "components/dialogs/NewNodeDialog";
 import systemDialog from "components/dialogs/SystemDialog";
 import dialogExampleCompositionAPI from "components/dialogs/DialogExampleCompositionAPI";
 import iFrameDialog from "components/dialogs/iFrameDialog";
+import AllEventsDialog from "components/dialogs/AllEventsDialog";
 
 const { getVerticalScrollPosition, setVerticalScrollPosition } = scroll
 const $q = useQuasar()
@@ -148,6 +154,7 @@ const showSystemDialog = ref(false)
 const busMessage = ref({})
 const previousNodeNumber = ref(0)
 const showDialogExampleCompositionAPI = ref(false)
+const showAllEventsDialog = ref(false)
 const showiFrameDialog = ref(false)
 const exampleURL = ref("dummyModule/index.html")
 const scrollAreaRef = ref(null)
@@ -226,6 +233,11 @@ Click event handlers
 const clickBusEvents = () => {
   console.log(name + ': clickBusEvents')
   showBusEventsDialog.value = true
+}
+
+const clickShortEvents = () => {
+  console.log(name + ': clickShortEvents')
+  showAllEventsDialog.value = true
 }
 
 const clickCbusErrors = () => {

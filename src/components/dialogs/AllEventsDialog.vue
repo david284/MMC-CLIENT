@@ -1,0 +1,339 @@
+<template>
+  <q-dialog v-model='model' persistent  full-width>
+    <q-card class="q-pa-none q-ma-none">
+
+      <q-card-section class="q-pa-none q-ma-none">
+        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
+          <div class="text-h6">
+            All Events Dialog
+          </div>
+          <template v-slot:action>
+            <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+          </template>
+        </q-banner>
+      </q-card-section>
+
+      <q-card>
+        <q-card-section class="no-margin no-padding">
+
+
+        <q-table
+          title = "All Events"
+          class = "events-table"
+          dense
+          :rows = displayEventTable
+          :columns = "columns"
+          :filter = "filter"
+          row-key = "eventIdentifier"
+          virtual-scroll
+          v-model:pagnation = "pagnation"
+          :rows-per-page-options = "[0]"
+          :virtual-scroll-sticky-size-start = "48"
+          hide-bottom
+        >
+
+  
+          <template v-slot:top="">
+            <div class="col-2 q-table__title text-h4">All Events</div>
+            <q-space/>
+            <q-input outlined dense debounce="300" v-model="filter" placeholder="Search">
+              <template v-slot:append>
+                <q-icon name="search"/>
+              </template>
+            </q-input>
+            <q-space/>
+            <q-btn color="negative" label="Add Event" @click="clickAddEvent()" no-caps/>
+            <q-space/>
+          </template>
+
+          <template v-slot:body="props">
+            <q-tr :props="props">
+              <q-td key="eventName" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.name }}</q-td>
+              <q-td key="eventIdentifier" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
+                {{ props.row.eventIdentifier }}
+              </q-td>
+              <q-td key="nodeNumber" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
+                {{ props.row.nodeNumber }}
+              </q-td>
+              <q-td key="eventNumber" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
+                {{ props.row.eventNumber }}
+              </q-td>
+              <q-td key="status" :props="props">
+                <q-chip color="white" text-color="green" v-if="props.row.status=='on'">ON</q-chip>
+                <q-chip color="white" text-color="red" v-else>OFF</q-chip>
+              </q-td>
+              <q-td key="type" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.type }}</q-td>
+              <q-td key="actions" :props="props">
+                <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
+                <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
+                <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.nodeNumber, props.row.eventIdentifier)" no-caps>send ON</q-btn>
+                <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.nodeNumber, props.row.eventIdentifier)" no-caps>send OFF</q-btn>
+              </q-td>
+            </q-tr>
+
+          </template>
+        </q-table>
+ 
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Toggle event details json" @click="clickToggleShowEventsJSON()"/>
+      </q-card-actions>
+
+        <q-card-section class="q-pa-sm" v-if="showEventsJSON">
+        <div class="q-pa-xs row">
+          <div class="text-body1">Events<br></div>
+          <div class="text-body2">
+            <pre>{{ store.state.layout.eventDetails }}</pre>
+          </div>
+        </div>
+      </q-card-section>
+
+      </q-card-section>
+    </q-card>
+
+    </q-card>
+
+  </q-dialog>
+
+  <addEventDetailDialog v-model='showAddEventDetailDialog' />
+
+  <nameEventDialog v-model='showNameEventDialog'
+    :eventIdentifier = selected_event_Identifier
+  />
+
+  <eventTeachDialog v-model='showEventTeachDialog'
+    :eventIdentifier = selected_event_Identifier
+  />
+
+  <sendEventDialog v-model='showSendEventDialog'
+    :sendingNodeNumber = selected_event_node
+    :eventNumber = selected_event_number
+    :eventIdentifier = selected_event_Identifier
+  />
+
+</template>
+
+
+<script setup>
+
+import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
+import addEventDetailDialog from "components/dialogs/AddEventDetailDialog"
+import sendEventDialog from "components/dialogs/SendEventDialog"
+import nameEventDialog from "components/dialogs/NameEventDialog"
+import eventTeachDialog from "components/dialogs/EventTeachDialog"
+
+const store = inject('store')
+const name = "AllEventsDialog"
+const tab = ref('nodes')
+const filter = ref('')
+const pagnation = {rowsPerPage: 0}
+let displayEventTable = ref()
+const showAddEventDetailDialog = ref(false)
+const showNameEventDialog = ref(false)
+const showSendEventDialog = ref(false)
+const showEventTeachDialog = ref(false)
+const selected_event_Identifier = ref("") // Dialog will complain if null
+const newEventName = ref()
+const selected_event_node = ref(0) // Dialog will complain if null
+const selected_event_number = ref(0) // Dialog will complain if null
+const showEventsJSON = ref(false)
+
+const columns = [
+  {name: 'eventName', field: 'name', required: true, label: 'Event Name', align: 'left', sortable: false},
+//  {name: 'group', field: 'name', required: true, label: 'Group', align: 'left', sortable: false},
+  {name: 'eventIdentifier', field: 'eventIdentifier', required: true, label: 'Event Identifier', align: 'left', sortable: false},
+  {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node Number', align: 'left', sortable: false},
+  {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event Number', align: 'left', sortable: false},
+  {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: false},
+  {name: 'type', field: 'type', required: true, label: 'Type', align: 'left', sortable: false},
+  {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
+]
+
+const props = defineProps({
+  modelValue: { type: Boolean, required: true }
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+const model = computed({
+      get() { return props.modelValue },
+      set(newValue) { emit('update:modelValue', newValue) }
+    })
+
+// model changes when Dialog opened & closed
+watch(model, () => {
+//  console.log(name + `: WATCH model`)
+  update_events_table()
+})
+
+
+const EventsList = computed(() => {
+  //console.log(`Computed Events`)
+  return Object.values(store.state.layout.eventDetails)
+})
+
+const eventDetails = computed(() => {
+  return store.state.layout.eventDetails
+})
+
+watch(EventsList, () => {
+  //console.log(`WATCH Events`)
+  update_events_table()
+})
+
+watch(eventDetails, () => {
+  //console.log(`WATCH Details`)
+  update_events_table()
+})
+
+const update_events_table = () => {
+//  console.log(name + `:Update busEvents`)
+  let displayEventListLocal = []
+  let events = store.state.layout.eventDetails
+  // order keys
+  for (let key of Object.keys(events).sort()) {
+    var nodeNumber = parseInt(key.substring(0, 4), 16)
+//    if (nodeNumber == 0){
+      let output = {}
+      output['eventIdentifier'] = key
+      output['nodeNumber'] = nodeNumber
+      output['eventNumber'] = parseInt(key.slice(4,8), 16)
+      output['name'] = event_name(events[key].name)
+      output['colour'] = event_colour(events[key].colour)
+      output['group'] = event_group(events[key].group)
+      displayEventListLocal.push(output)
+//    }
+  }
+//  console.log(name + ": eventlist " + JSON.stringify(displayEventListLocal))
+  displayEventTable.value = displayEventListLocal
+}
+
+const event_name = (eventIdentifier) => {
+  if (eventIdentifier in store.state.layout.eventDetails) {
+    //console.log(`Event Name`)
+    return store.state.layout.eventDetails[eventIdentifier].name
+  } else {
+    //console.log(`Event No Name ${JSON.stringify(eventIdentifier)}`)
+    return JSON.stringify(eventIdentifier)
+  }
+}
+
+const event_colour = (eventIdentifier) => {
+  if (eventIdentifier in store.state.layout.eventDetails) {
+    //console.log(`Event Colour`)
+    return store.state.layout.eventDetails[eventIdentifier].colour
+  } else {
+    //console.log(`Event No Colour ${JSON.stringify(eventIdentifier)}`)
+    return "blue"
+  }
+}
+
+const event_group = (eventIdentifier) => {
+  if (eventIdentifier in store.state.layout.eventDetails) {
+    //console.log(`Event Colour`)
+    return store.state.layout.eventDetails[eventIdentifier].group
+  } else {
+    //console.log(`Event No Colour ${JSON.stringify(eventIdentifier)}`)
+    return ""
+  }
+}
+
+
+onBeforeMount(() => {
+//  store.methods.query_all_nodes()
+})
+
+onMounted(() => {
+  update_events_table()
+})
+
+/*/////////////////////////////////////////////////////////////////////////////
+
+Click event handlers
+
+/////////////////////////////////////////////////////////////////////////////*/
+
+const clickAddEvent = () => {
+  console.log(name + `: clickAddEvent`)
+  showAddEventDetailDialog.value = true
+}
+
+const clickEventName = (eventIdentifier) => {
+  console.log(name + `: clickEventName ` + eventIdentifier)
+  selected_event_Identifier.value = eventIdentifier
+  newEventName.value = store.getters.event_name(eventIdentifier)
+  showNameEventDialog.value = true;
+}
+
+const clickSendOff = (nodeNumber, eventIdentifier) => {
+  console.log (name + ": send OFF " + nodeNumber + ' ' + eventIdentifier)
+  var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
+  var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
+  if (eventNodeNumber == 0) {
+    store.methods.short_off_event(nodeNumber, eventNumber)
+  } else {
+    store.methods.long_off_event(eventNodeNumber, eventNumber)
+  }
+}
+
+
+const clickSendOn = (nodeNumber, eventIdentifier) => {
+  console.log (name + ": send ON " + nodeNumber + ' ' + eventIdentifier)
+  var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
+  var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
+  if (eventNodeNumber == 0) {
+    store.methods.short_on_event(nodeNumber, eventNumber)
+  } else {
+    store.methods.long_on_event(eventNodeNumber, eventNumber)
+  }
+}
+
+const clickTeach = (eventIndentifier) => {
+  console.log(name + `: clickTeach`)
+  selected_event_Identifier.value = eventIndentifier
+  showEventTeachDialog.value = true
+}
+
+const clickToggleShowEventsJSON = () => {
+  console.log(name + `: clickToggleShowEventsJSON`)
+  if (showEventsJSON.value){
+    showEventsJSON.value = false
+  } else {
+    showEventsJSON.value = true
+  }
+}
+
+
+
+
+
+</script>
+
+<style lang="sass">
+.events-table
+  /* height or max-height is important */
+  height: 600px
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    /* otherwise you see the table scrolling underneath the header */
+    background-color: $blue-grey-1
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
+</style>
