@@ -50,9 +50,9 @@
               </q-td>
               <q-td key="status" :props="props">
                 <q-chip color="white" text-color="green" v-if="props.row.status=='on'">ON</q-chip>
-                <q-chip color="white" text-color="red" v-else>OFF</q-chip>
+                <q-chip color="white" text-color="red" v-else-if="props.row.status=='off'">OFF</q-chip>
+                <q-chip color="white" text-color="blue" v-else>unknown</q-chip>
               </q-td>
-              <q-td key="type" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.type }}</q-td>
               <q-td key="actions" :props="props">
                 <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
                 <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
@@ -131,7 +131,6 @@ const columns = [
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node Number', align: 'left', sortable: false},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event Number', align: 'left', sortable: false},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: false},
-  {name: 'type', field: 'type', required: true, label: 'Type', align: 'left', sortable: false},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
@@ -158,13 +157,13 @@ const EventsList = computed(() => {
   return Object.values(store.state.layout.eventDetails)
 })
 
-const eventDetails = computed(() => {
-  return store.state.layout.eventDetails
-})
-
 watch(EventsList, () => {
   //console.log(`WATCH Events`)
   update_events_table()
+})
+
+const eventDetails = computed(() => {
+  return store.state.layout.eventDetails
 })
 
 watch(eventDetails, () => {
@@ -172,8 +171,17 @@ watch(eventDetails, () => {
   update_events_table()
 })
 
+const busEvents = computed(() => {
+  return store.state.busEvents
+})
+
+watch(busEvents, () => {
+  //console.log(`WATCH busEvents`)
+  update_events_table()
+})
+
 const update_events_table = () => {
-//  console.log(name + `:Update busEvents`)
+  console.log(name + `:Update Events`)
   let displayEventListLocal = []
   let events = store.state.layout.eventDetails
   // order keys
@@ -187,6 +195,7 @@ const update_events_table = () => {
       output['name'] = events[key].name
       output['colour'] = events[key].colour
       output['group'] = events[key].group
+      output['status'] = store.getters.busEvent_status(key)
       displayEventListLocal.push(output)
 //    }
   }

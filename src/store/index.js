@@ -30,6 +30,9 @@ const state = reactive({
   colours: ["black", "red", "pink", "purple", "deep-purple", "indigo", "blue", "light-blue", "cyan", "teal", "green", "light-green", "lime", "yellow", "amber", "orange", "deep-orange", "brown", "blue-grey", "grey"]
 })
 
+//-----------------------------------------------------------------------------
+//  Methods
+//-----------------------------------------------------------------------------
 const methods = {
   delete_all_events(nodeNumber) {
     socket.emit('DELETE_ALL_EVENTS', {
@@ -259,7 +262,18 @@ const methods = {
   }
 }
 
+//-----------------------------------------------------------------------------
+//  getters
+//-----------------------------------------------------------------------------
 const getters = {
+  busEvent_status(eventIdentifier){
+    if (eventIdentifier in state.busEvents) {
+      console.log(name + `: busEvent_status ` + state.busEvents[eventIdentifier].status)
+      return state.busEvents[eventIdentifier].status
+    } else {
+      return ''
+    }
+  },
   event_name(eventIdentifier) {
     if (eventIdentifier in state.layout.eventDetails) {
       //console.log(`Event Name`)
@@ -300,7 +314,6 @@ const getters = {
       return 0
     }
   },
-
   node_name(nodeNumber){
     if (nodeNumber in state.layout.nodeDetails == false){
       state.layout.nodeDetails[nodeNumber] = {}
@@ -315,6 +328,9 @@ const getters = {
   }
 }
 
+//-----------------------------------------------------------------------------
+//  setters
+//-----------------------------------------------------------------------------
 const setters = {
   event_name(eventIdentifier, eventName) {
     if (eventIdentifier in state.layout.eventDetails === false) {
@@ -349,6 +365,9 @@ const setters = {
 
 }
 
+//-----------------------------------------------------------------------------
+//  socket events
+//-----------------------------------------------------------------------------
 const socket = io(`http://${host}:${port}`)
 
 socket.on("error", (data) => {
