@@ -28,6 +28,7 @@
         <q-tr :props="props" :class="selected_event_Identifier==props.row.eventIdentifier?'bg-blue-1':'bg-white'" class="q-my-none q-py-none">
           <q-td key="eventIdentifier" :props="props">{{ props.row.eventIdentifier }}</q-td>
           <q-td key="eventName" :props="props">{{ props.row.eventName}}</q-td>
+          <q-td key="group" :props="props">{{ props.row.eventGroup }} </q-td>
           <q-td key="nodeNumber" :props="props">{{ props.row.nodeNumber }}</q-td>
           <q-td key="eventNumber" :props="props">{{ props.row.eventNumber }}</q-td>
           <q-td key="eventIndex" :props="props">{{ props.row.eventIndex }}</q-td>
@@ -40,7 +41,6 @@
             <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
             <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.eventIdentifier)" no-caps>send ON</q-btn>
             <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.eventIdentifier)" no-caps>send OFF</q-btn>
-            <!-- <q-btn flat size="md" color="primary" label="Test" @click="clickTest(props.row.nodeNumber, props.row.eventNumber, props.row.eventIdentifier)" no-caps/> -->
             <q-btn dense class="q-mx-xs" outline size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier)" no-caps/>
           </q-td>
         </q-tr>
@@ -116,6 +116,7 @@ const props = defineProps({
 const columns = [
   {name: 'eventIdentifier', field: 'eventIdentifier', required: true, label: 'Identifier', align: 'left', sortable: true},
   {name: 'eventName', field: 'eventName', required: false, label: 'Name', align: 'left', sortable: true},
+  {name: 'group', field: 'group', required: true, label: 'Group', align: 'left', sortable: true},
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Event node', align: 'left', sortable: true},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event number', align: 'left', sortable: true},
   {name: 'eventIndex', field: 'eventIndex', required: true, label: 'Event index', align: 'left', sortable: true},
@@ -179,6 +180,7 @@ const update_rows = () => {
     let output = {}
     output['eventIdentifier'] = event.eventIdentifier
     output['eventName'] = store.getters.event_name(event.eventIdentifier)
+    output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
     output['eventIndex'] = event.eventIndex
     output['nodeNumber'] = eventNodeNumber
     output['eventNumber'] = eventNumber
