@@ -32,16 +32,17 @@
         </q-btn>
             
         <q-toolbar-title style="min-height: 0;" class="no-margin no-padding">
-          <span style="min-height: 0;" class="text-h6 no-margin no-padding">
+          <div class="text-h6 no-margin no-padding">
             <!-- <span style="min-height: 0;" class="page-title no-margin no-padding text-h6"> -->
-            Module Management Console
-          </span>
-        </q-toolbar-title>
+            MMC
+            </div>
+          </q-toolbar-title>
 
       </q-toolbar>
 
       <q-toolbar class="col no-margin no-padding">
-        <div class="text-h6 no-margin no-padding">{{ store.state.layout.layoutDetails.title }}</div>
+        <q-space />
+        <div class="text-h6 no-margin no-padding float-right">{{ store.state.layout.layoutDetails.title }}</div>
       </q-toolbar>
 
       <q-toolbar v-if="(store.state.develop)" class="col no-margin q-py-none">
