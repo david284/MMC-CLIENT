@@ -38,6 +38,7 @@
           <template v-slot:body="props">
             <q-tr :props="props">
               <q-td key="eventName" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.name }}</q-td>
+              <q-td key="group" :props="props">{{ props.row.group }} </q-td>
               <q-td key="eventIdentifier" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
                 {{ props.row.eventIdentifier }}
               </q-td>
@@ -96,119 +97,6 @@
     :eventIdentifier = selected_event_Identifier
   />
 
-
-
-
-
-<!--   <q-dialog v-model='model' persistent  full-width>
-    <q-card class="q-pa-none q-ma-none">
-
-      <q-card-section class="q-pa-none q-ma-none">
-        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
-          <div class="text-h6">
-            Events View
-          </div>
-        </q-banner>
-      </q-card-section>
-
-      <q-card>
-        <q-card-section class="no-margin no-padding">
-
-
-        <q-table
-          title = "Events View"
-          class = "events-table"
-          dense
-          :rows = displayEventTable
-          :columns = "columns"
-          :filter = "filter"
-          row-key = "eventIdentifier"
-          virtual-scroll
-          v-model:pagnation = "pagnation"
-          :rows-per-page-options = "[0]"
-          :virtual-scroll-sticky-size-start = "48"
-          hide-bottom
-        >
-
-  
-          <template v-slot:top="">
-            <div class="col-2 q-table__title text-h4">All Events</div>
-            <q-space/>
-            <q-input outlined dense debounce="300" v-model="filter" placeholder="Search">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
-            <q-space/>
-            <q-btn color="negative" label="Add Event" @click="clickAddEvent()" no-caps/>
-            <q-space/>
-          </template>
-
-          <template v-slot:body="props">
-            <q-tr :props="props">
-              <q-td key="eventName" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.name }}</q-td>
-              <q-td key="eventIdentifier" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
-                {{ props.row.eventIdentifier }}
-              </q-td>
-              <q-td key="nodeNumber" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
-                {{ props.row.nodeNumber }}
-              </q-td>
-              <q-td key="eventNumber" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
-                {{ props.row.eventNumber }}
-              </q-td>
-              <q-td key="status" :props="props">
-                <q-chip color="white" text-color="green" v-if="props.row.status=='on'">ON</q-chip>
-                <q-chip color="white" text-color="red" v-else>OFF</q-chip>
-              </q-td>
-              <q-td key="type" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.type }}</q-td>
-              <q-td key="actions" :props="props">
-                <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
-                <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
-                <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.nodeNumber, props.row.eventIdentifier)" no-caps>send ON</q-btn>
-                <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.nodeNumber, props.row.eventIdentifier)" no-caps>send OFF</q-btn>
-              </q-td>
-            </q-tr>
-
-          </template>
-        </q-table>
- 
-
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Toggle event details json" @click="clickToggleShowEventsJSON()"/>
-      </q-card-actions>
-
-        <q-card-section class="q-pa-sm" v-if="showEventsJSON">
-        <div class="q-pa-xs row">
-          <div class="text-body1">Events<br></div>
-          <div class="text-body2">
-            <pre>{{ store.state.layout.eventDetails }}</pre>
-          </div>
-        </div>
-      </q-card-section>
-
-      </q-card-section>
-    </q-card>
-
-    </q-card>
-
-  </q-dialog>
-
-  <addEventDetailDialog v-model='showAddEventDetailDialog' />
-
-  <nameEventDialog v-model='showNameEventDialog'
-    :eventIdentifier = selected_event_Identifier
-  />
-
-  <eventTeachDialog v-model='showEventTeachDialog'
-    :eventIdentifier = selected_event_Identifier
-  />
-
-  <sendEventDialog v-model='showSendEventDialog'
-    :sendingNodeNumber = selected_event_node
-    :eventNumber = selected_event_number
-    :eventIdentifier = selected_event_Identifier
-  />
- -->
 </template>
 
 
@@ -237,9 +125,9 @@ const selected_event_number = ref(0) // Dialog will complain if null
 const showEventsJSON = ref(false)
 
 const columns = [
-  {name: 'eventName', field: 'name', required: true, label: 'Event Name', align: 'left', sortable: false},
-//  {name: 'group', field: 'name', required: true, label: 'Group', align: 'left', sortable: false},
-  {name: 'eventIdentifier', field: 'eventIdentifier', required: true, label: 'Event Identifier', align: 'left', sortable: false},
+  {name: 'eventName', field: 'name', required: true, label: 'Event Name', align: 'left', sortable: true},
+  {name: 'group', field: 'group', required: true, label: 'Group', align: 'left', sortable: true},
+  {name: 'eventIdentifier', field: 'eventIdentifier', required: true, label: 'Event Identifier', align: 'left', sortable: true},
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node Number', align: 'left', sortable: false},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event Number', align: 'left', sortable: false},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: false},
@@ -296,9 +184,9 @@ const update_events_table = () => {
       output['eventIdentifier'] = key
       output['nodeNumber'] = nodeNumber
       output['eventNumber'] = parseInt(key.slice(4,8), 16)
-      output['name'] = event_name(events[key].name)
-      output['colour'] = event_colour(events[key].colour)
-      output['group'] = event_group(events[key].group)
+      output['name'] = events[key].name
+      output['colour'] = events[key].colour
+      output['group'] = events[key].group
       displayEventListLocal.push(output)
 //    }
   }

@@ -17,6 +17,11 @@
           <q-input dense v-model="newEventName" autofocus />
         </q-card-section>
 
+        <q-card-section class="q-pt-none">
+          <div class="text-h6">Event group</div>
+          <q-input dense v-model="newEventGroup" autofocus />
+        </q-card-section>
+
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Accept" v-close-popup @click="clickAccept()"/>
         </q-card-actions>
@@ -34,6 +39,7 @@ import {inject, onUpdated, computed, watch, ref} from "vue";
 const store = inject('store')
 const name = "NameEventDialog"
 const newEventName = ref("")
+const newEventGroup = ref("")
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -51,6 +57,7 @@ onUpdated(() => {
 //  console.log(name + ": onUpdated " + props.eventIdentifier)
   if (store.state.layout.eventDetails[props.eventIdentifier]) {
     newEventName.value = store.state.layout.eventDetails[props.eventIdentifier].name
+    newEventGroup.value = store.state.layout.eventDetails[props.eventIdentifier].group
   }
 })
 
@@ -63,7 +70,9 @@ Click event handlers
 const clickAccept = () => {
   console.log(name + ": clickAccept: name: " + props.eventIdentifier + ' ' + newEventName.value)
   store.setters.event_name(props.eventIdentifier, newEventName.value)
+  store.setters.event_group(props.eventIdentifier, newEventGroup.value)
   newEventName.value = ""   // clear for next time
+  newEventGroup.value = ""   // clear for next time
 }
 
 </script>
