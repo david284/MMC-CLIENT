@@ -48,12 +48,12 @@
       <q-toolbar v-if="(store.state.develop)" class="col no-margin q-py-none">
         <q-space />
         <div class="text-h6 float-right">
-          <q-btn size="md" color="negative" label="Event view" @click="clickEventView()" no-caps/>
+          <q-btn size="md" color="secondary" label="Events view" @click="clickEventsView()" no-caps/>
         </div>
       </q-toolbar>
       <q-toolbar v-if="(store.state.develop)" class="col no-margin q-py-none">
         <div class="text-h6 float-right">
-          <q-btn size="md" color="negative" label="Node view" @click="clickNodeView()" no-caps/>
+          <q-btn size="md" color="secondary" label="Nodes view" @click="clickNodesView()" no-caps/>
         </div>
       </q-toolbar>
 
@@ -247,12 +247,12 @@ const clickBusEvents = () => {
   showBusEventsDialog.value = true
 }
 
-const clickEventView = () => {
+const clickEventsView = () => {
   console.log(name + ': clickEventView')
   selectedView.value = 'eventsView'
 }
 
-const clickNodeView = () => {
+const clickNodesView = () => {
   console.log(name + ': clickNodeView')
   selectedView.value = 'nodesView'
 }
