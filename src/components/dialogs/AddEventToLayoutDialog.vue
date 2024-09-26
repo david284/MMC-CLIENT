@@ -62,7 +62,7 @@ import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from 
 import {createNewEvent} from "components/functions/EventFunctions.js"
 
 const store = inject('store')
-const name = "AddEventDetailDialog"
+const name = "AddEventToLayoutDialog"
 const newNodeNumber = ref()
 const newEventNumber = ref()
 const addEventEnabled = ref(true)

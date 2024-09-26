@@ -1,15 +1,113 @@
 <template>
-  <q-dialog v-model='model' persistent  full-width>
+
+<div style="height: 45vh;">
+    <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none" >
+      <div class="text-h6">Events View</div>
+    </q-banner>
+
+    <q-card>
+      <q-card-section class="no-margin no-padding">
+
+        <q-table
+            title = "Events View"
+            class = "events-table"
+            dense
+            :rows = displayEventTable
+            :columns = "columns"
+            :filter = "filter"
+            row-key = "eventIdentifier"
+            virtual-scroll
+            v-model:pagnation = "pagnation"
+            :rows-per-page-options = "[0]"
+            :virtual-scroll-sticky-size-start = "48"
+            hide-bottom
+          >
+          <template v-slot:top="">
+            <!-- <div class="col-2 q-table__title text-h4">All Events</div> -->
+            <q-space/>
+            <q-input outlined dense debounce="300" v-model="filter" placeholder="Search">
+              <template v-slot:append>
+                <q-icon name="search"/>
+              </template>
+            </q-input>
+            <q-space/>
+            <q-btn color="negative" label="Add Event" @click="clickAddEvent()" no-caps/>
+            <q-space/>
+          </template>
+
+          <template v-slot:body="props">
+            <q-tr :props="props">
+              <q-td key="eventName" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.name }}</q-td>
+              <q-td key="eventIdentifier" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
+                {{ props.row.eventIdentifier }}
+              </q-td>
+              <q-td key="nodeNumber" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
+                {{ props.row.nodeNumber }}
+              </q-td>
+              <q-td key="eventNumber" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
+                {{ props.row.eventNumber }}
+              </q-td>
+              <q-td key="status" :props="props">
+                <q-chip color="white" text-color="green" v-if="props.row.status=='on'">ON</q-chip>
+                <q-chip color="white" text-color="red" v-else>OFF</q-chip>
+              </q-td>
+              <q-td key="type" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.type }}</q-td>
+              <q-td key="actions" :props="props">
+                <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
+                <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
+                <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.nodeNumber, props.row.eventIdentifier)" no-caps>send ON</q-btn>
+                <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.nodeNumber, props.row.eventIdentifier)" no-caps>send OFF</q-btn>
+              </q-td>
+            </q-tr>
+
+          </template>
+        </q-table>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Toggle event details json" @click="clickToggleShowEventsJSON()"/>
+        </q-card-actions>
+
+        <q-card-section class="q-pa-sm" v-if="showEventsJSON">
+          <div class="q-pa-xs row">
+            <div class="text-body1">Events<br></div>
+            <div class="text-body2">
+              <pre>{{ store.state.layout.eventDetails }}</pre>
+            </div>
+          </div>
+        </q-card-section>
+
+      </q-card-section>
+    </q-card>
+
+  </div>
+
+  <addEventToLayoutDialog v-model='showAddEventToLayoutDialog' />
+
+  <nameEventDialog v-model='showNameEventDialog'
+    :eventIdentifier = selected_event_Identifier
+  />
+
+  <eventTeachDialog v-model='showEventTeachDialog'
+    :eventIdentifier = selected_event_Identifier
+  />
+
+  <sendEventDialog v-model='showSendEventDialog'
+    :sendingNodeNumber = selected_event_node
+    :eventNumber = selected_event_number
+    :eventIdentifier = selected_event_Identifier
+  />
+
+
+
+
+
+<!--   <q-dialog v-model='model' persistent  full-width>
     <q-card class="q-pa-none q-ma-none">
 
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
           <div class="text-h6">
-            All Events Dialog
+            Events View
           </div>
-          <template v-slot:action>
-            <q-btn flat color="white" size="md" label="Close" v-close-popup/>
-          </template>
         </q-banner>
       </q-card-section>
 
@@ -18,7 +116,7 @@
 
 
         <q-table
-          title = "All Events"
+          title = "Events View"
           class = "events-table"
           dense
           :rows = displayEventTable
@@ -110,25 +208,25 @@
     :eventNumber = selected_event_number
     :eventIdentifier = selected_event_Identifier
   />
-
+ -->
 </template>
 
 
 <script setup>
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
-import addEventDetailDialog from "components/dialogs/AddEventDetailDialog"
+import addEventToLayoutDialog from "components/dialogs/AddEventToLayoutDialog"
 import sendEventDialog from "components/dialogs/SendEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
 
 const store = inject('store')
-const name = "AllEventsDialog"
+const name = "EventsView"
 const tab = ref('nodes')
 const filter = ref('')
 const pagnation = {rowsPerPage: 0}
-let displayEventTable = ref()
-const showAddEventDetailDialog = ref(false)
+let displayEventTable = ref([])
+const showAddEventToLayoutDialog = ref(false)
 const showNameEventDialog = ref(false)
 const showSendEventDialog = ref(false)
 const showEventTeachDialog = ref(false)
@@ -241,6 +339,7 @@ const event_group = (eventIdentifier) => {
 
 onBeforeMount(() => {
 //  store.methods.query_all_nodes()
+  update_events_table()
 })
 
 onMounted(() => {
@@ -255,7 +354,7 @@ Click event handlers
 
 const clickAddEvent = () => {
   console.log(name + `: clickAddEvent`)
-  showAddEventDetailDialog.value = true
+  showAddEventToLayoutDialog.value = true
 }
 
 const clickEventName = (eventIdentifier) => {

@@ -15,13 +15,6 @@
 
 <script>
 
-/************************************************************************************
-      usage
-      <DialogExampleOptionsAPI v-model='showAddEventDialog' />
-      
-************************************************************************************ */ 
-
-
 import { computed } from 'vue';
 export default {
   name: 'CookiesDialogWhichWeUse',

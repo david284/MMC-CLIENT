@@ -76,7 +76,7 @@ import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import {createNewEvent} from "components/functions/EventFunctions.js"
 
 const store = inject('store')
-const name = "AddEventDialog"
+const name = "AddEventToNodeDialog"
 const newNodeNumber = ref()
 const newEventNumber = ref()
 const addEventEnabled = ref(true)

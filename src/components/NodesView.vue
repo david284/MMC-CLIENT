@@ -1,7 +1,7 @@
 <template>
   <div style="height: 45vh;">
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none" >
-      <div class="text-h6">Nodes list</div>
+      <div class="text-h6">Nodes View</div>
       <template v-slot:action>
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
       </template>

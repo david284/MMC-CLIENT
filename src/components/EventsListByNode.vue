@@ -48,7 +48,7 @@
     </q-table>
     </div>
 
-    <addEventDialog v-model='showAddEventDialog' />
+    <addEventToNodeDialog v-model='showAddEventToNodeDialog' />
 
     <advancedEventsDialog v-model='showAdvancedEventDialog'
       :nodeNumber = nodeNumber
@@ -85,7 +85,7 @@
 <script setup>
 
 import {computed, inject, ref, watch, onBeforeMount, onMounted, onUpdated} from "vue"
-import addEventDialog from "components/dialogs/AddEventDialog"
+import addEventToNodeDialog from "components/dialogs/AddEventToNodeDialog"
 import advancedEventsDialog from "components/dialogs/AdvancedEventsDialog"
 import sendEventDialog from "components/dialogs/SendEventDialog"
 import deleteEventDialog from "components/dialogs/DeleteEventDialog"
@@ -96,7 +96,7 @@ import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 const store = inject('store')
 const name = "EventsListByNode"
 const rows = ref([])
-const showAddEventDialog = ref(false)
+const showAddEventToNodeDialog = ref(false)
 const showAdvancedEventDialog = ref(false)
 const showDeleteEventDialog = ref(false)
 const showEventTeachDialog = ref(false)
@@ -263,7 +263,7 @@ Click event handlers
 
 const clickAddEvent = () => {
   console.log(name + `: clickAddEvent`)
-  showAddEventDialog.value = true
+  showAddEventToNodeDialog.value = true
 }
 
 

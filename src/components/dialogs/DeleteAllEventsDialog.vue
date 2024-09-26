@@ -26,13 +26,6 @@
 
 <script setup>
 
-/************************************************************************************
-      usage
-      <DialogExampleCompositionAPI v-model='showAddEventDialog' />
-      
-************************************************************************************ */ 
-
-
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 
 const store = inject('store')

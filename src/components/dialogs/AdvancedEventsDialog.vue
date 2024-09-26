@@ -29,12 +29,6 @@
 
 <script setup>
 
-/************************************************************************************
-      usage
-      <DialogExampleCompositionAPI v-model='showAddEventDialog' />
-      
-************************************************************************************ */ 
-
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import deleteAllEventsDialog from "components/dialogs/DeleteAllEventsDialog"

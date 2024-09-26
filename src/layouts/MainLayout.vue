@@ -12,9 +12,6 @@
               <q-item clickable @click="clickBusEvents()">
                 <q-item-section>Bus events</q-item-section>
               </q-item>
-              <q-item v-if="(store.state.develop)" clickable @click="clickShortEvents()">
-                <q-item-section>Show all Events</q-item-section>
-              </q-item>
               <q-item clickable @click="clickJson()">
                 <q-item-section>JSON</q-item-section>
               </q-item>
@@ -45,6 +42,18 @@
 
       <q-toolbar class="col no-margin no-padding">
         <div class="text-h6 no-margin no-padding">{{ store.state.layout.layoutDetails.title }}</div>
+      </q-toolbar>
+
+      <q-toolbar v-if="(store.state.develop)" class="col no-margin q-py-none">
+        <q-space />
+        <div class="text-h6 float-right">
+          <q-btn size="md" color="negative" label="Event view" @click="clickEventView()" no-caps/>
+        </div>
+      </q-toolbar>
+      <q-toolbar v-if="(store.state.develop)" class="col no-margin q-py-none">
+        <div class="text-h6 float-right">
+          <q-btn size="md" color="negative" label="Node view" @click="clickNodeView()" no-caps/>
+        </div>
       </q-toolbar>
 
       <q-toolbar class="col no-margin q-py-none">
@@ -94,8 +103,11 @@
     </q-drawer>
 
     <q-page-container class="main-page no-shadow no-margin q-pa-none">
-      <q-page>
-        <nodesList />
+      <q-page v-if="(selectedView == 'eventsView')">
+        <EventsView v-model='showAllEventsDialog'/>
+      </q-page>
+      <q-page v-if="(selectedView == 'nodesView')">
+        <nodesView />
       </q-page>
     </q-page-container>
   </q-layout>
@@ -114,8 +126,6 @@
 
   <dialogExampleCompositionAPI v-model='showDialogExampleCompositionAPI' />
 
-  <AllEventsDialog v-model='showAllEventsDialog' />
-
   <iFrameDialog v-model='showiFrameDialog' 
     :URL=exampleURL />
 
@@ -125,7 +135,7 @@
 <script setup>
 import {computed, inject, onBeforeMount, onMounted, onUpdated, ref, watch} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
-import nodesList from "components/NodesList"
+import nodesView from "components/NodesView"
 import busEventsDialog from "components/dialogs/BusEventsDialog";
 import busTrafficDialog from "components/dialogs/BusTrafficDialog";
 import cbusErrorsDialog from "components/dialogs/CbusErrorsDialog";
@@ -136,7 +146,7 @@ import newNodeDialog from "components/dialogs/NewNodeDialog";
 import systemDialog from "components/dialogs/SystemDialog";
 import dialogExampleCompositionAPI from "components/dialogs/DialogExampleCompositionAPI";
 import iFrameDialog from "components/dialogs/iFrameDialog";
-import AllEventsDialog from "components/dialogs/AllEventsDialog";
+import EventsView from "components/EventsView";
 
 const { getVerticalScrollPosition, setVerticalScrollPosition } = scroll
 const $q = useQuasar()
@@ -154,10 +164,11 @@ const showSystemDialog = ref(false)
 const busMessage = ref({})
 const previousNodeNumber = ref(0)
 const showDialogExampleCompositionAPI = ref(false)
-const showAllEventsDialog = ref(false)
+const showAllEventsDialog = ref(true)
 const showiFrameDialog = ref(false)
 const exampleURL = ref("dummyModule/index.html")
 const scrollAreaRef = ref(null)
+const selectedView = ref('nodesView')
 var oneShotScroll
 
 const nodeTraffic = computed(() => {
@@ -235,9 +246,14 @@ const clickBusEvents = () => {
   showBusEventsDialog.value = true
 }
 
-const clickShortEvents = () => {
-  console.log(name + ': clickShortEvents')
-  showAllEventsDialog.value = true
+const clickEventView = () => {
+  console.log(name + ': clickEventView')
+  selectedView.value = 'eventsView'
+}
+
+const clickNodeView = () => {
+  console.log(name + ': clickNodeView')
+  selectedView.value = 'nodesView'
 }
 
 const clickCbusErrors = () => {
