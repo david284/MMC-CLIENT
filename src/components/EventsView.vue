@@ -3,6 +3,9 @@
 <div style="height: 45vh;">
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none" >
       <div class="text-h6">Events View</div>
+      <template v-slot:action>
+        <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
+      </template>
     </q-banner>
 
     <q-card>
@@ -19,7 +22,7 @@
             virtual-scroll
             v-model:pagnation = "pagnation"
             :rows-per-page-options = "[0]"
-            :virtual-scroll-sticky-size-start = "48"
+            :virtual-scroll-sticky-size-start = "0"
             hide-bottom
           >
           <template v-slot:top="">
@@ -30,9 +33,6 @@
                 <q-icon name="search"/>
               </template>
             </q-input>
-            <q-space/>
-            <q-btn color="negative" label="Add Event" @click="clickAddEvent()" no-caps/>
-            <q-space/>
           </template>
 
           <template v-slot:body="props">
