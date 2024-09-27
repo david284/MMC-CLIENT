@@ -7,9 +7,11 @@
           <div class="text-h6">
             Startup
           </div>
+          <!--
           <template v-slot:action>
             <q-btn flat color="white" size="md" label="Close" @click="clickClose()" v-close-popup/>
           </template>
+          -->
         </q-banner>
 
         <div class="q-pa-md row">
@@ -50,6 +52,7 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
+import {sleep} from "components/functions/utils.js"
 
 const store = inject('store')
 const name = "StartupDialog"
@@ -112,10 +115,13 @@ const clickClose = () => {
   store.state.inStartup = false
 }
 
-const clickSelectLayout = (row) => {
+const clickSelectLayout = async (row) => {
   console.log(name + ': clickLayouts on ', row)
   layoutName.value = row
   store.methods.change_layout(layoutName.value)
+  store.state.inStartup = false
+  await sleep(50)     // allow a bit of a delay for the change
+  model.value = false
 }
 
 
