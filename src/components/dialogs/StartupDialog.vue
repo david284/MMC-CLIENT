@@ -68,9 +68,11 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
+import { useQuasar } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import addLayoutDialog from "components/dialogs/AddLayoutDialog";
 
+const $q = useQuasar()
 const store = inject('store')
 const name = "StartupDialog"
 const layoutName = ref('')
@@ -137,9 +139,25 @@ const addNewLayout = async () => {
 
 const clickDeleteLayout = async (row) => {
   console.log(name + ': clickDeleteLayout ', row)
+  const result = $q.notify({
+          message: 'Are you sure you want to delete this?',
+          timeout: 0,
+          position: 'center',
+          actions: [
+            { label: 'yes', color: 'positive', handler: async () => { 
+              store.methods.delete_layout(row)
+              await sleep(50)     // allow a bit of a delay for the change
+              store.methods.request_layout_list()
+            } },
+            { label: 'no', color: 'negative', handler: () => { /* ... */ } }
+          ]
+        })
+
+/*
   store.methods.delete_layout(row)
   await sleep(50)     // allow a bit of a delay for the change
   store.methods.request_layout_list()
+  */
 }
 
 
