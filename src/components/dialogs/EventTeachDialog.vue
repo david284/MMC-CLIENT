@@ -167,33 +167,37 @@ const update_taught_nodes = async () => {
 
 const update_available_nodes = () =>{
 //  console.log(name + `: update_available_nodes`)
-  availableNodes.value = []
-  var nodes = store.state.nodes
-  // loop through json object properties with a for-in loop
-  // returns top level property even if a nested object (not an index like an array)
-  for (var nodeNumber in nodes) {
-//    console.log(name + `: update_available_nodes: node ` + nodeNumber)
-//    console.log(name + `: update_available_nodes: taughtNodes ` + JSON.stringify(taughtNodes.value))
-    // don't add node if event already taught to this node
-    var notAdded = true
-    for (var index in taughtNodes.value){
-      if (taughtNodes.value[index] == nodeNumber){
-        notAdded = false
-//        console.log(name + "update_available_nodes: event " + props.eventIdentifier + " already in node " + nodeNumber)
-      }
-    }
-    if (notAdded){
-      // not already taught, but only add to list if consumer node
-      if (nodes[nodeNumber].consumer){
-        var entry = nodeNumber + ': '
-        if (store.state.layout.nodeDetails[nodeNumber]){
-          // add node name if it exists
-          entry += store.state.layout.nodeDetails[nodeNumber].name
+  try {
+    availableNodes.value = []
+    var nodes = store.state.nodes
+    // loop through json object properties with a for-in loop
+    // returns top level property even if a nested object (not an index like an array)
+    for (var nodeNumber in nodes) {
+  //    console.log(name + `: update_available_nodes: node ` + nodeNumber)
+  //    console.log(name + `: update_available_nodes: taughtNodes ` + JSON.stringify(taughtNodes.value))
+      // don't add node if event already taught to this node
+      var notAdded = true
+      for (var index in taughtNodes.value){
+        if (taughtNodes.value[index] == nodeNumber){
+          notAdded = false
+  //        console.log(name + "update_available_nodes: event " + props.eventIdentifier + " already in node " + nodeNumber)
         }
-        availableNodes.value.push(entry)
       }
-    }
-  }  
+      if (notAdded){
+        // not already taught, but only add to list if consumer node
+        if (nodes[nodeNumber].consumer){
+          var entry = nodeNumber + ': '
+          if (store.state.layout.nodeDetails[nodeNumber]){
+            // add node name if it exists
+            entry += store.state.layout.nodeDetails[nodeNumber].name
+          }
+          availableNodes.value.push(entry)
+        }
+      }
+    }  
+  } catch (err){
+    console.log(name + `: update_available_nodes: ` + err)
+  }
 }
 
 onBeforeMount(() => {

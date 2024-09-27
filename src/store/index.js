@@ -10,24 +10,25 @@ const name = "store"
 
 const state = reactive({
   backups_list: [],
-  version: {},
-  nodes: {},
-  nodeDescriptors: {},
-  nodeDescriptorList: {},
-  nodeTraffic: [],
   busEvents: {},
   cbus_errors: {},
+  colours: ["black", "red", "pink", "purple", "deep-purple", "indigo", "blue", "light-blue", "cyan", "teal", "green", "light-green", "lime", "yellow", "amber", "orange", "deep-orange", "brown", "blue-grey", "grey"],
   dcc_sessions: {},
   dcc_errors: {},
+  develop: false,
+  inSetup: true,
   layout: {},
   layouts_list: [],
-  selected_node: 0,
   loadFile_notification_raised: {},
+  nodeDescriptors: {},
+  nodeDescriptorList: {},
+  nodes: {},
+  nodeTraffic: [],
+  selected_node: 0,
   title: "MMC",
-  debug: false,
-  advanced: false,
-  develop: false,
-  colours: ["black", "red", "pink", "purple", "deep-purple", "indigo", "blue", "light-blue", "cyan", "teal", "green", "light-green", "lime", "yellow", "amber", "orange", "deep-orange", "brown", "blue-grey", "grey"]
+//  debug: false,
+//  advanced: false,
+  version: {}
 })
 
 //-----------------------------------------------------------------------------
@@ -280,12 +281,16 @@ const getters = {
       return state.layout.eventDetails[eventIdentifier].name
     } else {
       //console.log(`Event No Name ${JSON.stringify(eventIdentifier)}`)
+      // create eventdetails entry if it doesn't exist
+      setters.event_name(eventIdentifier, eventIdentifier)
+      //
+      /*
       state.layout.eventDetails[eventIdentifier] = {}
       state.layout.eventDetails[eventIdentifier].name = eventIdentifier
       state.layout.eventDetails[eventIdentifier].colour = "black"
       state.layout.eventDetails[eventIdentifier].group = ""
+      */
       return JSON.stringify(eventIdentifier)
-      store.setters.event_name()
     }
   },
   event_colour(eventIdentifier) {
