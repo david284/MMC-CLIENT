@@ -28,6 +28,7 @@ const state = reactive({
   title: "MMC",
 //  debug: false,
 //  advanced: false,
+  update_layout_needed: false,
   version: {}
 })
 
@@ -269,7 +270,7 @@ const methods = {
 const getters = {
   busEvent_status(eventIdentifier){
     if (eventIdentifier in state.busEvents) {
-      console.log(name + `: busEvent_status ` + state.busEvents[eventIdentifier].status)
+//      console.log(name + `: busEvent_status ` + state.busEvents[eventIdentifier].status)
       return state.busEvents[eventIdentifier].status
     } else {
       return ''
@@ -283,13 +284,6 @@ const getters = {
       //console.log(`Event No Name ${JSON.stringify(eventIdentifier)}`)
       // create eventdetails entry if it doesn't exist
       setters.event_name(eventIdentifier, eventIdentifier)
-      //
-      /*
-      state.layout.eventDetails[eventIdentifier] = {}
-      state.layout.eventDetails[eventIdentifier].name = eventIdentifier
-      state.layout.eventDetails[eventIdentifier].colour = "black"
-      state.layout.eventDetails[eventIdentifier].group = ""
-      */
       return JSON.stringify(eventIdentifier)
     }
   },
@@ -315,7 +309,7 @@ const getters = {
     try{
       return state.nodes[nodeNumber].storedEventsNI[eventIdentifier].variables[eventVariableIndex]
     } catch (err){
-      console.log(name + `: event_variable_by_identifier: ${err}`)
+//      console.log(name + `: event_variable_by_identifier: ${err}`)
       return 0
     }
   },
@@ -344,8 +338,8 @@ const setters = {
       state.layout.eventDetails[eventIdentifier].group = ""
     }
     state.layout.eventDetails[eventIdentifier].name = eventName
-    console.log(name + ': setter event_name ' + eventIdentifier + ' : ' + eventName)
-    methods.update_layout()
+//    console.log(name + ': setter event_name ' + eventIdentifier + ' : ' + eventName)
+    state.update_layout_needed = true
   },
   event_group(eventIdentifier, eventGroup) {
     if (eventIdentifier in state.layout.eventDetails === false) {
@@ -354,8 +348,8 @@ const setters = {
       state.layout.eventDetails[eventIdentifier].group = ""
     }
     state.layout.eventDetails[eventIdentifier].group = eventGroup
-    console.log(name + ': setter event_group ' + eventIdentifier + ' : ' + eventGroup)
-    methods.update_layout()
+//    console.log(name + ': setter event_group ' + eventIdentifier + ' : ' + eventGroup)
+    state.update_layout_needed = true
   },
   node_name(nodeNumber, nodeName){
     if (nodeNumber in state.layout.nodeDetails === false){
@@ -364,8 +358,8 @@ const setters = {
       state.layout.nodeDetails[nodeNumber].group = ""
     }
     state.layout.nodeDetails[nodeNumber].name = nodeName
-    console.log(name + ': setter node_name ' + nodeNumber + ' : ' + nodeName)
-    methods.update_layout()
+//    console.log(name + ': setter node_name ' + nodeNumber + ' : ' + nodeName)
+    state.update_layout_needed = true
   }
 
 }

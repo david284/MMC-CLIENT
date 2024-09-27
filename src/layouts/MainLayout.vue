@@ -201,6 +201,7 @@ onBeforeMount(() => {
 onMounted(() => {
   store.methods.request_bus_connection()
   setInterval(eventIntervalFunc,5000);
+  setInterval(layoutDetailsIntervalFunc,2000);
 })
 
 onUpdated(() =>{
@@ -211,6 +212,18 @@ onUpdated(() =>{
 const eventIntervalFunc = () => {
 //  console.log(name + ": interval " + Date.now())
   store.methods.request_bus_connection()
+}
+
+//
+// Method to throttle the update to the server
+//
+const layoutDetailsIntervalFunc = () => {
+//  console.log(name + ": layoutDetailsIntervalFunc " + Date.now())
+  if (store.state.update_layout_needed == true){
+    // clear the flag immediately, so something else can set it again whilt update in process
+    store.state.update_layout_needed = false
+    store.methods.update_layout()
+  }
 }
 
 const scrollFunc = () => {
