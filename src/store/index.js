@@ -42,6 +42,12 @@ const methods = {
     })
     console.log(name + `: DELETE_ALL_EVENTS ${nodeNumber}`)
   },
+  delete_layout(layoutName) {
+    socket.emit('DELETE_LAYOUT', {
+        "layoutName": layoutName
+    })
+    console.log(name + `: DELETE_LAYOUT ${layoutName}`)
+  },
   long_on_event(nodeNumber, eventNumber){
     console.log(`ACON ${nodeNumber} : ${eventNumber}`)
     socket.emit('ACCESSORY_LONG_ON', {
@@ -458,7 +464,7 @@ socket.on("NODE_DESCRIPTOR", (data) => {
 
 socket.on("NODE_DESCRIPTOR_FILE_LIST", (nodeNumber, list) => {
   console.log(`RECEIVED NODE_DESCRIPTOR_FILE_LIST : node ` + nodeNumber)
-  console.log(`RECEIVED NODE_DESCRIPTOR_FILE_LIST : list ` + list)
+//  console.log(`RECEIVED NODE_DESCRIPTOR_FILE_LIST : list ` + list)
   state.nodeDescriptorList[nodeNumber] = list
 })
 

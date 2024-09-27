@@ -107,7 +107,7 @@ const model = computed({
 
 // model changes when Dialog opened & closed
 watch(model, () => {
-  console.log(name + `: WATCH model`)
+//  console.log(name + `: WATCH model`)
   updateLayoutList()
 })
 
@@ -118,7 +118,7 @@ const layoutList = computed(() => {
 
 // need to update when new layout added
 watch(layoutList, () => {
-  console.log(name + `: WATCH layoutList`)
+//  console.log(name + `: WATCH layoutList`)
   updateLayoutList()
 })
 
@@ -126,7 +126,7 @@ watch(layoutList, () => {
 const updateLayoutList = () => {
   teRows.value = []
   layoutList.value.forEach(layout => {
-    console.log(name + `: update ` + layout)
+//    console.log(name + `: update ` + layout)
     teRows.value.push({"layout" : layout})
   })
 }

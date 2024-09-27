@@ -29,22 +29,38 @@
                 :pagination="{rowsPerPage: 10}"
               >
                 <template #body-cell="props">
-                  <q-td :props="props" >
-                    <q-btn
-                      flat
-                      color="primary"
-                      :label="props.value"
-                      @click="clickSelectLayout(props.value)"
-                    />
-                  </q-td>
+                    <q-td key="layout" :props="props">
+                      <q-btn flat color="primary" :label="props.value"
+                      @click="clickSelectLayout(props.value)" />
+                    </q-td>
+                    <q-td >
+                      <q-btn dense class="q-mx-xs q-my-none" outline color="negative" size="xs" label="Delete"
+                      @click="clickDeleteLayout(props.value)" no-caps />
+                    </q-td>
                 </template>
               </q-table>          
             </q-card-section>
           </q-card>
+
+          <q-card-section>
+            <div class="text-h6">
+              click below to add a new layout
+            </div>
+
+            <q-card-actions align="center" class="text-primary">
+              <div>
+                <q-btn color="positive" label="Add" @click="addNewLayout()"/>
+              </div>
+            </q-card-actions>
+          </q-card-section>
+
         </div>
 
       </q-card>
     </q-dialog>
+
+    <addLayoutDialog v-model='showAddLayoutDialog' />
+
 
 </template>
 
@@ -53,14 +69,17 @@
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import {sleep} from "components/functions/utils.js"
+import addLayoutDialog from "components/dialogs/AddLayoutDialog";
 
 const store = inject('store')
 const name = "StartupDialog"
 const layoutName = ref('')
 const teRows = ref([])
+const showAddLayoutDialog = ref(false)
 
 const teColumns = [
-  {name: 'layout', field: 'layout', required: true, label: 'Layout', align: 'left', sortable: true},
+  {name: 'layout', field: 'layout', required: true, label: 'Layout', sortable: true}
+//  ,{name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'right', sortable: false}
 ]
 
 const props = defineProps({
@@ -76,7 +95,7 @@ const model = computed({
 
 // model changes when Dialog opened & closed
 watch(model, () => {
-  console.log(name + `: WATCH model`)
+//  console.log(name + `: WATCH model`)
   updateLayoutList()
 })
 
@@ -87,7 +106,7 @@ const layoutList = computed(() => {
 
 // need to update when new layout added
 watch(layoutList, () => {
-  console.log(name + `: WATCH layoutList`)
+//  console.log(name + `: WATCH layoutList`)
   updateLayoutList()
 })
 
@@ -95,9 +114,10 @@ watch(layoutList, () => {
 const updateLayoutList = () => {
   teRows.value = []
   layoutList.value.forEach(layout => {
-    console.log(name + `: update ` + layout)
+//    console.log(name + `: update ` + layout)
     teRows.value.push({"layout" : layout})
   })
+//    console.log(name + `: updateLayoutList: ` + JSON.stringify(teRows))
 }
 
 onMounted(() => {
@@ -110,10 +130,18 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
-const clickClose = () => {
-  console.log(name + ': clickClose')
-  store.state.inStartup = false
+const addNewLayout = async () => {
+  console.log(name + ': addNewlayout')
+  showAddLayoutDialog.value=true
 }
+
+const clickDeleteLayout = async (row) => {
+  console.log(name + ': clickDeleteLayout ', row)
+  store.methods.delete_layout(row)
+  await sleep(50)     // allow a bit of a delay for the change
+  store.methods.request_layout_list()
+}
+
 
 const clickSelectLayout = async (row) => {
   console.log(name + ': clickLayouts on ', row)
@@ -123,7 +151,6 @@ const clickSelectLayout = async (row) => {
   await sleep(50)     // allow a bit of a delay for the change
   model.value = false
 }
-
 
 
 onBeforeMount(() => {
