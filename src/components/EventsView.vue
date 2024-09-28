@@ -28,7 +28,7 @@
           <template v-slot:top="">
             <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Toggle"  no-caps
             @click="clickToggleViewMode()" />
-            <div class="text-h6">{{ viewModeText }}</div>
+            <div class="text-h6">{{ viewModes[viewModeIndex] }}</div>
             <q-space/>
             <q-input outlined dense debounce="300" v-model="filter" placeholder="Search">
               <template v-slot:append>
@@ -125,13 +125,12 @@ const newEventName = ref()
 const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
 const showEventsJSON = ref(false)
-const viewModeText = ref("")
+const viewModeIndex = ref(0)
 
-var viewModeIndex = 0
-const viewModes = {
+const viewModes = ref({
   0:"view all events",
   1: "view short events only"
-}
+})
 
 
 const columns = [
@@ -197,7 +196,7 @@ const update_events_table = () => {
   // order keys
   for (let key of Object.keys(events).sort()) {
     var nodeNumber = parseInt(key.substring(0, 4), 16)
-    if ((viewModeIndex == 1) && (nodeNumber > 0)){
+    if ((viewModeIndex.value == 1) && (nodeNumber > 0)){
       // don't add this node as we've selected short events only
     } else {
       let output = {}
@@ -213,9 +212,6 @@ const update_events_table = () => {
   }
 //  console.log(name + ": eventlist " + JSON.stringify(displayEventListLocal))
   displayEventTable.value = displayEventListLocal
-  // and update current view mode
-  viewModeText.value = viewModes[viewModeIndex]
-
 }
 
 const event_name = (eventIdentifier) => {
@@ -266,9 +262,8 @@ Click event handlers
 
 const clickToggleViewMode = () => {
   console.log(name + `: clickToggleViewMode`)
-  viewModeIndex++
-  if (viewModeIndex > 1){viewModeIndex = 0}
-  viewModeText.value = viewModes[viewModeIndex]
+  viewModeIndex.value++
+  if (viewModeIndex.value > 1){viewModeIndex.value = 0}
   update_events_table()
 }
 
