@@ -318,7 +318,6 @@ const clickLayout = () => {
 
 const clickSingleBusEvent = (message) => {
   console.log(name + ': clickSingleBusEvent')
-  console.log(name + ': clickSingleBusEvent: scroll ' + getVerticalScrollPosition(document.getElementById("demo")))
   busMessage.value = message
   scrollAreaRef.value.setScrollPercentage('vertical', 1)
   showModifiedGridConnectDialog.value = true
