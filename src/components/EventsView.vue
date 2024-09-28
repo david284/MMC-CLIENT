@@ -172,11 +172,11 @@ watch(eventDetails, () => {
 })
 
 const busEvents = computed(() => {
-  return store.state.busEvents
+  return Object.values(store.state.busEvents)
 })
 
 watch(busEvents, () => {
-  //console.log(`WATCH busEvents`)
+  console.log(name + `: WATCH busEvents`)
   update_events_table()
 })
 

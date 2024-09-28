@@ -45,13 +45,13 @@
         <div class="text-h6 no-margin no-padding float-right">{{ layoutDataTitle }}</div>
       </q-toolbar>
 
-      <q-toolbar v-if="(store.state.develop)" class="col no-margin q-py-none">
+      <q-toolbar class="col no-margin q-py-none">
         <q-space />
         <div class="text-h6 float-right">
           <q-btn size="md" color="secondary" label="Events view" @click="clickEventsView()" no-caps/>
         </div>
       </q-toolbar>
-      <q-toolbar v-if="(store.state.develop)" class="col no-margin q-py-none">
+      <q-toolbar class="col no-margin q-py-none">
         <div class="text-h6 float-right">
           <q-btn size="md" color="secondary" label="Nodes view" @click="clickNodesView()" no-caps/>
         </div>

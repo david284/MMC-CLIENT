@@ -251,19 +251,17 @@ const checkNodeVariables = async (nodeNumber) => {
 
 
 const select_node_row = async (nodeNumber) => {
-  if (store.state.selected_node != nodeNumber) {
 //    console.log(name + ': request_all_node_events')
-    store.state.selected_node = nodeNumber
-    store.methods.request_all_node_events(store.state.selected_node)
-    selected_nodeNumber.value = nodeNumber    // used to highlight row
-    selected_node_valid.value = true
-    // give the module chance to report it's events before we request services
-    await sleep(200)
-    store.methods.request_service_discovery(store.state.selected_node)
-    // give the module chance to report it's services before we request diagnostics
-    await sleep(200)
+  store.state.selected_node = nodeNumber
+  store.methods.request_all_node_events(store.state.selected_node)
+  selected_nodeNumber.value = nodeNumber    // used to highlight row
+  selected_node_valid.value = true
+  // give the module chance to report it's events before we request services
+  await sleep(200)
+  store.methods.request_service_discovery(store.state.selected_node)
+  // give the module chance to report it's services before we request diagnostics
+  await sleep(200)
 //    console.log(name + ': node row ', store.state.selected_node + " selected")
-  }
 }
 
 

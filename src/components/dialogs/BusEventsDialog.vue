@@ -48,7 +48,7 @@
           <template v-slot:body="props">
             <q-tr :props="props">
               <q-td key="eventName" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.name }}</q-td>
-              <!-- <q-td key="group" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.group }}</q-td> -->
+              <q-td key="group" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.group }}</q-td>
               <q-td key="eventIdentifier" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
                 {{ props.row.eventIdentifier }}
               </q-td>
@@ -143,7 +143,7 @@ const showBusEventsJSON = ref(false)
 
 const columns = [
   {name: 'eventName', field: 'name', required: true, label: 'Event Name', align: 'left', sortable: false},
-//  {name: 'group', field: 'name', required: true, label: 'Group', align: 'left', sortable: false},
+  {name: 'group', field: 'name', required: true, label: 'Group', align: 'left', sortable: false},
   {name: 'eventIdentifier', field: 'eventIdentifier', required: true, label: 'Event Identifier', align: 'left', sortable: false},
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node Number', align: 'left', sortable: false},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event Number', align: 'left', sortable: false},
@@ -202,23 +202,14 @@ const update_bus_events = () => {
     output['status'] = busEvents[key].status
     output['type'] = busEvents[key].type
     output['count'] = busEvents[key].count
-    output['name'] = event_name(busEvents[key].eventIdentifier)
-    output['colour'] = event_colour(busEvents[key].eventIdentifier)
-    output['group'] = event_group(busEvents[key].eventIdentifier)
+    output['name'] = store.getters.event_name(busEvents[key].eventIdentifier)
+    output['colour'] = store.getters.event_colour(busEvents[key].eventIdentifier)
+    output['group'] = store.getters.event_group(busEvents[key].eventIdentifier)
     displayEventListLocal.push(output)
   }
   displayEventList.value = displayEventListLocal
 }
 
-const event_name = (eventIdentifier) => {
-  if (eventIdentifier in store.state.layout.eventDetails) {
-    //console.log(`Event Name`)
-    return store.state.layout.eventDetails[eventIdentifier].name
-  } else {
-    //console.log(`Event No Name ${JSON.stringify(eventIdentifier)}`)
-    return JSON.stringify(eventIdentifier)
-  }
-}
 
 const event_colour = (eventIdentifier) => {
   if (eventIdentifier in store.state.layout.eventDetails) {
@@ -230,15 +221,6 @@ const event_colour = (eventIdentifier) => {
   }
 }
 
-const event_group = (eventIdentifier) => {
-  if (eventIdentifier in store.state.layout.eventDetails) {
-    //console.log(`Event Colour`)
-    return store.state.layout.eventDetails[eventIdentifier].group
-  } else {
-    //console.log(`Event No Colour ${JSON.stringify(eventIdentifier)}`)
-    return ""
-  }
-}
 
 
 onBeforeMount(() => {

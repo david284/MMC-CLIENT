@@ -298,6 +298,7 @@ const getters = {
       //console.log(`Event Name`)
       return state.layout.eventDetails[eventIdentifier].colour
     } else {
+      setters.event_colour(eventIdentifier, "black")
       //console.log(`Event No Name ${JSON.stringify(eventIdentifier)}`)
       return "black"
     }
@@ -307,6 +308,7 @@ const getters = {
       //console.log(`Event Name`)
       return state.layout.eventDetails[eventIdentifier].group
     } else {
+      setters.event_group(eventIdentifier, "")
       //console.log(`Event No Name ${JSON.stringify(eventIdentifier)}`)
       return ""
     }
@@ -345,6 +347,16 @@ const setters = {
     }
     state.layout.eventDetails[eventIdentifier].name = eventName
 //    console.log(name + ': setter event_name ' + eventIdentifier + ' : ' + eventName)
+    state.update_layout_needed = true
+  },
+  event_colour(eventIdentifier, eventColour) {
+    if (eventIdentifier in state.layout.eventDetails === false) {
+      state.layout.eventDetails[eventIdentifier] = {}
+      state.layout.eventDetails[eventIdentifier].colour = "black"
+      state.layout.eventDetails[eventIdentifier].group = ""
+    }
+    state.layout.eventDetails[eventIdentifier].colour = eventColour
+//    console.log(name + ': setter event_colour ' + eventIdentifier + ' : ' + eventColour)
     state.update_layout_needed = true
   },
   event_group(eventIdentifier, eventGroup) {
