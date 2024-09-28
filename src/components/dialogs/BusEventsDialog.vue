@@ -142,10 +142,10 @@ const selected_event_number = ref(0) // Dialog will complain if null
 const showBusEventsJSON = ref(false)
 
 const columns = [
-  {name: 'eventName', field: 'name', required: true, label: 'Event Name', align: 'left', sortable: false},
-  {name: 'group', field: 'name', required: true, label: 'Group', align: 'left', sortable: false},
-  {name: 'eventIdentifier', field: 'eventIdentifier', required: true, label: 'Event Identifier', align: 'left', sortable: false},
-  {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Source Node Number', align: 'left', sortable: false},
+  {name: 'eventName', field: 'name', required: true, label: 'Event Name', align: 'left', sortable: true},
+  {name: 'group', field: 'name', required: true, label: 'Group', align: 'left', sortable: true},
+  {name: 'eventIdentifier', field: 'eventIdentifier', required: true, label: 'Event Identifier', align: 'left', sortable: true},
+  {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Source Node Number', align: 'left', sortable: true},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event Number', align: 'left', sortable: false},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: false},
   {name: 'type', field: 'type', required: true, label: 'Type', align: 'left', sortable: false},
@@ -191,23 +191,29 @@ watch(eventDetails, () => {
 
 const update_bus_events = () => {
 //  console.log(name + `:Update busEvents`)
-  let displayEventListLocal = []
-  let busEvents = store.state.busEvents
-  // order keys
-  for (let key of Object.keys(busEvents).sort()) {
-    let output = {}
-    output['eventIdentifier'] = busEvents[key].eventIdentifier
-    output['nodeNumber'] = busEvents[key].nodeNumber
-    output['eventNumber'] = busEvents[key].eventNumber
-    output['status'] = busEvents[key].status
-    output['type'] = busEvents[key].type
-    output['count'] = busEvents[key].count
-    output['name'] = store.getters.event_name(busEvents[key].eventIdentifier)
-    output['colour'] = store.getters.event_colour(busEvents[key].eventIdentifier)
-    output['group'] = store.getters.event_group(busEvents[key].eventIdentifier)
-    displayEventListLocal.push(output)
+  try{
+    let displayEventListLocal = []
+    let busEvents = store.state.busEvents
+    // order keys
+    if (busEvents){
+      for (let key of Object.keys(busEvents).sort()) {
+        let output = {}
+        output['eventIdentifier'] = busEvents[key].eventIdentifier
+        output['nodeNumber'] = busEvents[key].nodeNumber
+        output['eventNumber'] = busEvents[key].eventNumber
+        output['status'] = busEvents[key].status
+        output['type'] = busEvents[key].type
+        output['count'] = busEvents[key].count
+        output['name'] = store.getters.event_name(busEvents[key].eventIdentifier)
+        output['colour'] = store.getters.event_colour(busEvents[key].eventIdentifier)
+        output['group'] = store.getters.event_group(busEvents[key].eventIdentifier)
+        displayEventListLocal.push(output)
+      }
+      displayEventList.value = displayEventListLocal
+    }
+  } catch (err){
+    console.log(name + `: update_bus_events ` + err)
   }
-  displayEventList.value = displayEventListLocal
 }
 
 

@@ -187,11 +187,13 @@ const update_available_nodes = () =>{
         // not already taught, but only add to list if consumer node
         if (nodes[nodeNumber].consumer){
           var entry = nodeNumber + ': '
-          if (store.state.layout.nodeDetails[nodeNumber]){
-            // add node name if it exists
-            entry += store.state.layout.nodeDetails[nodeNumber].name
+          if(store.state.layout){
+            if (store.state.layout.nodeDetails[nodeNumber]){
+              // add node name if it exists
+              entry += store.state.layout.nodeDetails[nodeNumber].name
+            }
+            availableNodes.value.push(entry)
           }
-          availableNodes.value.push(entry)
         }
       }
     }  

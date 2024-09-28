@@ -430,6 +430,7 @@ socket.on("CBUS_TRAFFIC", (data) => {
   if (state.nodeTraffic.length > 32) {
     state.nodeTraffic.shift()
   }
+  eventBus.emit('BUS_TRAFFIC_EVENT', data)
 })
 
 socket.on("DCC_ERROR", (data) => {

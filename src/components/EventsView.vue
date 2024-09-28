@@ -206,7 +206,7 @@ const update_events_table = () => {
       output['name'] = events[key].name
       output['colour'] = events[key].colour
       output['group'] = events[key].group
-      output['status'] = store.getters.busEvent_status(key)
+      output['status'] = events[key].status
       displayEventListLocal.push(output)
     }
   }
@@ -214,15 +214,6 @@ const update_events_table = () => {
   displayEventTable.value = displayEventListLocal
 }
 
-const event_name = (eventIdentifier) => {
-  if (eventIdentifier in store.state.layout.eventDetails) {
-    //console.log(`Event Name`)
-    return store.state.layout.eventDetails[eventIdentifier].name
-  } else {
-    //console.log(`Event No Name ${JSON.stringify(eventIdentifier)}`)
-    return JSON.stringify(eventIdentifier)
-  }
-}
 
 const event_colour = (eventIdentifier) => {
   if (eventIdentifier in store.state.layout.eventDetails) {
@@ -234,15 +225,55 @@ const event_colour = (eventIdentifier) => {
   }
 }
 
-const event_group = (eventIdentifier) => {
-  if (eventIdentifier in store.state.layout.eventDetails) {
-    //console.log(`Event Colour`)
-    return store.state.layout.eventDetails[eventIdentifier].group
-  } else {
-    //console.log(`Event No Colour ${JSON.stringify(eventIdentifier)}`)
-    return ""
+store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
+//  console.log(name + ': BUS_TRAFFIC_EVENT : ' + JSON.stringify(data.json.eventIdentifier))
+  var eventIdentifier = data.json.eventIdentifier
+  var opCode = data.json.opCode
+  var status = 'unknown'
+  // check for ON event
+  if ((opCode == 90)
+    || (opCode == 98)
+  //  || (opCode == B0)
+  //  || (opCode == B8)
+  //  || (opCode == D0)
+  //  || (opCode == D8)
+  //  || (opCode == F0)
+  //  || (opCode == F8)
+    ){
+      console.log(name + ': BUS_TRAFFIC_EVENT : ON event ' + eventIdentifier)
+      status = 'on'
+    }
+
+  // check for OFF event
+  if ((opCode == 91)
+    || (opCode == 99)
+//    || (opCode == B1)
+//    || (opCode == B9)
+//    || (opCode == D1)
+//    || (opCode == D9)
+//    || (opCode == F1)
+//    || (opCode == F9)
+    ){
+      console.log(name + ': BUS_TRAFFIC_EVENT : OFF event ' + eventIdentifier)
+      status = 'off'
   }
-}
+  if (status != 'unknown'){
+    let events = store.state.layout.eventDetails
+    for (let key of Object.keys(events).sort()) {
+      if (key == eventIdentifier){
+        store.state.layout.eventDetails[key].status = status  
+      }
+    }
+    update_events_table()
+  }
+
+})
+
+/*
+BUS_TRAFFIC_EVENT {"direction":"Out","json":{"encoded":":SB780N9800000001;","ID_TYPE":"S","mnemonic":"ASON","opCode":"98","nodeNumber":0,"deviceNumber":1,"eventIdentifier":"00000001","eventData":{"hex":""},"text":"ASON (98) Node 0 Device Number 1"}}
+*/
+
+
 
 
 onBeforeMount(() => {
