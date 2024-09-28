@@ -143,13 +143,14 @@ const clickDeleteLayout = async (row) => {
           message: 'Are you sure you want to delete this?',
           timeout: 0,
           position: 'center',
+          color: 'primary',
           actions: [
-            { label: 'yes', color: 'positive', handler: async () => { 
+            { label: 'YES', color: 'white', handler: async () => { 
               store.methods.delete_layout(row)
               await sleep(50)     // allow a bit of a delay for the change
               store.methods.request_layout_list()
             } },
-            { label: 'no', color: 'negative', handler: () => { /* ... */ } }
+            { label: 'NO', color: 'white', handler: () => { /* ... */ } }
           ]
         })
 
