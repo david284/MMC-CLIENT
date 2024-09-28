@@ -218,6 +218,7 @@ const update_rows = () => {
         let output = {}
         output['eventIdentifier'] = eventIdentifier
         output['eventName'] = store.getters.event_name(eventIdentifier)
+        output['eventGroup'] = store.getters.event_group(eventIdentifier)
         output['nodeNumber'] = busEvent.nodeNumber
         output['eventNumber'] = busEvent.eventNumber
         output['eventType'] = busEvent.type
