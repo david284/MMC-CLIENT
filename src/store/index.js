@@ -322,16 +322,23 @@ const getters = {
     }
   },
   node_name(nodeNumber){
-    if (nodeNumber in state.layout.nodeDetails == false){
-      state.layout.nodeDetails[nodeNumber] = {}
-      state.layout.nodeDetails[nodeNumber].name = nodeNumber.toString()
-      state.layout.nodeDetails[nodeNumber].colour = "black"
-      state.layout.nodeDetails[nodeNumber].group = ""
+    try{
+      if (nodeNumber in state.layout.nodeDetails == false){
+        state.layout.nodeDetails[nodeNumber] = {}
+        state.layout.nodeDetails[nodeNumber].name = 
+          state.nodes[nodeNumber].moduleName + ' (' + nodeNumber.toString() + ')'
+        state.layout.nodeDetails[nodeNumber].colour = "black"
+        state.layout.nodeDetails[nodeNumber].group = ""
+        state.update_layout_needed = true
+      }
+      if (state.layout.nodeDetails[nodeNumber].name == undefined){
+        state.layout.nodeDetails[nodeNumber].name = "undefined"
+      }
+      return state.layout.nodeDetails[nodeNumber].name
+    } catch (err) {
+      console.log(name + `: getters.node_name: ${err}`)
+      return "error"      
     }
-    if (state.layout.nodeDetails[nodeNumber].name == undefined){
-      state.layout.nodeDetails[nodeNumber].name = nodeNumber.toString()
-    }
-    return state.layout.nodeDetails[nodeNumber].name
   }
 }
 
