@@ -212,13 +212,7 @@ const update_bus_events = () => {
 
 
 const event_colour = (eventIdentifier) => {
-  if (eventIdentifier in store.state.layout.eventDetails) {
-    //console.log(`Event Colour`)
-    return store.state.layout.eventDetails[eventIdentifier].colour
-  } else {
-    //console.log(`Event No Colour ${JSON.stringify(eventIdentifier)}`)
-    return "blue"
-  }
+  return store.getters.event_colour(eventIdentifier)
 }
 
 
