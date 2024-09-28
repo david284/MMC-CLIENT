@@ -26,7 +26,9 @@
             hide-bottom
           >
           <template v-slot:top="">
-            <!-- <div class="col-2 q-table__title text-h4">All Events</div> -->
+            <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Toggle"  no-caps
+            @click="clickToggleViewMode()" />
+            <div class="text-h6">{{ viewModeText }}</div>
             <q-space/>
             <q-input outlined dense debounce="300" v-model="filter" placeholder="Search">
               <template v-slot:append>
@@ -123,6 +125,14 @@ const newEventName = ref()
 const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
 const showEventsJSON = ref(false)
+const viewModeText = ref("")
+
+var viewModeIndex = 0
+const viewModes = {
+  0:"view all events",
+  1: "view short events only"
+}
+
 
 const columns = [
   {name: 'eventName', field: 'name', required: true, label: 'Event Name', align: 'left', sortable: true},
@@ -187,7 +197,9 @@ const update_events_table = () => {
   // order keys
   for (let key of Object.keys(events).sort()) {
     var nodeNumber = parseInt(key.substring(0, 4), 16)
-//    if (nodeNumber == 0){
+    if ((viewModeIndex == 1) && (nodeNumber > 0)){
+      // don't add this node as we've selected short events only
+    } else {
       let output = {}
       output['eventIdentifier'] = key
       output['nodeNumber'] = nodeNumber
@@ -197,10 +209,13 @@ const update_events_table = () => {
       output['group'] = events[key].group
       output['status'] = store.getters.busEvent_status(key)
       displayEventListLocal.push(output)
-//    }
+    }
   }
 //  console.log(name + ": eventlist " + JSON.stringify(displayEventListLocal))
   displayEventTable.value = displayEventListLocal
+  // and update current view mode
+  viewModeText.value = viewModes[viewModeIndex]
+
 }
 
 const event_name = (eventIdentifier) => {
@@ -248,6 +263,14 @@ onMounted(() => {
 Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
+
+const clickToggleViewMode = () => {
+  console.log(name + `: clickToggleViewMode`)
+  viewModeIndex++
+  if (viewModeIndex > 1){viewModeIndex = 0}
+  viewModeText.value = viewModes[viewModeIndex]
+  update_events_table()
+}
 
 const clickAddEvent = () => {
   console.log(name + `: clickAddEvent`)
