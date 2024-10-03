@@ -49,7 +49,7 @@
 
             <q-card-actions align="center" class="text-primary">
               <div>
-                <q-btn color="positive" label="Add" @click="addNewLayout()"/>
+                <q-btn color="positive" label="Add" @click="clickAddNewLayout()"/>
               </div>
             </q-card-actions>
           </q-card-section>
@@ -132,33 +132,27 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
-const addNewLayout = async () => {
-  console.log(name + ': addNewlayout')
+const clickAddNewLayout = async () => {
+  console.log(name + ': clickAddNewLayout')
   showAddLayoutDialog.value=true
 }
 
 const clickDeleteLayout = async (row) => {
   console.log(name + ': clickDeleteLayout ', row)
   const result = $q.notify({
-          message: 'Are you sure you want to delete this?',
-          timeout: 0,
-          position: 'center',
-          color: 'primary',
-          actions: [
-            { label: 'YES', color: 'white', handler: async () => { 
-              store.methods.delete_layout(row)
-              await sleep(50)     // allow a bit of a delay for the change
-              store.methods.request_layout_list()
-            } },
-            { label: 'NO', color: 'white', handler: () => { /* ... */ } }
-          ]
-        })
-
-/*
-  store.methods.delete_layout(row)
-  await sleep(50)     // allow a bit of a delay for the change
-  store.methods.request_layout_list()
-  */
+    message: 'Are you sure you want to delete this?',
+    timeout: 0,
+    position: 'center',
+    color: 'primary',
+    actions: [
+      { label: 'YES', color: 'white', handler: async () => { 
+        store.methods.delete_layout(row)
+        await sleep(50)     // allow a bit of a delay for the change
+        store.methods.request_layout_list()
+      } },
+      { label: 'NO', color: 'white', handler: () => { /* ... */ } }
+    ]
+  })
 }
 
 

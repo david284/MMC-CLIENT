@@ -270,11 +270,11 @@ const methods = {
     socket.emit('SAVE_BACKUP', data)
   },
   set_can_id(nodeNumber, CAN_ID){
-    console.log(name + `: SET_CAN_ID: node ` + nodeNumber + ' CAN_ID ' + CAN_ID)
     var data = {}
     data['nodeNumber'] = nodeNumber
     data['CAN_ID'] = CAN_ID    
-//    socket.emit('SET_CAN_ID', data)
+    socket.emit('SET_CAN_ID', data)
+    console.log(name + `: SET_CAN_ID: node ` + JSON.stringify(data))
   }
 }
 

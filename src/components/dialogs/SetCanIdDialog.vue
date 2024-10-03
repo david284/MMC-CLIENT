@@ -17,12 +17,16 @@
         </div>
         </q-card-section>
 
-<!--         
-      <q-card-section class="q-pt-none">
-          <q-input dense v-model="newNodeName" autofocus />
-        </q-card-section>
+      <div class="q-pa-md">
+      Enter new CAN ID, 1 to 99
+        <q-input
+          autofocus
+          v-model.number="newCANID"
+          type="number"
+          style="max-width: 200px"
+        />
+      </div>
 
- -->
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Accept" v-close-popup @click="clickAccept()"/>
       </q-card-actions>
@@ -38,6 +42,7 @@ import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from 
 
 const store = inject('store')
 const name = 'SetCanIdDialog'
+const newCANID = ref()
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -63,8 +68,11 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 const clickAccept = () => {
-  console.log(name + ": clickAccept")
-//  store.methods.set_can_id(1,2)
+  if (newCANID.value){
+    console.log(name + ": clickAccept: node " + props.nodeNumber + ' CAN_ID ' + newCANID.value)
+    store.methods.set_can_id( props.nodeNumber, newCANID.value)
+  }
+  newCANID.value = undefined
 }
 
 

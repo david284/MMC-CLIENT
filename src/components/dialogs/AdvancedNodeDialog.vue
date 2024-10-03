@@ -1,7 +1,7 @@
 <template>
 
     <q-dialog v-model='model' persistent>
-      <q-card style="min-width: 600px">
+      <q-card style="min-width: 450px">
 
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
           <div class="text-h6">
@@ -14,11 +14,11 @@
 
         <q-card-actions align="left">
           <q-btn dense class="q-mx-xs q-my-none" color="cyan-1" text-color="black" size="md" label="Delete node"
-          @click="deleteNode()"/>
+          @click="clickDeleteNode()"/>
         </q-card-actions>
         <q-card-actions align="left">
           <q-btn dense class="q-mx-xs q-my-none" color="cyan-1" text-color="black" size="md" label="Set CANID"
-          @click="setCAN_ID()"/>
+          @click="clickSetCAN_ID()"/>
           <!-- <q-btn color="positive" label="Set CANID" v-close-popup @click="setCAN_ID()"/> -->
         </q-card-actions>
 
@@ -71,13 +71,13 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
-const deleteNode = () => {
-  console.log(name + `: deleteNode ` + props.nodeNumber)
+const clickDeleteNode = () => {
+  console.log(name + `: clickDeleteNode ` + props.nodeNumber)
   showDeleteNodeDialog.value = true
 }
 
-const setCAN_ID = () => {
-  console.log(name + `: setCAN_ID ` + props.nodeNumber)
+const clickSetCAN_ID = () => {
+  console.log(name + `: clickSetCAN_ID ` + props.nodeNumber)
   showSetCanIdDialog.value = true
 }
 

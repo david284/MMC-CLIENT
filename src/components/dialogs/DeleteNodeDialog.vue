@@ -16,7 +16,8 @@
           <div class="text-h6">Are you sure you want to delete this node?</div>
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
-          <q-btn flat colour="positive" label="Yes" v-close-popup @click="deleteNode()"/>
+          <q-btn flat colour="positive" label="Yes" v-close-popup @click="clickDeleteNode()"/>
+          <q-btn flat colour="positive" label="No" v-close-popup/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -43,19 +44,23 @@ const model = computed({
       set(newValue) { emit('update:modelValue', newValue) }
     })
 
-const deleteNode = () => {
-  console.log(name + ": deleting node " + props.nodeNumber)
-  store.methods.remove_node(props.nodeNumber)
-  store.eventBus.emit('NODE_DELETED_EVENT', props.nodeNumber)
-}
-
-
-
 onBeforeMount(() => {
 })
 
 onMounted(() => {
 })
+
+/*/////////////////////////////////////////////////////////////////////////////
+
+Click event handlers
+
+/////////////////////////////////////////////////////////////////////////////*/
+
+const clickDeleteNode = () => {
+  console.log(name + ": deleting node " + props.nodeNumber)
+  store.methods.remove_node(props.nodeNumber)
+  store.eventBus.emit('NODE_DELETED_EVENT', props.nodeNumber)
+}
 
 
 
