@@ -1,10 +1,10 @@
 <template>
 
   <q-dialog v-model="model" persistent>
-    <q-card style="min-width: 350px">
+    <q-card style="min-width: 400px">
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
-          Set CAN ID for node :  {{ nodeNumber }}
+          Set CAN ID for node :  {{ store.getters.node_name(nodeNumber) }}
         </div>
         <template v-slot:action>
           <q-btn flat color="white" size="md" label="Close" v-close-popup/>

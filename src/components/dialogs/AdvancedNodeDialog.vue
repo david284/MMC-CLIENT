@@ -16,12 +16,16 @@
           <q-btn dense class="q-mx-xs q-my-none" color="cyan-1" text-color="black" size="md" label="Delete node"
           @click="clickDeleteNode()"/>
         </q-card-actions>
+
         <q-card-actions align="left">
           <q-btn dense class="q-mx-xs q-my-none" color="cyan-1" text-color="black" size="md" label="Set CANID"
           @click="clickSetCAN_ID()"/>
-          <!-- <q-btn color="positive" label="Set CANID" v-close-popup @click="setCAN_ID()"/> -->
         </q-card-actions>
 
+        <q-card-actions align="left">
+          <q-btn v-if="(store.state.develop)" dense class="q-mx-xs q-my-none" color="cyan-1" text-color="black" size="md" label="program Node"
+          @click="clickProgramNode()"/>
+        </q-card-actions>
 
       </q-card>
     </q-dialog>
@@ -29,6 +33,10 @@
     />
 
     <deleteNodeDialog v-model='showDeleteNodeDialog'
+      :nodeNumber = nodeNumber
+    />
+
+    <programNodeDialog v-model='showProgramNodeDialog'
       :nodeNumber = nodeNumber
     />
 
@@ -46,11 +54,13 @@
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import deleteNodeDialog from "components/dialogs/DeleteNodeDialog"
+import programNodeDialog from "components/dialogs/programNodeDialog"
 import setCanIdDialog from "components/dialogs/setCanIdDialog"
 
 const store = inject('store')
 const name = "AdvancedNodeDialog"
 const showDeleteNodeDialog = ref(false)
+const showProgramNodeDialog = ref(false)
 const showSetCanIdDialog = ref(false)
 
 const props = defineProps({
@@ -74,6 +84,11 @@ Click event handlers
 const clickDeleteNode = () => {
   console.log(name + `: clickDeleteNode ` + props.nodeNumber)
   showDeleteNodeDialog.value = true
+}
+
+const clickProgramNode = () => {
+  console.log(name + `: clickProgramNode ` + props.nodeNumber)
+  showProgramNodeDialog.value = true
 }
 
 const clickSetCAN_ID = () => {
