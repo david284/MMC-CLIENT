@@ -144,7 +144,6 @@ const methods = {
       "eventVariableValue": parseInt(eventVariableValue)
     })
   },
-
   event_teach_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex, eventVariableValue){
     console.log(name + `: event_teach_by_identifier : ${nodeNumber} : ${eventIdentifier} : ${eventVariableIndex} : ${eventVariableValue} `)
     socket.emit('EVENT_TEACH_BY_IDENTIFIER',{
@@ -154,23 +153,19 @@ const methods = {
       "eventVariableValue": parseInt(eventVariableValue)
     })
   },
-
   remove_event(nodeNumber, eventName) {
     socket.emit('REMOVE_EVENT', {
         "nodeNumber": nodeNumber,
         "eventName": eventName
     })
   },
-  teach_event(nodeNumber, eventName, eventIndex) {
-    socket.emit('TEACH_EVENT', {
-      "nodeNumber": nodeNumber,
-      "eventName": eventName,
-      "eventIndex": eventIndex
-    })
-  },
   query_all_nodes() {
     console.log(`QUERY_ALL_NODES`)
     socket.emit('QUERY_ALL_NODES')
+  },
+  change_layout(data){
+    console.log(name + `: CHANGE_LAYOUT: ` + JSON.stringify(data))
+    socket.emit('CHANGE_LAYOUT', data)
   },
   clear_bus_events() {
     socket.emit('CLEAR_BUS_EVENTS')
@@ -179,6 +174,20 @@ const methods = {
   clear_cbus_errors() {
     socket.emit('CLEAR_CBUS_ERRORS')
     console.log(`CLEAR_CBUS_ERRORS`)
+  },
+  clear_node_events(nodeNumber) {
+    console.log(`CLEAR_NODE_EVENTS ${nodeNumber}`)
+    socket.emit('CLEAR_NODE_EVENTS',{
+      "nodeNumber": nodeNumber
+    })
+  },
+  import_module_descriptor(moduleDescriptor) {
+    console.log(`import_module_descriptor : ` + moduleDescriptor.moduleDescriptorFilename)
+    socket.emit('IMPORT_MODULE_DESCRIPTOR', moduleDescriptor)
+  },
+  program_node(nodeNumber, hexFile) {
+    console.log(name + `: PROGRAM_NODE : ` + nodeNumber)
+    socket.emit('PROGRAM_NODE', {"nodeNumber": nodeNumber, "hexFile": hexFile})
   },
   request_all_node_parameters(nodeNumber, parameters, delay) {
     socket.emit('REQUEST_ALL_NODE_PARAMETERS', {"nodeNumber": nodeNumber, "parameters": parameters, "delay": delay})
@@ -234,17 +243,6 @@ const methods = {
       "eventVariableId": eventVariableId
     })
   },
-  clear_node_events(nodeNumber) {
-    console.log(`CLEAR_NODE_EVENTS ${nodeNumber}`)
-    socket.emit('CLEAR_NODE_EVENTS',{
-      "nodeNumber": nodeNumber
-    })
-  },
-  STOP_SERVER(nodeNumber) {
-    socket.emit('STOP_SERVER')
-    console.log(`STOP SERVER`)
-    window.close()
-  },
   request_bus_connection() {
 //    console.log(name + `: REQUEST_BUS_CONNECTION`)
     socket.emit('REQUEST_BUS_CONNECTION')
@@ -255,14 +253,6 @@ const methods = {
   request_layout_list(){
     console.log(name + `: request_layout_list:`)
     socket.emit('REQUEST_LAYOUTS_LIST')
-  },
-  change_layout(data){
-    console.log(name + `: CHANGE_LAYOUT: ` + JSON.stringify(data))
-    socket.emit('CHANGE_LAYOUT', data)
-  },
-  import_module_descriptor(moduleDescriptor) {
-    console.log(`import_module_descriptor : ` + moduleDescriptor.moduleDescriptorFilename)
-    socket.emit('IMPORT_MODULE_DESCRIPTOR', moduleDescriptor)
   },
   save_backup(data){
     console.log(`SAVE_BACKUP`)
@@ -275,6 +265,18 @@ const methods = {
     data['CAN_ID'] = CAN_ID    
     socket.emit('SET_CAN_ID', data)
     console.log(name + `: SET_CAN_ID: node ` + JSON.stringify(data))
+  },
+  STOP_SERVER(nodeNumber) {
+    socket.emit('STOP_SERVER')
+    console.log(`STOP SERVER`)
+    window.close()
+  },
+  teach_event(nodeNumber, eventName, eventIndex) {
+    socket.emit('TEACH_EVENT', {
+      "nodeNumber": nodeNumber,
+      "eventName": eventName,
+      "eventIndex": eventIndex
+    })
   }
 }
 
