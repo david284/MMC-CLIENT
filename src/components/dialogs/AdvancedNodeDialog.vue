@@ -32,6 +32,10 @@
       :nodeNumber = nodeNumber
     />
 
+    <setCanIdDialog v-model='showSetCanIdDialog'
+      :nodeNumber = nodeNumber
+    />
+
 
 
 </template>
@@ -42,10 +46,12 @@
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import deleteNodeDialog from "components/dialogs/DeleteNodeDialog"
+import setCanIdDialog from "components/dialogs/setCanIdDialog"
 
 const store = inject('store')
 const name = "AdvancedNodeDialog"
 const showDeleteNodeDialog = ref(false)
+const showSetCanIdDialog = ref(false)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -72,7 +78,7 @@ const deleteNode = () => {
 
 const setCAN_ID = () => {
   console.log(name + `: setCAN_ID ` + props.nodeNumber)
-  store.methods.set_can_id(1,2)
+  showSetCanIdDialog.value = true
 }
 
 

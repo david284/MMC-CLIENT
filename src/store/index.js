@@ -347,6 +347,15 @@ const getters = {
       console.log(name + `: getters.node_name: ${err}`)
       return "error"      
     }
+  },
+  node_can_id(nodeNumber){
+    var CAN_ID = undefined
+    try{
+      CAN_ID = state.nodes[nodeNumber].CANID
+    } catch (err){
+      console.log(name + `: getters.node_can_id: ${err}`)
+    }
+    return CAN_ID
   }
 }
 
