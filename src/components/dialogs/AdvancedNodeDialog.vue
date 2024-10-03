@@ -72,6 +72,7 @@ const deleteNode = () => {
 
 const setCAN_ID = () => {
   console.log(name + `: setCAN_ID ` + props.nodeNumber)
+  store.methods.set_can_id(1,2)
 }
 
 

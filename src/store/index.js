@@ -253,6 +253,7 @@ const methods = {
     socket.emit('REQUEST_VERSION')
   },
   request_layout_list(){
+    console.log(name + `: request_layout_list:`)
     socket.emit('REQUEST_LAYOUTS_LIST')
   },
   change_layout(data){
@@ -267,6 +268,13 @@ const methods = {
     console.log(`SAVE_BACKUP`)
     data['layoutName'] = state.layout.layoutDetails.title
     socket.emit('SAVE_BACKUP', data)
+  },
+  set_can_id(nodeNumber, CAN_ID){
+    console.log(name + `: SET_CAN_ID: node ` + nodeNumber + ' CAN_ID ' + CAN_ID)
+    var data = {}
+    data['nodeNumber'] = nodeNumber
+    data['CAN_ID'] = CAN_ID    
+//    socket.emit('SET_CAN_ID', data)
   }
 }
 
