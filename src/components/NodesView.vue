@@ -37,7 +37,7 @@
           </q-td>
           <q-td key="events" :props="props">{{ props.row.events }}</q-td>
           <q-td key="actions">
-            <q-btn dense class="q-mx-xs q-my-none" color="cyan-1" text-color="black" size="md" label="Events"
+            <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Events"
               @click="clickEvents(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="md" label="Name"
               @click="clickNameNode(props.row.nodeNumber)" no-caps/>
@@ -49,8 +49,8 @@
               @click="clickVLCB(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline v-if="(props.row.vlcb)" color="primary" size="md" label="VLCB"
               @click="clickVLCB(props.row.nodeNumber)" no-caps/>
-            <q-btn dense class="q-mx-xs q-my-none" outline color="negative" size="md" label="Delete"
-              @click="clickDeleteNode(props.row.nodeNumber)" no-caps/>
+            <q-btn dense class="q-mx-xs q-my-none" color="blue-grey-1" text-color="blue-grey-14" size="md" label="Advanced"
+              @click="clickAdvanced(props.row.nodeNumber)" no-caps/>
 
           </q-td>
         </q-tr>
@@ -63,8 +63,8 @@
       />
 
 
-      <deleteNodeDialog v-model='showDeleteNodeDialog'
-        :nodeNumber = store.state.selected_node
+      <advancedNodeDialog v-model='showAdvancedDialog'
+        :nodeNumber = selectedNode
       />
 
        <nameNodeDialog v-model='showNameNodeDialog'
@@ -102,7 +102,7 @@
 import {inject, ref, onBeforeMount, onMounted, computed, watch} from "vue"
 import {sleep} from "components/functions/utils.js"
 import EventsListByNode from "components/EventsListByNode"
-import deleteNodeDialog from "components/dialogs/DeleteNodeDialog"
+import advancedNodeDialog from "components/dialogs/advancedNodeDialog"
 import nameNodeDialog from "components/dialogs/NameNodeDialog"
 import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
 import nodeVariablesDialog from "components/dialogs/NodeVariablesDialog"
@@ -129,8 +129,9 @@ const store = inject('store')
 const name = "NodesList"
 const filter = ref('')
 const rows = ref([])
+const selectedNode = ref()
 const selected_node_valid = ref(false)
-const showDeleteNodeDialog = ref(false)
+const showAdvancedDialog = ref(false)
 const showNameNodeDialog = ref(false)
 const showNodeParametersDialog = ref(false)
 const showNodeVariablesDialog = ref(false)
@@ -280,11 +281,19 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 
+const clickAdvanced = async (nodeNumber) => {
+//  await checkNodeParameters(nodeNumber)
+//  await select_node_row(nodeNumber)
+  selectedNode.value = nodeNumber
+  showAdvancedDialog.value=true
+  console.log(name + ': clickAdvanced: node' + store.state.selected_node)
+}
+
 
 const clickDeleteNode = async (nodeNumber) => {
   await checkNodeParameters(nodeNumber)
   await select_node_row(nodeNumber)
-  showDeleteNodeDialog.value=true
+  showAdvancedDialog.value=true
   console.log(name + ': clickDeleteNode: node' + store.state.selected_node)
 }
 
