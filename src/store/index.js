@@ -100,7 +100,7 @@ const methods = {
 
   node_can_id_enum(nodeNumber){
     console.log(name + `: CANID_ENUM : ` + nodeNumber)
-    socket.emit('CANID_ENUM', {"nodeNumber": nodeNumber})
+    socket.emit('CANID_ENUM', nodeNumber)
   },
 
   program_node(nodeNumber, hexFile) {
