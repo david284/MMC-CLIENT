@@ -89,7 +89,7 @@ const actionUpload = async () => {
       }
       store.methods.program_node(props.nodeNumber, uploadFile.value)
     }
-    uploadFile.value=null
+//    uploadFile.value=null
   } else {
     console.log(name + `: actionUpload: uploadFile no value `)
   }

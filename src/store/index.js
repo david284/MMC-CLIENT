@@ -36,133 +36,6 @@ const state = reactive({
 //  Methods
 //-----------------------------------------------------------------------------
 const methods = {
-  delete_all_events(nodeNumber) {
-    socket.emit('DELETE_ALL_EVENTS', {
-        "nodeNumber": nodeNumber
-    })
-    console.log(name + `: DELETE_ALL_EVENTS ${nodeNumber}`)
-  },
-  delete_layout(layoutName) {
-    socket.emit('DELETE_LAYOUT', {
-        "layoutName": layoutName
-    })
-    console.log(name + `: DELETE_LAYOUT ${layoutName}`)
-  },
-  long_on_event(nodeNumber, eventNumber){
-    console.log(`ACON ${nodeNumber} : ${eventNumber}`)
-    socket.emit('ACCESSORY_LONG_ON', {
-      "nodeNumber": nodeNumber,
-      "eventNumber": eventNumber
-    })
-  },
-  long_off_event(nodeNumber, eventNumber){
-    console.log(`ACOF ${nodeNumber} : ${eventNumber}`)
-    socket.emit('ACCESSORY_LONG_OFF', {
-      "nodeNumber": nodeNumber,
-      "eventNumber": eventNumber
-    })
-  },
-  set_node_number(nodeNumber){
-    console.log(name + `: emit SET_NODE_NUMBER ${nodeNumber}`)
-    socket.emit('SET_NODE_NUMBER', nodeNumber)
-  },
-  short_on_event(nodeNumber, eventNumber){
-    console.log(`ASON ${nodeNumber} : ${eventNumber}`)
-    socket.emit('ACCESSORY_SHORT_ON', {
-      "nodeNumber": nodeNumber,
-      "deviceNumber": eventNumber
-    })
-  },
-  short_off_event(nodeNumber, eventNumber){
-    console.log(`ASOF ${nodeNumber} : ${eventNumber}`)
-    socket.emit('ACCESSORY_SHORT_OFF', {
-      "nodeNumber": nodeNumber,
-      "deviceNumber": eventNumber
-    })
-  },
-  remove_node(nodeNumber) {
-    socket.emit('REMOVE_NODE', nodeNumber)
-    console.log(name + ': sent REMOVE_NODE ' + nodeNumber)
-  },
-  update_layout() {
-    console.log(`Update Layout Data : ` + state.title)
-    socket.emit('UPDATE_LAYOUT_DATA', state.layout)
-  },
-  request_backups_list(layoutName) {
-    console.log(`request_backups_list : ` + layoutName)
-    socket.emit('REQUEST_BACKUPS_LIST', {"layoutName":layoutName})
-  },
-  request_service_discovery(nodeNumber) {
-    console.log(`Request Service Discovery : ` + nodeNumber)
-    socket.emit('REQUEST_SERVICE_DISCOVERY', {"nodeNumber":nodeNumber})
-  },
-  request_diagnostics(nodeNumber, serviceIndex) {
-    if (serviceIndex == undefined){serviceIndex = 0;}
-    console.log(`Request Service Diagnostics : node ` + nodeNumber + ' Service Index ' + serviceIndex )
-    socket.emit('REQUEST_DIAGNOSTICS', {"nodeNumber":nodeNumber, "serviceIndex":serviceIndex})
-  },
-  update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue) {
-    state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
-    
-    console.log(`NVsetNeedsLearnMode : ` + JSON.stringify(state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode))
-    if((state.nodeDescriptors[nodeNumber])
-        && (state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode)){
-          console.log(`MAIN Update Node Variable in learn mode : `+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue)
-          socket.emit('UPDATE_NODE_VARIABLE_IN_LEARN_MODE', {
-        "nodeNumber": nodeNumber,
-        "variableId": nodeVariableIndex,
-        "variableValue": parseInt(nodeVariableValue)
-      })
-    } else {
-      console.log(`MAIN Update Node Variable : `+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue)
-      socket.emit('UPDATE_NODE_VARIABLE', {
-        "nodeNumber": nodeNumber,
-        "variableId": nodeVariableIndex,
-        "variableValue": parseInt(nodeVariableValue)
-       })
-    }
-  },
-  update_node_variable_in_learn_mode(nodeNumber, nodeVariableIndex, nodeVariableValue) {
-    console.log(`MAIN Update Node Variable in Learn Mode:`+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue)
-    state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
-    //if (nodeVariableValue !="" ) {
-      socket.emit('UPDATE_NODE_VARIABLE_IN_LEARN_MODE', {
-        "nodeNumber": nodeNumber,
-        "variableId": nodeVariableIndex,
-        "variableValue": parseInt(nodeVariableValue)
-      })
-    //}
-  },
-  update_event_variable(nodeNumber, eventName, eventIndex, eventVariableIndex, eventVariableValue) {
-    console.log(`MAIN Update Event Variable : ${eventIndex} : ${eventVariableIndex} : ${eventVariableValue} `)
-    state.nodes[nodeNumber].storedEvents[eventIndex].variables[eventVariableIndex] = eventVariableValue
-    socket.emit('UPDATE_EVENT_VARIABLE',{
-      "nodeNumber": nodeNumber,
-      "eventName": eventName,
-      "eventIndex": eventIndex,
-      "eventVariableId": eventVariableIndex,
-      "eventVariableValue": parseInt(eventVariableValue)
-    })
-  },
-  event_teach_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex, eventVariableValue){
-    console.log(name + `: event_teach_by_identifier : ${nodeNumber} : ${eventIdentifier} : ${eventVariableIndex} : ${eventVariableValue} `)
-    socket.emit('EVENT_TEACH_BY_IDENTIFIER',{
-      "nodeNumber": nodeNumber,
-      "eventIdentifier": eventIdentifier,
-      "eventVariableIndex": eventVariableIndex,
-      "eventVariableValue": parseInt(eventVariableValue)
-    })
-  },
-  remove_event(nodeNumber, eventName) {
-    socket.emit('REMOVE_EVENT', {
-        "nodeNumber": nodeNumber,
-        "eventName": eventName
-    })
-  },
-  query_all_nodes() {
-    console.log(`QUERY_ALL_NODES`)
-    socket.emit('QUERY_ALL_NODES')
-  },
   change_layout(data){
     console.log(name + `: CHANGE_LAYOUT: ` + JSON.stringify(data))
     socket.emit('CHANGE_LAYOUT', data)
@@ -181,13 +54,87 @@ const methods = {
       "nodeNumber": nodeNumber
     })
   },
+
+  delete_all_events(nodeNumber) {
+    socket.emit('DELETE_ALL_EVENTS', {
+        "nodeNumber": nodeNumber
+    })
+    console.log(name + `: DELETE_ALL_EVENTS ${nodeNumber}`)
+  },
+  delete_layout(layoutName) {
+    socket.emit('DELETE_LAYOUT', {
+        "layoutName": layoutName
+    })
+    console.log(name + `: DELETE_LAYOUT ${layoutName}`)
+  },
+
+  event_teach_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex, eventVariableValue){
+    console.log(name + `: event_teach_by_identifier : ${nodeNumber} : ${eventIdentifier} : ${eventVariableIndex} : ${eventVariableValue} `)
+    socket.emit('EVENT_TEACH_BY_IDENTIFIER',{
+      "nodeNumber": nodeNumber,
+      "eventIdentifier": eventIdentifier,
+      "eventVariableIndex": eventVariableIndex,
+      "eventVariableValue": parseInt(eventVariableValue)
+    })
+  },
+
   import_module_descriptor(moduleDescriptor) {
     console.log(`import_module_descriptor : ` + moduleDescriptor.moduleDescriptorFilename)
     socket.emit('IMPORT_MODULE_DESCRIPTOR', moduleDescriptor)
   },
+
+  long_on_event(nodeNumber, eventNumber){
+    console.log(`ACON ${nodeNumber} : ${eventNumber}`)
+    socket.emit('ACCESSORY_LONG_ON', {
+      "nodeNumber": nodeNumber,
+      "eventNumber": eventNumber
+    })
+  },
+  long_off_event(nodeNumber, eventNumber){
+    console.log(`ACOF ${nodeNumber} : ${eventNumber}`)
+    socket.emit('ACCESSORY_LONG_OFF', {
+      "nodeNumber": nodeNumber,
+      "eventNumber": eventNumber
+    })
+  },
+
+  node_can_id_enum(nodeNumber){
+    console.log(name + `: CANID_ENUM : ` + nodeNumber)
+    socket.emit('CANID_ENUM', {"nodeNumber": nodeNumber})
+  },
+
   program_node(nodeNumber, hexFile) {
     console.log(name + `: PROGRAM_NODE : ` + nodeNumber)
-    socket.emit('PROGRAM_NODE', {"nodeNumber": nodeNumber, "hexFile": hexFile})
+    socket.emit('PROGRAM_NODE', nodeNumber)
+  },
+
+  query_all_nodes() {
+    console.log(`QUERY_ALL_NODES`)
+    socket.emit('QUERY_ALL_NODES')
+  },
+
+  remove_node(nodeNumber) {
+    socket.emit('REMOVE_NODE', nodeNumber)
+    console.log(name + ': sent REMOVE_NODE ' + nodeNumber)
+  },
+  request_backups_list(layoutName) {
+    console.log(`request_backups_list : ` + layoutName)
+    socket.emit('REQUEST_BACKUPS_LIST', {"layoutName":layoutName})
+  },
+  request_service_discovery(nodeNumber) {
+    console.log(`Request Service Discovery : ` + nodeNumber)
+    socket.emit('REQUEST_SERVICE_DISCOVERY', {"nodeNumber":nodeNumber})
+  },
+  request_diagnostics(nodeNumber, serviceIndex) {
+    if (serviceIndex == undefined){serviceIndex = 0;}
+    console.log(`Request Service Diagnostics : node ` + nodeNumber + ' Service Index ' + serviceIndex )
+    socket.emit('REQUEST_DIAGNOSTICS', {"nodeNumber":nodeNumber, "serviceIndex":serviceIndex})
+  },
+  remove_event(nodeNumber, eventName) {
+    socket.emit('REMOVE_EVENT', {
+        "nodeNumber": nodeNumber,
+        "eventName": eventName
+    })
   },
   request_all_node_parameters(nodeNumber, parameters, delay) {
     socket.emit('REQUEST_ALL_NODE_PARAMETERS', {"nodeNumber": nodeNumber, "parameters": parameters, "delay": delay})
@@ -254,6 +201,11 @@ const methods = {
     console.log(name + `: request_layout_list:`)
     socket.emit('REQUEST_LAYOUTS_LIST')
   },
+  reset_node(nodeNumber) {
+    socket.emit('RESET_NODE', nodeNumber)
+    console.log(name + ': RESET_NODE ' + nodeNumber)
+  },
+
   save_backup(data){
     console.log(`SAVE_BACKUP`)
     data['layoutName'] = state.layout.layoutDetails.title
@@ -271,11 +223,78 @@ const methods = {
     console.log(`STOP SERVER`)
     window.close()
   },
+  set_node_number(nodeNumber){
+    console.log(name + `: emit SET_NODE_NUMBER ${nodeNumber}`)
+    socket.emit('SET_NODE_NUMBER', nodeNumber)
+  },
+  short_on_event(nodeNumber, eventNumber){
+    console.log(`ASON ${nodeNumber} : ${eventNumber}`)
+    socket.emit('ACCESSORY_SHORT_ON', {
+      "nodeNumber": nodeNumber,
+      "deviceNumber": eventNumber
+    })
+  },
+  short_off_event(nodeNumber, eventNumber){
+    console.log(`ASOF ${nodeNumber} : ${eventNumber}`)
+    socket.emit('ACCESSORY_SHORT_OFF', {
+      "nodeNumber": nodeNumber,
+      "deviceNumber": eventNumber
+    })
+  },
+
   teach_event(nodeNumber, eventName, eventIndex) {
     socket.emit('TEACH_EVENT', {
       "nodeNumber": nodeNumber,
       "eventName": eventName,
       "eventIndex": eventIndex
+    })
+  },
+
+  update_layout() {
+    console.log(`Update Layout Data : ` + state.title)
+    socket.emit('UPDATE_LAYOUT_DATA', state.layout)
+  },
+  update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue) {
+    state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
+    
+    console.log(`NVsetNeedsLearnMode : ` + JSON.stringify(state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode))
+    if((state.nodeDescriptors[nodeNumber])
+        && (state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode)){
+          console.log(`MAIN Update Node Variable in learn mode : `+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue)
+          socket.emit('UPDATE_NODE_VARIABLE_IN_LEARN_MODE', {
+        "nodeNumber": nodeNumber,
+        "variableId": nodeVariableIndex,
+        "variableValue": parseInt(nodeVariableValue)
+      })
+    } else {
+      console.log(`MAIN Update Node Variable : `+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue)
+      socket.emit('UPDATE_NODE_VARIABLE', {
+        "nodeNumber": nodeNumber,
+        "variableId": nodeVariableIndex,
+        "variableValue": parseInt(nodeVariableValue)
+       })
+    }
+  },
+  update_node_variable_in_learn_mode(nodeNumber, nodeVariableIndex, nodeVariableValue) {
+    console.log(`MAIN Update Node Variable in Learn Mode:`+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue)
+    state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
+    //if (nodeVariableValue !="" ) {
+      socket.emit('UPDATE_NODE_VARIABLE_IN_LEARN_MODE', {
+        "nodeNumber": nodeNumber,
+        "variableId": nodeVariableIndex,
+        "variableValue": parseInt(nodeVariableValue)
+      })
+    //}
+  },
+  update_event_variable(nodeNumber, eventName, eventIndex, eventVariableIndex, eventVariableValue) {
+    console.log(`MAIN Update Event Variable : ${eventIndex} : ${eventVariableIndex} : ${eventVariableValue} `)
+    state.nodes[nodeNumber].storedEvents[eventIndex].variables[eventVariableIndex] = eventVariableValue
+    socket.emit('UPDATE_EVENT_VARIABLE',{
+      "nodeNumber": nodeNumber,
+      "eventName": eventName,
+      "eventIndex": eventIndex,
+      "eventVariableId": eventVariableIndex,
+      "eventVariableValue": parseInt(eventVariableValue)
     })
   }
 }

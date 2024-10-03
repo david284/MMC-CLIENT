@@ -11,19 +11,28 @@
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
           </template>
         </q-banner>
-
         <q-card-actions align="left">
-          <q-btn dense class="q-mx-xs q-my-none" color="cyan-1" text-color="black" size="md" label="Delete node"
+          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Delete node"
           @click="clickDeleteNode()"/>
         </q-card-actions>
 
         <q-card-actions align="left">
-          <q-btn dense class="q-mx-xs q-my-none" color="cyan-1" text-color="black" size="md" label="Set CANID"
+          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="CAN ID Enumeration"
+          @click="clickCanIdEnumeration()"/>
+        </q-card-actions>
+
+        <q-card-actions align="left">
+          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Set CANID"
           @click="clickSetCAN_ID()"/>
         </q-card-actions>
 
         <q-card-actions align="left">
-          <q-btn v-if="(store.state.develop)" dense class="q-mx-xs q-my-none" color="cyan-1" text-color="black" size="md" label="program Node"
+          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="reset Node"
+          @click="clickResetNode()"/>
+        </q-card-actions>
+
+        <q-card-actions align="left">
+          <q-btn v-if="(store.state.develop)" dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="program Node"
           @click="clickProgramNode()"/>
         </q-card-actions>
 
@@ -81,6 +90,12 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
+
+const clickCanIdEnumeration = () => {
+  console.log(name + `: clickCanIdEnumeration ` + props.nodeNumber)
+  store.methods.node_can_id_enum(props.nodeNumber)
+}
+
 const clickDeleteNode = () => {
   console.log(name + `: clickDeleteNode ` + props.nodeNumber)
   showDeleteNodeDialog.value = true
@@ -89,6 +104,11 @@ const clickDeleteNode = () => {
 const clickProgramNode = () => {
   console.log(name + `: clickProgramNode ` + props.nodeNumber)
   showProgramNodeDialog.value = true
+}
+
+const clickResetNode = () => {
+  console.log(name + `: clickResetNode ` + props.nodeNumber)
+  store.methods.reset_node(props.nodeNumber)
 }
 
 const clickSetCAN_ID = () => {
