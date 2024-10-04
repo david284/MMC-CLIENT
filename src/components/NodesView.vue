@@ -282,7 +282,7 @@ Click event handlers
 
 
 const clickAdvanced = async (nodeNumber) => {
-//  await checkNodeParameters(nodeNumber)
+  await checkNodeParameters(nodeNumber)
 //  await select_node_row(nodeNumber)
   selectedNode.value = nodeNumber
   selected_nodeNumber.value = nodeNumber    // used to highlight row

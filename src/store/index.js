@@ -103,9 +103,14 @@ const methods = {
     socket.emit('CANID_ENUM', nodeNumber)
   },
 
-  program_node(nodeNumber, hexFile) {
+  program_node(nodeNumber, cpuType, flags, hexFile) {
     console.log(name + `: PROGRAM_NODE : ` + nodeNumber)
-    socket.emit('PROGRAM_NODE', nodeNumber)
+    socket.emit('PROGRAM_NODE', {
+      "nodeNumber": nodeNumber,
+      "cpuType": cpuType,
+      "flags": flags,
+      "hexFile": hexFile
+    })
   },
 
   query_all_nodes() {

@@ -14,12 +14,12 @@
       <q-card-section>
         <div class="text-subtitle2">Select a file to upload</div>
         <div class="text-subtitle2">
-          The file will be stored with it's original filename<br/>
-          If the module name is currently unknown, the 'name' portion from the filename will be used<br/>
-          The filename format is moduleName-moduleIdentity-moduleVersion.json
+          Node CPU type {{ store.state.nodes[nodeNumber].cpuName }} ({{ store.state.nodes[nodeNumber].parameters[9] }})
         </div>
       </q-card-section>
 
+
+ 
       <q-file
         v-model="uploadFile"
         label="Pick one file"
@@ -33,6 +33,21 @@
       </q-card-actions>
 --> 
 
+
+      <q-card-section class="no-margin q-py-none">
+        <q-checkbox v-model="checked1" label="Program config" />
+      </q-card-section>
+      <q-card-section class="no-margin q-py-none">
+        <q-checkbox v-model="checked2" label="Program EEPROM" />
+      </q-card-section>
+      <q-card-section class="no-margin q-py-none">
+        <q-checkbox v-model="checked4" label="Program Ignore CPU type" />
+      </q-card-section>
+
+      <q-card-section class="no-margin q-py-none">
+        space for progress bar
+      </q-card-section>
+
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Program" @click="clickProgram()" />
       </q-card-actions>
@@ -44,11 +59,23 @@
 
 <script setup>
 
+//
+//     * Flags
+//     * 1 = Program CONFIG
+//     * 2 = Program EEPROM
+//     * 4 = Ignore CPUTYPE
+//
+
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 
 const store = inject('store')
 const name = "ProgramNodeDialog"
 const uploadFile = ref()
+const checked1 = ref(true)
+const checked2 = ref(true)
+const checked4 = ref(false)
+var flags = 0
+var cpuType = undefined
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -87,7 +114,7 @@ const actionUpload = async () => {
       } catch(err){
         console.log(name + `: actionUpload: ` + err)
       }
-      store.methods.program_node(props.nodeNumber, uploadFile.value)
+      store.methods.program_node(props.nodeNumber, cpuType, flags, uploadFile.value)
     }
 //    uploadFile.value=null
   } else {
@@ -105,7 +132,11 @@ const actionUpload = async () => {
 
 
 const clickProgram = async () => {
-  console.log(name + ": clickProgram: node " + props.nodeNumber)
+  flags = checked1.value ? flags | 1 : flags & ~1
+  flags = checked2.value ? flags | 2 : flags & ~2
+  flags = checked4.value ? flags | 4 : flags & ~4
+  cpuType = store.state.nodes[props.nodeNumber].parameters[9]
+  console.log(name + ": clickProgram: node: " + props.nodeNumber + ' cpuType: '+ cpuType +' flags: ' + flags)
   await actionUpload()
 }
 
