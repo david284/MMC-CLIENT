@@ -285,6 +285,7 @@ const clickAdvanced = async (nodeNumber) => {
 //  await checkNodeParameters(nodeNumber)
 //  await select_node_row(nodeNumber)
   selectedNode.value = nodeNumber
+  selected_nodeNumber.value = nodeNumber    // used to highlight row
   showAdvancedDialog.value=true
   console.log(name + ': clickAdvanced: node' + store.state.selected_node)
 }

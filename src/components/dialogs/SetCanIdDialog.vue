@@ -39,6 +39,7 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
+import {sleep} from "components/functions/utils.js"
 
 const store = inject('store')
 const name = 'SetCanIdDialog'
@@ -67,10 +68,12 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
-const clickAccept = () => {
+const clickAccept = async () => {
   if (newCANID.value){
     console.log(name + ": clickAccept: node " + props.nodeNumber + ' CAN_ID ' + newCANID.value)
     store.methods.set_can_id( props.nodeNumber, newCANID.value)
+    await sleep(100)
+    store.methods.query_all_nodes() // not all modules issue a response to CANID
   }
   newCANID.value = undefined
 }
