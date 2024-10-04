@@ -437,26 +437,20 @@ const setters = {
 //-----------------------------------------------------------------------------
 const socket = io(`http://${host}:${port}`)
 
-socket.on("error", (data) => {
-  console.log(name + `: connection error`)
-})
-
-socket.on("disconnect", (data) => {
-  console.log(name + `: disconnect`)
-  eventBus.emit('SERVER_DISCONNECT')
-})
-
-socket.on("connect", () => {
-  console.log(`Socket Connect`)
-  socket.emit('REQUEST_VERSION')
-  socket.emit('REQUEST_LAYOUTS_LIST')
-})
-
 socket.on('BACKUPS_LIST', (data) => {
   console.log(name + `RECEIVED BACKUPS_LIST ` + JSON.stringify(data))
   state.backups_list = data;
 })
 
+socket.on("BUS_CONNECTION", (data) => {
+  eventBus.emit('BUS_CONNECTION_EVENT', data)
+//  console.log(name + `: RECEIVED BUS_CONNECTION ` + JSON.stringify(data))
+})
+
+socket.on("BUS_EVENTS", (data) => {
+  console.log(name + `: RECEIVED BUS_EVENTS Data`)
+  state.busEvents = data
+})
 
 socket.on("CBUS_ERRORS", (data) => {
   console.log(`RECEIVED CBUS_ERRORS `)
@@ -476,6 +470,12 @@ socket.on("CBUS_TRAFFIC", (data) => {
   eventBus.emit('BUS_TRAFFIC_EVENT', data)
 })
 
+socket.on("connect", () => {
+  console.log(`Socket Connect`)
+  socket.emit('REQUEST_VERSION')
+  socket.emit('REQUEST_LAYOUTS_LIST')
+})
+
 socket.on("DCC_ERROR", (data) => {
   console.log(`RECEIVED DCC_ERROR`)
   state.dcc_errors = data
@@ -493,9 +493,13 @@ socket.on('dccSessions', function (data) {
   state.dcc_sessions = data;
 })
 
-socket.on("BUS_EVENTS", (data) => {
-  console.log(name + `: RECEIVED BUS_EVENTS Data`)
-  state.busEvents = data
+socket.on("disconnect", (data) => {
+  console.log(name + `: disconnect`)
+  eventBus.emit('SERVER_DISCONNECT')
+})
+
+socket.on("error", (data) => {
+  console.log(name + `: connection error`)
 })
 
 socket.on('LAYOUT_DATA', (data) => {
@@ -531,9 +535,9 @@ socket.on("NODE_DESCRIPTOR_FILE_LIST", (nodeNumber, list) => {
   state.nodeDescriptorList[nodeNumber] = list
 })
 
-socket.on("BUS_CONNECTION", (data) => {
-  eventBus.emit('BUS_CONNECTION_EVENT', data)
-//  console.log(name + `: RECEIVED BUS_CONNECTION ` + JSON.stringify(data))
+socket.on("PROGRAM_NODE_PROGRESS", (text) => {
+  console.log(`RECEIVED PROGRAM_NODE_PROGRESS : ` + text)
+  eventBus.emit('PROGRAM_NODE_PROGRESS', text)
 })
 
 socket.on("REQUEST_NODE_NUMBER", (nodeNumber) => {

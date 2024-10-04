@@ -45,7 +45,7 @@
       </q-card-section>
 
       <q-card-section class="no-margin q-py-none">
-        space for progress bar
+        {{ progressText }}
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
@@ -74,6 +74,7 @@ const uploadFile = ref()
 const checked1 = ref(true)
 const checked2 = ref(true)
 const checked4 = ref(false)
+const progressText = ref('')
 var flags = 0
 var cpuType = undefined
 
@@ -122,6 +123,10 @@ const actionUpload = async () => {
   }
 }
 
+store.eventBus.on('PROGRAM_NODE_PROGRESS', (text) => {
+// console.log(name + ': REQUEST_NODE_NUMBER_EVENT: ' + text)
+ progressText.value = text
+})
 
 
 /*/////////////////////////////////////////////////////////////////////////////
