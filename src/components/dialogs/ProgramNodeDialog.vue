@@ -35,13 +35,16 @@
 
 
       <q-card-section class="no-margin q-py-none">
-        <q-checkbox v-model="checked1" label="Program config" />
+        FLASH memory is always programmed
+      </q-card-section>
+      <q-card-section class="no-margin q-py-none">
+        <q-checkbox v-model="checked1" label="Program configuration" />
       </q-card-section>
       <q-card-section class="no-margin q-py-none">
         <q-checkbox v-model="checked2" label="Program EEPROM" />
       </q-card-section>
       <q-card-section class="no-margin q-py-none">
-        <q-checkbox v-model="checked4" label="Program Ignore CPU type" />
+        <q-checkbox v-model="checked4" label="Ignore CPU type" />
       </q-card-section>
 
       <q-card-section class="no-margin q-py-none">
@@ -71,8 +74,8 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 const store = inject('store')
 const name = "ProgramNodeDialog"
 const uploadFile = ref()
-const checked1 = ref(true)
-const checked2 = ref(true)
+const checked1 = ref(false)
+const checked2 = ref(false)
 const checked4 = ref(false)
 const progressText = ref('')
 var flags = 0
