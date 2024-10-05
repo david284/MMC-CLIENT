@@ -291,13 +291,6 @@ const clickAdvanced = async (nodeNumber) => {
 }
 
 
-const clickDeleteNode = async (nodeNumber) => {
-  await checkNodeParameters(nodeNumber)
-  await select_node_row(nodeNumber)
-  showAdvancedDialog.value=true
-  console.log(name + ': clickDeleteNode: node' + store.state.selected_node)
-}
-
 const clickEvents = async (nodeNumber) => {
   await checkNodeParameters(nodeNumber)
   await checkNodeVariables(nodeNumber)
@@ -313,7 +306,8 @@ const clickNameNode = async (nodeNumber) => {
 }
 
 const clickParameters = async (nodeNumber) => {
-  await checkNodeParameters(nodeNumber)
+  // always re-read parameters
+  store.methods.request_all_node_parameters(nodeNumber, 20, 100)
   await select_node_row(nodeNumber)
   console.log(name + `: clickParameters: node ` + nodeNumber)
   showNodeParametersDialog.value = true
