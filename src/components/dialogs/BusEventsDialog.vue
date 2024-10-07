@@ -34,6 +34,9 @@
           <template v-slot:top="">
             <div class="col-2 q-table__title text-h4">Bus Events</div>
             <q-space/>
+            <q-btn dense class="q-mx-xs" size="md" color="info" label="INFO"  no-caps
+            @click="clickInfo()" />
+            <q-space/>
             <q-input outlined dense debounce="300" v-model="filter" placeholder="Search">
               <template v-slot:append>
                 <q-icon name="search"/>
@@ -109,6 +112,8 @@
     :eventIdentifier = selected_event_Identifier
   />
 
+  <BusEventsViewInfoDialog v-model='showBusEventsViewInfoDialog'/>
+
 </template>
 
 
@@ -125,6 +130,7 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import sendEventDialog from "components/dialogs/SendEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
+import BusEventsViewInfoDialog from "components/dialogs/BusEventsViewInfoDialog"
 
 const store = inject('store')
 const name = "BusEventsDialog"
@@ -135,6 +141,7 @@ let displayEventList = ref()
 const showNameEventDialog = ref(false)
 const showSendEventDialog = ref(false)
 const showEventTeachDialog = ref(false)
+const showBusEventsViewInfoDialog = ref(false)
 const selected_event_Identifier = ref("") // Dialog will complain if null
 const newEventName = ref()
 const selected_event_node = ref(0) // Dialog will complain if null
@@ -242,6 +249,11 @@ const clickEventName = (eventIdentifier) => {
   selected_event_Identifier.value = eventIdentifier
   newEventName.value = store.getters.event_name(eventIdentifier)
   showNameEventDialog.value = true;
+}
+
+const clickInfo = () => {
+  console.log(name + `: clickInfo`)
+  showBusEventsViewInfoDialog.value = true
 }
 
 const clickSendOff = (nodeNumber, eventIdentifier) => {

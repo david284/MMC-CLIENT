@@ -30,6 +30,9 @@
             @click="clickToggleViewMode()" />
             <div class="text-h6">{{ viewModes[viewModeIndex] }}</div>
             <q-space/>
+            <q-btn dense class="q-mx-xs" size="md" color="info" label="INFO"  no-caps
+            @click="clickInfo()" />
+            <q-space/>
             <q-input outlined dense debounce="300" v-model="filter" placeholder="Search">
               <template v-slot:append>
                 <q-icon name="search"/>
@@ -99,6 +102,9 @@
     :eventIdentifier = selected_event_Identifier
   />
 
+  <eventsViewInfoDialog v-model='showEventsViewInfoDialog'/>
+
+
 </template>
 
 
@@ -109,6 +115,7 @@ import addEventToLayoutDialog from "components/dialogs/AddEventToLayoutDialog"
 import sendEventDialog from "components/dialogs/SendEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
+import eventsViewInfoDialog from "components/dialogs/EventsViewInfoDialog"
 
 const store = inject('store')
 const name = "EventsView"
@@ -120,6 +127,7 @@ const showAddEventToLayoutDialog = ref(false)
 const showNameEventDialog = ref(false)
 const showSendEventDialog = ref(false)
 const showEventTeachDialog = ref(false)
+const showEventsViewInfoDialog = ref(false)
 const selected_event_Identifier = ref("") // Dialog will complain if null
 const newEventName = ref()
 const selected_event_node = ref(0) // Dialog will complain if null
@@ -291,13 +299,6 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
-const clickToggleViewMode = () => {
-  console.log(name + `: clickToggleViewMode`)
-  viewModeIndex.value++
-  if (viewModeIndex.value > 1){viewModeIndex.value = 0}
-  update_events_table()
-}
-
 const clickAddEvent = () => {
   console.log(name + `: clickAddEvent`)
   showAddEventToLayoutDialog.value = true
@@ -308,6 +309,11 @@ const clickEventName = (eventIdentifier) => {
   selected_event_Identifier.value = eventIdentifier
   newEventName.value = store.getters.event_name(eventIdentifier)
   showNameEventDialog.value = true;
+}
+
+const clickInfo = () => {
+  console.log(name + `: clickInfo`)
+  showEventsViewInfoDialog.value = true
 }
 
 const clickSendOff = (nodeNumber, eventIdentifier) => {
@@ -346,6 +352,13 @@ const clickToggleShowEventsJSON = () => {
   } else {
     showEventsJSON.value = true
   }
+}
+
+const clickToggleViewMode = () => {
+  console.log(name + `: clickToggleViewMode`)
+  viewModeIndex.value++
+  if (viewModeIndex.value > 1){viewModeIndex.value = 0}
+  update_events_table()
 }
 
 
