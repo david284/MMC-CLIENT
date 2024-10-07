@@ -1,16 +1,77 @@
 <template>
 
     <q-dialog v-model='model' persistent>
-      <q-card style="min-width: 600px">
+      <q-card style="min-width: 800px">
 
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
-          <div class="text-h6">
+          <div class="text-h6" >
             Information about the Events View
           </div>
           <template v-slot:action>
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
           </template>
         </q-banner>
+
+        <q-card class="q-pa-sm">
+          <div class="text_body1  text-weight-bold">
+            The Events view is designed to show all events that the system has knowledge of
+          </div>
+          <div class="text_body1  text-weight-bold">
+               There are some significant differences to how this view works compared to the 'Bus Events View'
+          </div>
+        </q-card>
+
+        <q-card class="q-pa-sm">
+          <div class="text_body1">
+            The Events view shows events that have been read from nodes, captured from the CAN Bus, or entered manually
+          </div>
+        </q-card>
+
+        <q-card class="q-pa-sm">
+          <div class="text_body1">
+            This list of events is retained for the layout selected, so the known events for a particular layout will be restored at startup
+          </div>
+        </q-card>
+
+        <q-card class="q-pa-sm">
+          <div class="text_body1">
+            There is only one entry for each event, irrespective of how many nodes produce that event
+          </div>
+        </q-card>
+
+        <q-card class="q-pa-sm">
+          <div class="text_body1">
+            The ON/OFF status for each event will be the most recent instance of that event, captured from the CAN Bus, irrespective of which node sent it
+          </div>
+        </q-card>
+
+        <q-card class="q-pa-sm">
+          <div class="text_body1">
+              In this view, the 'send ON/OFF' feature will use '0' as the Sending Node Number, so not linked to any particular node
+          </div>
+        </q-card>
+
+        <q-card class="q-pa-sm">
+          <div class="text_body1">
+              An event can be created manually (add event) and will not be associated with any particular node until the 'teach' option is used
+          </div>
+        </q-card>
+
+        <q-card class="q-pa-sm">
+          <div class="text_body1">
+            The toggle option allows viewing of just short events, or all events
+          </div>
+        </q-card>
+
+        <q-card class="q-pa-sm">
+          <div class="text_body1">
+            The list is likely to be very large, as some nodes have large numbers of default events 
+          </div>
+          <div class="text_body1">
+            And so it's recommended to use the search option to filter the list
+          </div>
+        </q-card>
+
 
 
       </q-card>
