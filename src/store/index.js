@@ -2,6 +2,7 @@ import {reactive} from 'vue'
 import io from 'socket.io-client'
 //import VueSocketIO from 'vue-socket.io'
 import { EventBus } from 'quasar'
+import {NodeParameterNames} from "src/definitions/Text_NodeParameterNames"
 
 const eventBus = new EventBus()
 const host = window.location.hostname
@@ -386,8 +387,8 @@ const getters = {
   node_parameter_name(nodeNumber, parameterIndex){
     var result = 'Index: ' + parameterIndex
     try{
-      result = 'Index: ' + parameterIndex
-//      result = state.nodes[nodeNumber].parameters[parameterIndex].name    
+//      result = 'Index: ' + parameterIndex
+      result = parameterIndex + ': ' + NodeParameterNames[parameterIndex]   
     } catch (err) {
       console.log(name + `: getters.node_parameter_name: ${err}`)
     }

@@ -71,7 +71,7 @@
         <NodeParameterRaw 
                       :nodeNumber = nodeNumber
                       :parameterIndex = i
-                      v-for="(n, i) in store.state.nodes[props.nodeNumber].parameters[0]"
+                      v-for="(n, i) in (store.state.nodes[props.nodeNumber].parameters[0] + 1)"
                       :key = i>
         </NodeParameterRaw>
       </div>
