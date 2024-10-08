@@ -9,7 +9,7 @@
               <q-item clickable @click="clickLayout()">
                 <q-item-section>Layout</q-item-section>
               </q-item>
-              <q-item clickable @click="clickBusEvents()">
+              <q-item clickable @click="clickBusEventsDialog()">
                 <q-item-section>Bus events</q-item-section>
               </q-item>
               <q-item clickable @click="clickJson()">
@@ -40,13 +40,21 @@
 
       </q-toolbar>
 
-      <q-toolbar class="col no-margin no-padding">
+      <q-toolbar class="col no-margin no-padding" style="min-width: 400px">
         <q-space />
         <div class="text-h6 no-margin no-padding float-right">{{ layoutDataTitle }}</div>
       </q-toolbar>
 
-      <q-toolbar class="col no-margin q-py-none">
+      <q-toolbar class="col no-margin no-padding">
         <q-space />
+      </q-toolbar>
+
+      <q-toolbar class="col no-margin q-py-none">
+        <div class="text-h6 float-right">
+          <q-btn size="md" color="secondary" label="Bus Events" @click="clickBusEventsView()" no-caps/>
+        </div>
+      </q-toolbar>
+      <q-toolbar class="col no-margin q-py-none">
         <div class="text-h6 float-right">
           <q-btn size="md" color="secondary" label="Events view" @click="clickEventsView()" no-caps/>
         </div>
@@ -103,11 +111,15 @@
     </q-drawer>
 
     <q-page-container v-if="(store.state.inStartup == false)" class="main-page no-shadow no-margin q-pa-none">
-      
-      <q-page v-if="(selectedView == 'eventsView')">
+       
+      <q-page v-if="(selectedView == 'BusEventsView')">
+        <BusEventsView v-model='showBusEventsView'/>
+      </q-page>
+       
+      <q-page v-if="(selectedView == 'EventsView')">
         <EventsView v-model='showEventsViewDialog'/>
       </q-page>
-      <q-page v-if="(selectedView == 'nodesView')">
+      <q-page v-if="(selectedView == 'NodesView')">
         <nodesView />
       </q-page>
       
@@ -148,6 +160,7 @@ import systemDialog from "components/dialogs/SystemDialog";
 import dialogExampleCompositionAPI from "components/dialogs/DialogExampleCompositionAPI";
 import iFrameDialog from "components/dialogs/iFrameDialog";
 import EventsView from "components/EventsView";
+import BusEventsView from "components/BusEventsView";
 
 const { getVerticalScrollPosition, setVerticalScrollPosition } = scroll
 const $q = useQuasar()
@@ -169,10 +182,11 @@ const showSystemDialog = ref(false)
 const previousNodeNumber = ref(0)
 const showDialogExampleCompositionAPI = ref(false)
 const showEventsViewDialog = ref(true)
+const showBusEventsView = ref(true)
 const showiFrameDialog = ref(false)
 const exampleURL = ref("dummyModule/index.html")
 const scrollAreaRef = ref(null)
-const selectedView = ref('nodesView')
+const selectedView = ref('NodesView')
 var oneShotScroll
 
 const nodeTraffic = computed(() => {
@@ -269,20 +283,25 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
-
-const clickBusEvents = () => {
-  console.log(name + ': clickBusEvents')
+const clickBusEventsDialog = () => {
+  console.log(name + ': clickBusEventsDialog')
   showBusEventsDialog.value = true
+}
+
+
+const clickBusEventsView = () => {
+  console.log(name + ': clickBusEventsView')
+selectedView.value = 'BusEventsView'
 }
 
 const clickEventsView = () => {
   console.log(name + ': clickEventView')
-  selectedView.value = 'eventsView'
+  selectedView.value = 'EventsView'
 }
 
 const clickNodesView = () => {
   console.log(name + ': clickNodeView')
-  selectedView.value = 'nodesView'
+  selectedView.value = 'NodesView'
 }
 
 const clickCbusErrors = () => {

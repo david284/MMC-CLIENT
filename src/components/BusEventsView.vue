@@ -1,10 +1,11 @@
 <template>
+  <div style="height: 45vh;">
 
-<div style="height: 45vh;">
-    <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none" >
-      <div class="text-h6">Events View</div>
+    <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
+      <div class="text-h6">
+        Bus Events
+      </div>
       <template v-slot:action>
-        <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
       </template>
     </q-banner>
 
@@ -12,19 +13,20 @@
       <q-card-section class="no-margin no-padding">
 
         <q-table
-            title = "Events View"
-            class = "events-table"
-            dense
-            :rows = displayEventTable
-            :columns = "columns"
-            :filter = "filter"
-            row-key = "eventIdentifier"
-            virtual-scroll
-            v-model:pagnation = "pagnation"
-            :rows-per-page-options = "[0]"
-            :virtual-scroll-sticky-size-start = "0"
-            hide-bottom
-          >
+          title="Bus Events View"
+          class="bus-events-table"
+          dense
+          :rows=displayEventList
+          :columns="columns"
+          :filter="filter"
+          row-key="eventIdentifier"
+          virtual-scroll
+          v-model:pagnation="pagnation"
+          :rows-per-page-options="[0]"
+          :virtual-scroll-sticky-size-start="48"
+          hide-bottom
+        >
+
           <template v-slot:top="">
             <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Toggle"  no-caps
             @click="clickToggleViewMode()" />
@@ -39,12 +41,15 @@
               </template>
             </q-input>
             <q-space/>
+            <q-btn color="negative" label="Refresh Events" @click="store.methods.refresh_bus_events()" no-caps/>
+            <q-space/>
+            <q-btn color="negative" label="Clear Events" @click="store.methods.clear_bus_events()" no-caps/>
           </template>
 
           <template v-slot:body="props">
             <q-tr :props="props">
               <q-td key="eventName" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.name }}</q-td>
-              <q-td key="group" :props="props">{{ props.row.group }} </q-td>
+              <q-td key="group" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.group }}</q-td>
               <q-td key="eventIdentifier" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
                 {{ props.row.eventIdentifier }}
               </q-td>
@@ -54,14 +59,12 @@
               <q-td key="eventNumber" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
                 {{ props.row.eventNumber }}
               </q-td>
-              <q-td key="type" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
-                {{ props.row.type }}
-              </q-td>
+              <q-td key="type" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.type }}</q-td>
               <q-td key="status" :props="props">
                 <q-chip color="white" text-color="green" v-if="props.row.status=='on'">ON</q-chip>
-                <q-chip color="white" text-color="red" v-else-if="props.row.status=='off'">OFF</q-chip>
-                <q-chip color="white" text-color="blue" v-else>unknown</q-chip>
+                <q-chip color="white" text-color="red" v-else>OFF</q-chip>
               </q-td>
+              <q-td key="count" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.count }}</q-td>
               <q-td key="actions" :props="props">
                 <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
                 <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
@@ -72,15 +75,13 @@
 
           </template>
         </q-table>
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Toggle event details json" @click="clickToggleShowEventsJSON()"/>
-        </q-card-actions>
 
-        <q-card-section class="q-pa-sm" v-if="showEventsJSON">
+
+        <q-card-section class="q-pa-sm" v-if="showBusEventsJSON">
           <div class="q-pa-xs row">
-            <div class="text-body1">Events<br></div>
+            <div class="text-body1">Bus events<br></div>
             <div class="text-body2">
-              <pre>{{ store.state.layout.eventDetails }}</pre>
+              <pre>{{ store.state.busEvents }}</pre>
             </div>
           </div>
         </q-card-section>
@@ -88,9 +89,11 @@
       </q-card-section>
     </q-card>
 
-  </div>
+    <q-card-actions align="right" class="text-primary">
+      <q-btn flat label="Toggle bus events json" @click="clickToggleShowBusEventsJSON()"/>
+    </q-card-actions>
 
-  <addEventToLayoutDialog v-model='showAddEventToLayoutDialog' />
+  </div>
 
   <nameEventDialog v-model='showNameEventDialog'
     :eventIdentifier = selected_event_Identifier
@@ -106,8 +109,7 @@
     :eventIdentifier = selected_event_Identifier
   />
 
-  <eventsViewInfoDialog v-model='showEventsViewInfoDialog'/>
-
+  <BusEventsViewInfoDialog v-model='showBusEventsViewInfoDialog'/>
 
 </template>
 
@@ -115,44 +117,43 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
-import addEventToLayoutDialog from "components/dialogs/AddEventToLayoutDialog"
 import sendEventDialog from "components/dialogs/SendEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
-import eventsViewInfoDialog from "components/dialogs/EventsViewInfoDialog"
+import BusEventsViewInfoDialog from "components/dialogs/BusEventsViewInfoDialog"
 
 const store = inject('store')
-const name = "EventsView"
+const name = "BusEventsView"
 const tab = ref('nodes')
 const filter = ref('')
 const pagnation = {rowsPerPage: 0}
-let displayEventTable = ref([])
-const showAddEventToLayoutDialog = ref(false)
+let displayEventList = ref()
 const showNameEventDialog = ref(false)
 const showSendEventDialog = ref(false)
 const showEventTeachDialog = ref(false)
-const showEventsViewInfoDialog = ref(false)
+const showBusEventsViewInfoDialog = ref(false)
 const selected_event_Identifier = ref("") // Dialog will complain if null
 const newEventName = ref()
 const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
-const showEventsJSON = ref(false)
+const showBusEventsJSON = ref(false)
 const viewModeIndex = ref(0)
-
 const viewModes = ref({
   0:"view all events",
   1: "view short events only"
 })
 
 
+
 const columns = [
   {name: 'eventName', field: 'name', required: true, label: 'Event Name', align: 'left', sortable: true},
-  {name: 'group', field: 'group', required: true, label: 'Group', align: 'left', sortable: true},
+  {name: 'group', field: 'name', required: true, label: 'Group', align: 'left', sortable: true},
   {name: 'eventIdentifier', field: 'eventIdentifier', required: true, label: 'Event Identifier', align: 'left', sortable: true},
-  {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Event Node Number', align: 'left', sortable: false},
+  {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Source Node Number', align: 'left', sortable: true},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event Number', align: 'left', sortable: false},
   {name: 'type', field: 'type', required: true, label: 'Type', align: 'left', sortable: false},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: false},
+  {name: 'count', field: 'count', required: true, label: 'Count', align: 'left', sortable: false},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
@@ -170,133 +171,72 @@ const model = computed({
 // model changes when Dialog opened & closed
 watch(model, () => {
 //  console.log(name + `: WATCH model`)
-  update_events_table()
+  update_bus_events()
 })
 
 
-const EventsList = computed(() => {
+const busEventList = computed(() => {
   //console.log(`Computed Events`)
-  return Object.values(store.state.layout.eventDetails)
-})
-
-watch(EventsList, () => {
-  //console.log(`WATCH Events`)
-  update_events_table()
+  return Object.values(store.state.busEvents)
 })
 
 const eventDetails = computed(() => {
-  return store.state.layout.eventDetails
+  return store.state.layout
+})
+
+watch(busEventList, () => {
+  //console.log(`WATCH Events`)
+  update_bus_events()
 })
 
 watch(eventDetails, () => {
   //console.log(`WATCH Details`)
-  update_events_table()
+  update_bus_events()
 })
 
-const busEvents = computed(() => {
-  return Object.values(store.state.busEvents)
-})
-
-watch(busEvents, () => {
-  console.log(name + `: WATCH busEvents`)
-  update_events_table()
-})
-
-const update_events_table = () => {
-  console.log(name + `:Update Events`)
+const update_bus_events = () => {
+//  console.log(name + `:Update busEvents`)
   let displayEventListLocal = []
-  let events = store.state.layout.eventDetails
-  // order keys
-  for (let key of Object.keys(events).sort()) {
-    var nodeNumber = parseInt(key.substring(0, 4), 16)
-    if ((viewModeIndex.value == 1) && (nodeNumber > 0)){
-      // don't add this node as we've selected short events only
-    } else {
-      let output = {}
-      output['eventIdentifier'] = key
-      output['nodeNumber'] = nodeNumber
-      output['eventNumber'] = parseInt(key.slice(4,8), 16)
-      output['type'] = nodeNumber == 0 ? "short" : "long"
-      output['name'] = events[key].name
-      output['colour'] = events[key].colour
-      output['group'] = events[key].group
-      output['status'] = events[key].status
-      displayEventListLocal.push(output)
+  try{
+    let busEvents = store.state.busEvents
+    // order keys
+    if (busEvents){
+      for (let key of Object.keys(busEvents).sort()) {
+        let output = {}
+        output['eventIdentifier'] = busEvents[key].eventIdentifier
+        output['nodeNumber'] = busEvents[key].nodeNumber
+        output['eventNumber'] = busEvents[key].eventNumber
+        output['status'] = busEvents[key].status
+        output['type'] = busEvents[key].type
+        output['count'] = busEvents[key].count
+        output['name'] = store.getters.event_name(busEvents[key].eventIdentifier)
+        output['colour'] = store.getters.event_colour(busEvents[key].eventIdentifier)
+        output['group'] = store.getters.event_group(busEvents[key].eventIdentifier)
+        displayEventListLocal.push(output)
+      }
     }
+  } catch (err){
+    console.log(name + `: update_bus_events ` + err)
   }
-//  console.log(name + ": eventlist " + JSON.stringify(displayEventListLocal))
-  displayEventTable.value = displayEventListLocal
+  displayEventList.value = displayEventListLocal
 }
 
 
 const event_colour = (eventIdentifier) => {
-  if (eventIdentifier in store.state.layout.eventDetails) {
-    //console.log(`Event Colour`)
-    return store.state.layout.eventDetails[eventIdentifier].colour
-  } else {
-    //console.log(`Event No Colour ${JSON.stringify(eventIdentifier)}`)
-    return "blue"
-  }
+  return store.getters.event_colour(eventIdentifier)
 }
-
-store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
-//  console.log(name + ': BUS_TRAFFIC_EVENT : ' + JSON.stringify(data.json.eventIdentifier))
-  var eventIdentifier = data.json.eventIdentifier
-  var opCode = data.json.opCode
-  var status = 'unknown'
-  // check for ON event
-  if ((opCode == 90)
-    || (opCode == 98)
-  //  || (opCode == B0)
-  //  || (opCode == B8)
-  //  || (opCode == D0)
-  //  || (opCode == D8)
-  //  || (opCode == F0)
-  //  || (opCode == F8)
-    ){
-      console.log(name + ': BUS_TRAFFIC_EVENT : ON event ' + eventIdentifier)
-      status = 'on'
-    }
-
-  // check for OFF event
-  if ((opCode == 91)
-    || (opCode == 99)
-//    || (opCode == B1)
-//    || (opCode == B9)
-//    || (opCode == D1)
-//    || (opCode == D9)
-//    || (opCode == F1)
-//    || (opCode == F9)
-    ){
-      console.log(name + ': BUS_TRAFFIC_EVENT : OFF event ' + eventIdentifier)
-      status = 'off'
-  }
-  if (status != 'unknown'){
-    let events = store.state.layout.eventDetails
-    for (let key of Object.keys(events).sort()) {
-      if (key == eventIdentifier){
-        store.state.layout.eventDetails[key].status = status  
-      }
-    }
-    update_events_table()
-  }
-
-})
-
-/*
-BUS_TRAFFIC_EVENT {"direction":"Out","json":{"encoded":":SB780N9800000001;","ID_TYPE":"S","mnemonic":"ASON","opCode":"98","nodeNumber":0,"deviceNumber":1,"eventIdentifier":"00000001","eventData":{"hex":""},"text":"ASON (98) Node 0 Device Number 1"}}
-*/
-
 
 
 
 onBeforeMount(() => {
 //  store.methods.query_all_nodes()
-  update_events_table()
+  store.methods.refresh_bus_events()
+  update_bus_events()
 })
 
 onMounted(() => {
-  update_events_table()
+  store.methods.refresh_bus_events()
+  update_bus_events()
 })
 
 /*/////////////////////////////////////////////////////////////////////////////
@@ -304,11 +244,6 @@ onMounted(() => {
 Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
-
-const clickAddEvent = () => {
-  console.log(name + `: clickAddEvent`)
-  showAddEventToLayoutDialog.value = true
-}
 
 const clickEventName = (eventIdentifier) => {
   console.log(name + `: clickEventName ` + eventIdentifier)
@@ -319,7 +254,7 @@ const clickEventName = (eventIdentifier) => {
 
 const clickInfo = () => {
   console.log(name + `: clickInfo`)
-  showEventsViewInfoDialog.value = true
+  showBusEventsViewInfoDialog.value = true
 }
 
 const clickSendOff = (nodeNumber, eventIdentifier) => {
@@ -351,12 +286,12 @@ const clickTeach = (eventIndentifier) => {
   showEventTeachDialog.value = true
 }
 
-const clickToggleShowEventsJSON = () => {
-  console.log(name + `: clickToggleShowEventsJSON`)
-  if (showEventsJSON.value){
-    showEventsJSON.value = false
+const clickToggleShowBusEventsJSON = () => {
+  console.log(name + `: clickToggleShowBusEventsJSON`)
+  if (showBusEventsJSON.value){
+    showBusEventsJSON.value = false
   } else {
-    showEventsJSON.value = true
+    showBusEventsJSON.value = true
   }
 }
 
@@ -364,9 +299,8 @@ const clickToggleViewMode = () => {
   console.log(name + `: clickToggleViewMode`)
   viewModeIndex.value++
   if (viewModeIndex.value > 1){viewModeIndex.value = 0}
-  update_events_table()
+//  update_events_table()
 }
-
 
 
 
@@ -374,7 +308,7 @@ const clickToggleViewMode = () => {
 </script>
 
 <style lang="sass">
-.events-table
+.bus-events-table
   /* height or max-height is important */
   height: 600px
 

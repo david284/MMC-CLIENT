@@ -198,8 +198,8 @@ watch(eventDetails, () => {
 
 const update_bus_events = () => {
 //  console.log(name + `:Update busEvents`)
+  let displayEventListLocal = []
   try{
-    let displayEventListLocal = []
     let busEvents = store.state.busEvents
     // order keys
     if (busEvents){
@@ -216,11 +216,11 @@ const update_bus_events = () => {
         output['group'] = store.getters.event_group(busEvents[key].eventIdentifier)
         displayEventListLocal.push(output)
       }
-      displayEventList.value = displayEventListLocal
     }
   } catch (err){
     console.log(name + `: update_bus_events ` + err)
   }
+  displayEventList.value = displayEventListLocal
 }
 
 
