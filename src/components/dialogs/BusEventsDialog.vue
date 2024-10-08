@@ -61,11 +61,11 @@
               <q-td key="eventNumber" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
                 {{ props.row.eventNumber }}
               </q-td>
+              <q-td key="type" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.type }}</q-td>
               <q-td key="status" :props="props">
                 <q-chip color="white" text-color="green" v-if="props.row.status=='on'">ON</q-chip>
                 <q-chip color="white" text-color="red" v-else>OFF</q-chip>
               </q-td>
-              <q-td key="type" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.type }}</q-td>
               <q-td key="count" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.count }}</q-td>
               <q-td key="actions" :props="props">
                 <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
@@ -154,8 +154,8 @@ const columns = [
   {name: 'eventIdentifier', field: 'eventIdentifier', required: true, label: 'Event Identifier', align: 'left', sortable: true},
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Source Node Number', align: 'left', sortable: true},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event Number', align: 'left', sortable: false},
-  {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: false},
   {name: 'type', field: 'type', required: true, label: 'Type', align: 'left', sortable: false},
+  {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: false},
   {name: 'count', field: 'count', required: true, label: 'Count', align: 'left', sortable: false},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]

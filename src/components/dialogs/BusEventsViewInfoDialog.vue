@@ -60,12 +60,6 @@
 
         <q-card class="q-pa-sm">
           <div class="text_body1">
-              The name & teach event features work as expected
-          </div>
-        </q-card>
-
-        <q-card class="q-pa-sm">
-          <div class="text_body1">
               The Bus Events view will be empty at startup, and can also be cleared, to only show events from that point onwards
           </div>
         </q-card>
