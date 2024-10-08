@@ -156,24 +156,6 @@ const columns = [
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
-const props = defineProps({
-  modelValue: { type: Boolean, required: true }
-})
-
-const emit = defineEmits(['update:modelValue'])
-
-const model = computed({
-      get() { return props.modelValue },
-      set(newValue) { emit('update:modelValue', newValue) }
-    })
-
-// model changes when Dialog opened & closed
-watch(model, () => {
-//  console.log(name + `: WATCH model`)
-  update_events_table()
-})
-
-
 const EventsList = computed(() => {
   //console.log(`Computed Events`)
   return Object.values(store.state.layout.eventDetails)

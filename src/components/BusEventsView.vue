@@ -157,24 +157,6 @@ const columns = [
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
-const props = defineProps({
-  modelValue: { type: Boolean, required: true }
-})
-
-const emit = defineEmits(['update:modelValue'])
-
-const model = computed({
-      get() { return props.modelValue },
-      set(newValue) { emit('update:modelValue', newValue) }
-    })
-
-// model changes when Dialog opened & closed
-watch(model, () => {
-//  console.log(name + `: WATCH model`)
-  update_bus_events()
-})
-
-
 const busEventList = computed(() => {
   //console.log(`Computed Events`)
   return Object.values(store.state.busEvents)
@@ -202,17 +184,22 @@ const update_bus_events = () => {
     // order keys
     if (busEvents){
       for (let key of Object.keys(busEvents).sort()) {
-        let output = {}
-        output['eventIdentifier'] = busEvents[key].eventIdentifier
-        output['nodeNumber'] = busEvents[key].nodeNumber
-        output['eventNumber'] = busEvents[key].eventNumber
-        output['status'] = busEvents[key].status
-        output['type'] = busEvents[key].type
-        output['count'] = busEvents[key].count
-        output['name'] = store.getters.event_name(busEvents[key].eventIdentifier)
-        output['colour'] = store.getters.event_colour(busEvents[key].eventIdentifier)
-        output['group'] = store.getters.event_group(busEvents[key].eventIdentifier)
-        displayEventListLocal.push(output)
+        var eventNodeNumber = parseInt(busEvents[key].eventIdentifier.slice(0,4), 16)
+        if ((viewModeIndex.value == 1) && (eventNodeNumber > 0)){
+          // don't add this node as we've selected short events only
+        } else {
+          let output = {}
+          output['eventIdentifier'] = busEvents[key].eventIdentifier
+          output['nodeNumber'] = busEvents[key].nodeNumber
+          output['eventNumber'] = busEvents[key].eventNumber
+          output['status'] = busEvents[key].status
+          output['type'] = busEvents[key].type
+          output['count'] = busEvents[key].count
+          output['name'] = store.getters.event_name(busEvents[key].eventIdentifier)
+          output['colour'] = store.getters.event_colour(busEvents[key].eventIdentifier)
+          output['group'] = store.getters.event_group(busEvents[key].eventIdentifier)
+          displayEventListLocal.push(output)
+        }
       }
     }
   } catch (err){
@@ -221,11 +208,9 @@ const update_bus_events = () => {
   displayEventList.value = displayEventListLocal
 }
 
-
 const event_colour = (eventIdentifier) => {
   return store.getters.event_colour(eventIdentifier)
 }
-
 
 
 onBeforeMount(() => {
@@ -299,7 +284,7 @@ const clickToggleViewMode = () => {
   console.log(name + `: clickToggleViewMode`)
   viewModeIndex.value++
   if (viewModeIndex.value > 1){viewModeIndex.value = 0}
-//  update_events_table()
+  update_bus_events()
 }
 
 

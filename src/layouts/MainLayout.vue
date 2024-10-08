@@ -113,11 +113,10 @@
     <q-page-container v-if="(store.state.inStartup == false)" class="main-page no-shadow no-margin q-pa-none">
        
       <q-page v-if="(selectedView == 'BusEventsView')">
-        <BusEventsView v-model='showBusEventsView'/>
+        <BusEventsView />
       </q-page>
-       
       <q-page v-if="(selectedView == 'EventsView')">
-        <EventsView v-model='showEventsViewDialog'/>
+        <EventsView />
       </q-page>
       <q-page v-if="(selectedView == 'NodesView')">
         <nodesView />
@@ -181,8 +180,6 @@ const showStartupDialog = ref(true)
 const showSystemDialog = ref(false)
 const previousNodeNumber = ref(0)
 const showDialogExampleCompositionAPI = ref(false)
-const showEventsViewDialog = ref(true)
-const showBusEventsView = ref(true)
 const showiFrameDialog = ref(false)
 const exampleURL = ref("dummyModule/index.html")
 const scrollAreaRef = ref(null)
