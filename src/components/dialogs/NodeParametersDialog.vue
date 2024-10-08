@@ -13,7 +13,7 @@
         </template>
       </q-banner>
 
-      <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
+      <q-card-section style="max-height: 80vh" class="scroll no-margin q-py-none">
         <node-parameter Name="Node Number"
                         :Value=store.state.nodes[props.nodeNumber].nodeNumber>
         </node-parameter>
@@ -67,18 +67,24 @@
                         :Value="moduleDescriptorFilename">
         </node-parameter>
 
+        <q-card flat style="min-height: 20px"/>
         <q-separator />
+        <q-card flat style="min-height: 20px"/>
 
-      <div class="q-pa-none row">
-        <NodeParameterRaw 
-                      :nodeNumber = nodeNumber
-                      :parameterIndex = i
-                      v-for="(n, i) in (store.state.nodes[props.nodeNumber].parameters[0] + 1)"
-                      :key = i>
-        </NodeParameterRaw>
-      </div>
- 
-    </q-card-section>
+        <div class="text-body1">
+          Raw node parameter values
+        </div>
+
+        <div class="q-pa-none row">
+          <NodeParameterRaw 
+                        :nodeNumber = nodeNumber
+                        :parameterIndex = i
+                        v-for="(n, i) in (store.state.nodes[props.nodeNumber].parameters[0] + 1)"
+                        :key = i>
+          </NodeParameterRaw>
+        </div>
+  
+      </q-card-section>
  
     </q-card>
   </q-dialog>
