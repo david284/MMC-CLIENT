@@ -74,7 +74,7 @@
             The list is likely to be very large, as some nodes have large numbers of default events 
           </div>
           <div class="text_body1">
-            And so it's recommended to use the search option to filter the list
+            So it's recommended to use the search option to filter the list, and using group names for events
           </div>
         </q-card>
 
