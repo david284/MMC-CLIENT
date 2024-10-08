@@ -67,6 +67,8 @@
                         :Value="moduleDescriptorFilename">
         </node-parameter>
 
+        <q-separator />
+
       <div class="q-pa-none row">
         <NodeParameterRaw 
                       :nodeNumber = nodeNumber
