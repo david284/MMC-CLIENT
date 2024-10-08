@@ -355,6 +355,15 @@ const getters = {
       return 0
     }
   },
+  node_can_id(nodeNumber){
+    var CAN_ID = undefined
+    try{
+      CAN_ID = state.nodes[nodeNumber].CANID
+    } catch (err){
+      console.log(name + `: getters.node_can_id: ${err}`)
+    }
+    return CAN_ID
+  },
   node_name(nodeNumber){
     try{
       if (nodeNumber in state.layout.nodeDetails == false){
@@ -374,15 +383,26 @@ const getters = {
       return "error"      
     }
   },
-  node_can_id(nodeNumber){
-    var CAN_ID = undefined
+  node_parameter_name(nodeNumber, parameterIndex){
+    var result = 'Index: ' + parameterIndex
     try{
-      CAN_ID = state.nodes[nodeNumber].CANID
-    } catch (err){
-      console.log(name + `: getters.node_can_id: ${err}`)
+      result = 'Index: ' + parameterIndex
+//      result = state.nodes[nodeNumber].parameters[parameterIndex].name    
+    } catch (err) {
+      console.log(name + `: getters.node_parameter_name: ${err}`)
     }
-    return CAN_ID
+    return result
+  },
+  node_parameter_value(nodeNumber, parameterIndex){
+    var result = undefined
+    try{
+      result = state.nodes[nodeNumber].parameters[parameterIndex]   
+    } catch (err) {
+      console.log(name + `: getters: node_parameter_value: ${err}`)
+    }
+    return result
   }
+
 }
 
 //-----------------------------------------------------------------------------

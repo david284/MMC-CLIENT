@@ -14,8 +14,7 @@
 
         <q-card class="q-pa-sm">
           <div class="text_body1 text-weight-bold">
-            The Bus Events view is designed to show all events
-             captured from the CAN Bus from the start of the application
+            The Bus Events view is intended to show the event activity on the CAN Bus from the start of the application
           </div>
           <div class="text_body1 text-weight-bold">
                There are some significant differences to how this view works compared to the 'Events View'
@@ -33,7 +32,7 @@
               For some nodes, default events can't be read from the node (as some do not treat them as 'stored events')
           </div>
           <div class="text_body1">
-              But these default events will apear in this view once they've been sent
+              But these default events will appear in this view once they've been sent
           </div>
         </q-card>
 

@@ -14,7 +14,7 @@
 
         <q-card class="q-pa-sm">
           <div class="text_body1  text-weight-bold">
-            The Events view is designed to show all events that the system has knowledge of
+            The Events view is intended to allow management of all the events on the layout
           </div>
           <div class="text_body1  text-weight-bold">
                There are some significant differences to how this view works compared to the 'Bus Events View'
@@ -42,6 +42,12 @@
         <q-card class="q-pa-sm">
           <div class="text_body1">
             The ON/OFF status for each event will be the most recent instance of that event, captured from the CAN Bus, irrespective of which node sent it
+          </div>
+          <div class="text_body1">
+            <div class="text_body1">
+            The ON/OFF status is dependant on the Bus Events list, and if that event has not been sent, or the Bus Events list cleared, the status will be 'unknown'
+          </div>
+
           </div>
         </q-card>
 

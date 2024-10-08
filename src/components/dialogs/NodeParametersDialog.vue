@@ -67,10 +67,23 @@
                         :Value="moduleDescriptorFilename">
         </node-parameter>
       </q-card-section>
+
+
+    <div class="q-pa-none row">
+    <NodeParameterRaw 
+                  :nodeNumber = nodeNumber
+                  :parameterIndex = i
+                  v-for="(n, i) in store.state.nodes[props.nodeNumber].parameters[0]"
+                  :key = i>
+     </NodeParameterRaw>
+  </div>
+ 
+ 
     </q-card>
   </q-dialog>
 
   <manageModuleDescriptorsDialog v-model='showManageModuleDescriptorsDialog'/>
+
 
 </template>
 
@@ -79,6 +92,7 @@
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import NodeParameter from "components/modules/common/NodeParameter"
+import NodeParameterRaw from "components/modules/common/NodeParameterRaw"
 import manageModuleDescriptorsDialog from "components/dialogs/ManageModuleDescriptorsDialog";
 
 const store = inject('store')
