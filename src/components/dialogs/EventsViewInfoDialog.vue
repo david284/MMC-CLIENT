@@ -35,6 +35,12 @@
 
         <q-card class="q-pa-sm">
           <div class="text_body1">
+            For a new layout, use SCAN NODES to read the stored events from all the nodes to fill the list, and anytime a new node is added 
+          </div>
+        </q-card>
+
+        <q-card class="q-pa-sm">
+          <div class="text_body1">
             There is only one entry for each event, irrespective of how many nodes produce that event
           </div>
         </q-card>
@@ -45,7 +51,7 @@
           </div>
           <div class="text_body1">
             <div class="text_body1">
-            The ON/OFF status is dependant on the Bus Events list, and if that event has not been sent, or the Bus Events list cleared, the status will be 'unknown'
+            The ON/OFF status is dependant on the event actually being captured from the bus, and if that event has not been sent, or the application has been restarted, the status will be 'unknown'
           </div>
 
           </div>

@@ -41,7 +41,7 @@
               </template>
             </q-input>
             <q-space/>
-            <q-btn color="negative" label="Refresh Events" @click="store.methods.refresh_bus_events()" no-caps/>
+            <q-btn color="primary" label="Refresh Events" @click="store.methods.refresh_bus_events()" no-caps/>
             <q-space/>
             <q-btn color="negative" label="Clear Events" @click="store.methods.clear_bus_events()" no-caps/>
           </template>
@@ -139,8 +139,8 @@ const selected_event_number = ref(0) // Dialog will complain if null
 const showBusEventsJSON = ref(false)
 const viewModeIndex = ref(0)
 const viewModes = ref({
-  0:"view all events",
-  1: "view short events only"
+  0:"view all bus events",
+  1: "view short bus events only"
 })
 
 

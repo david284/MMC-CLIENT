@@ -537,11 +537,32 @@ socket.on("NODE", (data) => {
   console.log(`RECEIVED NODE : ${data.nodeNumber}`)
 //  console.log(`RECEIVED NODE : ${data.nodeNumber} Data: ` + JSON.stringify(data))
   state.nodes[data.nodeNumber] = data
+  try{
+    var storedEvents = Object.values(state.nodes[data.nodeNumber].storedEvents)
+    storedEvents.forEach(event => {
+      // call the get event name, as this will populate eventDetails if it doesn't exist
+      getters.event_name(event.eventIdentifier)
+    })
+  } catch(err){
+    console.log(name + `: socket.on NODE: ` + err)
+  }
 })
 
 socket.on("NODES", (data) => {
   console.log(`RECEIVED NODES`)
   state.nodes = data
+  try{
+    var nodes = Object.values(state.nodes)
+    nodes.forEach(node =>{
+      var storedEvents = Object.values(state.nodes[node.nodeNumber].storedEvents)
+      storedEvents.forEach(event => {
+        // call the get event name, as this will populate eventDetails if it doesn't exist
+        getters.event_name(event.eventIdentifier)
+      })
+    })
+  } catch(err){
+    console.log(name + `: socket.on NODES: ` + err)
+  }
 })
 
 socket.on("NODE_DESCRIPTOR", (data) => {

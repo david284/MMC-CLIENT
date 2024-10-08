@@ -39,6 +39,9 @@
               </template>
             </q-input>
             <q-space/>
+            <q-btn dense class="q-mx-xs" size="md" color="primary" label="SCAN NODES"  no-caps
+            @click="clickScanNodes()" />
+            <q-space/>
           </template>
 
           <template v-slot:body="props">
@@ -302,6 +305,19 @@ const clickEventName = (eventIdentifier) => {
 const clickInfo = () => {
   console.log(name + `: clickInfo`)
   showEventsViewInfoDialog.value = true
+}
+
+const clickScanNodes = () => {
+//  console.log(name + `: clickScanNodes`)
+  var nodeList = Object.values(store.state.nodes)
+  try{
+    nodeList.forEach(node => {
+      store.methods.request_all_node_events(node.nodeNumber)
+      update_events_table()
+    })
+  } catch (err){
+    console.log(name + `: clickScanNodes: ` + err)
+  }
 }
 
 const clickSendOff = (nodeNumber, eventIdentifier) => {

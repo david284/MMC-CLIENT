@@ -9,9 +9,6 @@
               <q-item clickable @click="clickLayout()">
                 <q-item-section>Layout</q-item-section>
               </q-item>
-              <q-item clickable @click="clickBusEventsDialog()">
-                <q-item-section>Bus events</q-item-section>
-              </q-item>
               <q-item clickable @click="clickJson()">
                 <q-item-section>JSON</q-item-section>
               </q-item>
@@ -126,7 +123,6 @@
   </q-layout>
 
 
-  <busEventsDialog v-model='showBusEventsDialog' />
   <busTrafficDialog v-model='showBusTrafficDialog' />
   <cbusErrorsDialog v-model='showCbusErrorsDialog' />
   <jsonDialog v-model='showJsonDialog' />
@@ -169,7 +165,6 @@ const name = "MainLayout"
 const busMessage = ref({})
 const leftDrawerOpen = ref(false)
 const layoutDataTitle = ref("")
-const showBusEventsDialog = ref(false)
 const showBusTrafficDialog = ref(false)
 const showCbusErrorsDialog = ref(false)
 const showJsonDialog = ref(false)
@@ -279,12 +274,6 @@ store.eventBus.on('SERVER_DISCONNECT', () => {
 Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
-
-const clickBusEventsDialog = () => {
-  console.log(name + ': clickBusEventsDialog')
-  showBusEventsDialog.value = true
-}
-
 
 const clickBusEventsView = () => {
   console.log(name + ': clickBusEventsView')
