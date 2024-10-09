@@ -17,6 +17,7 @@ const state = reactive({
   dcc_sessions: {},
   dcc_errors: {},
   develop: false,
+  event_view_status: [],
   inSetup: true,
   layout: {},
   layouts_list: [],

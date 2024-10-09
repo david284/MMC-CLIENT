@@ -194,6 +194,9 @@ const update_events_table = () => {
   // order keys
   for (let key of Object.keys(events).sort()) {
     var nodeNumber = parseInt(key.substring(0, 4), 16)
+    if (store.state.event_view_status[key] == undefined){
+      store.state.event_view_status[key] = 'unknown'
+    }
     if ((viewModeIndex.value == 1) && (nodeNumber > 0)){
       // don't add this node as we've selected short events only
     } else {
@@ -205,7 +208,7 @@ const update_events_table = () => {
       output['name'] = events[key].name
       output['colour'] = events[key].colour
       output['group'] = events[key].group
-      output['status'] = events[key].status
+      output['status'] = store.state.event_view_status[key]
       displayEventListLocal.push(output)
     }
   }
@@ -257,11 +260,8 @@ store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
       status = 'off'
   }
   if (status != 'unknown'){
-    let events = store.state.layout.eventDetails
-    for (let key of Object.keys(events).sort()) {
-      if (key == eventIdentifier){
-        store.state.layout.eventDetails[key].status = status  
-      }
+    if (store.state.event_view_status[eventIdentifier] != undefined){
+      store.state.event_view_status[eventIdentifier] = status
     }
     update_events_table()
   }
