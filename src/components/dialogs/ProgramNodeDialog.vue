@@ -4,24 +4,22 @@
 
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
-          program Node {{ store.getters.node_name(nodeNumber) }}
+          &nbsp; program Node {{ store.getters.node_name(nodeNumber) }}
         </div>
         <template v-slot:action>
           <q-btn flat color="white" size="md" label="Close" v-close-popup/>
         </template>
       </q-banner>
 
-      <q-card-section>
-        <div class="text-subtitle2">
-          Node CPU type {{ store.state.nodes[nodeNumber].cpuName }} ({{ store.state.nodes[nodeNumber].parameters[9] }})
-        </div>
-        <div class="text-h6">Select a file to upload</div>
-      </q-card-section>
 
 
       <div class="q-pa-xs row">
  
         <q-card flat style="width: 370px">
+
+          <q-card-section>
+            <div class="text-h6">Select a file to upload</div>
+          </q-card-section>
 
           <q-file
             v-model="uploadFile"
@@ -53,6 +51,13 @@
         </q-card>
 
         <q-card flat class="q-pa-sm" style="width: 370px">
+          <q-card-section>
+            <div class="text-h6">
+              Node CPU type: {{ store.state.nodes[nodeNumber].cpuName }} ({{ store.state.nodes[nodeNumber].parameters[9] }})
+            </div>
+            <br/>
+          </q-card-section>
+
           <div class="text-h6">
           Warnings:
           <br/>
