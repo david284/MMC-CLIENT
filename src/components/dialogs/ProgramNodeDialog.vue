@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model='model' persistent>
-    <q-card style="min-width: 400px">
+    <q-card style="min-width: 750px">
 
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
@@ -12,48 +12,71 @@
       </q-banner>
 
       <q-card-section>
-        <div class="text-subtitle2">Select a file to upload</div>
         <div class="text-subtitle2">
           Node CPU type {{ store.state.nodes[nodeNumber].cpuName }} ({{ store.state.nodes[nodeNumber].parameters[9] }})
         </div>
+        <div class="text-h6">Select a file to upload</div>
       </q-card-section>
 
 
+      <div class="q-pa-xs row">
  
-      <q-file
-        v-model="uploadFile"
-        label="Pick one file"
-        filled
-        style="max-width: 300px"
-      />
+        <q-card flat style="width: 370px">
 
-<!--
-      <q-card-actions align="right" class="text-primary">
-        <q-btn color="positive" label="Upload" @click="actionUpload()" />
-      </q-card-actions>
---> 
+          <q-file
+            v-model="uploadFile"
+            label="Pick one file"
+            filled
+            style="max-width: 300px"
+          />
 
+          <q-card-section class="no-margin q-py-none">
+            FLASH memory is always programmed
+          </q-card-section>
+          <q-card-section class="no-margin q-py-none">
+            <q-checkbox v-model="checked1" label="Program configuration" />
+          </q-card-section>
+          <q-card-section class="no-margin q-py-none">
+            <q-checkbox v-model="checked2" label="Program EEPROM" />
+          </q-card-section>
+          <q-card-section class="no-margin q-py-none">
+            <q-checkbox v-model="checked4" label="Ignore CPU type" />
+          </q-card-section>
+          <q-card-section class="no-margin q-py-none">
+            <q-checkbox v-model="checked8" label="Program in Boot Mode" />
+          </q-card-section>
+          <br/>
+          <q-card-actions align="left" class="text-primary">
+            <q-btn color="primary" label="Program" @click="clickProgram()" />
+          </q-card-actions>
 
-      <q-card-section class="no-margin q-py-none">
-        FLASH memory is always programmed
-      </q-card-section>
-      <q-card-section class="no-margin q-py-none">
-        <q-checkbox v-model="checked1" label="Program configuration" />
-      </q-card-section>
-      <q-card-section class="no-margin q-py-none">
-        <q-checkbox v-model="checked2" label="Program EEPROM" />
-      </q-card-section>
-      <q-card-section class="no-margin q-py-none">
-        <q-checkbox v-model="checked4" label="Ignore CPU type" />
-      </q-card-section>
+        </q-card>
 
-      <q-card-section class="no-margin q-py-none">
-        {{ progressText }}
-      </q-card-section>
+        <q-card flat class="q-pa-sm" style="width: 370px">
+          <div class="text-h6">
+          Warnings:
+          <br/>
+          </div>
+          <div class="text-body1">
+            Disconnect all SLiM nodes to prevent corruption.
+            <br/>
+          </div>
+          <div class="text-body1">
+            Ensure there is mimimal or no traffic on the CAN bus before programming to avoid failure (issue with older bootloader firmware).
+            <br/>
+          </div>
+          <div class="text-body1">
+            In the event of a failure, and the node is left in bootmode (both leds lit), then retry with the 'Program in Boot Mode' option checked.
+          </div>
+        </q-card>
 
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Program" @click="clickProgram()" />
-      </q-card-actions>
+      </div>
+
+      <q-card-section class="bg-info text-h6 text-white">
+        <div>
+          Status: {{ progressText }}
+        </div>
+      </q-card-section>
 
     </q-card>
   </q-dialog>
@@ -67,6 +90,7 @@
 //     * 1 = Program CONFIG
 //     * 2 = Program EEPROM
 //     * 4 = Ignore CPUTYPE
+//     * 8 = Program in Boot Mode
 //
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
@@ -77,6 +101,7 @@ const uploadFile = ref()
 const checked1 = ref(false)
 const checked2 = ref(false)
 const checked4 = ref(false)
+const checked8 = ref(false)
 const progressText = ref('')
 var flags = 0
 var cpuType = undefined
@@ -143,6 +168,7 @@ const clickProgram = async () => {
   flags = checked1.value ? flags | 1 : flags & ~1
   flags = checked2.value ? flags | 2 : flags & ~2
   flags = checked4.value ? flags | 4 : flags & ~4
+  flags = checked8.value ? flags | 8 : flags & ~8
   cpuType = store.state.nodes[props.nodeNumber].parameters[9]
   console.log(name + ": clickProgram: node: " + props.nodeNumber + ' cpuType: '+ cpuType +' flags: ' + flags)
   await actionUpload()
