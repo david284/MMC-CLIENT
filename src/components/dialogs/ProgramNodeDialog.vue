@@ -66,7 +66,7 @@
             <br/>
           </div>
           <div class="text-body1">
-            In the event of a failure, and the node is left in bootmode (both leds lit), then retry with the 'Program in Boot Mode' option checked.
+            In the event of a failure, and if the node is left in bootmode (both leds lit), then retry with the 'Program in Boot Mode' option checked.
           </div>
         </q-card>
 
