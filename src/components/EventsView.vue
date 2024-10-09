@@ -191,24 +191,24 @@ const update_events_table = () => {
   console.log(name + `:Update Events`)
   let displayEventListLocal = []
   let events = store.state.layout.eventDetails
-  // order keys
-  for (let key of Object.keys(events).sort()) {
-    var nodeNumber = parseInt(key.substring(0, 4), 16)
-    if (store.state.event_view_status[key] == undefined){
-      store.state.event_view_status[key] = 'unknown'
+  // order by eventIdentifier
+  for (let eventIdentifier of Object.keys(events).sort()) {
+    var nodeNumber = parseInt(eventIdentifier.substring(0, 4), 16)
+    if (store.state.event_view_status[eventIdentifier] == undefined){
+      store.state.event_view_status[eventIdentifier] = 'unknown'
     }
     if ((viewModeIndex.value == 1) && (nodeNumber > 0)){
       // don't add this node as we've selected short events only
     } else {
       let output = {}
-      output['eventIdentifier'] = key
+      output['eventIdentifier'] = eventIdentifier
       output['nodeNumber'] = nodeNumber
-      output['eventNumber'] = parseInt(key.slice(4,8), 16)
+      output['eventNumber'] = parseInt(eventIdentifier.slice(4,8), 16)
       output['type'] = nodeNumber == 0 ? "short" : "long"
-      output['name'] = events[key].name
-      output['colour'] = events[key].colour
-      output['group'] = events[key].group
-      output['status'] = store.state.event_view_status[key]
+      output['name'] = events[eventIdentifier].name
+      output['colour'] = events[eventIdentifier].colour
+      output['group'] = events[eventIdentifier].group
+      output['status'] = store.state.event_view_status[eventIdentifier]
       displayEventListLocal.push(output)
     }
   }
