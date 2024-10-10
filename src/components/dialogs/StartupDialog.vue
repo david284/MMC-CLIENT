@@ -73,6 +73,7 @@
                   <div>port: {{ store.state.layout.connectionDetails.port }}</div>
                 </div>
               </q-card>
+              <q-btn color="positive" label="Edit" @click="clickEditConnectionDetails()"/>
             </q-card-section>
 
             <q-card-section class="q-pa-xs">
@@ -92,6 +93,8 @@
 
     <addLayoutDialog v-model='showAddLayoutDialog' />
 
+    <EditConnectionDetailsDialog v-model='showEditConnectionDetailsDialog' />
+
 
 </template>
 
@@ -102,6 +105,7 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { useQuasar } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import addLayoutDialog from "components/dialogs/AddLayoutDialog";
+import EditConnectionDetailsDialog from "components/dialogs/EditConnectionDetailsDialog";
 
 const $q = useQuasar()
 const store = inject('store')
@@ -109,6 +113,7 @@ const name = "StartupDialog"
 const layoutName = ref('<not selected>')
 const teRows = ref([])
 const showAddLayoutDialog = ref(false)
+const showEditConnectionDetailsDialog = ref(false)
 const readyToProceed = ref(false)
 const layoutValid = ref(false)
 
@@ -213,6 +218,10 @@ const clickDeleteLayout = async (row) => {
   })
 }
 
+const clickEditConnectionDetails = async () => {
+  console.log(name + ': clickEditConnectionDetails')
+  showEditConnectionDetailsDialog.value=true
+}
 
 const clickProceed = async () => {
   console.log(name + ': clickProceed')
