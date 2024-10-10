@@ -47,7 +47,7 @@ const newCANID = ref()
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
-  nodeNumber: { type:Number, required: true }
+  nodeNumber: { type:Number}
 })
 
 const emit = defineEmits(['update:modelValue'])

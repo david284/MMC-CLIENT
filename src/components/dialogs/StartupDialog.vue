@@ -226,6 +226,7 @@ const clickEditConnectionDetails = async () => {
 const clickProceed = async () => {
   console.log(name + ': clickProceed')
   store.state.inStartup = false
+  store.methods.update_connectionDetails(store.state.layout.connectionDetails)
   await sleep(50)     // allow a bit of a delay for the change
   model.value = false
 }

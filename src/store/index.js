@@ -257,6 +257,10 @@ const methods = {
     })
   },
 
+  update_connectionDetails(data) {
+    console.log(name + `: update_connectionDetails : ` + JSON.stringify(data))
+    socket.emit('UPDATE_CONNECTION_DETAILS', data)
+  },
   update_layout() {
     console.log(`Update Layout Data : ` + state.title)
     socket.emit('UPDATE_LAYOUT_DATA', state.layout)
