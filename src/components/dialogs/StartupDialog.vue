@@ -1,7 +1,7 @@
 <template>
 
     <q-dialog v-model='model' persistent>
-      <q-card style="min-width: 900px">
+      <q-card style="min-width: 800px">
 
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
           <div class="text-h6">
@@ -16,7 +16,7 @@
 
         <div class="q-pa-md row">
 
-          <q-card inline class="q-pa-xs" flat style="max-width: 500px">
+          <q-card inline class="q-pa-xs" flat style="width: 380px">
             <q-card-section class="q-pa-xs">
               <div class="text-h6">Select Layout</div>
               <q-table
@@ -42,21 +42,38 @@
             </q-card-section>
           </q-card>
 
-          <q-card-section>
-            <div class="text-h6">
-              click below to add a new layout
-            </div>
+          <q-card flat inline class="q-pa-xs" style="width: 380px">
 
-            <q-card-actions align="center" class="text-primary">
-              <div>
-                <q-btn color="positive" label="Add" @click="clickAddNewLayout()"/>
+            <q-card-section>
+              <div class="text-h6">
+                click below to add a new layout
               </div>
-            </q-card-actions>
-          </q-card-section>
+              <q-card-actions align="center" class="text-primary">
+                <div>
+                  <q-btn color="positive" label="Add" @click="clickAddNewLayout()"/>
+                </div>
+              </q-card-actions>
+            </q-card-section>
+
+            <q-card-section>
+              <div class="text-h6">
+                Connection details
+              </div>
+            </q-card-section>
+
+            <q-card-section class="q-pa-xs">
+              <q-card-actions align="center">
+                <q-btn v-if="readyToProceed" color="primary" label="Proceed" @click="clickProceed()"/>
+                <q-btn v-if="!readyToProceed" disabled color="primary" label="Proceed" @click="clickProceed()"/>
+              </q-card-actions>
+            </q-card-section>
+
+          </q-card>
 
         </div>
 
       </q-card>
+
     </q-dialog>
 
     <addLayoutDialog v-model='showAddLayoutDialog' />
@@ -78,6 +95,7 @@ const name = "StartupDialog"
 const layoutName = ref('')
 const teRows = ref([])
 const showAddLayoutDialog = ref(false)
+const readyToProceed = ref(false)
 
 const teColumns = [
   {name: 'layout', field: 'layout', required: true, label: 'Layout', sortable: true}
@@ -156,13 +174,19 @@ const clickDeleteLayout = async (row) => {
 }
 
 
+const clickProceed = async () => {
+  console.log(name + ': clickProceed')
+  store.state.inStartup = false
+  await sleep(50)     // allow a bit of a delay for the change
+  model.value = false
+}
+
+
 const clickSelectLayout = async (row) => {
   console.log(name + ': clickLayouts on ', row)
   layoutName.value = row
   store.methods.change_layout(layoutName.value)
-  store.state.inStartup = false
-  await sleep(50)     // allow a bit of a delay for the change
-  model.value = false
+  readyToProceed.value = ref(true)
 }
 
 
