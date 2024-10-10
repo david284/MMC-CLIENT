@@ -40,25 +40,39 @@
                 </template>
               </q-table>          
             </q-card-section>
-          </q-card>
-
-          <q-card flat inline class="q-pa-xs" style="width: 380px">
 
             <q-card-section>
               <div class="text-h6">
-                click below to add a new layout
+                click to add a new layout
+                <q-btn color="positive" label="Add" @click="clickAddNewLayout()"/>
               </div>
-              <q-card-actions align="center" class="text-primary">
-                <div>
-                  <q-btn color="positive" label="Add" @click="clickAddNewLayout()"/>
-                </div>
-              </q-card-actions>
+            </q-card-section>
+
+          </q-card>
+
+           <q-card flat inline class="q-pa-xs" style="width: 380px">
+
+            <q-card-section>
+              <div class="text-h6">
+                Selected layout
+              </div>
+              <div class="bg-light-blue-1 text-h6">
+                {{ layoutName }}
+              </div>
             </q-card-section>
 
             <q-card-section>
               <div class="text-h6">
                 Connection details
               </div>
+              <q-card flat style="width: 350px; height: 100px">
+                <div v-if='layoutValid' >
+                  <div>Mode: {{ store.state.layout.connectionDetails.mode }}</div>
+                  <div>serialPort: {{ store.state.layout.connectionDetails.serialPort }}</div>
+                  <div>address: {{ store.state.layout.connectionDetails.address }}</div>
+                  <div>port: {{ store.state.layout.connectionDetails.port }}</div>
+                </div>
+              </q-card>
             </q-card-section>
 
             <q-card-section class="q-pa-xs">
@@ -92,10 +106,11 @@ import addLayoutDialog from "components/dialogs/AddLayoutDialog";
 const $q = useQuasar()
 const store = inject('store')
 const name = "StartupDialog"
-const layoutName = ref('')
+const layoutName = ref('<not selected>')
 const teRows = ref([])
 const showAddLayoutDialog = ref(false)
 const readyToProceed = ref(false)
+const layoutValid = ref(false)
 
 const teColumns = [
   {name: 'layout', field: 'layout', required: true, label: 'Layout', sortable: true}
@@ -119,6 +134,15 @@ watch(model, () => {
   updateLayoutList()
 })
 
+const layout = computed(() => {
+  return Object.values(store.state.layout)
+})
+
+// need to update when new layout added
+watch(layout, () => {
+//  console.log(name + `: WATCH layout`)
+  updateLayout()
+})
 
 const layoutList = computed(() => {
   return Object.values(store.state.layouts_list)
@@ -129,6 +153,22 @@ watch(layoutList, () => {
 //  console.log(name + `: WATCH layoutList`)
   updateLayoutList()
 })
+
+
+const updateLayout = () => {
+//    console.log(name + `: updateLayout: ` + JSON.stringify(teRows))
+  try{
+    if (store.state.layout.connectionDetails == undefined){
+      store.state.layout.connectionDetails={}
+      store.state.layout.connectionDetails["mode"] = "Auto"
+      store.state.layout.connectionDetails["serialPort"] = ""
+      store.state.layout.connectionDetails["address"] = ""
+      store.state.layout.connectionDetails["port"] = ""
+      store.methods.update_layout()
+    }
+  } catch(error) {}
+  layoutValid.value = true
+}
 
 
 const updateLayoutList = () => {
