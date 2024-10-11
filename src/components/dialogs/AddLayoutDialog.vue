@@ -27,7 +27,7 @@
                 >
               </q-input>
               <p>enter a name for a new layout</p>
-              <q-btn color="negative" label="Add" @click="clickAddLayout()" no-caps/>
+              <q-btn color="positive" label="Add" @click="clickAddLayout()" no-caps/>
             </q-card-section>
           </q-card>
 

@@ -17,7 +17,7 @@
         <div class="q-pa-md row">
 
           <q-card inline class="q-pa-xs" flat style="width: 380px">
-            <q-card-section class="q-pa-xs">
+            <q-card-section class="q-pa-xs" style="height: 450px">
               <div class="text-h6">Select Layout</div>
               <q-table
                 flat bordered
@@ -26,7 +26,7 @@
                 :columns="teColumns"
                 row-key="name"
                 hide-header
-                :pagination="{rowsPerPage: 10}"
+                :pagination="{rowsPerPage: 8}"
               >
                 <template #body-cell="props">
                     <q-td key="layout" :props="props">
@@ -43,7 +43,7 @@
 
             <q-card-section>
               <div class="text-h6">
-                click to add a new layout
+                click to add a new layout &nbsp;
                 <q-btn color="positive" label="Add" @click="clickAddNewLayout()"/>
               </div>
             </q-card-section>
@@ -52,28 +52,31 @@
 
            <q-card flat inline class="q-pa-xs" style="width: 380px">
 
-            <q-card-section>
-              <div class="text-h6">
-                Selected layout
-              </div>
-              <div class="bg-light-blue-1 text-h6">
-                {{ layoutName }}
-              </div>
-            </q-card-section>
+            <q-card-section class="q-pa-xs" style="height: 450px">
 
-            <q-card-section>
-              <div class="text-h6">
-                Connection details
-              </div>
-              <q-card flat style="width: 350px; height: 100px">
-                <div v-if='layoutValid' >
-                  <div>Mode: {{ store.state.layout.connectionDetails.mode }}</div>
-                  <div>serialPort: {{ store.state.layout.connectionDetails.serialPort }}</div>
-                  <div>address: {{ store.state.layout.connectionDetails.address }}</div>
-                  <div>port: {{ store.state.layout.connectionDetails.port }}</div>
+              <q-card-section>
+                <div class="text-h6">
+                  Selected layout
                 </div>
-              </q-card>
-              <q-btn color="positive" label="Edit" @click="clickEditConnectionDetails()"/>
+                <div class="bg-light-blue-1 text-h6">
+                  {{ layoutName }}
+                </div>
+              </q-card-section>
+
+              <q-card-section  style="width: 350px; height: 200px">
+                <div class="text-h6">
+                  Connection details
+                </div>
+                <q-card flat style="height: 100px">
+                  <div v-for="(n, i) in (connectionDetails)" :key = i>
+                    {{ connectionDetails[i] }}
+                  </div>
+                </q-card>
+                <div class="text-h6">
+                  <q-btn color="positive" label="Edit" @click="clickEditConnectionDetails()"/>
+                    &nbsp; Edit connection details
+                  </div>
+              </q-card-section>
             </q-card-section>
 
             <q-card-section class="q-pa-xs">
@@ -116,6 +119,7 @@ const showAddLayoutDialog = ref(false)
 const showEditConnectionDetailsDialog = ref(false)
 const readyToProceed = ref(false)
 const layoutValid = ref(false)
+const connectionDetails = ref([])
 
 const teColumns = [
   {name: 'layout', field: 'layout', required: true, label: 'Layout', sortable: true}
@@ -172,6 +176,15 @@ const updateLayout = () => {
       store.methods.update_layout()
     }
   } catch(error) {}
+  connectionDetails.value = []
+  connectionDetails.value.push("Mode: " + store.state.layout.connectionDetails.mode)
+  if (store.state.layout.connectionDetails.mode == "SerialPort"){
+    connectionDetails.value.push("serialPort: " + store.state.layout.connectionDetails.serialPort)
+  }
+  if (store.state.layout.connectionDetails.mode == "Network"){
+    connectionDetails.value.push("Host: " + store.state.layout.connectionDetails.address)
+    connectionDetails.value.push("Host Port: " + store.state.layout.connectionDetails.port)
+  }
   layoutValid.value = true
 }
 

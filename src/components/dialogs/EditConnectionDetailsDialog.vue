@@ -1,7 +1,7 @@
 <template>
 
     <q-dialog v-model='model' persistent>
-      <q-card style="min-width: 650px; height: 400px">
+      <q-card style="min-width: 650px; height: 450px">
 
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
           <div class="text-h6">
@@ -16,6 +16,7 @@
 
           <q-card flat class="q-pa-xs" style="width: 200px">
             <q-select 
+              autofocus
               outlined
               v-model="mode" 
               :options="mode_options" 
@@ -31,7 +32,7 @@
 
         </div>
 
-        <div v-if="(mode=='SerialPort')"  class="q-pa-xs row">
+        <div class="q-pa-xs row">
 
           <q-card flat class="q-pa-xs" style="width: 200px">
               <q-input
@@ -46,47 +47,52 @@
           </q-card>
 
           <q-card flat class="q-pa-xs" style="width: 400px">
-            some text
+            Forces MMC to use this specific serial port<br/>
+            Windows example: COM3<br/>
+            Linux example: ttyUSB2<br/>
+            Leave blank if 'SerialPort' not selected<br/>
           </q-card>
 
         </div>
 
-        <div v-if="(mode=='Network')" class="q-pa-xs row">
+        <div class="q-pa-xs row">
 
           <q-card flat class="q-pa-xs" style="width: 200px">
               <q-input
                 autofocus
                 class="q-pa-sm"
                 outlined
-                v-model="address"
-                label="network address"
+                v-model="Host_Address"
+                label="Host"
                 maxlength="30"
                 >
               </q-input>
           </q-card>
 
           <q-card flat class="q-pa-xs" style="width: 400px">
-            some more text
+            Name or IP address of machine to use for CAN connection<br/>
+            Leave blank if 'Network' not selected
           </q-card>
 
         </div>
 
-        <div v-if="(mode=='Network')" class="q-pa-xs row">
+        <div class="q-pa-xs row">
 
           <q-card flat class="q-pa-xs" style="width: 200px">
               <q-input
                 autofocus
                 class="q-pa-sm"
                 outlined
-                v-model="port"
-                label="network port"
+                v-model="Host_Port"
+                label="Host Port"
                 maxlength="30"
                 >
               </q-input>
           </q-card>
 
           <q-card flat class="q-pa-xs" style="width: 400px">
-            even more text
+            Port number of machine for CAN connection<br/>
+            Leave blank if 'Network' not selected
           </q-card>
 
         </div>
@@ -111,8 +117,8 @@ const store = inject('store')
 const name = "EditConnectionDetailsDialog"
 const mode = ref('')
 const serialPort = ref('')
-const address = ref('')
-const port = ref('')
+const Host_Address = ref('')
+const Host_Port = ref('')
 
 const mode_options =  ref([ 'Auto', 'SerialPort', 'Network' ])
 
@@ -133,8 +139,8 @@ watch(model, () => {
   console.log(name + `: WATCH model`)
   mode.value = store.state.layout.connectionDetails.mode
   serialPort.value = store.state.layout.connectionDetails.serialPort
-  address.value = store.state.layout.connectionDetails.address
-  port.value = store.state.layout.connectionDetails.port
+  Host_Address.value = store.state.layout.connectionDetails.address
+  Host_Port.value = store.state.layout.connectionDetails.port
 })
 
 
@@ -162,8 +168,8 @@ const clickSave = async () => {
     store.state.layout.connectionDetails.serialPort = ''
   }
   if (mode.value == 'Network'){
-    store.state.layout.connectionDetails.address = address.value
-    store.state.layout.connectionDetails.port = port.value
+    store.state.layout.connectionDetails.address = Host_Address.value
+    store.state.layout.connectionDetails.port = Host_Port.value
   } else {
     store.state.layout.connectionDetails.address = ''
     store.state.layout.connectionDetails.port = ''
