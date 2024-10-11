@@ -62,7 +62,7 @@
                 autofocus
                 class="q-pa-sm"
                 outlined
-                v-model="Host_Address"
+                v-model="Host"
                 label="Host"
                 maxlength="30"
                 >
@@ -83,7 +83,7 @@
                 autofocus
                 class="q-pa-sm"
                 outlined
-                v-model="Host_Port"
+                v-model="HostPort"
                 label="Host Port"
                 maxlength="30"
                 >
@@ -117,8 +117,8 @@ const store = inject('store')
 const name = "EditConnectionDetailsDialog"
 const mode = ref('')
 const serialPort = ref('')
-const Host_Address = ref('')
-const Host_Port = ref('')
+const Host = ref('')
+const HostPort = ref('')
 
 const mode_options =  ref([ 'Auto', 'SerialPort', 'Network' ])
 
@@ -139,8 +139,8 @@ watch(model, () => {
   console.log(name + `: WATCH model`)
   mode.value = store.state.layout.connectionDetails.mode
   serialPort.value = store.state.layout.connectionDetails.serialPort
-  Host_Address.value = store.state.layout.connectionDetails.address
-  Host_Port.value = store.state.layout.connectionDetails.port
+  Host.value = store.state.layout.connectionDetails.host
+  HostPort.value = store.state.layout.connectionDetails.hostPort
 })
 
 
@@ -168,11 +168,11 @@ const clickSave = async () => {
     store.state.layout.connectionDetails.serialPort = ''
   }
   if (mode.value == 'Network'){
-    store.state.layout.connectionDetails.address = Host_Address.value
-    store.state.layout.connectionDetails.port = Host_Port.value
+    store.state.layout.connectionDetails.host = Host.value
+    store.state.layout.connectionDetails.hostPort = HostPort.value
   } else {
-    store.state.layout.connectionDetails.address = ''
-    store.state.layout.connectionDetails.port = ''
+    store.state.layout.connectionDetails.host = ''
+    store.state.layout.connectionDetails.hostPort = ''
   }
   store.methods.update_layout()
   await sleep(50)

@@ -171,8 +171,8 @@ const updateLayout = () => {
       store.state.layout.connectionDetails={}
       store.state.layout.connectionDetails["mode"] = "Auto"
       store.state.layout.connectionDetails["serialPort"] = ""
-      store.state.layout.connectionDetails["address"] = ""
-      store.state.layout.connectionDetails["port"] = ""
+      store.state.layout.connectionDetails["host"] = ""
+      store.state.layout.connectionDetails["hostPort"] = ""
       store.methods.update_layout()
     }
   } catch(error) {}
@@ -182,8 +182,8 @@ const updateLayout = () => {
     connectionDetails.value.push("serialPort: " + store.state.layout.connectionDetails.serialPort)
   }
   if (store.state.layout.connectionDetails.mode == "Network"){
-    connectionDetails.value.push("Host: " + store.state.layout.connectionDetails.address)
-    connectionDetails.value.push("Host Port: " + store.state.layout.connectionDetails.port)
+    connectionDetails.value.push("Host: " + store.state.layout.connectionDetails.host)
+    connectionDetails.value.push("Host Port: " + store.state.layout.connectionDetails.hostPort)
   }
   layoutValid.value = true
 }
