@@ -249,6 +249,11 @@ const methods = {
     })
   },
 
+  start_connection(data) {
+    console.log(name + `: start_connection : ` + JSON.stringify(data))
+    socket.emit('START_CONNECTION', data)
+  },
+
   teach_event(nodeNumber, eventName, eventIndex) {
     socket.emit('TEACH_EVENT', {
       "nodeNumber": nodeNumber,
@@ -257,10 +262,6 @@ const methods = {
     })
   },
 
-  update_connectionDetails(data) {
-    console.log(name + `: update_connectionDetails : ` + JSON.stringify(data))
-    socket.emit('UPDATE_CONNECTION_DETAILS', data)
-  },
   update_layout() {
     console.log(`Update Layout Data : ` + state.title)
     socket.emit('UPDATE_LAYOUT_DATA', state.layout)
