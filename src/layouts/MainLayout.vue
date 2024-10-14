@@ -131,7 +131,7 @@
     :busMessage="busMessage"/>
   <newNodeDialog v-model='showNewNodeDialog'
     :previousNodeNumber="previousNodeNumber" />
-  <startupDialog v-model='showStartupDialog' />
+  <startupDialog v-model='store.state.inStartup' />
   <systemDialog v-model='showSystemDialog' />
   <dialogExampleCompositionAPI v-model='showDialogExampleCompositionAPI' />
   <iFrameDialog v-model='showiFrameDialog' 
@@ -140,6 +140,20 @@
 </template>
 
 <script setup>
+
+//
+// the 'store.state.inStartup' flag is used to determine if the server is in startup, and needs a layout selecting
+// or, if flag is false, then the layout has already been selected (by another client) and it's now connected & running
+// so if flag true, the startupDialog is shown
+// if false, the main 'views' are enabled (they need a valid layout to work)
+//
+// the client will assume inStartup to be true initially (i.e. needs layout selecting)
+// and when connected, the server will send it's status, which if running will set the inStartup to false
+// Otherwise, flag left at true, and the startupDialog will be displayed
+// The startupDialog will set the inStartup flag to false when proceeding with a selected layout
+//
+//
+
 import {computed, inject, onBeforeMount, onMounted, onUpdated, ref, watch} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import nodesView from "components/NodesView"
@@ -164,7 +178,6 @@ const name = "MainLayout"
 
 const busMessage = ref({})
 const leftDrawerOpen = ref(false)
-const layoutDataTitle = ref("")
 const showBusTrafficDialog = ref(false)
 const showCbusErrorsDialog = ref(false)
 const showJsonDialog = ref(false)
@@ -191,16 +204,18 @@ watch(nodeTraffic, () => {
   oneShotScroll = setTimeout(scrollFunc,200);
 })
 
-const layoutData = computed(() => {
-  return Object.values(store.state.layout)
+
+const layoutDataTitle = computed(() => {
+  var value = ''
+  try{
+  value =  store.state.layout.layoutDetails.title
+  } catch(e){}
+  return value
 })
 
-watch(layoutData, () => {
-//  console.log(name + `: WATCH layoutData`)
-layoutDataTitle.value = store.state.layout.layoutDetails.title
-})
 
 onBeforeMount(() => {
+  store.methods.request_status()
   store.methods.request_layout_list()
 })
 
@@ -217,7 +232,8 @@ onUpdated(() =>{
 
 const eventIntervalFunc = () => {
 //  console.log(name + ": interval " + Date.now())
-  store.methods.request_bus_connection()
+store.methods.request_status()
+store.methods.request_bus_connection()
 }
 
 //

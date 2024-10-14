@@ -18,7 +18,7 @@ const state = reactive({
   dcc_errors: {},
   develop: false,
   event_view_status: [],
-  inSetup: true,
+  inStartup: true,
   layout: {},
   layouts_list: [],
   loadFile_notification_raised: {},
@@ -200,7 +200,10 @@ const methods = {
   request_bus_connection() {
 //    console.log(name + `: REQUEST_BUS_CONNECTION`)
     socket.emit('REQUEST_BUS_CONNECTION')
-    },
+  },
+  request_status(){
+    socket.emit('REQUEST_STATUS')
+  },
   request_version(){
     socket.emit('REQUEST_VERSION')
   },
@@ -263,8 +266,11 @@ const methods = {
   },
 
   update_layout() {
-    console.log(`Update Layout Data : ` + state.title)
-    socket.emit('UPDATE_LAYOUT_DATA', state.layout)
+    // don't update the layout if we're selecting one
+    if (state.inStartup == false){
+      console.log(`Update Layout Data : ` + state.title)
+      socket.emit('UPDATE_LAYOUT_DATA', state.layout)
+    }
   },
   update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue) {
     state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
@@ -591,6 +597,14 @@ socket.on("PROGRAM_NODE_PROGRESS", (text) => {
 socket.on("REQUEST_NODE_NUMBER", (nodeNumber) => {
   console.log(`RECEIVED REQUEST_NODE_NUMBER : ` + JSON.stringify(nodeNumber))
   eventBus.emit('REQUEST_NODE_NUMBER_EVENT', nodeNumber)
+})
+
+socket.on("STATUS", (data) => {
+  if (data.mode == "RUNNING"){
+    state.inStartup = false
+  }
+  eventBus.emit('STATUS_EVENT', data)
+//  console.log(name + `: RECEIVED STATUS ` + JSON.stringify(data))
 })
 
 socket.on("VERSION", (data) => {
