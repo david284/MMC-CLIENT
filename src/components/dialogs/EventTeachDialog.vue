@@ -20,7 +20,7 @@
           <q-card  style="width: 250px; height: 200px;" class="q-ma-md q-py-none">
           <q-card-section class="q-pa-xs">
             <div class="text-h6">Teach Event</div>
-            <div class="text-subtitle2">To consumer nodes only</div>
+            <div class="text-subtitle2">Select node</div>
             <q-select
               v-model="newNode"
               :options="availableNodes">
