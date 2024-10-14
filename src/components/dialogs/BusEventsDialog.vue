@@ -231,7 +231,6 @@ const event_colour = (eventIdentifier) => {
 
 
 onBeforeMount(() => {
-  store.methods.query_all_nodes()
 })
 
 onMounted(() => {

@@ -238,9 +238,10 @@ const clickEditConnectionDetails = async () => {
 
 const clickProceed = async () => {
   console.log(name + ': clickProceed')
-  store.state.inStartup = false
   store.methods.start_connection(store.state.layout.connectionDetails)
-  await sleep(50)     // allow a bit of a delay for the change
+  await sleep(1000)     // allow a bit of a delay for the change
+//  store.methods.query_all_nodes() // initial request
+  store.state.inStartup = false
   model.value = false
 }
 

@@ -8,7 +8,7 @@
           :nodeNumber = nodeNumber
           :variableIndex = variableIndex
           :bit = item.bitPosition
-          :name = item.label
+          :label = item.label
         ></node-variable-bit>
       </div>
     </q-card-section>

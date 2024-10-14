@@ -1,7 +1,7 @@
 <template>
     <q-checkbox min-width="100"
                 v-model = "checked"
-                :label = name
+                :label = label
                 @click = "update_checked"
                 right-label
     ></q-checkbox>
@@ -23,23 +23,20 @@ const props = defineProps({
     type: Number,
     required: true
   },
-  "name": {
+  "label": {
     type: String,
     required: false
-  },
-  "hint": {
-    type: String,
-    default: ""
-  },
-  "learn": {
-    type: Boolean,
-    default: false
   }
 })
 
+//
+// the label prop is optional, as a single bit doesn't use it
+// but a bit array does
+//
+
 const name = "NodeVariableBit"
-//console.log(name + `: ` + props.nodeNumber)
-const label = props.name ? props.name : "Variable" + props.variableIndex
+//console.log(name + `: ` + props.name)
+//const label = props.name ? props.name : "Variable" + props.variableIndex
 const store = inject('store')
 const checked = ref(false)
 const bitArray = {0: 1, 1: 2, 2: 4, 3: 8, 4: 16, 5: 32, 6: 64, 7: 128}

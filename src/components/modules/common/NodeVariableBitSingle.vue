@@ -7,8 +7,6 @@
         :nodeNumber = nodeNumber
         :variableIndex = variableIndex
         :bit = bit
-        :learn = learn
-        :name = name
       >
       </node-variable-bit>
     </q-card-section>
@@ -16,14 +14,22 @@
   </q-card>
 </template>
 
+
 <script setup>
+
+//
+// Note this doesn't use the label property of NodeVariableBit
+// as it already has a title and sub title
+//
+
+
 import NodeVariableBit from "components/modules/common/NodeVariableBit"
 
 import {inject} from "vue";
 import {onMounted} from "vue";
 
 const store = inject('store')
-const name = "NodeVariableBitsingle"
+const name = "NodeVariableBitSingle"
 
 const props = defineProps({
   "nodeNumber": {
@@ -45,20 +51,9 @@ const props = defineProps({
   "bit": {
     type: Number,
     required: true
-  },
-  "name": {
-    type: String,
-    required: false
-  },
-  "hint": {
-    type: String,
-    default: ""
-  },
-  "learn": {
-    type: Boolean,
-    default: false
   }
 })
+
 
 onMounted(() => {
 //  console.log(name + `: onMounted`)
