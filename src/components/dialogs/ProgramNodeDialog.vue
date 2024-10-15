@@ -125,6 +125,7 @@ const model = computed({
 
 watch(model, () => {
 //  console.log(name + `: WATCH model`)
+  uploadFile.value = ''
 })
 
 

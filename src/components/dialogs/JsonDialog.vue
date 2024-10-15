@@ -24,48 +24,32 @@
           align="justify"
           narrow-indicator
         >
-          <q-tab name="cbusErrors" label="Cbus Errors"/>
           <q-tab name="busEvents" label="Bus Events"/>
+          <q-tab name="cbusErrors" label="Cbus Errors"/>
           <q-tab name="layout" label="Layout"/>
           <q-tab name="layouts" label="Layouts"/>
           <q-tab name="nodes" label="Nodes"/>
           <q-tab name="nodeDescriptors" label="Node Descriptors"/>
           <q-tab name="nodeDescriptorList" label="Node Descriptor Lists"/>
+          <q-tab name="serverStatus" label="server Status"/>
           <q-tab name="traffic" label="Traffic"/>
         </q-tabs>
         <q-tab-panels v-model="tab" animated>
-          <q-tab-panel name="nodes">
-            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
-              <div class="text-h6">Nodes</div>
-              <pre>
-                {{ store.state.nodes }}
-              </pre>
-            </q-card-section>
-          </q-tab-panel>
-
-          <q-tab-panel name="nodeDescriptors">
-            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
-              <div class="text-h6">Node Descriptors</div>
-              <pre>
-                {{ store.state.nodeDescriptors }}
-              </pre>
-            </q-card-section>
-          </q-tab-panel>
-
-          <q-tab-panel name="nodeDescriptorList">
-            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
-              <div class="text-h6">Node Descriptor List</div>
-              <pre>
-                {{ store.state.nodeDescriptorList }}
-              </pre>
-            </q-card-section>
-          </q-tab-panel>
 
           <q-tab-panel name="busEvents">
             <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
               <div class="text-h6">Events</div>
               <pre>
                 {{ store.state.busEvents }}
+              </pre>
+            </q-card-section>
+          </q-tab-panel>
+
+          <q-tab-panel name="cbusErrors">
+            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
+              <div class="text-h6">Cbus Errors</div>
+              <pre>
+              {{ store.state.cbus_errors }}
               </pre>
             </q-card-section>
           </q-tab-panel>
@@ -81,9 +65,45 @@
 
           <q-tab-panel name="layouts">
             <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
-              <div class="text-h6">List of Layouts</div>
+              <div class="text-h6">Layouts</div>
               <pre>
               {{ store.state.layouts_list }}
+              </pre>
+            </q-card-section>
+          </q-tab-panel>
+
+          <q-tab-panel name="nodeDescriptorList">
+            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
+              <div class="text-h6">Descriptor List</div>
+              <pre>
+                {{ store.state.nodeDescriptorList }}
+              </pre>
+            </q-card-section>
+          </q-tab-panel>
+
+          <q-tab-panel name="nodeDescriptors">
+            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
+              <div class="text-h6">Node Descriptors</div>
+              <pre>
+                {{ store.state.nodeDescriptors }}
+              </pre>
+            </q-card-section>
+          </q-tab-panel>
+
+          <q-tab-panel name="nodes">
+            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
+              <div class="text-h6">Nodes</div>
+              <pre>
+                {{ store.state.nodes }}
+              </pre>
+            </q-card-section>
+          </q-tab-panel>
+
+          <q-tab-panel name="serverStatus">
+            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
+              <div class="text-h6">Server Status</div>
+              <pre>
+                {{ store.state.serverStatus }}
               </pre>
             </q-card-section>
           </q-tab-panel>
@@ -97,14 +117,6 @@
             </q-card-section>
           </q-tab-panel>
 
-          <q-tab-panel name="cbusErrors">
-            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
-              <div class="text-h6">Cbus Errors</div>
-              <pre>
-              {{ store.state.cbus_errors }}
-              </pre>
-            </q-card-section>
-          </q-tab-panel>
         </q-tab-panels>
       </q-card>
 

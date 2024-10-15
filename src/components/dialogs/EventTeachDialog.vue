@@ -120,6 +120,14 @@ const model = computed({
   set(newValue) { emit('update:modelValue', newValue) }
 })
 
+// model changes when Dialog opened & closed
+watch(model, () => {
+//  console.log(name + `: WATCH model`)
+  newNode.value = ''
+})
+
+
+
 const newNode = ref()
 const availableNodes = ref([])
 const taughtNodes = ref([])

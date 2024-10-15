@@ -22,8 +22,19 @@
       <q-card class="q-pa-md" flat bordered>
         <div class="text-h6">Frontend</div>
         <div>Frontend App version {{ packageInfo.version }}</div>
-        <div>Quasar framework {{ $q.version }}</div>
+        <div>Quasar framework {{ $q.version }}
+
+        </div>
         <div>Vue version {{ version }}</div>
+      </q-card>
+
+      <q-card class="q-pa-md" flat bordered>
+        <div><span class="text-h6">user directory &nbsp;</span> {{ store.state.serverStatus.userDirectory }}
+          &nbsp; <q-btn dense color="primary" size="xs" label="copy" @click="clickCopyUser()" no-caps/>
+        </div>
+        <div><span class="text-h6">system directory &nbsp;</span> {{ store.state.serverStatus.systemDirectory }}
+          &nbsp; <q-btn dense color="primary" size="xs" label="copy" @click="clickCopySystem()" no-caps/>
+        </div>
       </q-card>
 
       <q-card v-if="(store.state.develop)" class="q-pa-md" flat>
@@ -60,6 +71,7 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref, version} from "vue";
 import packageInfo from './../../../package.json';
 import backupDialog from "components/dialogs/BackupDialog"
+import { copyToClipboard } from 'quasar'
 
 const store = inject('store')
 const name = "SystemDialog"
@@ -99,6 +111,25 @@ const clickBackup = () => {
   showBackupDialog.value = true
 }
 
+const clickCopySystem = () => {
+  copyToClipboard(store.state.serverStatus.systemDirectory)
+  .then(() => {
+    // success!
+  })
+  .catch(() => {
+    // fail
+  })
+}
+
+const clickCopyUser = () => {
+  copyToClipboard(store.state.serverStatus.userDirectory)
+  .then(() => {
+    // success!
+  })
+  .catch(() => {
+    // fail
+  })
+}
 
 
 </script>

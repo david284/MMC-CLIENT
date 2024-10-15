@@ -27,6 +27,7 @@ const state = reactive({
   nodes: {},
   nodeTraffic: [],
   selected_node: 0,
+  serverStatus: {},
   title: "MMC",
 //  debug: false,
 //  advanced: false,
@@ -600,6 +601,7 @@ socket.on("STATUS", (data) => {
   if (data.mode == "RUNNING"){
     state.inStartup = false
   }
+  state.serverStatus = data
   eventBus.emit('STATUS_EVENT', data)
 //  console.log(name + `: RECEIVED STATUS ` + JSON.stringify(data))
 })
