@@ -266,11 +266,8 @@ const methods = {
   },
 
   update_layout() {
-    // don't update the layout if we're selecting one
-    if (state.inStartup == false){
       console.log(`Update Layout Data : ` + state.title)
       socket.emit('UPDATE_LAYOUT_DATA', state.layout)
-    }
   },
   update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue) {
     state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
