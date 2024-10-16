@@ -198,12 +198,8 @@ const methods = {
       "eventVariableId": eventVariableId
     })
   },
-  request_bus_connection() {
-//    console.log(name + `: REQUEST_BUS_CONNECTION`)
-    socket.emit('REQUEST_BUS_CONNECTION')
-  },
-  request_status(){
-    socket.emit('REQUEST_STATUS')
+  request_server_status(){
+    socket.emit('REQUEST_SERVER_STATUS')
   },
   request_version(){
     socket.emit('REQUEST_VERSION')
@@ -473,11 +469,6 @@ socket.on('BACKUPS_LIST', (data) => {
   state.backups_list = data;
 })
 
-socket.on("BUS_CONNECTION", (data) => {
-  eventBus.emit('BUS_CONNECTION_EVENT', data)
-//  console.log(name + `: RECEIVED BUS_CONNECTION ` + JSON.stringify(data))
-})
-
 socket.on("BUS_EVENTS", (data) => {
   console.log(name + `: RECEIVED BUS_EVENTS Data`)
   state.busEvents = data
@@ -597,13 +588,13 @@ socket.on("REQUEST_NODE_NUMBER", (nodeNumber) => {
   eventBus.emit('REQUEST_NODE_NUMBER_EVENT', nodeNumber)
 })
 
-socket.on("STATUS", (data) => {
+socket.on("SERVER_STATUS", (data) => {
   if (data.mode == "RUNNING"){
     state.inStartup = false
   }
   state.serverStatus = data
-  eventBus.emit('STATUS_EVENT', data)
-//  console.log(name + `: RECEIVED STATUS ` + JSON.stringify(data))
+  eventBus.emit('SERVER_STATUS_EVENT', data)
+//  console.log(name + `: RECEIVED SERVER_STATUS ` + JSON.stringify(data))
 })
 
 socket.on("VERSION", (data) => {

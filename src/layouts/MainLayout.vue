@@ -215,12 +215,11 @@ const layoutDataTitle = computed(() => {
 
 
 onBeforeMount(() => {
-  store.methods.request_status()
+  store.methods.request_server_status()
   store.methods.request_layout_list()
 })
 
 onMounted(() => {
-  store.methods.request_bus_connection()
   setInterval(eventIntervalFunc,5000);
   setInterval(layoutDetailsIntervalFunc,2000);
 })
@@ -232,8 +231,7 @@ onUpdated(() =>{
 
 const eventIntervalFunc = () => {
 //  console.log(name + ": interval " + Date.now())
-store.methods.request_status()
-store.methods.request_bus_connection()
+  store.methods.request_server_status()
 }
 
 //
@@ -262,16 +260,22 @@ store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber) => {
  showNewNodeDialog.value = true
 })
 
-store.eventBus.on('BUS_CONNECTION_EVENT', (busConnection) => {
-  if (busConnection.state == false){
-    $q.notify({
-      message: 'Server has no connection to the CAN BUS',
-      caption: 'please check & restart application',
-      timeout: 0,
-      type: 'warning',
-      position: 'center',
-      actions: [ { label: 'Dismiss' } ]
-    })
+
+store.eventBus.on('SERVER_STATUS_EVENT', (serverStatus) => {
+//  console.log(name + ': SERVER_STATUS_EVENT ' + JSON.stringify(serverStatus))
+  try{
+    if (serverStatus.busConnection.state == false){
+      $q.notify({
+        message: 'Server has no connection to the CAN BUS',
+        caption: 'please check & restart application',
+        timeout: 0,
+        type: 'warning',
+        position: 'center',
+        actions: [ { label: 'Dismiss' } ]
+      })
+    }
+  } catch(err){
+    console.log(name + ': SERVER_STATUS_EVENT: ' + err)    
   }
 })
 
@@ -293,7 +297,7 @@ Click event handlers
 
 const clickBusEventsView = () => {
   console.log(name + ': clickBusEventsView')
-selectedView.value = 'BusEventsView'
+  selectedView.value = 'BusEventsView'
 }
 
 const clickEventsView = () => {
