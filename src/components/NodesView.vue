@@ -28,8 +28,8 @@
           <q-td key="nodeName" :props="props">{{ props.row.nodeName }} </q-td>
           <q-td key="moduleName" :props="props">{{ props.row.moduleName }}</q-td>
           <q-td key="mode" :props="props">
-            <q-chip dense color="white" text-color="blue" v-if="props.row.mode">Flim</q-chip>
-            <q-chip dense color="white" text-color="red" v-else>Slim</q-chip>
+            <q-chip dense color="white" text-color="blue" v-if="(props.row.mode=='FLiM')">{{ props.row.mode }}</q-chip>
+            <q-chip dense color="white" text-color="red" v-else>{{ props.row.mode }}</q-chip>
           </q-td>
           <q-td key="status" :props="props">
             <q-chip dense color="white" text-color="green" v-if="props.row.status">OK</q-chip>
@@ -174,7 +174,15 @@ const update_rows = () => {
     output['moduleName'] = node.moduleName
     output['component'] = node.component
     output['status'] = node.status
-    output['mode'] = node.flim
+    if (node.flim){
+      output['mode'] = 'FLiM'
+    } else {
+      if (node.VLCB){
+        output['mode'] = 'unInit'
+      } else {
+        output['mode'] = 'SLiM'
+      }
+    }
     output['events'] = node.eventCount
     output['vlcb'] = node.VLCB
     rows.value.push(output)

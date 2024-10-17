@@ -65,6 +65,11 @@
                 <q-chip color="white" text-color="red" v-else-if="props.row.status=='off'">OFF</q-chip>
                 <q-chip color="white" text-color="blue" v-else>unknown</q-chip>
               </q-td>
+              <q-td key="linkedNodes" :props="props">
+                {{props.row.linkedNodeCount}}
+                <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="sm" label="view"
+                  @click="clickLinkedNodes(props.row.eventIdentifier)" no-caps/>
+                </q-td>
               <q-td key="actions" :props="props">
                 <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
                 <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
@@ -103,6 +108,10 @@
     :eventIdentifier = selected_event_Identifier
   />
 
+  <linkedNodesDialog v-model='showLinkedNodesDialog'
+    :eventIdentifier = selected_event_Identifier
+  />
+
   <sendEventDialog v-model='showSendEventDialog'
     :sendingNodeNumber = selected_event_node
     :eventNumber = selected_event_number
@@ -123,6 +132,7 @@ import sendEventDialog from "components/dialogs/SendEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
 import eventsViewInfoDialog from "components/dialogs/EventsViewInfoDialog"
+import linkedNodesDialog from "components/dialogs/LinkedNodesDialog"
 
 const store = inject('store')
 const name = "EventsView"
@@ -135,6 +145,7 @@ const showNameEventDialog = ref(false)
 const showSendEventDialog = ref(false)
 const showEventTeachDialog = ref(false)
 const showEventsViewInfoDialog = ref(false)
+const showLinkedNodesDialog = ref(false)
 const selected_event_Identifier = ref("") // Dialog will complain if null
 const newEventName = ref()
 const selected_event_node = ref(0) // Dialog will complain if null
@@ -156,6 +167,7 @@ const columns = [
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event Number', align: 'left', sortable: false},
   {name: 'type', field: 'type', required: true, label: 'Type', align: 'left', sortable: false},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: false},
+  {name: 'linkedNodes', field: 'linkedNodes', required: true, label: 'Linked Nodes', align: 'left', sortable: false},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
@@ -209,6 +221,7 @@ const update_events_table = () => {
       output['colour'] = events[eventIdentifier].colour
       output['group'] = events[eventIdentifier].group
       output['status'] = store.state.event_view_status[eventIdentifier]
+      output['linkedNodeCount'] = getLinkedNodesCount(eventIdentifier)
       displayEventListLocal.push(output)
     }
   }
@@ -226,6 +239,40 @@ const event_colour = (eventIdentifier) => {
     return "blue"
   }
 }
+
+/*
+const nodeDetails = computed(() => {
+  return Object.keys(store.state.layout.nodeDetails)
+})
+
+watch(nodeDetails, () => {
+//  console.log(name + `: WATCH Nodes`)
+})
+*/
+
+const nodeList = computed(() => {
+  //console.log(`Computed Events`)
+  return Object.keys(store.state.nodes)
+})
+
+watch(nodeList, () => {
+  //console.log(`WATCH Nodes`)
+})
+
+
+
+const getLinkedNodesCount = (eventIdentifier) => {
+  var count = 0
+  try{
+    nodeList.value.forEach(node => {
+      if (eventIdentifier in store.state.nodes[node].storedEventsNI){
+        count++
+      }
+    })
+  } catch {}
+  return count
+}
+
 
 store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
 //  console.log(name + ': BUS_TRAFFIC_EVENT : ' + JSON.stringify(data.json.eventIdentifier))
@@ -268,9 +315,6 @@ store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
 
 })
 
-/*
-BUS_TRAFFIC_EVENT {"direction":"Out","json":{"encoded":":SB780N9800000001;","ID_TYPE":"S","mnemonic":"ASON","opCode":"98","nodeNumber":0,"deviceNumber":1,"eventIdentifier":"00000001","eventData":{"hex":""},"text":"ASON (98) Node 0 Device Number 1"}}
-*/
 
 
 
@@ -305,6 +349,12 @@ const clickEventName = (eventIdentifier) => {
 const clickInfo = () => {
   console.log(name + `: clickInfo`)
   showEventsViewInfoDialog.value = true
+}
+
+const clickLinkedNodes = (eventIdentifier) => {
+  console.log(name + `: clickLinkedNodes`)
+  selected_event_Identifier.value = eventIdentifier
+  showLinkedNodesDialog.value = true
 }
 
 const clickScanNodes = () => {
