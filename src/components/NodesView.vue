@@ -26,6 +26,7 @@
           <q-td key="nodeNumber" :class="'text-'+nodeColour(props.row.nodeNumber)" :props="props">{{ props.row.nodeNumber }}</q-td>
           <q-td key="CANID" :props="props">{{ props.row.CANID }} </q-td>
           <q-td key="nodeName" :props="props">{{ props.row.nodeName }} </q-td>
+          <q-td key="group" :props="props">{{ props.row.group }} </q-td>
           <q-td key="moduleName" :props="props">{{ props.row.moduleName }}</q-td>
           <q-td key="mode" :props="props">
             <q-chip dense color="white" text-color="blue" v-if="(props.row.mode=='FLiM')">{{ props.row.mode }}</q-chip>
@@ -116,11 +117,10 @@ const columns = [
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node number', align: 'left', sortable: true},
   {name: 'CANID', field: 'CANID', required: true, label: 'CAN ID', align: 'left', sortable: true},
   {name: 'nodeName', field: 'nodeName', required: true, label: 'Name', align: 'left', sortable: true},
-//  {name: 'group', field: 'group', required: true, label: 'Group', align: 'left', sortable: true},
+  {name: 'group', field: 'group', required: true, label: 'Group', align: 'left', sortable: true},
   {name: 'moduleName', field: 'moduleName', required: true, label: 'Module name', align: 'left', sortable: true},
-//  {name: 'component', field: 'component', required: true, label: 'component', align: 'left', sortable: true},
-  {name: 'mode', field: 'mode', required: true, label: 'Mode', align: 'left', sortable: true},
-  {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},
+  {name: 'mode', field: 'mode', required: true, label: 'Mode', align: 'left', sortable: false},
+  {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: false},
   {name: 'events', field: 'events', required: true, label: 'Stored Events', align: 'left', sortable: false},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
@@ -170,7 +170,7 @@ const update_rows = () => {
     output['nodeNumber'] = node.nodeNumber
     output['CANID'] = node.CANID
     output['nodeName'] = store.getters.node_name(node.nodeNumber)
-//    output['group'] = nodeGroup(node.nodeNumber)
+    output['group'] = store.getters.node_group(node.nodeNumber)
     output['moduleName'] = node.moduleName
     output['component'] = node.component
     output['status'] = node.status

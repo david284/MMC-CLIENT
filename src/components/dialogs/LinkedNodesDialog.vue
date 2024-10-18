@@ -18,7 +18,7 @@
 
       <q-card>
         <GenericNodeList
-          :nodeNumberList=itemisedNodes
+          :nodeNumberList=linkedNodeNumbers
           displayTitle="Linked Nodes"
         />
       </q-card>
@@ -39,10 +39,6 @@ import GenericNodeList from "components/modules/common/GenericNodeList"
 const store = inject('store')
 const name = 'LinkedNodesDialog'
 
-const selected_event_Identifier = ref("") // Dialog will complain if null
-const selected_event_node = ref(0) // Dialog will complain if null
-
-
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
   eventIdentifier: {type: String, required: true }
@@ -61,9 +57,7 @@ watch(model, () => {
 })
 
 
-const itemisedNodes = ref([])
-
-const linkedNodes = ref([])
+const linkedNodeNumbers = ref([])
 
 const nodeList = computed(() => {
   //console.log(`Computed Events`)
@@ -73,21 +67,17 @@ const nodeList = computed(() => {
 watch(nodeList, () => {
   //console.log(`WATCH Nodes`)
   update_nodes_table()
-//  updateGroupList()
 })
 
 const update_nodes_table = async () => {
 //  console.log(name + `: update__nodes_table`)
-  linkedNodes.value = []
-  itemisedNodes.value = []
+  linkedNodeNumbers.value = []
   nodeList.value.forEach(node => {
     if (Object.values(node.storedEventsNI).length > 0) {
       let events = Object.values(node.storedEventsNI)
       events.forEach(async event => {
         if (event.eventIdentifier == props.eventIdentifier) {
-          linkedNodes.value.push(node.nodeNumber)
-          itemisedNodes.value.push(node.nodeNumber)
-          var nodeName = store.state.layout.nodeDetails[node.nodeNumber].name
+          linkedNodeNumbers.value.push(node.nodeNumber)
         }
       })
     }
