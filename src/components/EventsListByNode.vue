@@ -5,6 +5,10 @@
         Events for node :  {{ store.getters.node_name(props.nodeNumber) }}
       </div>
       <template v-slot:action>
+        <q-input class="input-box" bg-color="grey-3" style="width: 200px;" filled dense borderless="true" size="xs" debounce="300" v-model="filter" placeholder="Search">
+            <q-icon size="sm" name="search"/>
+        </q-input>
+        &nbsp;&nbsp;
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Advanced" @click="clickAdvanced()"/>
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
@@ -18,6 +22,7 @@
       dense
       :rows=rows
       :columns="columns"
+      :filter="filter"
       row-key="eventIdentifier"
       virtual-scroll
       :rows-per-page-options="[0]"
@@ -96,6 +101,7 @@ import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 const store = inject('store')
 const name = "EventsListByNode"
 const rows = ref([])
+const filter = ref('')
 const showAddEventToNodeDialog = ref(false)
 const showAdvancedEventDialog = ref(false)
 const showDeleteEventDialog = ref(false)
@@ -375,4 +381,12 @@ const clickVariables = (eventIndex, eventIdentifier) => {
   tbody
     /* height of all previous header rows */
     scroll-margin-top: 48px
+</style>
+
+<style scoped>
+:deep(.input-box .q-field__control),
+:deep(.input-box .q-field__marginal) {
+  height: 25px;
+  font-size: 12px;
+}
 </style>
