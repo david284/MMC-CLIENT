@@ -64,7 +64,7 @@
                 </div>
               </q-card-section>
 
-              <q-card-section  style="width: 350px; height: 200px">
+              <q-card-section  style="width: 350px; height: 300px">
                 <div class="text-h6">
                   Connection details
                 </div>
@@ -73,6 +73,12 @@
                     {{ connectionDetails[i] }}
                   </div>
                 </q-card>
+
+                <div class="text-body">
+                  The default 'Auto' setting will connect to the first CANUSB or CANUSB4 it finds<br/>
+                  Please click INFO for details on the other options<br/>
+                </div>
+                <br/>
                 <div class="text-h6">
                   <q-btn color="positive" label="Edit" @click="clickEditConnectionDetails()"/>
                     &nbsp; Edit connection details
