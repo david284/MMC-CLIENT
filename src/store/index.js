@@ -467,6 +467,15 @@ const setters = {
 //    console.log(name + ': setter event_group ' + eventIdentifier + ' : ' + eventGroup)
     state.update_layout_needed = true
   },
+  node_group(nodeNumber, Group){
+    if (nodeNumber in state.layout.nodeDetails === false){
+      state.layout.nodeDetails[nodeNumber] = {}
+      state.layout.nodeDetails[nodeNumber].colour = "black"
+      state.layout.nodeDetails[nodeNumber].group = ""
+    }
+    state.layout.nodeDetails[nodeNumber].group = Group
+    state.update_layout_needed = true
+  },
   node_name(nodeNumber, nodeName){
     if (nodeNumber in state.layout.nodeDetails === false){
       state.layout.nodeDetails[nodeNumber] = {}

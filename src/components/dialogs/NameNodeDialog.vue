@@ -2,6 +2,7 @@
 
   <q-dialog v-model="model" persistent>
     <q-card style="min-width: 350px">
+
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
           Edit name for node :  {{ nodeNumber }}
@@ -11,13 +12,20 @@
         </template>
       </q-banner>
 
+      <q-card-section class="q-pt-none">
+        <div class="text-h6">Name</div>
+        <q-input dense v-model="newNodeName" autofocus />
+      </q-card-section>
 
       <q-card-section class="q-pt-none">
-          <q-input dense v-model="newNodeName" autofocus />
-        </q-card-section>
+        <div class="text-h6">Group</div>
+        <q-input dense v-model="newNodeGroup" autofocus />
+      </q-card-section>
+
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Accept" v-close-popup @click="clickAccept()"/>
       </q-card-actions>
+
     </q-card>
   </q-dialog>
 
@@ -31,6 +39,7 @@ import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from 
 const store = inject('store')
 
 const newNodeName = ref()
+const newNodeGroup = ref()
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -49,6 +58,7 @@ onUpdated(() => {
 //  console.log("NameNodeDialog onUpdated")
   if (store.state.layout.nodeDetails[props.nodeNumber]) {
     newNodeName.value = store.state.layout.nodeDetails[props.nodeNumber].name
+    newNodeGroup.value = store.getters.node_group(props.nodeNumber)
   }
 })
 
@@ -61,6 +71,7 @@ Click event handlers
 const clickAccept = () => {
   console.log("new node name: " + newNodeName.value)
   store.setters.node_name(props.nodeNumber, newNodeName.value)
+  store.setters.node_group(props.nodeNumber, newNodeGroup.value)
 }
 
 
