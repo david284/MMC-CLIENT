@@ -6,6 +6,16 @@
         Bus Events
       </div>
       <template v-slot:action>
+        <q-btn class="q-mx-xs q-my-none" size="sm" color="blue" label="Toggle"  no-caps @click="clickToggleViewMode()" />
+        <div class="text-h6" style="min-width: 250px">{{ viewModes[viewModeIndex] }}</div>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps @click="clickInfo()" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <q-input class="input-box" bg-color="grey-3" style="width: 200px;" filled dense borderless="true" size="xs" debounce="300" v-model="filter" placeholder="Search">
+          <q-icon size="sm" name="search"/>
+        </q-input>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <q-btn class="q-mx-xs q-my-none" size="sm" color="negative" label="Clear Events" @click="store.methods.clear_bus_events()" no-caps/>
       </template>
     </q-banner>
 
@@ -13,7 +23,6 @@
       <q-card-section class="no-margin no-padding">
 
         <q-table
-          title="Bus Events View"
           class="bus-events-table"
           dense
           :rows=displayEventList
@@ -26,26 +35,6 @@
           :virtual-scroll-sticky-size-start="48"
           hide-bottom
         >
-
-          <template v-slot:top="">
-            <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Toggle"  no-caps
-            @click="clickToggleViewMode()" />
-            <div class="text-h6" style="min-width: 250px">{{ viewModes[viewModeIndex] }}</div>
-            <q-space/>
-            <q-btn dense class="q-mx-xs" size="md" color="info" label="INFO"  no-caps
-            @click="clickInfo()" />
-            <q-space/>
-            <q-input outlined dense debounce="300" v-model="filter" placeholder="Search">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
-            <q-space/>
-            <q-btn color="primary" label="Refresh Events" @click="store.methods.refresh_bus_events()" no-caps/>
-            <q-space/>
-            <q-btn color="negative" label="Clear Events" @click="store.methods.clear_bus_events()" no-caps/>
-          </template>
-
           <template v-slot:body="props">
             <q-tr :props="props">
               <q-td key="eventName" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.name }}</q-td>
@@ -319,4 +308,12 @@ const clickToggleViewMode = () => {
   tbody
     /* height of all previous header rows */
     scroll-margin-top: 48px
+</style>
+
+<style scoped>
+:deep(.input-box .q-field__control),
+:deep(.input-box .q-field__marginal) {
+  height: 25px;
+  font-size: 12px;
+}
 </style>
