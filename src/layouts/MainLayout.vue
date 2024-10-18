@@ -322,8 +322,20 @@ const clickExample = () => {
 
 
 const clickExit = () => {
-  console.log(name + `: clickStop`)
-  store.methods.STOP_SERVER()
+  console.log(name + `: clickExit`)
+  const result = $q.notify({
+    message: 'Are you sure you want to exit and stop the server?',
+    timeout: 0,
+    position: 'center',
+    color: 'primary',
+    actions: [
+      { label: 'YES', color: 'white', handler: async () => { 
+        store.methods.STOP_SERVER()
+        await sleep(50)     // allow a bit of a delay for the change
+      } },
+      { label: 'NO', color: 'white', handler: () => { /* ... */ } }
+    ]
+  })
 }
 
 const clickiframe = () => {

@@ -7,11 +7,12 @@
           <div class="text-h6">
             Startup
           </div>
-          <!--
           <template v-slot:action>
-            <q-btn flat color="white" size="md" label="Close" @click="clickClose()" v-close-popup/>
+            <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
+                @click="clickInfo()" />
+            <q-space/>
+            <q-btn class="q-mx-xs q-my-none" size="sm" color="negative" label="Exit" @click="clickExit()" no-caps/>
           </template>
-          -->
         </q-banner>
 
         <div class="q-pa-md row">
@@ -198,6 +199,9 @@ const updateLayoutList = () => {
 //    console.log(name + `: updateLayoutList: ` + JSON.stringify(teRows))
 }
 
+onBeforeMount(() => {
+})
+
 onMounted(() => {
 })
 
@@ -236,6 +240,27 @@ const clickEditConnectionDetails = async () => {
   showEditConnectionDetailsDialog.value=true
 }
 
+const clickInfo = async () => {
+  console.log(name + ': clickInfo')
+}
+
+const clickExit = () => {
+  console.log(name + `: clickExit`)
+  const result = $q.notify({
+    message: 'Are you sure you want to exit and stop the server?',
+    timeout: 0,
+    position: 'center',
+    color: 'primary',
+    actions: [
+      { label: 'YES', color: 'white', handler: async () => { 
+        store.methods.STOP_SERVER()
+        await sleep(50)     // allow a bit of a delay for the change
+      } },
+      { label: 'NO', color: 'white', handler: () => { /* ... */ } }
+    ]
+  })
+}
+
 const clickProceed = async () => {
   console.log(name + ': clickProceed')
   if (store.state.layout != {} ){
@@ -253,14 +278,6 @@ const clickSelectLayout = async (row) => {
   store.methods.change_layout(layoutName.value)
   readyToProceed.value = ref(true)
 }
-
-
-onBeforeMount(() => {
-})
-
-onMounted(() => {
-})
-
 
 
 
