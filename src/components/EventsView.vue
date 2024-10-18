@@ -4,7 +4,22 @@
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none" >
       <div class="text-h6">Events View</div>
       <template v-slot:action>
-        <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
+        <q-btn class="q-mx-xs  q-my-none" size="sm" color="blue" label="Toggle"  no-caps
+        @click="clickToggleViewMode()" />
+        <div class="text-h6" style="min-width: 250px">{{ viewModes[viewModeIndex] }}</div>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
+            @click="clickInfo()" />
+        <q-space/>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <q-input class="input-box" bg-color="grey-3" style="width: 200px;" filled dense borderless="true" size="xs" debounce="300" v-model="filter" placeholder="Search">
+            <q-icon size="sm" name="search"/>
+        </q-input>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <q-space/>
+        <q-btn class="q-mx-xs q-my-none" size="sm" color="blue" label="SCAN NODES"  no-caps
+          @click="clickScanNodes()" />
+       <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
       </template>
     </q-banner>
 
@@ -12,7 +27,6 @@
       <q-card-section class="no-margin no-padding">
 
         <q-table
-            title = "Events View"
             class = "events-table"
             dense
             :rows = displayEventTable
@@ -25,24 +39,6 @@
             :virtual-scroll-sticky-size-start = "0"
             hide-bottom
           >
-          <template v-slot:top="">
-            <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Toggle"  no-caps
-            @click="clickToggleViewMode()" />
-            <div class="text-h6" style="min-width: 250px">{{ viewModes[viewModeIndex] }}</div>
-            <q-space/>
-            <q-btn dense class="q-mx-xs" size="md" color="info" label="INFO"  no-caps
-            @click="clickInfo()" />
-            <q-space/>
-            <q-input outlined dense debounce="300" v-model="filter" placeholder="Search">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
-            <q-space/>
-            <q-btn dense class="q-mx-xs" size="md" color="primary" label="SCAN NODES"  no-caps
-            @click="clickScanNodes()" />
-            <q-space/>
-          </template>
 
           <template v-slot:body="props">
             <q-tr :props="props">
@@ -448,4 +444,12 @@ const clickToggleViewMode = () => {
   tbody
     /* height of all previous header rows */
     scroll-margin-top: 48px
+</style>
+
+<style scoped>
+:deep(.input-box .q-field__control),
+:deep(.input-box .q-field__marginal) {
+  height: 25px;
+  font-size: 12px;
+}
 </style>
