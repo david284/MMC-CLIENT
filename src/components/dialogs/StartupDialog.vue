@@ -105,6 +105,7 @@
 
     <EditConnectionDetailsDialog v-model='showEditConnectionDetailsDialog' />
 
+    <StartupInfoDialog v-model='showStartupInfoDialog' />
 
 </template>
 
@@ -116,6 +117,7 @@ import { useQuasar } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import addLayoutDialog from "components/dialogs/AddLayoutDialog";
 import EditConnectionDetailsDialog from "components/dialogs/EditConnectionDetailsDialog";
+import StartupInfoDialog from "components/dialogs/StartupInfoDialog";
 
 const $q = useQuasar()
 const store = inject('store')
@@ -124,6 +126,7 @@ const layoutName = ref('<not selected>')
 const teRows = ref([])
 const showAddLayoutDialog = ref(false)
 const showEditConnectionDetailsDialog = ref(false)
+const showStartupInfoDialog = ref(false)
 const readyToProceed = ref(false)
 const layoutValid = ref(false)
 const connectionDetails = ref([])
@@ -248,6 +251,7 @@ const clickEditConnectionDetails = async () => {
 
 const clickInfo = async () => {
   console.log(name + ': clickInfo')
+  showStartupInfoDialog.value = true
 }
 
 const clickExit = () => {
