@@ -65,8 +65,7 @@
         </q-tr>
       </template>
       </q-table>
-
-
+      
       <EventsListByNode v-if="(selected_node_valid == true)"
         :nodeNumber = store.state.selected_node
       />
@@ -76,7 +75,7 @@
         :nodeNumber = selectedNode
       />
 
-       <nameNodeDialog v-model='showNameNodeDialog'
+      <nameNodeDialog v-model='showNameNodeDialog'
         :nodeNumber = store.state.selected_node
       />
 
@@ -94,6 +93,7 @@
 
       <NodesViewInfoDialog v-model='showNodesViewInfoDialog'/>
 
+
       <nodeVariablesLoadingDialog v-model='showNodeVariablesLoadingDialog'
         :nodeNumber = store.state.selected_node
       />
@@ -104,7 +104,7 @@
 
       <iFrameDialog v-model='showiFrameDialog'
         :URL=exampleURL />
-
+     
     </div>
   </div>
 </template>
