@@ -3,6 +3,10 @@
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none" >
       <div class="text-h6">Nodes View</div>
       <template v-slot:action>
+        <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
+            @click="clickInfo()" />
+        <q-space/>
+        &nbsp;&nbsp;&nbsp;&nbsp;
         <q-input class="input-box" bg-color="grey-3" style="width: 200px;" filled dense borderless="true" size="xs" debounce="300" v-model="filter" placeholder="Search">
             <q-icon size="sm" name="search"/>
         </q-input>
@@ -88,6 +92,8 @@
         :nodeNumber = store.state.selected_node
       />
 
+      <NodesViewInfoDialog v-model='showNodesViewInfoDialog'/>
+
       <nodeVariablesLoadingDialog v-model='showNodeVariablesLoadingDialog'
         :nodeNumber = store.state.selected_node
       />
@@ -111,6 +117,7 @@ import advancedNodeDialog from "components/dialogs/advancedNodeDialog"
 import nameNodeDialog from "components/dialogs/NameNodeDialog"
 import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
 import nodeVariablesDialog from "components/dialogs/NodeVariablesDialog"
+import NodesViewInfoDialog from "components/dialogs/NodesViewInfoDialog"
 import parametersLoadingDialog from "components/dialogs/parametersLoadingDialog"
 import nodeVariablesLoadingDialog from "components/dialogs/NodevariablesLoadingDialog"
 import vlcbServicesDialog from "components/dialogs/VLCBServicesDialog"
@@ -138,6 +145,7 @@ const selected_node_valid = ref(false)
 const showAdvancedDialog = ref(false)
 const showNameNodeDialog = ref(false)
 const showNodeParametersDialog = ref(false)
+const showNodesViewInfoDialog = ref(false)
 const showNodeVariablesDialog = ref(false)
 const selected_nodeNumber = ref()
 const showParametersLoadingDialog = ref(false)
@@ -308,6 +316,11 @@ const clickEvents = async (nodeNumber) => {
   await checkNodeVariables(nodeNumber)
   await select_node_row(nodeNumber)
   console.log(name + ': clickEvents: node', nodeNumber)
+}
+
+const clickInfo = () => {
+  console.log(name + `: clickInfo`)
+  showNodesViewInfoDialog.value = true
 }
 
 const clickNameNode = async (nodeNumber) => {

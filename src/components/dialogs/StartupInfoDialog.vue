@@ -50,7 +50,7 @@
             The 'Host' parameter allows connection to either a remoted connection, or the same machine the MMC is running on - Computer names or IP addresses can be entered for the Host setting
           </div>
           <div class="text_body1">
-            There is a useful technical Bulletin on the CANether that explains network connections in more detail
+            There is a useful Technical Bulletin on the CANether that explains network connections in more detail
             <a href="https://www.merg.org.uk/merg_wiki/lib/exe/fetch.php?media=cbus:cbus:cbusmodules:canether:canether_connection_and_configuration_technical_bulletin_draft_1.pdf">link</a>
           </div>
         </q-card>
