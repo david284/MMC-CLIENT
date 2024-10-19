@@ -64,6 +64,15 @@
           </div>
         </q-card>
 
+        <q-card class="q-pa-sm">
+          <div class="text_body1">
+            The SEARCH option will filter on all of the text columns (such as Name & Group), and is not case sensitive, e.g. will find both 'switch' and 'Switch'
+          </div>
+          <div class="text_body1">
+            It also matches partial text, so searching for 'switch' will find both 'switch-01' and 'switch-02'
+          </div>
+        </q-card>
+
       </q-card>
     </q-dialog>
 

@@ -61,11 +61,13 @@
                 <q-chip color="white" text-color="red" v-else-if="props.row.status=='off'">OFF</q-chip>
                 <q-chip color="white" text-color="blue" v-else>unknown</q-chip>
               </q-td>
+<!-- 
               <q-td key="linkedNodes" :props="props">
                 {{props.row.linkedNodeCount}}
                 <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="sm" label="view"
                   @click="clickLinkedNodes(props.row.eventIdentifier)" no-caps/>
-                </q-td>
+              </q-td>
+               -->
               <q-td key="actions" :props="props">
                 <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
                 <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
@@ -163,7 +165,7 @@ const columns = [
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event Number', align: 'left', sortable: false},
   {name: 'type', field: 'type', required: true, label: 'Type', align: 'left', sortable: false},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: false},
-  {name: 'linkedNodes', field: 'linkedNodes', required: true, label: 'Linked Nodes', align: 'left', sortable: false},
+//  {name: 'linkedNodes', field: 'linkedNodes', required: true, label: 'Linked Nodes', align: 'left', sortable: false},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
