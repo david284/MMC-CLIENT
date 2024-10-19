@@ -5,7 +5,7 @@
 
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
           <div class="text-h6" >
-            Information about the Nodes View
+            Information about the Events By Node View
           </div>
           <template v-slot:action>
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
@@ -14,16 +14,7 @@
 
         <q-card class="q-pa-sm">
           <div class="text_body1  text-weight-bold">
-            This view is intended to allow management of all the nodes on the layout
-          </div>
-        </q-card>
-
-        <q-card class="q-pa-sm">
-          <div class="text_body1">
-            When first connected, a QNN is issued to find all the nodes on the network, and the list created from the responses
-          </div>
-          <div class="text_body1">
-            The REFRESH button can be used at any point to resend a QNN to update the display, when a new node is added for instance
+            This view is intended to allow management of the events for a specific node
           </div>
         </q-card>
 
@@ -57,6 +48,11 @@
           </div>
         </q-card>
 
+        <q-card class="q-pa-sm">
+          <div class="text_body1">
+            The event source shows if the event has been read from the module (stored event) or if the event hasn't been read from the module, but has been seen on the CAN bus (Bus event), which is the case for default events on some modules that can't be read from the module
+          </div>
+        </q-card>
 
       </q-card>
     </q-dialog>
@@ -73,7 +69,7 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 
 const store = inject('store')
-const name = "NodesViewInfoDialog"
+const name = "EventsByNodeViewInfoDialog"
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },

@@ -5,6 +5,10 @@
         Events for node :  {{ store.getters.node_name(props.nodeNumber) }}
       </div>
       <template v-slot:action>
+        <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
+            @click="clickInfo()" />
+        <q-space/>
+        &nbsp;&nbsp;&nbsp;&nbsp;
         <q-input class="input-box" bg-color="grey-3" style="width: 200px;" filled dense borderless="true" size="xs" debounce="300" v-model="filter" placeholder="Search">
             <q-icon size="sm" name="search"/>
         </q-input>
@@ -83,6 +87,9 @@
         :eventIdentifier = selected_event_Identifier
       />
 
+      <EventsByNodeViewInfoDialog v-model='showEventsByNodeViewInfoDialog'/>
+
+
 
   </div>
 </template>
@@ -97,6 +104,7 @@ import deleteEventDialog from "components/dialogs/DeleteEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
+import EventsByNodeViewInfoDialog from "components/dialogs/EventsByNodeViewInfoDialog"
 
 const store = inject('store')
 const name = "EventsListByNode"
@@ -107,6 +115,7 @@ const showAdvancedEventDialog = ref(false)
 const showDeleteEventDialog = ref(false)
 const showEventTeachDialog = ref(false)
 const showEventVariablesDialog = ref(false)
+const showEventsByNodeViewInfoDialog = ref(false)
 const showNameEventDialog = ref(false)
 const showSendEventDialog = ref(false)
 const newEventName = ref()
@@ -297,6 +306,11 @@ const clickEventName = (eventIdentifier) => {
 }
 
 
+const clickInfo = () => {
+  console.log(name + `: clickInfo`)
+  showEventsByNodeViewInfoDialog.value = true
+}
+
 const clickRefresh = () => {
   console.log(name + `: clickRefresh`)
   store.methods.request_all_node_events(props.nodeNumber)
@@ -333,17 +347,6 @@ const clickTeach = (eventIndentifier) => {
   showEventTeachDialog.value = true
 }
 
-
-const clickTest = (nodeNumber, eventNumber, eventIndentifer) => {
-  selected_event_node.value = nodeNumber
-  selected_event_number.value = eventNumber
-  selected_event_Identifier.value = eventIndentifer
-  console.log(name + `: clickTest: event ` 
-    + selected_event_node.value + ' ' 
-    + selected_event_number.value + ' '
-    + selected_event_Identifier.value)
-  showSendEventDialog.value = true
-}
 
 const clickVariables = (eventIndex, eventIdentifier) => {
   readEventVariables(eventIndex)
