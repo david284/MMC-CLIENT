@@ -139,10 +139,10 @@ const columns = [
   {name: 'group', field: 'name', required: true, label: 'Group', align: 'left', sortable: true},
   {name: 'eventIdentifier', field: 'eventIdentifier', required: true, label: 'Event Identifier', align: 'left', sortable: true},
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Source Node Number', align: 'left', sortable: true},
-  {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event Number', align: 'left', sortable: false},
-  {name: 'type', field: 'type', required: true, label: 'Type', align: 'left', sortable: false},
-  {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: false},
-  {name: 'count', field: 'count', required: true, label: 'Count', align: 'left', sortable: false},
+  {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event Number', align: 'left', sortable: true},
+  {name: 'type', field: 'type', required: true, label: 'Type', align: 'left', sortable: true},
+  {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},
+  {name: 'count', field: 'count', required: true, label: 'Count', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 

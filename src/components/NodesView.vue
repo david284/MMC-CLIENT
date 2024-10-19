@@ -130,9 +130,9 @@ const columns = [
   {name: 'nodeName', field: 'nodeName', required: true, label: 'Name', align: 'left', sortable: true},
   {name: 'group', field: 'group', required: true, label: 'Group', align: 'left', sortable: true},
   {name: 'moduleName', field: 'moduleName', required: true, label: 'Module name', align: 'left', sortable: true},
-  {name: 'mode', field: 'mode', required: true, label: 'Mode', align: 'left', sortable: false},
-  {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: false},
-  {name: 'events', field: 'events', required: true, label: 'Stored Events', align: 'left', sortable: false},
+  {name: 'mode', field: 'mode', required: true, label: 'Mode', align: 'left', sortable: true},
+  {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},
+  {name: 'events', field: 'events', required: true, label: 'Stored Events', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
