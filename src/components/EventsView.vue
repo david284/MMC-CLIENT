@@ -12,7 +12,7 @@
             @click="clickInfo()" />
         <q-space/>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <q-input class="input-box" bg-color="grey-3" style="width: 200px;" filled dense borderless="true" size="xs" debounce="300" v-model="filter" placeholder="Search">
+        <q-input class="input-box" bg-color="grey-3" style="width: 200px;" filled dense borderless debounce="300" v-model="filter" placeholder="Search">
             <q-icon size="sm" name="search"/>
         </q-input>
         &nbsp;&nbsp;&nbsp;&nbsp;
@@ -61,13 +61,13 @@
                 <q-chip color="white" text-color="red" v-else-if="props.row.status=='off'">OFF</q-chip>
                 <q-chip color="white" text-color="blue" v-else>unknown</q-chip>
               </q-td>
-<!-- 
+
               <q-td key="linkedNodes" :props="props">
                 {{props.row.linkedNodeCount}}
                 <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="sm" label="view"
                   @click="clickLinkedNodes(props.row.eventIdentifier)" no-caps/>
               </q-td>
-               -->
+
               <q-td key="actions" :props="props">
                 <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
                 <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
@@ -131,6 +131,7 @@ import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
 import eventsViewInfoDialog from "components/dialogs/EventsViewInfoDialog"
 import linkedNodesDialog from "components/dialogs/LinkedNodesDialog"
+import {sleep} from "components/functions/utils.js"
 
 const store = inject('store')
 const name = "EventsView"
@@ -165,7 +166,7 @@ const columns = [
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event Number', align: 'left', sortable: true},
   {name: 'type', field: 'type', required: true, label: 'Type', align: 'left', sortable: true},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},
-//  {name: 'linkedNodes', field: 'linkedNodes', required: true, label: 'Linked Nodes', align: 'left', sortable: false},
+  {name: 'linkedNodes', field: 'linkedNodes', required: true, label: 'Linked Nodes', align: 'left', sortable: false},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
@@ -315,8 +316,6 @@ store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
 
 
 
-
-
 onBeforeMount(() => {
 //  store.methods.query_all_nodes()
   update_events_table()
@@ -356,16 +355,8 @@ const clickLinkedNodes = (eventIdentifier) => {
 }
 
 const clickScanNodes = () => {
-//  console.log(name + `: clickScanNodes`)
-  var nodeList = Object.values(store.state.nodes)
-  try{
-    nodeList.forEach(node => {
-      store.methods.request_all_node_events(node.nodeNumber)
-      update_events_table()
-    })
-  } catch (err){
-    console.log(name + `: clickScanNodes: ` + err)
-  }
+  console.log(name + `: clickScanNodes`)
+  store.state.scan_nodes_requested = true
 }
 
 const clickSendOff = (nodeNumber, eventIdentifier) => {

@@ -222,6 +222,7 @@ onBeforeMount(() => {
 onMounted(() => {
   setInterval(eventIntervalFunc,5000);
   setInterval(layoutDetailsIntervalFunc,2000);
+  setInterval(scanNodesIntervalFunc,500);
 })
 
 onUpdated(() =>{
@@ -232,6 +233,23 @@ onUpdated(() =>{
 const eventIntervalFunc = () => {
 //  console.log(name + ": interval " + Date.now())
   store.methods.request_server_status()
+}
+
+const scanNodesIntervalFunc = () => {
+//  console.log(name + ": interval " + Date.now())
+  scan_nodes()
+}
+
+const scan_nodes = () =>{
+  if (store.state.scan_nodes_requested){
+    var keys = Object.keys(store.state.nodes)
+    if (store.state.scan_nodes_index < keys.length){
+      console.log(name + ': scan_node ' + keys[store.state.scan_nodes_index])
+      store.methods.request_all_node_events(keys[store.state.scan_nodes_index])
+    }
+    (store.state.scan_nodes_index < keys.length) ? store.state.scan_nodes_index++ : (store.state.scan_nodes_index = 0)
+    if (store.state.scan_nodes_index == 0) {store.state.scan_nodes_requested = false}
+  }
 }
 
 //

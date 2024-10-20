@@ -28,6 +28,8 @@ const state = reactive({
   nodeTraffic: [],
   selected_node: 0,
   serverStatus: {},
+  scan_nodes_index: 0,
+  scan_nodes_requested: false,
   title: "MMC",
 //  debug: false,
 //  advanced: false,

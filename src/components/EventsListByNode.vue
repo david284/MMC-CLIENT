@@ -9,7 +9,7 @@
             @click="clickInfo()" />
         <q-space/>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <q-input class="input-box" bg-color="grey-3" style="width: 200px;" filled dense borderless="true" size="xs" debounce="300" v-model="filter" placeholder="Search">
+        <q-input class="input-box" bg-color="grey-3" style="width: 200px;" filled dense borderless debounce="300" v-model="filter" placeholder="Search">
             <q-icon size="sm" name="search"/>
         </q-input>
         &nbsp;&nbsp;
