@@ -213,7 +213,7 @@ const nodeColour = (nodeNumber) => {
 
 onBeforeMount(() => {
   //console.log(name + `: onBeforeMount`)
-  store.methods.query_all_nodes()
+ update_rows()
 })
 
 

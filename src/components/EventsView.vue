@@ -73,6 +73,7 @@
                 <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
                 <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.nodeNumber, props.row.eventIdentifier)" no-caps>send ON</q-btn>
                 <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.nodeNumber, props.row.eventIdentifier)" no-caps>send OFF</q-btn>
+                <q-btn :disabled="(props.row.linkedNodeCount != 0) " dense class="q-mx-xs" outline size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier)" no-caps/>
               </q-td>
             </q-tr>
 
@@ -336,6 +337,12 @@ const clickAddEvent = () => {
   showAddEventToLayoutDialog.value = true
 }
 
+const clickDelete = (eventIdentifier) => {
+  console.log(name + `: clickDelete`)
+  delete store.state.layout.eventDetails[eventIdentifier]
+  update_events_table()
+}
+
 const clickEventName = (eventIdentifier) => {
   console.log(name + `: clickEventName ` + eventIdentifier)
   selected_event_Identifier.value = eventIdentifier
@@ -356,7 +363,10 @@ const clickLinkedNodes = (eventIdentifier) => {
 
 const clickScanNodes = () => {
   console.log(name + `: clickScanNodes`)
-  store.state.scan_nodes_requested = true
+  var nodeNumberList = Object.keys(store.state.nodes)
+  nodeNumberList.forEach(nodeNumber => {
+    store.methods.request_all_node_events(nodeNumber)
+  })
 }
 
 const clickSendOff = (nodeNumber, eventIdentifier) => {
