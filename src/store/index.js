@@ -565,9 +565,11 @@ socket.on('LAYOUTS_LIST', (data) => {
 socket.on("NODE", (data) => {
   console.log(`RECEIVED NODE : ${data.nodeNumber}`)
 //  console.log(`RECEIVED NODE : ${data.nodeNumber} Data: ` + JSON.stringify(data))
+  // remove original stored events by Index
+  delete data.storedEvents
   state.nodes[data.nodeNumber] = data
   try{
-    var storedEvents = Object.values(state.nodes[data.nodeNumber].storedEvents)
+    var storedEvents = Object.values(state.nodes[data.nodeNumber].storedEventsNI)
     storedEvents.forEach(event => {
       // call the get event name, as this will populate eventDetails if it doesn't exist
       getters.event_name(event.eventIdentifier)
@@ -583,7 +585,9 @@ socket.on("NODES", (data) => {
   try{
     var nodes = Object.values(state.nodes)
     nodes.forEach(node =>{
-      var storedEvents = Object.values(state.nodes[node.nodeNumber].storedEvents)
+      // remove original stored events by Index
+      delete state.nodes[node.nodeNumber].storedEvents
+      var storedEvents = Object.values(state.nodes[node.nodeNumber].storedEventsNI)
       storedEvents.forEach(event => {
         // call the get event name, as this will populate eventDetails if it doesn't exist
         getters.event_name(event.eventIdentifier)

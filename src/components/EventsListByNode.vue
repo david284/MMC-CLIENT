@@ -77,11 +77,6 @@
       :eventIdentifier = selected_event_Identifier
     />
 
-    <deleteEventDialog v-model='showDeleteEventDialog'
-      :nodeNumber = nodeNumber
-      :eventIdentifier = selected_event_Identifier
-    />
-
     <eventVariablesDialog v-model='showEventVariablesDialog'
         :nodeNumber = nodeNumber
         :eventIdentifier = selected_event_Identifier
@@ -97,22 +92,22 @@
 <script setup>
 
 import {computed, inject, ref, watch, onBeforeMount, onMounted, onUpdated} from "vue"
+import { date, useQuasar, scroll } from 'quasar'
 import addEventToNodeDialog from "components/dialogs/AddEventToNodeDialog"
 import advancedEventsDialog from "components/dialogs/AdvancedEventsDialog"
 import sendEventDialog from "components/dialogs/SendEventDialog"
-import deleteEventDialog from "components/dialogs/DeleteEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import EventsByNodeViewInfoDialog from "components/dialogs/EventsByNodeViewInfoDialog"
 
+const $q = useQuasar()
 const store = inject('store')
 const name = "EventsListByNode"
 const rows = ref([])
 const filter = ref('')
 const showAddEventToNodeDialog = ref(false)
 const showAdvancedEventDialog = ref(false)
-const showDeleteEventDialog = ref(false)
 const showEventTeachDialog = ref(false)
 const showEventVariablesDialog = ref(false)
 const showEventsByNodeViewInfoDialog = ref(false)
@@ -152,7 +147,7 @@ watch(selected_node, () => {
 
 // need to know if new events added
 const nodeEvents = computed(() =>{
-  return Object.values(store.state.nodes[props.nodeNumber].storedEvents)
+  return Object.values(store.state.nodes[props.nodeNumber].storedEventsNI)
 })
 watch(nodeEvents, () => {
 //  console.log(name + `: WATCH nodeEvents`)
@@ -184,11 +179,11 @@ const update_rows = () => {
 //  console.log(name + ': update_rows ' + props.nodeNumber)
   rows.value = []
 
-//  console.log(name + ': update_rows: storedEvents ' + JSON.stringify(store.state.nodes[props.nodeNumber].storedEvents))
+//  console.log(name + ': update_rows: storedEventsNI ' + JSON.stringify(store.state.nodes[props.nodeNumber].storedEventsNI))
   // do stored events for this node first.....
-  var storedEvents = Object.values(store.state.nodes[props.nodeNumber].storedEvents)
-//  console.log(name + ': update_rows: storedEvents ' + JSON.stringify(storedEvents))
-  storedEvents.forEach(event => {
+  var storedEventsNI = Object.values(store.state.nodes[props.nodeNumber].storedEventsNI)
+//  console.log(name + ': update_rows: storedEventsNI ' + JSON.stringify(storedEventsNI))
+  storedEventsNI.forEach(event => {
 //    console.log(name + ': update_rows: event ' + JSON.stringify(event))
     var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
     var eventNumber = parseInt(event.eventIdentifier.substr(4, 4), 16)
@@ -223,7 +218,7 @@ const update_rows = () => {
       }
 
       // now find if we have a match
-      storedEvents.forEach(event => {
+      storedEventsNI.forEach(event => {
         if(eventIdentifier == event.eventIdentifier){
           alreadyInList = true
         }
@@ -291,10 +286,21 @@ const clickAdvanced = () => {
 }
 
 
-const clickDelete = (eventIndentifier) => {
+const clickDelete = (eventIdentifier) => {
   console.log(name + `: clickDelete`)
-  showDeleteEventDialog.value = true
-  selected_event_Identifier.value = eventIndentifier
+  const result = $q.notify({
+    message: 'Are you sure you want to delete this event?',
+    timeout: 0,
+    position: 'center',
+    color: 'primary',
+    actions: [
+      { label: 'YES', color: 'white', handler: async () => { 
+        console.log(`removeEvent ` + props.nodeNumber + ' ' + eventIdentifier)
+        store.methods.remove_event(props.nodeNumber, eventIdentifier)
+      } },
+      { label: 'NO', color: 'white', handler: () => { /* ... */ } }
+    ]
+  })
 }
 
 

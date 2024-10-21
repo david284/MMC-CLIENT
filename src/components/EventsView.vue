@@ -351,6 +351,7 @@ const clickDelete = (eventIdentifier) => {
     actions: [
       { label: 'YES', color: 'white', handler: async () => { 
         delete store.state.layout.eventDetails[eventIdentifier]
+        store.state.update_layout_needed = true
         update_events_table()
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }

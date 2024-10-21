@@ -5,12 +5,13 @@ const name = "EventFunctions"
 
 export function  getEventCount (nodeNumber, store) {
   console.log (name + " getEventList " + nodeNumber)
-  var count = Object.keys(geteventslist(nodeNumber, store)).length
+  var count = Object.keys(getEventslist(nodeNumber, store)).length
   console.log (name + " getEventList - count " + count)
   return count
 }
 
 
+/*
 export function getStoredEventIndex (store, nodeNumber, eventIdentifier) {
 //  console.log(name +': getStoredEventIndex: ' + nodeNumber, eventIdentifier) 
   var index = undefined
@@ -24,13 +25,14 @@ export function getStoredEventIndex (store, nodeNumber, eventIdentifier) {
   console.log(name +': getStoredEventIndex: result ' + index) 
   return index
 }
+*/
 
 
-const geteventslist = (nodeNumber, store) => {
+const getEventslist = (nodeNumber, store) => {
   var eventsList = []
 
   // do stored events for this node first.....
-  var storedEvents = Object.values(store.state.nodes[nodeNumber].storedEvents) 
+  var storedEvents = Object.values(store.state.nodes[nodeNumber].storedEventsNI) 
   storedEvents.forEach(event => {
     var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
     let output = {}
