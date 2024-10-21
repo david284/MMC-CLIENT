@@ -192,6 +192,16 @@ watch(eventDetails, () => {
   update_events_table()
 })
 
+const nodesDetails = computed(() => {
+  console.log(name + `: nodesDetails`)
+  return store.state.nodes
+})
+
+watch(nodesDetails, () => {
+  console.log(name + `: WATCH Nodes`)
+  update_events_table()
+})
+
 const busEvents = computed(() => {
   return Object.values(store.state.busEvents)
 })
@@ -242,15 +252,16 @@ const event_colour = (eventIdentifier) => {
   }
 }
 
-/*
+
 const nodeDetails = computed(() => {
-  return Object.keys(store.state.layout.nodeDetails)
+  return store.state.nodes
 })
 
 watch(nodeDetails, () => {
 //  console.log(name + `: WATCH Nodes`)
+  update_events_table
 })
-*/
+
 
 const nodeList = computed(() => {
   //console.log(`Computed Events`)
@@ -259,6 +270,7 @@ const nodeList = computed(() => {
 
 watch(nodeList, () => {
   //console.log(`WATCH Nodes`)
+  update_events_table
 })
 
 

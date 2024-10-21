@@ -19,7 +19,7 @@
       <q-card>
         <GenericNodeList
           :nodeNumberList=linkedNodeNumbers
-          displayTitle="Linked Nodes"
+          :eventIdentifier = eventIdentifier
         />
       </q-card>
       
@@ -56,8 +56,17 @@ watch(model, () => {
 //  console.log(name + `: WATCH model`)
 })
 
-
 const linkedNodeNumbers = ref([])
+
+const nodesDetails = computed(() => {
+  console.log(name + `: nodesDetails`)
+  return store.state.nodes
+})
+
+watch(nodesDetails, () => {
+  console.log(name + `: WATCH Nodes`)
+  update_nodes_table()
+})
 
 const nodeList = computed(() => {
   //console.log(`Computed Events`)
