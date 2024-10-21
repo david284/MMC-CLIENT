@@ -59,12 +59,12 @@ watch(model, () => {
 const linkedNodeNumbers = ref([])
 
 const nodesDetails = computed(() => {
-  console.log(name + `: nodesDetails`)
+//  console.log(name + `: nodesDetails`)
   return store.state.nodes
 })
 
 watch(nodesDetails, () => {
-  console.log(name + `: WATCH Nodes`)
+//  console.log(name + `: WATCH Nodes`)
   update_nodes_table()
 })
 

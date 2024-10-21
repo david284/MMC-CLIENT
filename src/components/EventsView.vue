@@ -193,12 +193,12 @@ watch(eventDetails, () => {
 })
 
 const nodesDetails = computed(() => {
-  console.log(name + `: nodesDetails`)
+//  console.log(name + `: nodesDetails`)
   return store.state.nodes
 })
 
 watch(nodesDetails, () => {
-  console.log(name + `: WATCH Nodes`)
+//  console.log(name + `: WATCH Nodes`)
   update_events_table()
 })
 
@@ -212,7 +212,7 @@ watch(busEvents, () => {
 })
 
 const update_events_table = () => {
-  console.log(name + `:Update Events`)
+//  console.log(name + `:Update Events`)
   let displayEventListLocal = []
   let events = store.state.layout.eventDetails
   // order by eventIdentifier

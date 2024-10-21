@@ -21,10 +21,8 @@
                 <q-td key="nodeNumber" :props="props">{{ props.row.nodeNumber }}</q-td>
                 <q-td key="name" :props="props">{{ props.row.name }}</q-td>
                 <q-td key="actions" :props="props">
-<!-- 
-                  <q-btn dense class="q-mx-xs" outline :disabled="!props.row.storedEvent" color="primary" size="md" label="Variables"
-                  @click="clickVariables(props.row.eventIndex, props.row.eventIdentifier)" no-caps/>
-                  -->
+                  <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Variables"
+                    @click="clickVariables(props.row.nodeNumber)" no-caps/>
                   <q-btn dense class="q-mx-xs" outline size="md" color="negative" label="Delete" @click="clickDelete(props.row.nodeNumber)" no-caps/>
                 </q-td>
               </q-tr>
@@ -35,15 +33,30 @@
         </q-card-section>
 
   </q-card>
+
+  <EventVariablesDialog v-model='showEventVariablesDialog'
+    :nodeNumber = selected_nodeNumber
+    :eventIdentifier = eventIdentifier
+  />
+
+  <NodeParametersLoadingDialog v-model='showNodeParametersLoadingDialog'
+    :nodeNumber = selected_nodeNumber
+  />
+
 </template>
 
 <script setup>
 import {inject, ref, onBeforeMount, onMounted, onUpdated, computed, watch} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
+import NodeParametersLoadingDialog from "components/dialogs/NodeParametersLoadingDialog"
+import EventVariablesDialog from "components/dialogs/EventVariablesDialog"
 
 const $q = useQuasar()
 const store = inject('store')
 const name = "GenericNodeList"
+const showEventVariablesDialog = ref(false)
+const showNodeParametersLoadingDialog = ref(false)
+const selected_nodeNumber = ref(0)
 
 const props = defineProps({
   nodeNumberList: {
@@ -112,6 +125,13 @@ const clickDelete = (nodeNumber) => {
   })
 }
 
+
+const clickVariables = (nodeNumber) => {
+  console.log(name + `: clickVariables: node ` + nodeNumber + ' eventIdentifer ' + props.eventIdentifier)
+  selected_nodeNumber.value = nodeNumber
+  showNodeParametersLoadingDialog.value = true;
+  showEventVariablesDialog.value = true
+}
 
 
 </script>
