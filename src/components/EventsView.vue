@@ -126,6 +126,7 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
+import { date, useQuasar, scroll } from 'quasar'
 import addEventToLayoutDialog from "components/dialogs/AddEventToLayoutDialog"
 import sendEventDialog from "components/dialogs/SendEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
@@ -134,6 +135,7 @@ import eventsViewInfoDialog from "components/dialogs/EventsViewInfoDialog"
 import linkedNodesDialog from "components/dialogs/LinkedNodesDialog"
 import {sleep} from "components/functions/utils.js"
 
+const $q = useQuasar()
 const store = inject('store')
 const name = "EventsView"
 const tab = ref('nodes')
@@ -332,16 +334,30 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
+
 const clickAddEvent = () => {
   console.log(name + `: clickAddEvent`)
   showAddEventToLayoutDialog.value = true
 }
 
+
 const clickDelete = (eventIdentifier) => {
   console.log(name + `: clickDelete`)
-  delete store.state.layout.eventDetails[eventIdentifier]
-  update_events_table()
+  const result = $q.notify({
+    message: 'Are you sure you want to delete this event?',
+    timeout: 0,
+    position: 'center',
+    color: 'primary',
+    actions: [
+      { label: 'YES', color: 'white', handler: async () => { 
+        delete store.state.layout.eventDetails[eventIdentifier]
+        update_events_table()
+      } },
+      { label: 'NO', color: 'white', handler: () => { /* ... */ } }
+    ]
+  })
 }
+
 
 const clickEventName = (eventIdentifier) => {
   console.log(name + `: clickEventName ` + eventIdentifier)
@@ -350,16 +366,19 @@ const clickEventName = (eventIdentifier) => {
   showNameEventDialog.value = true;
 }
 
+
 const clickInfo = () => {
   console.log(name + `: clickInfo`)
   showEventsViewInfoDialog.value = true
 }
+
 
 const clickLinkedNodes = (eventIdentifier) => {
   console.log(name + `: clickLinkedNodes`)
   selected_event_Identifier.value = eventIdentifier
   showLinkedNodesDialog.value = true
 }
+
 
 const clickScanNodes = () => {
   console.log(name + `: clickScanNodes`)
@@ -368,6 +387,7 @@ const clickScanNodes = () => {
     store.methods.request_all_node_events(nodeNumber)
   })
 }
+
 
 const clickSendOff = (nodeNumber, eventIdentifier) => {
   console.log (name + ": send OFF " + nodeNumber + ' ' + eventIdentifier)
@@ -392,11 +412,13 @@ const clickSendOn = (nodeNumber, eventIdentifier) => {
   }
 }
 
+
 const clickTeach = (eventIndentifier) => {
   console.log(name + `: clickTeach`)
   selected_event_Identifier.value = eventIndentifier
   showEventTeachDialog.value = true
 }
+
 
 const clickToggleShowEventsJSON = () => {
   console.log(name + `: clickToggleShowEventsJSON`)
@@ -407,15 +429,13 @@ const clickToggleShowEventsJSON = () => {
   }
 }
 
+
 const clickToggleViewMode = () => {
   console.log(name + `: clickToggleViewMode`)
   viewModeIndex.value++
   if (viewModeIndex.value > 1){viewModeIndex.value = 0}
   update_events_table()
 }
-
-
-
 
 
 </script>
