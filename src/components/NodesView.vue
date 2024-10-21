@@ -70,7 +70,6 @@
         :nodeNumber = store.state.selected_node
       />
 
-
       <advancedNodeDialog v-model='showAdvancedDialog'
         :nodeNumber = selectedNode
       />
@@ -87,12 +86,11 @@
         :nodeNumber = store.state.selected_node
       />
 
-      <parametersLoadingDialog v-model='showParametersLoadingDialog'
-        :nodeNumber = store.state.selected_node
+      <NodeParametersLoadingDialog v-model='showNodeParametersLoadingDialog'
+        :nodeNumber = selected_nodeNumber
       />
 
       <NodesViewInfoDialog v-model='showNodesViewInfoDialog'/>
-
 
       <nodeVariablesLoadingDialog v-model='showNodeVariablesLoadingDialog'
         :nodeNumber = store.state.selected_node
@@ -117,8 +115,8 @@ import advancedNodeDialog from "components/dialogs/advancedNodeDialog"
 import nameNodeDialog from "components/dialogs/NameNodeDialog"
 import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
 import nodeVariablesDialog from "components/dialogs/NodeVariablesDialog"
+import NodeParametersLoadingDialog from "components/dialogs/NodeParametersLoadingDialog"
 import NodesViewInfoDialog from "components/dialogs/NodesViewInfoDialog"
-import parametersLoadingDialog from "components/dialogs/parametersLoadingDialog"
 import nodeVariablesLoadingDialog from "components/dialogs/NodevariablesLoadingDialog"
 import vlcbServicesDialog from "components/dialogs/VLCBServicesDialog"
 import iFrameDialog from "components/dialogs/iFrameDialog";
@@ -145,14 +143,15 @@ const selected_node_valid = ref(false)
 const showAdvancedDialog = ref(false)
 const showNameNodeDialog = ref(false)
 const showNodeParametersDialog = ref(false)
+const showNodeParametersLoadingDialog = ref(false)
 const showNodesViewInfoDialog = ref(false)
 const showNodeVariablesDialog = ref(false)
 const selected_nodeNumber = ref()
-const showParametersLoadingDialog = ref(false)
 const showNodeVariablesLoadingDialog = ref(false)
 const showVLCBServicesDialog = ref(false)
 const showiFrameDialog = ref(false)
 const exampleURL = ref("dummyModule/index.html")
+
 
 const nodeList = computed(() => {
   return Object.values(store.state.nodes)
@@ -217,30 +216,6 @@ onBeforeMount(() => {
 })
 
 
-const checkNodeParameters = async (nodeNumber) => {
-  // param9 - cpu type to check if parameters have been fully retrieved
-  if(store.state.nodes[nodeNumber].parameters[9]){
-//    console.log(name + ": parameters exist")
-  } else {
-//    console.log(name + ": need to read parameters")
-    store.methods.request_all_node_parameters(nodeNumber, 20, 100)
-    showParametersLoadingDialog.value = true
-    var count = 0
-    try {
-      while (store.state.nodes[nodeNumber].parameters[9] == undefined){
-        await sleep(10)
-        count++
-        // if 5 seconds elapsed, then exit by thowing error
-        if (count >500) throw "failed to read Node Parameters"
-      }
-      showParametersLoadingDialog.value = false
-    } catch (err){
-      console.log(name + ": checkNodeParameters: " + err)
-      showParametersLoadingDialog.value = false
-    }
-  }
-}
-
 const checkNodeVariables = async (nodeNumber) => {
   var maxNodeVariableIndex = store.state.nodes[nodeNumber].parameters[6]
   if(store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex]){
@@ -302,17 +277,20 @@ Click event handlers
 
 
 const clickAdvanced = async (nodeNumber) => {
-  await checkNodeParameters(nodeNumber)
-//  await select_node_row(nodeNumber)
-  selectedNode.value = nodeNumber
+  console.log(name + `: clickAdvanced`)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
+  showNodeParametersLoadingDialog.value = true
+  await select_node_row(nodeNumber)
+  selectedNode.value = nodeNumber
   showAdvancedDialog.value=true
   console.log(name + ': clickAdvanced: node' + store.state.selected_node)
 }
 
 
 const clickEvents = async (nodeNumber) => {
-  await checkNodeParameters(nodeNumber)
+  console.log(name + `: clickEvents`)
+  selected_nodeNumber.value = nodeNumber    // used to highlight row
+  showNodeParametersLoadingDialog.value = true
   await checkNodeVariables(nodeNumber)
   await select_node_row(nodeNumber)
   console.log(name + ': clickEvents: node', nodeNumber)
@@ -324,13 +302,17 @@ const clickInfo = () => {
 }
 
 const clickNameNode = async (nodeNumber) => {
-  await checkNodeParameters(nodeNumber)
-  select_node_row(nodeNumber)
   console.log(name + `: clickNameNode: node ` + nodeNumber)
+  selected_nodeNumber.value = nodeNumber    // used to highlight row
+  showNodeParametersLoadingDialog.value = true
+  select_node_row(nodeNumber)
   showNameNodeDialog.value = true;
 }
 
 const clickParameters = async (nodeNumber) => {
+  console.log(name + `: clickParameters`)
+  selected_nodeNumber.value = nodeNumber    // used to highlight row
+  showNodeParametersLoadingDialog.value = true
   // always re-read parameters
   store.methods.request_all_node_parameters(nodeNumber, 20, 100)
   await select_node_row(nodeNumber)
@@ -345,26 +327,31 @@ const clickRefresh = () => {
 
 
 const clickVariables = async (nodeNumber) => {
-  await checkNodeParameters(nodeNumber)
-  await select_node_row(nodeNumber)
   console.log(name + `: clickVariables: node ` + nodeNumber)
+  selected_nodeNumber.value = nodeNumber    // used to highlight row
+  showNodeParametersLoadingDialog.value = true
+  await select_node_row(nodeNumber)
   if ((nodeNumber == 1000) && store.state.develop){
     showiFrameDialog.value = true
   } else {
-    if(store.state.nodes[nodeNumber].parameters[9]) {
-      // parameters loaded, so read variables & showNodeVariablesDialog
-      store.methods.request_all_node_variables(
-        nodeNumber,
-        store.state.nodes[nodeNumber].parameters[6],
-        100,
-        1)
-      showNodeVariablesDialog.value = true
+    // wait for parameters to load
+    for (let i = 0; i < 100; i++){
+      await sleep (10)
+      if(store.state.nodes[nodeNumber].parameters[9]) {break}
     }
+    store.methods.request_all_node_variables(
+      nodeNumber,
+      store.state.nodes[nodeNumber].parameters[6],
+      100,
+      1)
+    showNodeVariablesDialog.value = true
   }
 }
 
 const clickVLCB = async (nodeNumber) => {
   console.log(name + ': clickVLCB')
+  selected_nodeNumber.value = nodeNumber    // used to highlight row
+  showNodeParametersLoadingDialog.value = true
   // don't need parameters for this
   await select_node_row(nodeNumber)
   store.methods.request_diagnostics(nodeNumber)

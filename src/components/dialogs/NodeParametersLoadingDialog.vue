@@ -40,7 +40,7 @@ const model = computed({
 
 // model changes when Dialog opened & closed
 watch(model, () => {
-  //console.log(name + `: WATCH model`)
+  console.log(name + `: WATCH model ` + model.value)
   if (model.value){checkNodeParameters(props.nodeNumber)}
 })
 
