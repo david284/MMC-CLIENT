@@ -1,7 +1,7 @@
 <template>
     <q-card style="max-height: 70vh" class="scroll q-ma-md">
 
-        <q-card-section class="no-margin q-py-none-xs" style="width: 450px;">
+        <q-card-section class="no-margin q-py-none-xs" style="width: 750px;">
 
           <q-table
             flat bordered
