@@ -19,6 +19,7 @@
               <q-tr :props="props" class="q-my-none q-py-none">
                 <q-td key="nodeNumber" :props="props">{{ props.row.nodeNumber }}</q-td>
                 <q-td key="name" :props="props">{{ props.row.name }}</q-td>
+                <q-td key="group" :props="props">{{ props.row.group }}</q-td>
                 <q-td key="actions" :props="props">
                   <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Variables"
                     @click="clickVariables(props.row.nodeNumber)" no-caps/>
@@ -86,6 +87,7 @@ const teRows = ref([])
 const teColumns = [
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node Number', align: 'left', sortable: true},
   {name: 'name', field: 'name', required: true, label: 'Name', align: 'left', sortable: true},
+  {name: 'group', field: 'group', required: true, label: 'Node Group', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
 ]
 
@@ -94,7 +96,11 @@ const update_nodes_table = async () => {
   teRows.value = []
   props.nodeNumberList.forEach(nodeNumber => {
     var nodeName = store.getters.node_name(nodeNumber)
-    teRows.value.push({"nodeNumber" : nodeNumber, "name" : nodeName})
+    teRows.value.push({
+      "nodeNumber" : nodeNumber, 
+      "name" : nodeName,
+      "group" : store.getters.node_group(nodeNumber)
+    })
   })
 }
 
