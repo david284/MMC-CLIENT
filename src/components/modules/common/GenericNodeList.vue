@@ -9,7 +9,6 @@
             :rows="teRows"
             :columns="teColumns"
             row-key="nodeNumber"
-            hide-header
             hide-bottom
             virtual-scroll
             :rows-per-page-options="[0]"
@@ -41,22 +40,34 @@
 
   <NodeParametersLoadingDialog v-model='showNodeParametersLoadingDialog'
     :nodeNumber = selected_nodeNumber
+    @NodeParametersLoadingDialog="nodeParametersLoadingReturn = $event"
   />
+
+  <NodeVariablesLoadingDialog v-model='showNodeVariablesLoadingDialog'
+    :nodeNumber = selected_nodeNumber
+    @NodeVariablesLoadingDialog="nodeVariablesLoadingReturn = $event"
+  />
+
 
 </template>
 
 <script setup>
 import {inject, ref, onBeforeMount, onMounted, onUpdated, computed, watch} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
+import {sleep} from "components/functions/utils.js"
 import NodeParametersLoadingDialog from "components/dialogs/NodeParametersLoadingDialog"
+import NodeVariablesLoadingDialog from "components/dialogs/NodeVariablesLoadingDialog"
 import EventVariablesDialog from "components/dialogs/EventVariablesDialog"
 
 const $q = useQuasar()
 const store = inject('store')
 const name = "GenericNodeList"
 const showEventVariablesDialog = ref(false)
-const showNodeParametersLoadingDialog = ref(false)
 const selected_nodeNumber = ref(0)
+const showNodeVariablesLoadingDialog = ref(false)
+const showNodeParametersLoadingDialog = ref(false)
+const nodeParametersLoadingReturn = ref('')
+const nodeVariablesLoadingReturn = ref('')
 
 const props = defineProps({
   nodeNumberList: {
@@ -86,6 +97,31 @@ const update_nodes_table = async () => {
     teRows.value.push({"nodeNumber" : nodeNumber, "name" : nodeName})
   })
 }
+
+
+const checkNodeParameters = async (nodeNumber) => {
+  nodeParametersLoadingReturn.value=''
+  showNodeParametersLoadingDialog.value = true
+  // wait for parameters to load
+  for (let i = 0; i < 1000; i++){
+     if (nodeParametersLoadingReturn.value.length > 0) break
+     await sleep (10)
+  }
+  showNodeParametersLoadingDialog.value = false
+}
+
+
+const checkNodeVariables = async (nodeNumber) => {
+  nodeVariablesLoadingReturn.value =''
+  showNodeVariablesLoadingDialog.value = true
+  // wait for variables to load
+  for (let i = 0; i < 10000; i++){
+     if (nodeVariablesLoadingReturn.value.length > 0) break
+     await sleep (10)
+  }
+  showNodeVariablesLoadingDialog.value = false
+}
+
 
 onBeforeMount(() => {
 //  console.log(name + `: onBeforeMount`)
@@ -126,10 +162,11 @@ const clickDelete = (nodeNumber) => {
 }
 
 
-const clickVariables = (nodeNumber) => {
+const clickVariables = async (nodeNumber) => {
   console.log(name + `: clickVariables: node ` + nodeNumber + ' eventIdentifer ' + props.eventIdentifier)
   selected_nodeNumber.value = nodeNumber
-  showNodeParametersLoadingDialog.value = true;
+  await checkNodeParameters(nodeNumber)
+  await checkNodeVariables(nodeNumber)
   showEventVariablesDialog.value = true
 }
 
