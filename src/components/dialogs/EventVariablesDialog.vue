@@ -113,7 +113,7 @@ const showStoredEventJSON = ref(false)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
-  nodeNumber: {type: Number, required: true },
+  nodeNumber: {type: Number, default: 0 },
   eventIdentifier: {type: String, required: true },
   newEvent:  { type: Boolean, default: false }
 })

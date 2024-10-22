@@ -79,9 +79,11 @@
     :newEvent = isNewEvent
   />
 
-  <parametersLoadingDialog v-model='showParametersLoadingDialog'/>
+  <NodeParametersLoadingDialog v-model='showNodeParametersLoadingDialog'
+    :nodeNumber = selected_event_node
+  />
 
-  <nodeVariablesLoadingDialog v-model='showNodeVariablesLoadingDialog'/>
+  <NodeVariablesLoadingDialog v-model='showNodeVariablesLoadingDialog'/>
 
 
 
@@ -94,17 +96,17 @@ import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from 
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import {createNewEvent} from "components/functions/EventFunctions.js"
 import {sleep} from "components/functions/utils.js"
-import parametersLoadingDialog from "components/dialogs/parametersLoadingDialog"
-import nodeVariablesLoadingDialog from "components/dialogs/NodevariablesLoadingDialog"
+import NodeParametersLoadingDialog from "components/dialogs/NodeParametersLoadingDialog"
+import NodeVariablesLoadingDialog from "components/dialogs/NodeVariablesLoadingDialog"
 
 const store = inject('store')
 const name = 'EventTeachDialog'
 
 const selected_event_Identifier = ref("") // Dialog will complain if null
-const selected_event_node = ref(0) // Dialog will complain if null
+const selected_event_node = ref() // Dialog will complain if null
 const showEventVariablesDialog = ref(false)
 const showNodeVariablesLoadingDialog = ref(false)
-const showParametersLoadingDialog = ref(false)
+const showNodeParametersLoadingDialog = ref(false)
 const isNewEvent = ref(false)
 
 
@@ -234,33 +236,6 @@ const readEventVariables = (nodeNumber, eventIdentifier) => {
 }
 
 
-const checkNodeParameters = async (nodeNumber) => {
-  // param9 - cpu type to check if parameters have been fully retrieved
-  if(store.state.nodes[nodeNumber].parameters[9]){
-//    console.log(name + ": parameters exist")
-  } else {
-//    console.log(name + ": checkNodeParameters: need to read node parameters")
-    store.methods.request_all_node_parameters(nodeNumber, 20, 100)
-    showParametersLoadingDialog.value = true
-    var count = 0
-    try {
-      while (store.state.nodes[nodeNumber].parameters[9] == undefined){
-        await sleep(10)
-        count++
-        // if 5 seconds elapsed, then exit by thowing error
-        if (count >500) throw "failed to read Node Parameters"
-      }
-      showParametersLoadingDialog.value = false
-    } catch (err){
-      console.log(name + ": checkNodeParameters: " + err)
-      showParametersLoadingDialog.value = false
-    }
-    await sleep(1000)  // give system time to process all incoming data
-//    console.log(name + ": checkNodeParameters: end")
-  }
-}
-
-
 const checkNodeVariables = async (nodeNumber) => {
   var maxNodeVariableIndex = store.state.nodes[nodeNumber].parameters[6]
   if(store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex]){
@@ -300,25 +275,32 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
+
 const clickTeachEvent = async () => {
   console.log(name + `: clickTeachEvent: ${newNode.value} : ${props.eventIdentifier}`)
   if (newNode.value != "") {
     // get node number from input value
     var array = newNode.value.split(':')
     var nodeNumberToBeTaught = parseInt(array[0])
-//    console.log(`teach_event : ${nodeNumberToBeTaught} : ${props.eventIdentifier}`)
+    selected_event_node.value = nodeNumberToBeTaught
 
-    await checkNodeParameters(nodeNumberToBeTaught)
+    showNodeParametersLoadingDialog.value = true
+    // wait for parameters to load
+    for (let i = 0; i < 100; i++){
+      await sleep (10)
+      if(store.state.nodes[nodeNumber].parameters[9]) {break}
+    }
+
     await checkNodeVariables(nodeNumberToBeTaught)
     createNewEvent(store, nodeNumberToBeTaught, props.eventIdentifier)             
 
-    selected_event_node.value = nodeNumberToBeTaught
     selected_event_Identifier.value = props.eventIdentifier
     isNewEvent.value=true
     showEventVariablesDialog.value = true
     newNode.value = undefined
   }
 }
+
 
 const clickVariables = (nodeNumber, eventIdentifier) => {
   console.log(name + `: clickVariables ` + nodeNumber + ' ' + eventIdentifier)
@@ -327,6 +309,7 @@ const clickVariables = (nodeNumber, eventIdentifier) => {
   isNewEvent.value=false
   showEventVariablesDialog.value = true
 }
+
 
 </script>
 

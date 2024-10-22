@@ -27,11 +27,11 @@ const props = defineProps({
   modelValue: { type: Boolean, required: true },
   nodeNumber: {
     type: Number,
-    required: true
+    default: 0
   }
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'NodeParametersLoadingDialog'])
 
 const model = computed({
       get() { return props.modelValue },
@@ -39,9 +39,9 @@ const model = computed({
     })
 
 // model changes when Dialog opened & closed
-watch(model, () => {
-  console.log(name + `: WATCH model ` + model.value)
-  if (model.value){checkNodeParameters(props.nodeNumber)}
+watch(model, async () => {
+//  console.log(name + `: WATCH model ` + model.value)
+  if (model.value == true){await checkNodeParameters(props.nodeNumber)}
 })
 
 
@@ -55,17 +55,20 @@ const checkNodeParameters = async (nodeNumber) => {
     var count = 0
     try {
       while (store.state.nodes[nodeNumber].parameters[9] == undefined){
-        await sleep(10)
+        await sleep(1)
         count++
         // if 5 seconds elapsed, then exit by thowing error
-        if (count >500) throw "failed to read Node Parameters"
+        if (count >500) {throw "********** failed to read Node Parameters"}
       }
       model.value = false
     } catch (err){
       console.log(name + ": checkNodeParameters: " + err)
       model.value = false
     }
+//    console.log(name + ": checkNodeParameters: count " + count)
   }
+  // signal it's complete
+  emit('NodeParametersLoadingDialog', 'finished normally')
 }
 
 
