@@ -81,9 +81,14 @@
 
   <NodeParametersLoadingDialog v-model='showNodeParametersLoadingDialog'
     :nodeNumber = selected_event_node
+    @NodeParametersLoadingDialog="nodeParametersLoadingReturn = $event"
   />
 
-  <NodeVariablesLoadingDialog v-model='showNodeVariablesLoadingDialog'/>
+  <NodeVariablesLoadingDialog v-model='showNodeVariablesLoadingDialog'
+    :nodeNumber = selected_event_node
+    @NodeVariablesLoadingDialog="nodeVariablesLoadingReturn = $event"
+  />
+
 
 
 
@@ -108,6 +113,8 @@ const showEventVariablesDialog = ref(false)
 const showNodeVariablesLoadingDialog = ref(false)
 const showNodeParametersLoadingDialog = ref(false)
 const isNewEvent = ref(false)
+const nodeParametersLoadingReturn = ref('')
+const nodeVariablesLoadingReturn = ref('')
 
 
 const props = defineProps({
@@ -236,36 +243,28 @@ const readEventVariables = (nodeNumber, eventIdentifier) => {
 }
 
 
-const checkNodeVariables = async (nodeNumber) => {
-  var maxNodeVariableIndex = store.state.nodes[nodeNumber].parameters[6]
-  if(store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex]){
-  } else {
-//    console.log(name + ": checkNodeVariables: need to read node variables")
-    store.methods.request_all_node_variables(
-      nodeNumber,
-      store.state.nodes[nodeNumber].parameters[6],
-      100,
-      1
-    )
-    showNodeVariablesLoadingDialog.value = true
-    // set a count down based on number of node variables
-    // but add minimum offset
-    var countDown = (maxNodeVariableIndex * 10) + 20
-    try {
-      while (store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex] == undefined){
-        await sleep(10)
-        countDown--
-        // 
-        if (countDown <0 ) throw "failed to read Node Variables"
-      }
-      showNodeVariablesLoadingDialog.value = false
-    } catch (err){
-      console.log(name + ": checkNodeVariables: " + err)
-      showNodeVariablesLoadingDialog.value = false
-    }
-    await sleep(1000)  // give system time to process all incoming data
-//    console.log(name + ": checkNodeVariables: end")
+
+const checkNodeParameters = async (nodeNumber) => {
+  nodeParametersLoadingReturn.value=''
+  showNodeParametersLoadingDialog.value = true
+  // wait for parameters to load
+  for (let i = 0; i < 1000; i++){
+     if (nodeParametersLoadingReturn.value.length > 0) break
+     await sleep (10)
   }
+  showNodeParametersLoadingDialog.value = false
+}
+
+
+const checkNodeVariables = async (nodeNumber) => {
+  nodeVariablesLoadingReturn.value =''
+  showNodeVariablesLoadingDialog.value = true
+  // wait for variables to load
+  for (let i = 0; i < 10000; i++){
+     if (nodeVariablesLoadingReturn.value.length > 0) break
+     await sleep (10)
+  }
+  showNodeVariablesLoadingDialog.value = false
 }
 
 
@@ -284,13 +283,7 @@ const clickTeachEvent = async () => {
     var nodeNumberToBeTaught = parseInt(array[0])
     selected_event_node.value = nodeNumberToBeTaught
 
-    showNodeParametersLoadingDialog.value = true
-    // wait for parameters to load
-    for (let i = 0; i < 100; i++){
-      await sleep (10)
-      if(store.state.nodes[nodeNumber].parameters[9]) {break}
-    }
-
+    await checkNodeParameters(nodeNumberToBeTaught)
     await checkNodeVariables(nodeNumberToBeTaught)
     createNewEvent(store, nodeNumberToBeTaught, props.eventIdentifier)             
 
