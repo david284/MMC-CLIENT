@@ -172,6 +172,7 @@ const methods = {
     socket.emit('REQUEST_ALL_NODE_EVENTS', {"nodeNumber": nodeNumber})
     console.log(`REQUEST_ALL_NODE_EVENTS`)
   },
+  /*
   request_all_event_variables(nodeNumber, eventIndex, delay, variables) {
     console.log(name + `: REQUEST_ALL_EVENT_VARIABLES: nodeNumber: ` + nodeNumber + ` eventIndex: ` + eventIndex)
     socket.emit('REQUEST_ALL_EVENT_VARIABLES', {
@@ -181,6 +182,7 @@ const methods = {
       "delay": delay
     })
   },
+  */
   request_event_variables_by_identifier(nodeNumber, eventIdentifier) {
     console.log(name + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER: nodeNumber: ` + nodeNumber + ` eventIdentifier: ` + eventIdentifier)
     socket.emit('REQUEST_ALL_EVENT_VARIABLES', {
@@ -188,6 +190,7 @@ const methods = {
       "eventIdentifier": eventIdentifier
     })
   },
+  /*
   request_event_variable(nodeNumber, eventIndex, eventVariableId){
     console.log(`REQUEST_EVENT_VARIABLE ${eventIndex} ${eventVariableId}`)
     socket.emit('REQUEST_EVENT_VARIABLE', {
@@ -196,6 +199,7 @@ const methods = {
       "eventVariableId": eventVariableId
     })
   },
+  */
   request_server_status(){
     socket.emit('REQUEST_SERVER_STATUS')
   },
@@ -252,6 +256,7 @@ const methods = {
     socket.emit('START_CONNECTION', data)
   },
 
+  /*
   teach_event(nodeNumber, eventName, eventIndex) {
     socket.emit('TEACH_EVENT', {
       "nodeNumber": nodeNumber,
@@ -259,6 +264,7 @@ const methods = {
       "eventIndex": eventIndex
     })
   },
+*/
 
   update_layout() {
       console.log(`Update Layout Data : ` + state.title)

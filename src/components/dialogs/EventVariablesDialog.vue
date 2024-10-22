@@ -217,12 +217,13 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 const clickClose = () => {
-  console.log(name +`: clickClose`)
+  console.log(name +`: clickClose: node ` + props.nodeNumber + ' eventIdentifier ' + props.eventIdentifier)
   if (props.newEvent){
     // if it's a new event, ensure an event is created in case no variable was changed
     // need to do it here, as universal won't create an event if nothing changed
     // but will refresh the events, so we'll lose the temporary event initially created
     // hence doing it as we leave this dialog
+    console.log(name +`: clickClose: ` + JSON.stringify(store.state.nodes[props.nodeNumber].storedEventsNI))
     try {
       var nodeEntry = store.state.nodes[props.nodeNumber]
       var eventVariableValue = nodeEntry.storedEventsNI[props.eventIdentifier].variables[1]

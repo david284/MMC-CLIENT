@@ -46,7 +46,7 @@
           <q-td key="actions" :props="props">
             <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
             <q-btn dense class="q-mx-xs" outline :disabled="!props.row.storedEvent" color="primary" size="md" label="Variables"
-            @click="clickVariables(props.row.eventIndex, props.row.eventIdentifier)" no-caps/>
+            @click="clickVariables(props.row.eventIdentifier)" no-caps/>
             <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
             <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.eventIdentifier)" no-caps>send ON</q-btn>
             <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.eventIdentifier)" no-caps>send OFF</q-btn>
@@ -244,18 +244,6 @@ const update_rows = () => {
 }
 
 
-
-const readEventVariables = (eventIndex) => {
-  // refresh event list
-//  console.log(name + `: readEventVariables - eventIndex ` + eventIndex)
-  store.methods.request_all_event_variables(
-    props.nodeNumber,
-    eventIndex,
-    100,
-    store.state.nodes[props.nodeNumber].parameters[5]
-  );
-}
-
 onBeforeMount(() => {
 //  console.log(name + ": onBeforeMount")
   update_rows()
@@ -354,8 +342,8 @@ const clickTeach = (eventIndentifier) => {
 }
 
 
-const clickVariables = (eventIndex, eventIdentifier) => {
-  readEventVariables(eventIndex)
+const clickVariables = (eventIdentifier) => {
+  store.methods.request_event_variables_by_identifier(props.nodeNumber, eventIdentifier)
   selected_event_Identifier.value = eventIdentifier
   console.log(name + `: clickVariables: node ` + props.nodeNumber)
   showEventVariablesDialog.value = true
