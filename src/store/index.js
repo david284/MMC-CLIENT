@@ -185,7 +185,7 @@ const methods = {
   */
   request_event_variables_by_identifier(nodeNumber, eventIdentifier) {
     console.log(name + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER: nodeNumber: ` + nodeNumber + ` eventIdentifier: ` + eventIdentifier)
-    socket.emit('REQUEST_ALL_EVENT_VARIABLES', {
+    socket.emit('REQUEST_EVENT_VARIABLES_BY_IDENTIFIER', {
       "nodeNumber": nodeNumber,
       "eventIdentifier": eventIdentifier
     })
