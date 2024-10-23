@@ -295,11 +295,13 @@ const clickTeachEvent = async () => {
 }
 
 
-const clickVariables = (nodeNumber, eventIdentifier) => {
+const clickVariables = async (nodeNumber, eventIdentifier) => {
   console.log(name + `: clickVariables ` + nodeNumber + ' ' + eventIdentifier)
   selected_event_node.value = nodeNumber
   selected_event_Identifier.value = eventIdentifier
   isNewEvent.value=false
+  await checkNodeParameters(nodeNumber)
+  await checkNodeVariables(nodeNumber)
   showEventVariablesDialog.value = true
 }
 
