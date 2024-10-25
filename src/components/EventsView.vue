@@ -97,7 +97,7 @@
 
   </div>
 
-  <addEventToLayoutDialog v-model='showAddEventToLayoutDialog' />
+  <AddEventDialog v-model='showAddEventDialog' />
 
   <nameEventDialog v-model='showNameEventDialog'
     :eventIdentifier = selected_event_Identifier
@@ -127,7 +127,7 @@
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
-import addEventToLayoutDialog from "components/dialogs/AddEventToLayoutDialog"
+import AddEventDialog from "components/dialogs/AddEventDialog"
 import sendEventDialog from "components/dialogs/SendEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
@@ -138,11 +138,10 @@ import {sleep} from "components/functions/utils.js"
 const $q = useQuasar()
 const store = inject('store')
 const name = "EventsView"
-const tab = ref('nodes')
 const filter = ref('')
 const pagnation = {rowsPerPage: 0}
 let displayEventTable = ref([])
-const showAddEventToLayoutDialog = ref(false)
+const showAddEventDialog = ref(false)
 const showNameEventDialog = ref(false)
 const showSendEventDialog = ref(false)
 const showEventTeachDialog = ref(false)
@@ -349,7 +348,7 @@ Click event handlers
 
 const clickAddEvent = () => {
   console.log(name + `: clickAddEvent`)
-  showAddEventToLayoutDialog.value = true
+  showAddEventDialog.value = true
 }
 
 

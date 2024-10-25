@@ -78,19 +78,25 @@ const getEventslist = (nodeNumber, store) => {
 
 export function createNewEvent (store, nodeNumber, eventIdentifier) {
   console.log(name + `: createNewEvent: ${nodeNumber} : ${eventIdentifier}`)
+  var result = false
   // lets create a shortcut to the node entry for readability
   var nodeEntry = store.state.nodes[nodeNumber]
-  // create temporary event entry in storedEventNI table (will be overwritten when module read after teach)
-  nodeEntry.storedEventsNI[eventIdentifier] = {
-      "eventIdentifier": eventIdentifier,
-      "eventIndex": 1,
-      "node": nodeNumber,
-      "variables": {}
+  // check it doesn't already exist
+  if (nodeEntry.storedEventsNI[eventIdentifier] == undefined){
+    // create temporary event entry in storedEventNI table (will be overwritten when module read after teach)
+    nodeEntry.storedEventsNI[eventIdentifier] = {
+        "eventIdentifier": eventIdentifier,
+        "eventIndex": 1,
+        "node": nodeNumber,
+        "variables": {}
+    }
+    nodeEntry.storedEventsNI[eventIdentifier].variables[0] = nodeEntry.parameters[5]
+    for (var i = 1; i<= nodeEntry.parameters[5]; i++){
+      nodeEntry.storedEventsNI[eventIdentifier].variables[i] = 0
+    }
+    result = true
+  } else {
+    console.log(name + `: createNewEvent: event already exists ${nodeNumber} : ${eventIdentifier}`)
   }
-  nodeEntry.storedEventsNI[eventIdentifier].variables[0] = nodeEntry.parameters[5]
-  for (var i = 1; i<= nodeEntry.parameters[5]; i++){
-    nodeEntry.storedEventsNI[eventIdentifier].variables[i] = 0
-  }
-
-
+  return result
 }

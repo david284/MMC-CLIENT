@@ -40,7 +40,7 @@
           <q-td key="eventGroup" :props="props">{{ props.row.eventGroup }}</q-td>
           <q-td key="nodeNumber" :props="props">{{ props.row.nodeNumber }}</q-td>
           <q-td key="eventNumber" :props="props">{{ props.row.eventNumber }}</q-td>
-          <q-td key="eventIndex" :props="props">{{ props.row.eventIndex }}</q-td>
+          <!-- <q-td key="eventIndex" :props="props">{{ props.row.eventIndex }}</q-td> -->
           <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td>
           <q-td key="source" :props="props">{{ props.row.source }}</q-td>
           <q-td key="actions" :props="props">
@@ -57,7 +57,9 @@
     </q-table>
     </div>
 
-    <addEventToNodeDialog v-model='showAddEventToNodeDialog' />
+    <AddEventDialog v-model='showAddEventDialog'
+      :nodeNumber = nodeNumber
+    />
 
     <advancedEventsDialog v-model='showAdvancedEventDialog'
       :nodeNumber = nodeNumber
@@ -93,7 +95,7 @@
 
 import {computed, inject, ref, watch, onBeforeMount, onMounted, onUpdated} from "vue"
 import { date, useQuasar, scroll } from 'quasar'
-import addEventToNodeDialog from "components/dialogs/AddEventToNodeDialog"
+import AddEventDialog from "components/dialogs/AddEventDialog"
 import advancedEventsDialog from "components/dialogs/AdvancedEventsDialog"
 import sendEventDialog from "components/dialogs/SendEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
@@ -106,7 +108,7 @@ const store = inject('store')
 const name = "EventsListByNode"
 const rows = ref([])
 const filter = ref('')
-const showAddEventToNodeDialog = ref(false)
+const showAddEventDialog = ref(false)
 const showAdvancedEventDialog = ref(false)
 const showEventTeachDialog = ref(false)
 const showEventVariablesDialog = ref(false)
@@ -129,7 +131,7 @@ const columns = [
   {name: 'eventGroup', field: 'eventGroup', required: false, label: 'Group', align: 'left', sortable: true},
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Event node', align: 'left', sortable: true},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event number', align: 'left', sortable: true},
-  {name: 'eventIndex', field: 'eventIndex', required: true, label: 'Event index', align: 'left', sortable: true},
+//  {name: 'eventIndex', field: 'eventIndex', required: true, label: 'Event index', align: 'left', sortable: true},
   {name: 'eventType', field: 'eventType', required: true, label: 'Event type', align: 'left', sortable: true},
   {name: 'source', field: 'source', required: true, label: 'Event source', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
@@ -191,7 +193,7 @@ const update_rows = () => {
     output['eventIdentifier'] = event.eventIdentifier
     output['eventName'] = store.getters.event_name(event.eventIdentifier)
     output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
-    output['eventIndex'] = event.eventIndex
+//    output['eventIndex'] = event.eventIndex
     output['nodeNumber'] = eventNodeNumber
     output['eventNumber'] = eventNumber
     output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
@@ -264,7 +266,7 @@ Click event handlers
 
 const clickAddEvent = () => {
   console.log(name + `: clickAddEvent`)
-  showAddEventToNodeDialog.value = true
+  showAddEventDialog.value = true
 }
 
 
