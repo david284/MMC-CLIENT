@@ -267,17 +267,6 @@ const methods = {
         "variableValue": parseInt(nodeVariableValue)
       })
     //}
-  },
-  update_event_variable(nodeNumber, eventName, eventIndex, eventVariableIndex, eventVariableValue) {
-    console.log(`MAIN Update Event Variable : ${eventIndex} : ${eventVariableIndex} : ${eventVariableValue} `)
-    state.nodes[nodeNumber].storedEvents[eventIndex].variables[eventVariableIndex] = eventVariableValue
-    socket.emit('UPDATE_EVENT_VARIABLE',{
-      "nodeNumber": nodeNumber,
-      "eventName": eventName,
-      "eventIndex": eventIndex,
-      "eventVariableId": eventVariableIndex,
-      "eventVariableValue": parseInt(eventVariableValue)
-    })
   }
 
 }
