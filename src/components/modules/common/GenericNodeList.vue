@@ -173,7 +173,7 @@ const clickVariables = async (nodeNumber) => {
   selected_nodeNumber.value = nodeNumber
   await checkNodeParameters(nodeNumber)
   await checkNodeVariables(nodeNumber)
-  store.methods.request_event_variables_by_identifier(nodeNumber, props.eventIdentifier)
+  await store.methods.request_event_variables_by_identifier(nodeNumber, props.eventIdentifier)
   showEventVariablesDialog.value = true
 }
 

@@ -88,7 +88,7 @@ const update_event = (newValue) => {
     //console.log(`Valid Value : ${newValue}`)
     error_message.value = ''
     error.value = false
-    store.methods.update_event_variable(props.nodeNumber, eventIdentifier, props.eventIndex, props.eventVariableIndex, newValue)
+    store.methods.event_teach_by_identifier(props.nodeNumber, eventIdentifier, props.eventVariableIndex, newValue)
   }
 }
 

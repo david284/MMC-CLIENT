@@ -97,6 +97,7 @@
 
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
 import { useQuasar } from 'quasar'
+import {sleep} from "components/functions/utils.js"
 import EventVariables from "components/modules/common/EventVariables"
 import EventVariableRaw from "components/modules/common/EventVariableRaw"
 import manageModuleDescriptorsDialog from "components/dialogs/ManageModuleDescriptorsDialog";
@@ -216,18 +217,21 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
-const clickClose = () => {
+const clickClose = async () => {
   console.log(name +`: clickClose: node ` + props.nodeNumber + ' eventIdentifier ' + props.eventIdentifier)
   if (props.newEvent){
-    // if it's a new event, ensure an event is created in case no variable was changed
-    // need to do it here, as universal won't create an event if nothing changed
-    // but will refresh the events, so we'll lose the temporary event initially created
-    // hence doing it as we leave this dialog
+    // An event will be created, if it doesn't exist, when any variable is changed (EVLRN)
+    // if it's a new event, in the case no variable was changed, ensure an event was created
+    // by setting EV1
+    // and then refresh all events as index may have changed
     console.log(name +`: clickClose: ` + JSON.stringify(store.state.nodes[props.nodeNumber].storedEventsNI))
     try {
       var nodeEntry = store.state.nodes[props.nodeNumber]
       var eventVariableValue = nodeEntry.storedEventsNI[props.eventIdentifier].variables[1]
+      if (eventVariableValue == undefined) {eventVariableValue = 0}
       store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, 1, eventVariableValue)
+      await sleep(250)  
+      store.methods.request_all_node_events(props.nodeNumber)
     } catch (err){
       console.log(name + ': clickClose ' + err)        
     }

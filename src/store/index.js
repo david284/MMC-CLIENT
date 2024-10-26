@@ -172,17 +172,6 @@ const methods = {
     socket.emit('REQUEST_ALL_NODE_EVENTS', {"nodeNumber": nodeNumber})
     console.log(`REQUEST_ALL_NODE_EVENTS`)
   },
-  /*
-  request_all_event_variables(nodeNumber, eventIndex, delay, variables) {
-    console.log(name + `: REQUEST_ALL_EVENT_VARIABLES: nodeNumber: ` + nodeNumber + ` eventIndex: ` + eventIndex)
-    socket.emit('REQUEST_ALL_EVENT_VARIABLES', {
-      "nodeNumber": nodeNumber,
-      "eventIndex": eventIndex,
-      "variables": variables,
-      "delay": delay
-    })
-  },
-  */
   request_event_variables_by_identifier(nodeNumber, eventIdentifier) {
     console.log(name + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER: nodeNumber: ` + nodeNumber + ` eventIdentifier: ` + eventIdentifier)
     socket.emit('REQUEST_EVENT_VARIABLES_BY_IDENTIFIER', {
@@ -190,16 +179,6 @@ const methods = {
       "eventIdentifier": eventIdentifier
     })
   },
-  /*
-  request_event_variable(nodeNumber, eventIndex, eventVariableId){
-    console.log(`REQUEST_EVENT_VARIABLE ${eventIndex} ${eventVariableId}`)
-    socket.emit('REQUEST_EVENT_VARIABLE', {
-      "nodeNumber": nodeNumber,
-      "eventIndex": eventIndex,
-      "eventVariableId": eventVariableId
-    })
-  },
-  */
   request_server_status(){
     socket.emit('REQUEST_SERVER_STATUS')
   },
@@ -214,7 +193,6 @@ const methods = {
     socket.emit('RESET_NODE', nodeNumber)
     console.log(name + ': RESET_NODE ' + nodeNumber)
   },
-
   save_backup(data){
     console.log(`SAVE_BACKUP`)
     data['layoutName'] = state.layout.layoutDetails.title
@@ -250,22 +228,10 @@ const methods = {
       "deviceNumber": eventNumber
     })
   },
-
   start_connection(data) {
     console.log(name + `: start_connection : ` + JSON.stringify(data))
     socket.emit('START_CONNECTION', data)
   },
-
-  /*
-  teach_event(nodeNumber, eventName, eventIndex) {
-    socket.emit('TEACH_EVENT', {
-      "nodeNumber": nodeNumber,
-      "eventName": eventName,
-      "eventIndex": eventIndex
-    })
-  },
-*/
-
   update_layout() {
       console.log(`Update Layout Data : ` + state.title)
       socket.emit('UPDATE_LAYOUT_DATA', state.layout)
@@ -313,6 +279,7 @@ const methods = {
       "eventVariableValue": parseInt(eventVariableValue)
     })
   }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -574,9 +541,10 @@ socket.on("NODE", (data) => {
   // remove original stored events by Index
   delete data.storedEvents
   state.nodes[data.nodeNumber] = data
+  console.log(name + `: socket.on NODE: ` + JSON.stringify(data))
   try{
-    var storedEvents = Object.values(state.nodes[data.nodeNumber].storedEventsNI)
-    storedEvents.forEach(event => {
+    var events = Object.values(state.nodes[data.nodeNumber].storedEventsNI)
+    events.forEach(event => {
       // call the get event name, as this will populate eventDetails if it doesn't exist
       getters.event_name(event.eventIdentifier)
     })
@@ -587,12 +555,16 @@ socket.on("NODE", (data) => {
 
 socket.on("NODES", (data) => {
   console.log(`RECEIVED NODES`)
+  var nodes = Object.values(data)
+  // remove original stored events by Index
+  nodes.forEach(node =>{
+    delete data[node.nodeNumber].storedEvents
+  })
   state.nodes = data
+//  console.log(name + `: socket.on NODES: ` + JSON.stringify(data))
   try{
     var nodes = Object.values(state.nodes)
     nodes.forEach(node =>{
-      // remove original stored events by Index
-      delete state.nodes[node.nodeNumber].storedEvents
       var storedEvents = Object.values(state.nodes[node.nodeNumber].storedEventsNI)
       storedEvents.forEach(event => {
         // call the get event name, as this will populate eventDetails if it doesn't exist

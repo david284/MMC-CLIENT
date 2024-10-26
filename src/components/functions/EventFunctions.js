@@ -32,8 +32,8 @@ const getEventslist = (nodeNumber, store) => {
   var eventsList = []
 
   // do stored events for this node first.....
-  var storedEvents = Object.values(store.state.nodes[nodeNumber].storedEventsNI) 
-  storedEvents.forEach(event => {
+  var events = Object.values(store.state.nodes[nodeNumber].storedEventsNI) 
+  events.forEach(event => {
     var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
     let output = {}
     output['eventIdentifier'] = event.eventIdentifier
@@ -52,7 +52,7 @@ const getEventslist = (nodeNumber, store) => {
     if (busEvent.nodeNumber == nodeNumber){
       // lets see if it's already in the stored events...
       var alreadyInList = false
-      storedEvents.forEach(event => {
+      events.forEach(event => {
         if(busEvent.id == event.eventIdentifier){
           alreadyInList = true
         }

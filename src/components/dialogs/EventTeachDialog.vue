@@ -302,6 +302,7 @@ const clickVariables = async (nodeNumber, eventIdentifier) => {
   isNewEvent.value=false
   await checkNodeParameters(nodeNumber)
   await checkNodeVariables(nodeNumber)
+  await store.methods.request_event_variables_by_identifier(nodeNumber, eventIdentifier)
   showEventVariablesDialog.value = true
 }
 
