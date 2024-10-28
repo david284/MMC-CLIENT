@@ -1,5 +1,6 @@
+style="min-width: 350px; min-height: 200px;"
 <template>
-  <q-card class="q-ma-xs no-padding">
+  <q-card class="q-ma-xs no-padding" style ="min-width: 200px;">
     <q-card-section :style="cardHeight" class="no-margin q-py-none">
       <div class="text-h6">{{ displayTitle }}</div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
@@ -7,15 +8,31 @@
         {{ displayValue }} {{ displayUnits }}
       </q-badge>
       <q-slider
-        v-model="sliderValue"
+        :model-value="sliderValue"
         :max="max"
         :min="min"
-        @change="update_variable"
+        @change="val => { sliderValue = val }"
       >
       </q-slider>
-      <div v-if="(outputOnWrite)">
-        <q-btn dense label="Test" @click="clickTest()" no-caps/>
-      </div>
+
+      <q-card flat class = "row no-margin q-py-none">
+        <q-card-section align="left" flat class = "row no-margin q-pa-none">
+          <q-btn align="left" dense color="blue" icon="remove" size="sm" @click="clickNegative()" no-caps/>
+        </q-card-section>
+        <q-space />
+        <q-card-section flat class = "row no-margin q-pa-none">
+          <q-space />
+          <div v-if="(outputOnWrite)">
+            <q-btn dense size="sm" label="Test" @click="clickTest()" no-caps/>
+          </div>
+          <q-space />
+        </q-card-section>
+        <q-space />
+        <q-card-section align="right" flat class = "row no-margin q-pa-none">
+          <q-btn align="right" dense color="blue" icon="add" size="sm" @click="clickPositive()" no-caps/>
+        </q-card-section>
+      </q-card>
+
     </q-card-section>
   </q-card>
 </template>
@@ -95,7 +112,7 @@ const cardHeight = computed(() => {
   if(outputOnWrite.value) {
    return{ height: '150px' }
   } else {
-    return{ height: '120px' }
+    return{ height: '150px' }
   }
  })
 
@@ -174,6 +191,20 @@ onMounted(() => {
 Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
+
+const clickNegative = () => {
+  console.log(name + `: clickNegative`)
+  if (sliderValue.value >0){
+    sliderValue.value--
+  }
+}
+
+const clickPositive = () => {
+  console.log(name + `: clickPositive`)
+  if (sliderValue.value <255){
+    sliderValue.value++
+  }
+}
 
 const clickTest = () => {
   console.log(name + `: clickTest`)
