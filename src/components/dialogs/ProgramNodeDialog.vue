@@ -43,10 +43,6 @@
           <q-card-section class="no-margin q-py-none">
             <q-checkbox v-model="checked8" label="Program in Boot Mode" />
           </q-card-section>
-          <br/>
-          <q-card-actions align="left" class="text-primary">
-            <q-btn color="primary" label="Program" @click="clickProgram()" />
-          </q-card-actions>
 
         </q-card>
 
@@ -76,6 +72,15 @@
         </q-card>
 
       </div>
+
+      <q-card-section class="row">
+        <q-card-actions align="left" class="text-primary">
+            <q-btn color="primary" label="Program" @click="clickProgram()" />
+          </q-card-actions>
+          <q-card align="center" flat class="text-h6" style="width: 370px">
+            {{ FIRMWARE_STATUS }}
+          </q-card>
+        </q-card-section>
 
       <q-card-section class="bg-info text-h6 text-white">
         <div>
@@ -107,6 +112,7 @@ const checked1 = ref(false)
 const checked2 = ref(false)
 const checked4 = ref(false)
 const checked8 = ref(false)
+const FIRMWARE_STATUS = ref()
 const progressText = ref('')
 var flags = 0
 var cpuType = undefined
@@ -160,6 +166,10 @@ const actionUpload = async () => {
 store.eventBus.on('PROGRAM_NODE_PROGRESS', (text) => {
 // console.log(name + ': REQUEST_NODE_NUMBER_EVENT: ' + text)
  progressText.value = text
+ if (text.includes('FIRMWARE:')){
+  const array = text.split('FIRMWARE:')
+  FIRMWARE_STATUS.value = array[1]
+ }
 })
 
 

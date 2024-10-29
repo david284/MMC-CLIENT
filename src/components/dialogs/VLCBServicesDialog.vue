@@ -93,6 +93,7 @@ const model = computed({
 
 // model changes when Dialog opened & closed
 watch(model, () => {
+  update_rows()
 })
 
 
