@@ -187,6 +187,7 @@ const clickProgram = async () => {
   flags = checked8.value ? flags | 8 : flags & ~8
   cpuType = store.state.nodes[props.nodeNumber].parameters[9]
   console.log(name + ": clickProgram: node: " + props.nodeNumber + ' cpuType: '+ cpuType +' flags: ' + flags)
+  FIRMWARE_STATUS.value = ''
   await actionUpload()
 }
 
