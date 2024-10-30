@@ -226,7 +226,7 @@ const select_node_row = async (nodeNumber) => {
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   selected_node_valid.value = true
   // give the module chance to report it's events before we request services
-  await sleep(200)
+  await sleep(300)
   store.methods.request_service_discovery(store.state.selected_node)
   // give the module chance to report it's services before we request diagnostics
   await sleep(200)
@@ -302,7 +302,7 @@ const clickNameNode = async (nodeNumber) => {
   console.log(name + `: clickNameNode: node ` + nodeNumber)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   await checkNodeParameters(nodeNumber)
-  select_node_row(nodeNumber)
+  await select_node_row(nodeNumber)
   showNameNodeDialog.value = true;
 }
 
@@ -341,7 +341,6 @@ const clickVLCB = async (nodeNumber) => {
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   await checkNodeParameters(nodeNumber)
   await select_node_row(nodeNumber)
-  store.methods.request_diagnostics(nodeNumber)
   showVLCBServicesDialog.value = true
 }
 
