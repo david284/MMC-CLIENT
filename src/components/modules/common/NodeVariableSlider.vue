@@ -20,12 +20,22 @@ style="min-width: 350px; min-height: 200px;"
           <q-btn align="left" dense color="blue" icon="remove" size="sm" @click="clickNegative()" no-caps/>
         </q-card-section>
         <q-space />
+        <q-card-section align="left" flat class = "row no-margin q-pa-none">
+          <q-btn align="left" dense color="blue" label = "-5" size="sm" @click="clickNegative5()" no-caps/>
+        </q-card-section>
+        <q-space />
+        <q-space />
+        <q-space />
         <q-card-section flat class = "row no-margin q-pa-none">
-          <q-space />
           <div v-if="(outputOnWrite)">
             <q-btn dense size="sm" label="Test" @click="clickTest()" no-caps/>
           </div>
-          <q-space />
+        </q-card-section>
+        <q-space />
+        <q-space />
+        <q-space />
+        <q-card-section align="right" flat class = "row no-margin q-pa-none">
+          <q-btn align="right" dense color="blue" label="+5" size="sm" @click="clickPositive5()" no-caps/>
         </q-card-section>
         <q-space />
         <q-card-section align="right" flat class = "row no-margin q-pa-none">
@@ -199,10 +209,28 @@ const clickNegative = () => {
   }
 }
 
+const clickNegative5 = () => {
+  console.log(name + `: clickNegative`)
+  if (sliderValue.value >5){
+    sliderValue.value -= 5
+  } else{
+    sliderValue.value = 0
+  }
+}
+
 const clickPositive = () => {
   console.log(name + `: clickPositive`)
   if (sliderValue.value <255){
     sliderValue.value++
+  }
+}
+
+const clickPositive5 = () => {
+  console.log(name + `: clickPositive`)
+  if (sliderValue.value <250){
+    sliderValue.value += 5
+  } else {
+    sliderValue.value = 255
   }
 }
 
