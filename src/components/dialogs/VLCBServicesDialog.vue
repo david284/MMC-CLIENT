@@ -40,19 +40,22 @@
             </template>
           </q-table>
 
-          <div class="q-pa-xs row"  v-if="showServicesJSON">
-            <div class="text-body1">Services<br></div>
-            <div class="text-body2">
-              <pre>{{ store.state.nodes[nodeNumber].services }}</pre>
-            </div>
-          </div>
-
         </q-card-section>
       </q-card>
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Toggle services json" @click="clickToggleShowServicesJSON()"/>
       </q-card-actions>
+
+      <q-card class="q-pa-none q-ma-none" v-if="showServicesJSON">
+          <q-card-section class="text-body1 q-pa-none q-ma-none" >
+            Services
+          </q-card-section>
+          <q-card-section  class="text-body2 q-pa-none q-ma-none">
+            Service count: {{ store.state.nodes[nodeNumber].serviceCount }}
+            <pre>{{ store.state.nodes[nodeNumber].services }}</pre>
+          </q-card-section>
+      </q-card>
 
     </q-card>
 
