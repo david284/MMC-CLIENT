@@ -48,9 +48,6 @@
       </q-card-actions>
 
       <q-card class="q-pa-none q-ma-none" v-if="showServicesJSON">
-          <q-card-section class="text-body1 q-pa-none q-ma-none" >
-            Services
-          </q-card-section>
           <q-card-section  class="text-body2 q-pa-none q-ma-none">
             Service count: {{ store.state.nodes[nodeNumber].serviceCount }}
             <pre>{{ store.state.nodes[nodeNumber].services }}</pre>
