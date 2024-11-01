@@ -6,8 +6,10 @@
       <q-input
         mask="###"
         debounce="1000"
-        v-model="variable"
+        v-model="displayValue"
         outlined
+        :max="max"
+        :min="min"
         :error-message="error_message"
         :error="error"
         @change="update_variable"
@@ -37,6 +39,11 @@ const props = defineProps({
     type: String,
     required: false
   },
+  "displayOffset": {
+    type: Number,
+    required: false,
+    default: 0
+  },
   "max": {
     type: Number,
     default: 255
@@ -59,17 +66,13 @@ const label = props.name ? props.name : "Variable" + props.nodeVariableIndex
 const store = inject('store')
 const error = ref(false)
 const error_message = ref('')
-const variable = ref()
 
 const variableValue = computed(() =>{
     return store.state.nodes[props.nodeNumber].nodeVariables[props.nodeVariableIndex]
 })
 
-watch(variableValue, () => {
-  variable.value = variableValue.value
-})
-
 const update_variable = (newValue) => {
+  newValue = newValue - props.displayOffset
   if (newValue < props.min || newValue > props.max) {
     //console.log(`Invalid Value : ${newValue}`)
     error.value = true
@@ -82,9 +85,14 @@ const update_variable = (newValue) => {
   }
 }
 
+const displayValue = computed(() =>{
+  var value = variableValue.value + props.displayOffset
+  return value
+})
+
+
 onMounted(() => {
   //console.log(`NodeVariable`)
-  variable.value = variableValue.value
 })
 
 

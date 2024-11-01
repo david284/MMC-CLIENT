@@ -31,7 +31,12 @@
                     :node-number=store.state.selected_node
                     :displayTitle="item.displayTitle"
                     :displaySubTitle="item.displaySubTitle"
-                    :node-variable-index=item.nodeVariableIndex>
+                    :node-variable-index=item.nodeVariableIndex
+                    :displayOffset = "item.displayOffset"
+                    :min = "item.min"
+                    :max = "item.max"
+                    :startBit = "item.startBit"
+                    :endBit = "item.endBit">
       </NodeVariableNumber>
       <NodeVariableSelect v-if="(item.type=='NodeVariableSelect') && (isVisible(item))"
                           :nodeVariableIndex="item.nodeVariableIndex"
