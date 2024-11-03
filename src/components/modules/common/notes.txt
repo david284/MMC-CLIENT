@@ -1,19 +1,19 @@
 
-max/min, scaling, offset & start/stop bits
+max/min, Scale, offset & start/stop bits
 
 Order of application - displaying value
 
 shift nodeVariable value using start bit
 Truncate result using stop bit
 ??? max/min on result
-apply displayScaling (multiply)
+apply displayScale (multiply)
 apply displayOffset
 result is display value
 
 Order of application - updating nodeVariable from Display Value
 
 subtract displayOffset fron newvalue
-remove displayScaling (divide)
+remove displayScale (divide)
 use max/min on value
 use start&stop bits to apply result to nodeVariablevalue
 write nodeVariablevalue

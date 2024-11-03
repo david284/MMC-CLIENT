@@ -33,9 +33,10 @@
                   :eventVariableIndex= "item.eventVariableIndex"
                   :displayTitle="item.displayTitle"
                   :displaySubTitle="item.displaySubTitle"
+                  :displayScale = "item.displayScale"
+                  :displayOffset = "item.displayOffset"
                   :startBit = "item.startBit"
                   :endBit = "item.endBit"
-                  :displayOffset = "item.displayOffset"
                   :min = "item.min"
                   :max = "item.max"
                   :configuration = item>

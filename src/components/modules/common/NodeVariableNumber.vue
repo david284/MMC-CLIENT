@@ -48,7 +48,7 @@ const props = defineProps({
     required: false,
     default: 0
   },
-  "displayScaling": {
+  "displayScale": {
     type: Number,
     required: false,
     default: 1
@@ -81,7 +81,7 @@ const error_message = ref('')
 const displayValue = ref()
 
 const displayMask = computed(() => {
-  let MaxValue = 255* props.displayScaling + props.displayOffset
+  let MaxValue = 255* props.displayScale + props.displayOffset
   if(MaxValue > 100000) {
     return '######'
   } 
@@ -97,11 +97,11 @@ const displayMask = computed(() => {
  })
 
  const minValue = computed(() => {
-  return (props.min * props.displayScaling) + props.displayOffset
+  return (props.min * props.displayScale) + props.displayOffset
  })
 
  const maxValue = computed(() => {
-  return (props.max * props.displayScaling) + props.displayOffset
+  return (props.max * props.displayScale) + props.displayOffset
  })
 
 
@@ -113,7 +113,7 @@ const variableValue = computed(() =>{
 
 watch(variableValue, () => {
   displayValue.value =   displayValue.value = getDisplayValue(variableValue.value, 
-    props.displayScaling, 
+    props.displayScale, 
     props.displayOffset, 
     props.startBit, 
     props.endBit)
@@ -127,8 +127,6 @@ const update_variable = (newValue) => {
 
   // max & min are the max & min of the values in the byte variable value
   // so need to scale up to check the display value actually used
-//  let minValue = (props.min * props.displayScaling) + props.displayOffset
-//  let maxValue = (props.max * props.displayScaling) + props.displayOffset
   if (processedValue < minValue.value){
     error.value = true
     error_message.value = 'Value less than ' + minValue.value
@@ -138,7 +136,7 @@ const update_variable = (newValue) => {
     error_message.value = 'Value more than ' + maxValue.value
   } 
   else {
-    byteValue = setByteVariable(byteValue, processedValue, props.displayScaling, props.displayOffset, props.startBit, props.endBit)
+    byteValue = setByteVariable(byteValue, processedValue, props.displayScale, props.displayOffset, props.startBit, props.endBit)
     error.value = false
     error_message.value = ''
     store.methods.update_node_variable(props.nodeNumber, props.nodeVariableIndex, byteValue)
@@ -149,7 +147,7 @@ const update_variable = (newValue) => {
 onMounted(() => {
   //console.log(name + `: onMounted`)
   displayValue.value = getDisplayValue(variableValue.value, 
-    props.displayScaling, 
+    props.displayScale, 
     props.displayOffset, 
     props.startBit, 
     props.endBit)
