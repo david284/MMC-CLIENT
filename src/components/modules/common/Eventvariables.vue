@@ -35,6 +35,7 @@
                   :displaySubTitle="item.displaySubTitle"
                   :displayScale = "item.displayScale"
                   :displayOffset = "item.displayOffset"
+                  :displayUnits="item.displayUnits"
                   :startBit = "item.startBit"
                   :endBit = "item.endBit"
                   :min = "item.min"
