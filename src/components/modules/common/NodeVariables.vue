@@ -34,6 +34,7 @@
                     :node-variable-index=item.nodeVariableIndex
                     :displayScaling = "item.displayScaling"
                     :displayOffset = "item.displayOffset"
+                    :displayUnits="item.displayUnits"
                     :min = "item.min"
                     :max = "item.max"
                     :startBit = "item.startBit"

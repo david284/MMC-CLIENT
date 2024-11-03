@@ -1,8 +1,11 @@
 <template>
   <q-card class="q-ma-xs no-padding">
-    <q-card-section style="height: 120px" class="no-margin q-py-none">
+    <q-card-section style="height: 150px" class="no-margin q-py-none">
       <div class="text-h6">{{ displayTitle }}</div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
+      <q-badge color="secondary">
+        range {{ minValue }} to {{ maxValue }} {{ displayUnits }}
+      </q-badge>
       <q-input
         :mask="displayMask"
         debounce="1000"
@@ -50,6 +53,10 @@ const props = defineProps({
     required: false,
     default: 1
   },
+  "displayUnits": {
+    type: String,
+    default: ""
+  },
   "max": {
     type: Number,
     default: 255
@@ -89,6 +96,13 @@ const displayMask = computed(() => {
   }
  })
 
+ const minValue = computed(() => {
+  return (props.min * props.displayScaling) + props.displayOffset
+ })
+
+ const maxValue = computed(() => {
+  return (props.max * props.displayScaling) + props.displayOffset
+ })
 
 
 
@@ -113,16 +127,17 @@ const update_variable = (newValue) => {
 
   // max & min are the max & min of the values in the byte variable value
   // so need to scale up to check the display value actually used
-  let minValue = (props.min * props.displayScaling) + props.displayOffset
-  let maxValue = (props.max * props.displayScaling) + props.displayOffset
-  if (processedValue < minValue){
+//  let minValue = (props.min * props.displayScaling) + props.displayOffset
+//  let maxValue = (props.max * props.displayScaling) + props.displayOffset
+  if (processedValue < minValue.value){
     error.value = true
-    error_message.value = 'Value less than ' + minValue
+    error_message.value = 'Value less than ' + minValue.value
   }
-  else if (processedValue > maxValue) {
+  else if (processedValue > maxValue.value) {
     error.value = true
-    error_message.value = 'Value more than ' + maxValue
-  } else {
+    error_message.value = 'Value more than ' + maxValue.value
+  } 
+  else {
     byteValue = setByteVariable(byteValue, processedValue, props.displayScaling, props.displayOffset, props.startBit, props.endBit)
     error.value = false
     error_message.value = ''
