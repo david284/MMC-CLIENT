@@ -1,18 +1,48 @@
 <template>
   <q-card class="q-ma-xs no-padding">
-    <q-card-section style="height: 120px" class="no-margin q-py-none">
+    <q-card-section style="height: 150px" class="no-margin q-py-none">
       <div class="text-h6">{{ displayTitle }}</div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
       <q-badge color="secondary">
         {{ displayValue }} {{ displayUnits }}
       </q-badge>
       <q-slider
-        v-model="sliderValue"
+        :model-value="sliderValue"
         :max="max"
         :min="min"
-        @change="update_variable"
+        @change="val => { sliderValue = val }"
       >
       </q-slider>
+
+      <q-card flat class = "row no-margin q-py-none">
+        <q-card-section align="left" flat class = "row no-margin q-pa-none">
+          <q-btn align="left" dense color="blue" icon="remove" size="sm" @click="clickNegative()" no-caps/>
+        </q-card-section>
+        <q-space />
+        <q-card-section align="left" flat class = "row no-margin q-pa-none">
+          <q-btn align="left" dense color="blue" label = "-5" size="sm" @click="clickNegative5()" no-caps/>
+        </q-card-section>
+        <q-space />
+        <q-space />
+        <q-space />
+        <q-card-section flat class = "row no-margin q-pa-none">
+          <div v-if="(outputOnWrite)">
+            <q-btn dense size="sm" label="Test" @click="clickTest()" no-caps/>
+          </div>
+        </q-card-section>
+        <q-space />
+        <q-space />
+        <q-space />
+        <q-card-section align="right" flat class = "row no-margin q-pa-none">
+          <q-btn align="right" dense color="blue" label="+5" size="sm" @click="clickPositive5()" no-caps/>
+        </q-card-section>
+        <q-space />
+        <q-card-section align="right" flat class = "row no-margin q-pa-none">
+          <q-btn align="right" dense color="blue" icon="add" size="sm" @click="clickPositive()" no-caps/>
+        </q-card-section>
+      </q-card>
+
+
     </q-card-section>
   </q-card>
 </template>
@@ -141,6 +171,51 @@ const update_variable = (newValue) => {
 onMounted(() => {
 //  console.log(name + `: EventVariableSlider onMounted`)
 })
+
+
+/*/////////////////////////////////////////////////////////////////////////////
+
+Click event handlers
+
+/////////////////////////////////////////////////////////////////////////////*/
+
+const clickNegative = () => {
+  console.log(name + `: clickNegative`)
+  if (sliderValue.value >0){
+    sliderValue.value--
+  }
+}
+
+const clickNegative5 = () => {
+  console.log(name + `: clickNegative`)
+  if (sliderValue.value >5){
+    sliderValue.value -= 5
+  } else{
+    sliderValue.value = 0
+  }
+}
+
+const clickPositive = () => {
+  console.log(name + `: clickPositive`)
+  if (sliderValue.value <255){
+    sliderValue.value++
+  }
+}
+
+const clickPositive5 = () => {
+  console.log(name + `: clickPositive`)
+  if (sliderValue.value <250){
+    sliderValue.value += 5
+  } else {
+    sliderValue.value = 255
+  }
+}
+
+const clickTest = () => {
+  console.log(name + `: clickTest`)
+}
+
+
 
 </script>
 
