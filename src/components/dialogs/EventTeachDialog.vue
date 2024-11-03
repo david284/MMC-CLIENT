@@ -264,6 +264,7 @@ const checkNodeVariables = async (nodeNumber) => {
      if (nodeVariablesLoadingReturn.value.length > 0) break
      await sleep (10)
   }
+  await sleep (500)
   showNodeVariablesLoadingDialog.value = false
 }
 

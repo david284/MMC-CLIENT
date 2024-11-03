@@ -156,7 +156,7 @@ const methods = {
       "delay": delay,
       "start": start
     })
-    console.log(`REQUEST_ALL_NODE_VARIABLES`)
+    console.log(`REQUEST_ALL_NODE_VARIABLES: node ` + nodeNumber + ' variables ' + variables)
   },
   refresh_bus_events() {
     socket.emit('REQUEST_BUS_EVENTS')

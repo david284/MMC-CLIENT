@@ -98,6 +98,7 @@
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
 import { useQuasar } from 'quasar'
 import {sleep} from "components/functions/utils.js"
+import {createNewEvent} from "components/functions/EventFunctions.js"
 import EventVariables from "components/modules/common/EventVariables"
 import EventVariableRaw from "components/modules/common/EventVariableRaw"
 import manageModuleDescriptorsDialog from "components/dialogs/ManageModuleDescriptorsDialog";
@@ -227,8 +228,13 @@ const clickClose = async () => {
     console.log(name +`: clickClose: ` + JSON.stringify(store.state.nodes[props.nodeNumber].storedEventsNI))
     try {
       var nodeEntry = store.state.nodes[props.nodeNumber]
-      var eventVariableValue = nodeEntry.storedEventsNI[props.eventIdentifier].variables[1]
-      if (eventVariableValue == undefined) {eventVariableValue = 0}
+      try{
+        var eventVariableValue = nodeEntry.storedEventsNI[props.eventIdentifier].variables[1]
+        if (eventVariableValue == undefined) {eventVariableValue = 0}
+      } catch (err){
+        createNewEvent (store, props.nodeNumber, props.eventIdentifier)
+        eventVariableValue = 0
+      }
       store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, 1, eventVariableValue)
       await sleep(250)  
       store.methods.request_all_node_events(props.nodeNumber)
