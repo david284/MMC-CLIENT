@@ -8,8 +8,6 @@
         debounce="1000"
         v-model="displayValue"
         outlined
-        :max="max"
-        :min="min"
         :error-message="error_message"
         :error="error"
         @change="update_variable"
@@ -21,6 +19,9 @@
 
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
+import {setByteVariable} from "components/modules/common/commonFunctions.js"
+import {getDisplayValue} from "components/modules/common/commonFunctions.js"
+
 
 const props = defineProps({
   "nodeNumber": {
@@ -44,6 +45,11 @@ const props = defineProps({
     required: false,
     default: 0
   },
+  "displayScaling": {
+    type: Number,
+    required: false,
+    default: 1
+  },
   "max": {
     type: Number,
     default: 255
@@ -52,47 +58,63 @@ const props = defineProps({
     type: Number,
     default: 0
   },
-  "hint": {
-    type: String,
-    default: ""
+  "startBit":{
+    type: Number,
+    default: 0
   },
-  "learn": {
-    type: Boolean,
-    default: false
+  "endBit":{
+    type: Number,
+    default: 7
   }
 })
 
-const label = props.name ? props.name : "Variable" + props.nodeVariableIndex
 const store = inject('store')
 const error = ref(false)
 const error_message = ref('')
+const displayValue = ref()
+
 
 const variableValue = computed(() =>{
     return store.state.nodes[props.nodeNumber].nodeVariables[props.nodeVariableIndex]
 })
 
-const update_variable = (newValue) => {
-  newValue = newValue - props.displayOffset
-  if (newValue < props.min || newValue > props.max) {
-    //console.log(`Invalid Value : ${newValue}`)
-    error.value = true
-    error_message.value = 'Invalid Value'
-  } else {
-    //console.log(`Value Ok : ${newValue}`)
-    error.value = false
-    error_message.value = ''
-    store.methods.update_node_variable(props.nodeNumber, props.nodeVariableIndex, newValue)
-  }
-}
 
-const displayValue = computed(() =>{
-  var value = variableValue.value + props.displayOffset
-  return value
+watch(variableValue, () => {
+  displayValue.value =   displayValue.value = getDisplayValue(variableValue.value, 
+    props.displayScaling, 
+    props.displayOffset, 
+    props.startBit, 
+    props.endBit)
 })
 
 
+const update_variable = (newValue) => {
+  // get previous value, as starting point for updated byte value
+  let byteValue = variableValue.value
+  let processedValue = newValue            // take a copy to change
+
+  // max & min are the max & min of the values in the byte variable value
+  // so need to scale up to check the display value actually used
+  if ( (processedValue < (props.min * props.scaling) + props.offset) ||
+   (processedValue > (props.max * props.scaling) + props.offset) ) {
+    error.value = true
+    error_message.value = 'Invalid Value'
+  } else {
+    byteValue = setByteVariable(byteValue, processedValue, props.displayScaling, props.displayOffset, props.startBit, props.endBit)
+    error.value = false
+    error_message.value = ''
+    store.methods.update_node_variable(props.nodeNumber, props.nodeVariableIndex, byteValue)
+  }
+}
+
+
 onMounted(() => {
-  //console.log(`NodeVariable`)
+  //console.log(name + `: onMounted`)
+  displayValue.value = getDisplayValue(variableValue.value, 
+    props.displayScaling, 
+    props.displayOffset, 
+    props.startBit, 
+    props.endBit)
 })
 
 

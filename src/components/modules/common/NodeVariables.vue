@@ -32,6 +32,7 @@
                     :displayTitle="item.displayTitle"
                     :displaySubTitle="item.displaySubTitle"
                     :node-variable-index=item.nodeVariableIndex
+                    :displayScaling = "item.displayScaling"
                     :displayOffset = "item.displayOffset"
                     :min = "item.min"
                     :max = "item.max"

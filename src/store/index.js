@@ -530,7 +530,7 @@ socket.on("NODE", (data) => {
   // remove original stored events by Index
   delete data.storedEvents
   state.nodes[data.nodeNumber] = data
-  console.log(name + `: socket.on NODE: ` + JSON.stringify(data))
+  //console.log(name + `: socket.on NODE: ` + JSON.stringify(data))
   try{
     var events = Object.values(state.nodes[data.nodeNumber].storedEventsNI)
     events.forEach(event => {
