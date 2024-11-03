@@ -4,7 +4,7 @@
       <div class="text-h6">{{ displayTitle }}</div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
       <q-input
-        mask="###"
+        :mask="displayMask"
         debounce="1000"
         v-model="displayValue"
         outlined
@@ -73,6 +73,24 @@ const error = ref(false)
 const error_message = ref('')
 const displayValue = ref()
 
+const displayMask = computed(() => {
+  let MaxValue = 255* props.displayScaling + props.displayOffset
+  if(MaxValue > 100000) {
+    return '######'
+  } 
+  if(MaxValue > 10000) {
+    return '#####'
+  } 
+  else if (MaxValue > 1000) {
+    return '####'
+  }
+  else {
+    return '###'
+  }
+ })
+
+
+
 
 const variableValue = computed(() =>{
     return store.state.nodes[props.nodeNumber].nodeVariables[props.nodeVariableIndex]
@@ -91,14 +109,19 @@ watch(variableValue, () => {
 const update_variable = (newValue) => {
   // get previous value, as starting point for updated byte value
   let byteValue = variableValue.value
-  let processedValue = newValue            // take a copy to change
+  let processedValue = Number(newValue)            // take a copy to change
 
   // max & min are the max & min of the values in the byte variable value
   // so need to scale up to check the display value actually used
-  if ( (processedValue < (props.min * props.scaling) + props.offset) ||
-   (processedValue > (props.max * props.scaling) + props.offset) ) {
+  let minValue = (props.min * props.displayScaling) + props.displayOffset
+  let maxValue = (props.max * props.displayScaling) + props.displayOffset
+  if (processedValue < minValue){
     error.value = true
-    error_message.value = 'Invalid Value'
+    error_message.value = 'Value less than ' + minValue
+  }
+  else if (processedValue > maxValue) {
+    error.value = true
+    error_message.value = 'Value more than ' + maxValue
   } else {
     byteValue = setByteVariable(byteValue, processedValue, props.displayScaling, props.displayOffset, props.startBit, props.endBit)
     error.value = false
