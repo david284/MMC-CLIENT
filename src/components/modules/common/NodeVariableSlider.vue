@@ -204,33 +204,33 @@ Click event handlers
 
 const clickNegative = () => {
   console.log(name + `: clickNegative`)
-  if (sliderValue.value >0){
+  if (sliderValue.value > props.min){
     sliderValue.value--
   }
 }
 
 const clickNegative5 = () => {
   console.log(name + `: clickNegative`)
-  if (sliderValue.value >5){
+  if (sliderValue.value > props.min + 5){
     sliderValue.value -= 5
   } else{
-    sliderValue.value = 0
+    sliderValue.value = props.min
   }
 }
 
 const clickPositive = () => {
   console.log(name + `: clickPositive`)
-  if (sliderValue.value <255){
+  if (sliderValue.value < props.max){
     sliderValue.value++
   }
 }
 
 const clickPositive5 = () => {
   console.log(name + `: clickPositive`)
-  if (sliderValue.value <250){
+  if (sliderValue.value < props.max - 5){
     sliderValue.value += 5
   } else {
-    sliderValue.value = 255
+    sliderValue.value = props.max
   }
 }
 
