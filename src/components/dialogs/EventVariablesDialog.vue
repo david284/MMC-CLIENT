@@ -19,10 +19,10 @@
         </q-banner>
       </q-card-section>
 
-      <q-card>
+      <q-card class="scroll no-margin q-py-none">
         <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
 
-          <q-card-section>
+          <q-card-section class="scroll no-margin q-py-none">
             <div class="text-h6" v-if="showDescriptorWarning">
               *** Descriptor not loaded for this node ***
             </div>
@@ -30,6 +30,10 @@
               <q-btn color="cyan-1" size="sm" text-color="black"
                 label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
             </template>
+          </q-card-section>
+
+          <q-card-section class="text-h6" v-if="store.state.nodeDescriptors[props.nodeNumber].eventVariableInformation">
+            {{ store.state.nodeDescriptors[props.nodeNumber].eventVariableInformation }}
           </q-card-section>
 
           <div class="q-pa-xs row">

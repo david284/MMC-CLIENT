@@ -15,16 +15,20 @@
         </q-banner>
       </q-card-section>
 
-      <q-card>
+      <q-card class="q-pa-none q-ma-none">
         <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
   
-          <q-card-section>
+          <q-card-section class="q-pa-none q-ma-none">
             <div class="text-h6" v-if="showDescriptorWarning">
               *** Descriptor not loaded for this node ***
             </div>
             <div class="text-h6" v-if="showNoVariablesMessage">
               this node has no variables to display
             </div>
+          </q-card-section>
+
+          <q-card-section class="text-h6" v-if="store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation">
+            {{ store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation }}
           </q-card-section>
 
           <NodeVariables v-if="store.state.nodeDescriptors[props.nodeNumber]"
