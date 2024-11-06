@@ -16,12 +16,12 @@
           @click="clickDeleteNode()"/>
         </q-card-actions>
 
-        <q-card-actions align="left">
+        <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="CAN ID Enumeration"
           @click="clickCanIdEnumeration()"/>
         </q-card-actions>
 
-        <q-card-actions align="left">
+        <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Set CANID"
           @click="clickSetCAN_ID()"/>
         </q-card-actions>
