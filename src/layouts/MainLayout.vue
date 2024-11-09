@@ -269,8 +269,8 @@ store.eventBus.on('SERVER_STATUS_EVENT', (serverStatus) => {
     if (serverStatus.busConnection.state == false){
       $q.notify({
         message: 'Server has no connection to the CAN BUS',
-        caption: 'please check & restart application',
-        timeout: 0,
+        caption: 'attempting to re-connect',
+        timeout: 2000,
         type: 'warning',
         position: 'center',
         actions: [ { label: 'Dismiss' } ]

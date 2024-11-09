@@ -31,15 +31,24 @@
           @click="clickResetNode()"/>
         </q-card-actions>
 
-        <q-card-actions align="left">
-          <q-btn v-if="(store.state.develop)" dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="program Node"
+        <q-card-actions v-if="(store.state.develop)" align="left">
+          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="program Node"
           @click="clickProgramNode()"/>
+        </q-card-actions>
+
+        <q-card-actions v-if="(store.state.develop)" align="left">
+          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Module Descriptor File"
+          @click="clickMDF()"/>
         </q-card-actions>
 
       </q-card>
     </q-dialog>
 
     <deleteNodeDialog v-model='showDeleteNodeDialog'
+      :nodeNumber = nodeNumber
+    />
+
+    <MDFDialog v-model='showMDFDialog'
       :nodeNumber = nodeNumber
     />
 
@@ -58,13 +67,16 @@
 
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
+import {sleep} from "components/functions/utils.js"
 import deleteNodeDialog from "components/dialogs/DeleteNodeDialog"
+import MDFDialog from "components/dialogs/MDFDialog"
 import programNodeDialog from "components/dialogs/programNodeDialog"
 import setCanIdDialog from "components/dialogs/setCanIdDialog"
 
 const store = inject('store')
 const name = "AdvancedNodeDialog"
 const showDeleteNodeDialog = ref(false)
+const showMDFDialog = ref(false)
 const showProgramNodeDialog = ref(false)
 const showSetCanIdDialog = ref(false)
 
@@ -79,6 +91,14 @@ const model = computed({
   get() { return props.modelValue },
   set(newValue) { emit('update:modelValue', newValue) }
 })
+
+
+onBeforeMount(() => {
+})
+
+onMounted(() => {
+})
+
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -97,6 +117,14 @@ const clickDeleteNode = () => {
   showDeleteNodeDialog.value = true
 }
 
+const clickMDF = () => {
+  console.log(name + `: clickMDF`)
+  var match = store.state.nodes[props.nodeNumber].moduleIdentifier
+  store.methods.request_matching_mdf_list(props.nodeNumber, "USER", match)
+  store.methods.request_matching_mdf_list(props.nodeNumber, "SYSTEM", match)
+  showMDFDialog.value = true
+}
+
 const clickProgramNode = () => {
   console.log(name + `: clickProgramNode ` + props.nodeNumber)
   showProgramNodeDialog.value = true
@@ -111,15 +139,6 @@ const clickSetCAN_ID = () => {
   console.log(name + `: clickSetCAN_ID ` + props.nodeNumber)
   showSetCanIdDialog.value = true
 }
-
-
-
-onBeforeMount(() => {
-})
-
-onMounted(() => {
-})
-
 
 
 

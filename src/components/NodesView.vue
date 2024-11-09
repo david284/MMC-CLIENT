@@ -59,7 +59,7 @@
             <q-btn dense class="q-mx-xs q-my-none" outline v-if="(props.row.vlcb)" color="primary" size="md" label="VLCB"
               @click="clickVLCB(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" color="blue-grey-1" text-color="blue-grey-14" size="md" label="Advanced"
-              @click="clickAdvanced(props.row.nodeNumber)" no-caps/>
+              @click="clickNodeAdvanced(props.row.nodeNumber)" no-caps/>
 
           </q-td>
         </q-tr>
@@ -273,17 +273,6 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 
-const clickAdvanced = async (nodeNumber) => {
-  console.log(name + `: clickAdvanced`)
-  selected_nodeNumber.value = nodeNumber    // used to highlight row
-  await checkNodeParameters(nodeNumber)
-  await select_node_row(nodeNumber)
-  selectedNode.value = nodeNumber
-  showAdvancedDialog.value=true
-  console.log(name + ': clickAdvanced: node' + store.state.selected_node)
-}
-
-
 const clickEvents = async (nodeNumber) => {
   console.log(name + `: clickEvents`)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
@@ -305,6 +294,17 @@ const clickNameNode = async (nodeNumber) => {
   await select_node_row(nodeNumber)
   showNameNodeDialog.value = true;
 }
+
+const clickNodeAdvanced = async (nodeNumber) => {
+  console.log(name + `: clickNodeAdvanced`)
+  selected_nodeNumber.value = nodeNumber    // used to highlight row
+  await checkNodeParameters(nodeNumber)
+  await select_node_row(nodeNumber)
+  selectedNode.value = nodeNumber
+  showAdvancedDialog.value=true
+  console.log(name + ': clickAdvanced: node' + store.state.selected_node)
+}
+
 
 const clickParameters = async (nodeNumber) => {
   console.log(name + `: clickParameters`)

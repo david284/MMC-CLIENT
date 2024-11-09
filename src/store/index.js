@@ -26,6 +26,7 @@ const state = reactive({
   nodeDescriptorList: {},
   nodes: {},
   nodeTraffic: [],
+  server: { "nodes":{} },
   selected_node: 0,
   serverStatus: {},
   title: "MMC",
@@ -188,6 +189,12 @@ const methods = {
   request_layout_list(){
     console.log(name + `: request_layout_list:`)
     socket.emit('REQUEST_LAYOUTS_LIST')
+  },
+  request_matching_mdf_list(nodeNumber, location, mdf_string) {
+    console.log(name + ': REQUEST_MATCHING_MDF_LIST: ' + location)
+    if (state.server.nodes[nodeNumber] == undefined){state.server.nodes[nodeNumber] = {} }
+    state.server.nodes[nodeNumber][location + '_MDF_List'] = []
+    socket.emit('REQUEST_MATCHING_MDF_LIST', {"nodeNumber":nodeNumber, "location":location, "match":mdf_string})
   },
   reset_node(nodeNumber) {
     socket.emit('RESET_NODE', nodeNumber)
@@ -522,6 +529,12 @@ socket.on('LAYOUT_DATA', (data) => {
 socket.on('LAYOUTS_LIST', (data) => {
   console.log(`RECEIVED Layouts list`)
   state.layouts_list = data;
+})
+
+socket.on("MATCHING_MDF_LIST", (location, nodeNumber, list) => {
+  console.log(`RECEIVED MATCHING_MDF_LIST ` + nodeNumber + ' ' + location + ' ' + list.length)
+  if (state.server.nodes[nodeNumber] == undefined){state.server.nodes[nodeNumber] = {} }
+  state.server.nodes[nodeNumber][location + '_MDF_List'] = list
 })
 
 socket.on("NODE", (data) => {
