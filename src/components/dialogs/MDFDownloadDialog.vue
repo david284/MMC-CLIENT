@@ -26,6 +26,7 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
+import {sleep} from "components/functions/utils.js"
 
 const store = inject('store')
 const name = "MDFDownloadDialog"
@@ -55,19 +56,16 @@ onMounted(() => {
 })
 
 
-
-
 /*/////////////////////////////////////////////////////////////////////////////
 
 Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
-const actionDownload = (filename) => {
+const actionDownload = async (filename) => {
   console.log(name + `: actionDownload`)
-
-//    let text = store.state.exported_MDF
-    let text = "test"
+    await sleep(500)
+    let text = JSON.stringify(store.state.exported_MDF, null, "  ")
     let element = document.createElement('a');
     element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(text));
     element.setAttribute('download', filename);
@@ -76,8 +74,7 @@ const actionDownload = (filename) => {
     document.body.appendChild(element);
 
     element.click();
-    document.body.removeChild(element);
-     
+    document.body.removeChild(element);    
   }
 
 

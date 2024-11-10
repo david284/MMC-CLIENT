@@ -58,7 +58,7 @@
                 <template v-slot:body="props">
                   <q-tr :props="props" class="q-my-none q-py-none">
                     <q-td key="file" :props="props">{{ props.row.file }}</q-td>
-                    <q-td key="version" :props="props">{{ props.row.version }}</q-td>
+                    <q-td key="timestamp" :props="props">{{ props.row.timestamp }}</q-td>
                     <q-td key="actions" :props="props">
                       <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Download" @click="clickSystemDownload(props.row.file)" no-caps/>
                     </q-td>              
@@ -86,7 +86,7 @@
                 <template v-slot:body="props">
                   <q-tr :props="props" class="q-my-none q-py-none">
                     <q-td key="file" :props="props">{{ props.row.file }}</q-td>
-                    <q-td key="version" :props="props">{{ props.row.version }}</q-td>
+                    <q-td key="timestamp" :props="props">{{ props.row.timestamp }}</q-td>
                     <q-td key="actions" :props="props">
                       <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Download" @click="clickUserDownload(props.row.file)" no-caps/>
                       <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Delete" @click="clickDelete(props.row.file)" no-caps/>
@@ -177,14 +177,14 @@ const systemRows = ref([])
 
 const systemColumns = [
   {name: 'file', field: 'file', required: true, label: 'File', align: 'left', sortable: true},
-  {name: 'version', field: 'version', required: true, label: 'Version', align: 'left', sortable: true},
+  {name: 'timestamp', field: 'timestamp', required: true, label: 'Timestamp', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
 const userRows = ref([])
 const userColumns = [
   {name: 'file', field: 'file', required: true, label: 'File', align: 'left', sortable: true},
-  {name: 'version', field: 'version', required: true, label: 'Version', align: 'left', sortable: true},
+  {name: 'timestamp', field: 'timestamp', required: true, label: 'Timestamp', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
@@ -196,7 +196,7 @@ const update_SYSTEM_rows = async () => {
     systemRows.value = []
     if (server_node.value.SYSTEM_MDF_List != undefined){
       server_node.value.SYSTEM_MDF_List.forEach(item => {
-        systemRows.value.push({"file" : item[0], "version" : item[1]})
+        systemRows.value.push({"file" : item[0], "timestamp" : item[1]})
       })
     }
     // sort rows by file
@@ -212,7 +212,7 @@ const update_USER_rows = async () => {
     userRows.value = []
     if (server_node.value.USER_MDF_List != undefined){
       server_node.value.USER_MDF_List.forEach(item => {
-        userRows.value.push({"file" : item[0], "version" : item[1]})
+        userRows.value.push({"file" : item[0], "timestamp" : item[1]})
       })
     }
     // sort rows by file

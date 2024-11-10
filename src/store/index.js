@@ -547,6 +547,12 @@ socket.on('LAYOUTS_LIST', (data) => {
   state.layouts_list = data;
 })
 
+
+socket.on("MDF_EXPORT", (location, filename, MDF) => {
+  console.log(`RECEIVED MDF_EXPORT ` + location + ' ' + filename)
+  state.exported_MDF = MDF
+})
+
 socket.on("MATCHING_MDF_LIST", (location, nodeNumber, list) => {
   console.log(`RECEIVED MATCHING_MDF_LIST ` + nodeNumber + ' ' + location + ' ' + list.length)
   if (state.server.nodes[nodeNumber] == undefined){state.server.nodes[nodeNumber] = {} }
