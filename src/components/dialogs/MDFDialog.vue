@@ -60,7 +60,7 @@
                     <q-td key="file" :props="props">{{ props.row.file }}</q-td>
                     <q-td key="version" :props="props">{{ props.row.version }}</q-td>
                     <q-td key="actions" :props="props">
-                      <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Download" no-caps/>
+                      <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Download" @click="clickSystemDownload(props.row.file)" no-caps/>
                     </q-td>              
                   </q-tr>
                 </template>
@@ -88,8 +88,8 @@
                     <q-td key="file" :props="props">{{ props.row.file }}</q-td>
                     <q-td key="version" :props="props">{{ props.row.version }}</q-td>
                     <q-td key="actions" :props="props">
-                      <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Download" no-caps/>
-                      <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Delete" no-caps/>
+                      <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Download" @click="clickUserDownload(props.row.file)" no-caps/>
+                      <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Delete" @click="clickDelete(props.row.file)" no-caps/>
                     </q-td>              
                   </q-tr>
                 </template>
@@ -101,7 +101,7 @@
         </q-card>
 
         <q-card-actions class="text-primary">
-          <q-btn color="positive" label="Upload new file" @click="actionUpload()" />
+          <q-btn color="positive" label="Upload new file" @click="clickUpload()" />
         </q-card-actions>
 
       </q-card>
@@ -109,6 +109,11 @@
     </q-card>
   </q-dialog>
 
+  <MDFDownloadDialog  v-model='showMDFDownloadDialog'
+    :moduleDescriptorFilename = export_filename
+  />
+
+  <MDFUploadDialog  v-model='showMDFUploadDialog' />
 
 </template>
 
@@ -116,11 +121,17 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
+import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
+import MDFDownloadDialog from "components/dialogs/MDFDownloadDialog"
+import MDFUploadDialog from "components/dialogs/MDFUploadDialog"
 
+const $q = useQuasar()
 const store = inject('store')
 const name = 'MDFDialog'
-
+const showMDFDownloadDialog = ref(false)
+const showMDFUploadDialog = ref(false)
+const export_filename = ref()
 
 
 const props = defineProps({
@@ -228,6 +239,45 @@ onUpdated(() => {
 Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
+
+
+const clickDelete = (filename) => {
+  console.log(name + `: clickDelete`)
+  const result = $q.notify({
+    message: 'Are you sure you want to delete file ' + filename,
+    timeout: 0,
+    position: 'center',
+    color: 'primary',
+    actions: [
+      { label: 'YES', color: 'white', handler: async () => { 
+        store.methods.request_MDF_delete(filename)
+      } },
+      { label: 'NO', color: 'white', handler: () => { /* ... */ } }
+    ]
+  })
+}
+
+
+const clickSystemDownload = (filename) => {
+  console.log(name + `: clickSystemDownload`)
+  store.methods.request_MDF_export('SYSTEM', filename)
+  export_filename.value = filename
+  showMDFDownloadDialog.value = true
+}
+
+
+const clickUserDownload = (filename) => {
+  console.log(name + `: clickUserDownload`)
+  store.methods.request_MDF_export('USER', filename)
+  export_filename.value = filename
+  showMDFDownloadDialog.value = true
+}
+
+
+const clickUpload = () => {
+  console.log(name + `: clickUpload`)
+  showMDFUploadDialog.value = true
+}
 
 
 

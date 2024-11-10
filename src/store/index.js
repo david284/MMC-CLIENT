@@ -18,6 +18,7 @@ const state = reactive({
   dcc_errors: {},
   develop: false,
   event_view_status: [],
+  exported_MDF: {},
   inStartup: true,
   layout: {},
   layouts_list: [],
@@ -120,6 +121,16 @@ const methods = {
     socket.emit('QUERY_ALL_NODES')
   },
 
+  request_MDF_delete(filename) {
+    console.log(`REQUEST_MDF_DELETE : ` + filename)
+    socket.emit('REQUEST_MDF_DELETE', {"filename":filename})
+  },
+
+  request_MDF_export(location, filename) {
+    console.log(`REQUEST_MDF_EXPORT : ` + location + ' ' + filename)
+    socket.emit('REQUEST_MDF_EXPORT', {"location":location, "filename":filename})
+  },
+
   remove_node(nodeNumber) {
     socket.emit('REMOVE_NODE', nodeNumber)
     console.log(name + ': sent REMOVE_NODE ' + nodeNumber)
@@ -128,9 +139,9 @@ const methods = {
     console.log(`request_backups_list : ` + layoutName)
     socket.emit('REQUEST_BACKUPS_LIST', {"layoutName":layoutName})
   },
-  request_service_discovery(nodeNumber) {
-    console.log(`Request Service Discovery : ` + nodeNumber)
-    socket.emit('REQUEST_SERVICE_DISCOVERY', {"nodeNumber":nodeNumber})
+  request_backups_list(layoutName) {
+    console.log(`request_backups_list : ` + layoutName)
+    socket.emit('REQUEST_BACKUPS_LIST', {"layoutName":layoutName})
   },
   request_diagnostics(nodeNumber, serviceIndex) {
     if (serviceIndex == undefined){serviceIndex = 0;}
@@ -180,6 +191,11 @@ const methods = {
       "eventIdentifier": eventIdentifier
     })
   },
+  request_service_discovery(nodeNumber) {
+    console.log(`Request Service Discovery : ` + nodeNumber)
+    socket.emit('REQUEST_SERVICE_DISCOVERY', {"nodeNumber":nodeNumber})
+  },
+
   request_server_status(){
     socket.emit('REQUEST_SERVER_STATUS')
   },
