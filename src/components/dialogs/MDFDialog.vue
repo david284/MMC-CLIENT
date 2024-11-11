@@ -8,7 +8,6 @@
             Module Descriptor File Management
           </div>
           <template v-slot:action>
-            <q-btn flat color="white" size="md" label="refresh" @click="update_SYSTEM_rows()"/>
             <q-btn flat color="white" size="md" label="Close" v-close-popup="3"/>
           </template>
         </q-banner>
