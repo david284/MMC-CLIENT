@@ -36,7 +36,7 @@
           @click="clickProgramNode()"/>
         </q-card-actions>
 
-        <q-card-actions v-if="(store.state.develop)" align="left">
+        <q-card-actions align="left">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Module Descriptor File"
           @click="clickMDF()"/>
         </q-card-actions>
@@ -119,9 +119,8 @@ const clickDeleteNode = () => {
 
 const clickMDF = () => {
   console.log(name + `: clickMDF`)
-  var match = store.state.nodes[props.nodeNumber].moduleIdentifier
-  store.methods.request_matching_mdf_list(props.nodeNumber, "USER", match)
-  store.methods.request_matching_mdf_list(props.nodeNumber, "SYSTEM", match)
+  store.methods.request_matching_mdf_list(props.nodeNumber, "USER")
+  store.methods.request_matching_mdf_list(props.nodeNumber, "SYSTEM")
   showMDFDialog.value = true
 }
 

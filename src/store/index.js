@@ -23,6 +23,7 @@ const state = reactive({
   layout: {},
   layouts_list: [],
   loadFile_notification_raised: {},
+  MDFChanged: false,
   nodeDescriptors: {},
   nodeDescriptorList: {},
   nodes: {},
@@ -81,9 +82,9 @@ const methods = {
     })
   },
 
-  import_module_descriptor(moduleDescriptor) {
+  import_module_descriptor(nodeNumber, moduleDescriptor) {
     console.log(`import_module_descriptor : ` + moduleDescriptor.moduleDescriptorFilename)
-    socket.emit('IMPORT_MODULE_DESCRIPTOR', moduleDescriptor)
+    socket.emit('IMPORT_MODULE_DESCRIPTOR', {"nodeNumber":nodeNumber, "moduleDescriptor":moduleDescriptor})
   },
 
   long_on_event(nodeNumber, eventNumber){
@@ -206,11 +207,11 @@ const methods = {
     console.log(name + `: request_layout_list:`)
     socket.emit('REQUEST_LAYOUTS_LIST')
   },
-  request_matching_mdf_list(nodeNumber, location, mdf_string) {
+  request_matching_mdf_list(nodeNumber, location) {
     console.log(name + ': REQUEST_MATCHING_MDF_LIST: ' + location)
     if (state.server.nodes[nodeNumber] == undefined){state.server.nodes[nodeNumber] = {} }
     state.server.nodes[nodeNumber][location + '_MDF_List'] = []
-    socket.emit('REQUEST_MATCHING_MDF_LIST', {"nodeNumber":nodeNumber, "location":location, "match":mdf_string})
+    socket.emit('REQUEST_MATCHING_MDF_LIST', {"nodeNumber":nodeNumber, "location":location})
   },
   reset_node(nodeNumber) {
     socket.emit('RESET_NODE', nodeNumber)
@@ -551,12 +552,14 @@ socket.on('LAYOUTS_LIST', (data) => {
 socket.on("MDF_EXPORT", (location, filename, MDF) => {
   console.log(`RECEIVED MDF_EXPORT ` + location + ' ' + filename)
   state.exported_MDF = MDF
+  state.MDFChanged = state.MDFChanged? false : true
 })
 
 socket.on("MATCHING_MDF_LIST", (location, nodeNumber, list) => {
   console.log(`RECEIVED MATCHING_MDF_LIST ` + nodeNumber + ' ' + location + ' ' + list.length)
   if (state.server.nodes[nodeNumber] == undefined){state.server.nodes[nodeNumber] = {} }
   state.server.nodes[nodeNumber][location + '_MDF_List'] = list
+  state.MDFChanged = state.MDFChanged? false : true
 })
 
 socket.on("NODE", (data) => {
@@ -604,6 +607,7 @@ socket.on("NODE_DESCRIPTOR", (data) => {
   var nodeNumber = Object.keys(data)[0]   // get first key
   console.log(`RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber)
   state.nodeDescriptors[nodeNumber] = Object.values(data)[0]    // get first value
+  state.MDFChanged = state.MDFChanged? false : true
 })
 
 socket.on("NODE_DESCRIPTOR_FILE_LIST", (nodeNumber, list) => {

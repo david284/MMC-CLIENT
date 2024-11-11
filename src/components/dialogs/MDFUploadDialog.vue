@@ -53,6 +53,7 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
+import {sleep} from "components/functions/utils.js"
 
 const store = inject('store')
 const name = "MDFUploadDialog"
@@ -60,7 +61,8 @@ const uploadFile = ref()
 
 
 const props = defineProps({
-  modelValue: { type: Boolean, required: true }
+  modelValue: { type: Boolean, required: true },
+  nodeNumber: { type: Number, required: false }
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -102,7 +104,7 @@ const actionUpload = () => {
           resultOBJ["moduleDescriptorFilename"] = fileName
           console.log(name + `: actionUpload: ` + resultOBJ.moduleDescriptorFilename)
           console.log(name + `: actionUpload: result: ` + JSON.stringify(resultOBJ))
-          store.methods.import_module_descriptor(resultOBJ)
+          store.methods.import_module_descriptor(props.nodeNumber, resultOBJ)
         } catch(e){
           console.log(name + `: actionUpload: failed JSON parse`)
         }
