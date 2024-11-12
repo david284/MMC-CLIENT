@@ -185,7 +185,7 @@ watch(server_node, () => {
 const getModuleDescriptorFilename = () => {
   moduleDescriptorFilename.value = ''
   try {
-    moduleDescriptorFilename.value = store.state.nodes[props.nodeNumber].moduleDescriptorFilename
+    moduleDescriptorFilename.value = store.state.nodeDescriptors[props.nodeNumber].moduleDescriptorFilename
   } catch (err){ 
     console.log(name + `: getModuleDescriptorFilename: ` + err)
   }
