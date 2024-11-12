@@ -89,7 +89,9 @@
     </q-card>
   </q-dialog>
 
-  <manageModuleDescriptorsDialog v-model='showManageModuleDescriptorsDialog'/>
+  <MDFDialog v-model='showMDFDialog'
+    :nodeNumber = nodeNumber
+  />
 
 
 </template>
@@ -100,10 +102,10 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import NodeParameter from "components/modules/common/NodeParameter"
 import NodeParameterRaw from "components/modules/common/NodeParameterRaw"
-import manageModuleDescriptorsDialog from "components/dialogs/ManageModuleDescriptorsDialog";
+import MDFDialog from "components/dialogs/MDFDialog";
 
 const store = inject('store')
-const showManageModuleDescriptorsDialog = ref(false)
+const showMDFDialog = ref(false)
 const name = "NodeParametersDialog"
 
 const props = defineProps({
@@ -140,7 +142,9 @@ Click event handlers
 
 const clickUpdateModuleDescriptor = () => {
   console.log(name + `: clickUpdateModuleDescriptor`)
-  showManageModuleDescriptorsDialog.value = true
+  store.methods.request_matching_mdf_list(props.nodeNumber, "USER")
+  store.methods.request_matching_mdf_list(props.nodeNumber, "SYSTEM")
+  showMDFDialog.value = true
 }
 
 

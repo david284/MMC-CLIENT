@@ -92,7 +92,10 @@
     </q-card>
   </q-dialog>
 
-  <manageModuleDescriptorsDialog v-model='showManageModuleDescriptorsDialog'/>
+  <MDFDialog v-model='showMDFDialog'
+    :nodeNumber = nodeNumber
+  />
+
 
 </template>
 
@@ -105,7 +108,7 @@ import {sleep} from "components/functions/utils.js"
 import {createNewEvent} from "components/functions/EventFunctions.js"
 import EventVariables from "components/modules/common/EventVariables"
 import EventVariableRaw from "components/modules/common/EventVariableRaw"
-import manageModuleDescriptorsDialog from "components/dialogs/ManageModuleDescriptorsDialog";
+import MDFDialog from "components/dialogs/MDFDialog";
 
 const $q = useQuasar()
 const store = inject('store')
@@ -113,7 +116,7 @@ const name = "EventVariablesDialog"
 const variablesDescriptor = ref()
 const showRawVariables = ref(false)
 const showDescriptorWarning = ref(false)
-const showManageModuleDescriptorsDialog = ref(false)
+const showMDFDialog = ref(false)
 const showVariablesDescriptor = ref(false)
 const showStoredEventJSON = ref(false)
 
@@ -265,7 +268,9 @@ const clickToggleStoredEvents = () => {
 
 const clickUpdateModuleDescriptor = () => {
   console.log(name + `: clickUpdateModuleDescriptor`)
-  showManageModuleDescriptorsDialog.value = true
+  store.methods.request_matching_mdf_list(props.nodeNumber, "USER")
+  store.methods.request_matching_mdf_list(props.nodeNumber, "SYSTEM")
+  showMDFDialog.value = true
 }
 
 

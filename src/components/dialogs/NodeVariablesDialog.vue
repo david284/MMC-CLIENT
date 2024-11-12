@@ -63,7 +63,10 @@
     </q-card>
   </q-dialog>
 
-  <manageModuleDescriptorsDialog v-model='showManageModuleDescriptorsDialog'/>
+  <MDFDialog v-model='showMDFDialog'
+    :nodeNumber = nodeNumber
+  />
+
 
 </template>
 
@@ -83,7 +86,7 @@ import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from 
 import { useQuasar } from 'quasar'
 import NodeVariables from "components/modules/common/NodeVariables"
 import NodeVariableRaw from "components/modules/common/NodeVariableRaw"
-import manageModuleDescriptorsDialog from "components/dialogs/ManageModuleDescriptorsDialog";
+import MDFDialog from "components/dialogs/MDFDialog";
 
 const $q = useQuasar()
 const store = inject('store')
@@ -91,7 +94,7 @@ const name = "NodevariablesDialog"
 const showDescriptorWarning = ref(false)
 const showRawVariables = ref(false)
 const showNoVariablesMessage = ref(false)
-const showManageModuleDescriptorsDialog = ref(false)
+const showMDFDialog = ref(false)
 const showVariableDescriptor = ref(false)
 
 const props = defineProps({
@@ -228,7 +231,9 @@ const clickToggleVariablesDescriptor = () => {
 
 const clickUpdateModuleDescriptor = () => {
   console.log(name + `: clickUpdateModuleDescriptor`)
-  showManageModuleDescriptorsDialog.value = true
+  store.methods.request_matching_mdf_list(props.nodeNumber, "USER")
+  store.methods.request_matching_mdf_list(props.nodeNumber, "SYSTEM")
+  showMDFDialog.value = true
 }
 
 
