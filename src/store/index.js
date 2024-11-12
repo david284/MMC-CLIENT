@@ -605,8 +605,9 @@ socket.on("NODES", (data) => {
 
 socket.on("NODE_DESCRIPTOR", (data) => {
   var nodeNumber = Object.keys(data)[0]   // get first key
-  console.log(`RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber)
-  state.nodeDescriptors[nodeNumber] = Object.values(data)[0]    // get first value
+  var moduleDescriptor = Object.values(data)[0] // get first value
+  console.log(`RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber + ' ' + moduleDescriptor.moduleDescriptorFilename)
+  state.nodeDescriptors[nodeNumber] = moduleDescriptor    
   state.MDFChanged = state.MDFChanged? false : true
 })
 

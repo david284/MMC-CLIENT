@@ -21,12 +21,12 @@
             <q-card-section style="width: 500px;" class="no-margin q-py-none">
               <div class="text-h6">Current node:</div>
               <div class="text-subtitle2">
-                Module name: {{ store.state.nodes[store.state.selected_node].moduleName }}<br/>
-                Module identifier: {{ store.state.nodes[store.state.selected_node].moduleIdentifier }}<br/>
-                Module version: {{ store.state.nodes[store.state.selected_node].moduleVersion }}<br/>
-                Processor type: {{ store.state.nodes[store.state.selected_node].cpuName }}<br/>
-                Processor code: {{ store.state.nodes[store.state.selected_node].parameters[9] }}<br/>
-                Current module descriptor:  {{ store.state.nodes[store.state.selected_node].moduleDescriptorFilename }}
+                Module name: {{ store.state.nodes[nodeNumber].moduleName }}<br/>
+                Module identifier: {{ store.state.nodes[nodeNumber].moduleIdentifier }}<br/>
+                Module version: {{ store.state.nodes[nodeNumber].moduleVersion }}<br/>
+                Processor type: {{ store.state.nodes[nodeNumber].cpuName }}<br/>
+                Processor code: {{ store.state.nodes[nodeNumber].parameters[9] }}<br/>
+                Current module descriptor:  {{ moduleDescriptorFilename }}
               </div>
             </q-card-section>
 
@@ -137,6 +137,7 @@ const name = 'MDFDialog'
 const showMDFDownloadDialog = ref(false)
 const showMDFUploadDialog = ref(false)
 const export_filename = ref()
+const moduleDescriptorFilename = ref()
 
 
 const props = defineProps({
@@ -156,6 +157,7 @@ watch(model, () => {
 //  console.log(name + `: WATCH model`)
   update_SYSTEM_rows()
   update_USER_rows()
+  getModuleDescriptorFilename()
 })
 
 
@@ -166,6 +168,7 @@ watch(MDFChanged, () => {
   console.log(name + `: WATCH: MDFChanged`)
   update_SYSTEM_rows()
   update_USER_rows()
+  getModuleDescriptorFilename()
 })
 
 
@@ -179,6 +182,15 @@ watch(server_node, () => {
   update_USER_rows()
 })
 
+const getModuleDescriptorFilename = () => {
+  moduleDescriptorFilename.value = ''
+  try {
+    moduleDescriptorFilename.value = store.state.nodes[props.nodeNumber].moduleDescriptorFilename
+  } catch (err){ 
+    console.log(name + `: getModuleDescriptorFilename: ` + err)
+  }
+  console.log(name + `: getModuleDescriptorFilename: ` + moduleDescriptorFilename.value)
+}
 
 const systemRows = ref([])
 
