@@ -34,7 +34,7 @@ const name = "MDFDownloadDialog"
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
-  moduleDescriptorFilename: { type: String, required: true }
+  moduleDescriptorFilename: { type: String}
 })
 
 const emit = defineEmits(['update:modelValue'])

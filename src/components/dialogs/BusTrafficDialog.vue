@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md q-gutter-sm">
 
-  <q-dialog v-model="model" :position="left">
+  <q-dialog v-model="model" position="left">
     <!-- min-width: has no effect on q-dialog -->
     <q-card  style="width: 300px" class="q-pa-none q-ma-none">
 
