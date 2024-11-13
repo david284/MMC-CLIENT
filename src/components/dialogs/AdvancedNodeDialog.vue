@@ -31,7 +31,7 @@
           @click="clickResetNode()"/>
         </q-card-actions>
 
-        <q-card-actions v-if="(store.state.develop)" align="left">
+        <q-card-actions align="left">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="program Node"
           @click="clickProgramNode()"/>
         </q-card-actions>
