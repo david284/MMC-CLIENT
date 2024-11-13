@@ -33,7 +33,8 @@
                 <q-td key="serviceType" :props="props">{{ props.row.serviceType}}</q-td>
                 <q-td key="serviceName" :props="props">{{ props.row.serviceName}}</q-td>
                 <q-td key="serviceVersion" :props="props">{{ props.row.serviceVersion}}</q-td>
-                <q-td key="diagnostics" :props="props">
+                <q-td key="actions" :props="props">
+                  <q-btn color="primary" flat rounded label="ESD" @click="clickESD(props.row.serviceIndex)" no-caps/>
                   <q-btn color="primary" flat rounded label="diagnostics" @click="clickDiagnostics(props.row.serviceIndex)" no-caps/>
                 </q-td>
               </q-tr>
@@ -63,6 +64,11 @@
     :serviceIndex = selectedServiceIndex
   />
 
+  <VLCBExtendedServicesDialog  v-model='showVLCBExtendedServicesDialog' 
+    :nodeNumber = nodeNumber
+    :serviceIndex = selectedServiceIndex
+  />
+
 </template>
 
 
@@ -70,11 +76,13 @@
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import vlcbDiagnosticsDialog from "components/dialogs/VLCBDiagnosticsDialog"
+import VLCBExtendedServicesDialog from "components/dialogs/VLCBExtendedServicesDialog"
 
 const store = inject('store')
 const name = "VLCBServicesDialog"
 const showServicesJSON = ref(false)
 const showVLCBDiagnosticsDialog = ref(false)
+const showVLCBExtendedServicesDialog = ref(false)
 const rows = ref([])
 const selectedServiceIndex = ref(null)
 
@@ -103,7 +111,7 @@ const columns = [
   {name: 'serviceType', field: 'serviceType', required: false, label: 'Service Type', align: 'left', sortable: true},
   {name: 'serviceName', field: 'serviceName', required: true, label: 'Name', align: 'left', sortable: true},
   {name: 'serviceVersion', field: 'serviceVersion', required: true, label: 'Version', align: 'left', sortable: false},
-  {name: 'diagnostics', field: 'diagnostics', required: true, label: '', align: 'left'}
+  {name: 'actions', field: 'actions', required: true, label: '', align: 'left'}
 ]
 
 
@@ -160,6 +168,12 @@ const clickDiagnostics = (serviceIndex) => {
   store.methods.request_diagnostics(props.nodeNumber, serviceIndex)
   selectedServiceIndex.value = serviceIndex
   showVLCBDiagnosticsDialog.value = true
+}
+
+const clickESD = (serviceIndex) => {
+  console.log(`clickESD: index ${serviceIndex}`)
+  selectedServiceIndex.value = serviceIndex
+  showVLCBExtendedServicesDialog.value = true
 }
 
 
