@@ -5,7 +5,7 @@
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
           <div class="text-h6">
-            VLCB Services
+            VLCB Services for {{ store.getters.node_name(props.nodeNumber) }}
           </div>
           <template v-slot:action>
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
