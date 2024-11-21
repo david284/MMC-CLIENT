@@ -58,7 +58,7 @@
     </q-card>
 
   </q-dialog>
-
+<!-- 
   <vlcbDiagnosticsDialog  v-model='showVLCBDiagnosticsDialog' 
     :nodeNumber = nodeNumber
     :serviceIndex = selectedServiceIndex
@@ -68,15 +68,15 @@
     :nodeNumber = nodeNumber
     :serviceIndex = selectedServiceIndex
   />
-
+ -->
 </template>
 
 
 <script setup>
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
-import vlcbDiagnosticsDialog from "components/dialogs/VLCBDiagnosticsDialog"
-import VLCBExtendedServicesDialog from "components/dialogs/VLCBExtendedServicesDialog"
+//import vlcbDiagnosticsDialog from "components/dialogs/VLCBDiagnosticsDialog"
+//import VLCBExtendedServicesDialog from "components/dialogs/VLCBExtendedServicesDialog"
 
 const store = inject('store')
 const name = "VLCBServicesDialog"
@@ -117,8 +117,12 @@ const columns = [
 
 const nodeServices = computed(() =>{
   var obj = {}
-  if(props.nodeNumber){
-    obj = Object.values(store.state.nodes[props.nodeNumber].services)
+  try{
+    if(props.nodeNumber){
+      obj = Object.values(store.state.nodes[props.nodeNumber].services)
+    }
+  } catch(err){
+    console.log(name + `: nodeServices ` + err)
   }
   return obj
 })
@@ -131,14 +135,18 @@ watch(nodeServices, () => {
 
 const update_rows = () => {
   rows.value = []
-  nodeServices.value.forEach(service => {
-    let output = {}
-    output['serviceIndex'] = service.ServiceIndex
-    output['serviceType'] = service.ServiceType
-    output['serviceName'] = service.ServiceName
-    output['serviceVersion'] = service.ServiceVersion
-    rows.value.push(output)
-  })
+  try{
+    nodeServices.value.forEach(service => {
+      let output = {}
+      output['serviceIndex'] = service.ServiceIndex
+      output['serviceType'] = service.ServiceType
+      output['serviceName'] = service.ServiceName
+      output['serviceVersion'] = service.ServiceVersion
+      rows.value.push(output)
+    })
+  } catch(err){
+    console.log(name + `: update_rows ` + err)
+  }
 }
 
 
