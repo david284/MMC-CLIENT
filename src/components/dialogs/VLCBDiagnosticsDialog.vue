@@ -94,10 +94,14 @@ const columns = [
 
 const nodeServiceDiagnostics = computed(() =>{
   var obj = undefined
-  if(props.nodeNumber){
-    if(store.state.nodes[props.nodeNumber].services[props.serviceIndex]){
-      obj = Object.values(store.state.nodes[props.nodeNumber].services[props.serviceIndex].diagnostics)
+  try{
+    if(props.nodeNumber){
+      if(store.state.nodes[props.nodeNumber].services[props.serviceIndex]){
+        obj = Object.values(store.state.nodes[props.nodeNumber].services[props.serviceIndex].diagnostics)
+      }
     }
+  } catch(err) {
+    console.log(name + `: nodeServiceDiagnostics: ` + err)
   }
   return obj
 })
@@ -110,17 +114,21 @@ watch(nodeServiceDiagnostics, () => {
 })
 
 const update_rows = () => {
-  rows.value = []
-  nodeServiceDiagnostics.value.forEach(diagnostic => {
-    if (diagnostic.DiagnosticCode != 0){
-      // don't display diagnostic code 0 - it's not really a diagnostic code
-      let output = {}
-      output['diagnosticCode'] = diagnostic.DiagnosticCode
-      output['diagnosticValue'] = diagnostic.DiagnosticValue
-      output['diagnosticName'] = diagnostic.DiagnosticName
-      rows.value.push(output)
-    }
-  })
+  try{
+    rows.value = []
+    nodeServiceDiagnostics.value.forEach(diagnostic => {
+      if (diagnostic.DiagnosticCode != 0){
+        // don't display diagnostic code 0 - it's not really a diagnostic code
+        let output = {}
+        output['diagnosticCode'] = diagnostic.DiagnosticCode
+        output['diagnosticValue'] = diagnostic.DiagnosticValue
+        output['diagnosticName'] = diagnostic.DiagnosticName
+        rows.value.push(output)
+      }
+    })
+  } catch(err){
+    console.log(name + `: update_rows: ` + err)
+  }
 }
 
 

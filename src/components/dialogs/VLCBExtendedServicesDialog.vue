@@ -83,19 +83,22 @@ const columns = [
 
 
 const update_rows = () => {
-  const esData = store.state.nodes[props.nodeNumber].services[props.serviceIndex].ESD
-  console.log(name + `: update_rows: ` + JSON.stringify(esData))
+  try{
+    const esData = store.state.nodes[props.nodeNumber].services[props.serviceIndex].ESD
+    //console.log(name + `: update_rows: ` + JSON.stringify(esData))
 
-  rows.value = []
-  for (let key of Object.keys(esData).sort()) {
-    console.log(name + `: update_rows: ` + key)
-    let output = {}
-    output['esdIndex'] = key
-    output['esdValue'] = esData[key].value
-    output['esdName'] = esData[key].name
-    rows.value.push(output)
+    rows.value = []
+    for (let key of Object.keys(esData).sort()) {
+      console.log(name + `: update_rows: ` + key)
+      let output = {}
+      output['esdIndex'] = key
+      output['esdValue'] = esData[key].value
+      output['esdName'] = esData[key].name
+      rows.value.push(output)
+    }
+  } catch(err){
+    console.log(name + `: update_rows: ` + err)
   }
-
 }
 
 

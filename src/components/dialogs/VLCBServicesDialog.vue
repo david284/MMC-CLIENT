@@ -58,7 +58,7 @@
     </q-card>
 
   </q-dialog>
-<!-- 
+
   <vlcbDiagnosticsDialog  v-model='showVLCBDiagnosticsDialog' 
     :nodeNumber = nodeNumber
     :serviceIndex = selectedServiceIndex
@@ -68,15 +68,15 @@
     :nodeNumber = nodeNumber
     :serviceIndex = selectedServiceIndex
   />
- -->
+
 </template>
 
 
 <script setup>
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
-//import vlcbDiagnosticsDialog from "components/dialogs/VLCBDiagnosticsDialog"
-//import VLCBExtendedServicesDialog from "components/dialogs/VLCBExtendedServicesDialog"
+import vlcbDiagnosticsDialog from "components/dialogs/VLCBDiagnosticsDialog"
+import VLCBExtendedServicesDialog from "components/dialogs/VLCBExtendedServicesDialog"
 
 const store = inject('store')
 const name = "VLCBServicesDialog"
