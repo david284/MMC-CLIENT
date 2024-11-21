@@ -13,8 +13,8 @@
         </q-banner>
       </q-card-section>
 
-      <q-card>
-        <q-card-section class="no-margin q-pa-xs">
+      <q-card class="q-pa-none q-ma-none">
+        <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
 
           <q-table
             class="vlcb-services-table"
@@ -41,22 +41,19 @@
             </template>
           </q-table>
 
-        </q-card-section>
-      </q-card>
+          <q-card-actions align="right" class="text-primary">
+            <q-btn flat label="Toggle services json" @click="clickToggleShowServicesJSON()"/>
+          </q-card-actions>
 
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Toggle services json" @click="clickToggleShowServicesJSON()"/>
-      </q-card-actions>
-
-      <q-card class="q-pa-none q-ma-none" v-if="showServicesJSON">
-          <q-card-section  class="text-body2 q-pa-none q-ma-none">
+          <q-card-section  class="text-body2 q-pa-none q-ma-none" v-if="showServicesJSON">
             Service count: {{ store.state.nodes[nodeNumber].serviceCount }}
             <pre>{{ store.state.nodes[nodeNumber].services }}</pre>
           </q-card-section>
+
+        </q-card-section>
       </q-card>
 
     </q-card>
-
   </q-dialog>
 
   <vlcbDiagnosticsDialog  v-model='showVLCBDiagnosticsDialog' 

@@ -1,7 +1,7 @@
 <template>
   <q-dialog v-model='model' persistent>
-
     <q-card style="min-width: 800px" class="q-pa-none q-ma-none">
+
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
           <div class="text-h6">
@@ -13,8 +13,8 @@
         </q-banner>
       </q-card-section>
 
-      <q-card>
-        <q-card-section class="no-margin q-pa-xs">
+      <q-card class="q-pa-none q-ma-none">
+        <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
 
           <q-table
             class="vlcb-diagnostics-table"
@@ -36,22 +36,20 @@
             </template>
           </q-table>
 
-          <div class="q-pa-xs row" v-if="showDiagnosticsJSON">
-            <div class="text-body1">Diagnostics<br></div>
-            <div class="text-body2">
-              <pre>{{ store.state.nodes[nodeNumber].services[serviceIndex].diagnostics }}</pre>
-            </div>
-          </div>
+          <q-card-actions align="right" class="text-primary">
+            <q-btn flat label="Toggle diagnostics json" @click="clickToggleShowDiagnosticsJSON()"/>
+          </q-card-actions>
+
+          <q-card-section  class="text-body2 q-pa-none q-ma-none" v-if="showDiagnosticsJSON">
+            Diagnostics
+            <pre>{{ store.state.nodes[nodeNumber].services[serviceIndex].diagnostics }}</pre>
+          </q-card-section>
+
 
         </q-card-section>
       </q-card>
 
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Toggle diagnostics json" @click="clickToggleShowDiagnosticsJSON()"/>
-      </q-card-actions>
-
     </q-card>
-
   </q-dialog>
 
 </template>
