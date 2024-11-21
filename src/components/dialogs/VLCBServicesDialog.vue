@@ -24,7 +24,7 @@
             row-key="serviceIndex"
             virtual-scroll
             :rows-per-page-options="[0]"
-            :virtual-scroll-sticky-size-start="48"
+            :virtual-scroll-sticky-size-start="0"
             hide-bottom
           >
             <template v-slot:body="props">
@@ -34,8 +34,8 @@
                 <q-td key="serviceName" :props="props">{{ props.row.serviceName}}</q-td>
                 <q-td key="serviceVersion" :props="props">{{ props.row.serviceVersion}}</q-td>
                 <q-td key="actions" :props="props">
-                  <q-btn color="primary" flat rounded label="ESD" @click="clickESD(props.row.serviceIndex)" no-caps/>
-                  <q-btn color="primary" flat rounded label="diagnostics" @click="clickDiagnostics(props.row.serviceIndex)" no-caps/>
+                  <q-btn color="primary" outline class="q-mx-xs q-my-none" label="Data" @click="clickESD(props.row.serviceIndex)" no-caps/>
+                  <q-btn color="primary" outline class="q-mx-xs q-my-none" label="Diagnostics" @click="clickDiagnostics(props.row.serviceIndex)" no-caps/>
                 </q-td>
               </q-tr>
             </template>

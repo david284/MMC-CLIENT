@@ -27,7 +27,7 @@
           virtual-scroll
           v-model:pagnation="pagnation"
           :rows-per-page-options="[0]"
-          :virtual-scroll-sticky-size-start="48"
+          :virtual-scroll-sticky-size-start="0"
           hide-bottom
         >
 

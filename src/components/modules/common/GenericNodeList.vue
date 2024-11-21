@@ -12,7 +12,7 @@
             hide-bottom
             virtual-scroll
             :rows-per-page-options="[0]"
-            :virtual-scroll-sticky-size-start="48"
+            :virtual-scroll-sticky-size-start="0"
             >
 
             <template v-slot:body="props">

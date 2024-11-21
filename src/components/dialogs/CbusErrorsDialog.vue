@@ -24,7 +24,7 @@
             row-key="id"
             virtual-scroll
             :rows-per-page-options="[0]"
-            :virtual-scroll-sticky-size-start="48"
+            :virtual-scroll-sticky-size-start="0"
           >
             <template v-slot:top="">
               <div class="col-4 q-table__title text-h4">CBUS Errors</div>
