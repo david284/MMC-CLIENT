@@ -13,7 +13,7 @@
         </q-banner>
         <q-card-actions align="left">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Delete node"
-          @click="clickDeleteNode()"/>
+          @click="clickDeleteNode()"  v-close-popup/>
         </q-card-actions>
 
         <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
