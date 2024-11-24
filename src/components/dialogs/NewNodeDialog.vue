@@ -29,6 +29,13 @@
         <q-input :input-style="{ fontSize: '25px' }" dense v-model="newNodeName" autofocus />
       </q-card-section>
 
+      <q-card-section class="q-pa-md">
+        <div class="text-h6">
+          Enter a group for this node (optional)
+        </div>
+        <q-input :input-style="{ fontSize: '25px' }" dense v-model="newGroupName" autofocus />
+      </q-card-section>
+
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Accept" @click="clickAccept()"/>
       </q-card-actions>
@@ -46,6 +53,7 @@ import { date, useQuasar, scroll } from 'quasar'
 const $q = useQuasar()
 const store = inject('store')
 const name = "NewNodeDialog"
+const newGroupName = ref("")
 const newNodeName = ref("")
 const newNodeNumber = ref(0)
 
@@ -67,9 +75,20 @@ watch(model, () => {
   console.log(name + `: WATCH model`)
   console.log(name + `: WATCH model: previousNodeNumber ` + props.previousNodeNumber)
   newNodeNumber.value = getNextFreeNodeNumber()
-  newNodeName.value = "CAN" + props.moduleName
-  //  newNodeName.value = store.state.layout.nodeDetails[props.previousNodeNumber].name
+  newNodeName.value = ""
 })
+
+
+watch(newNodeNumber, () => {
+  console.log(name + `: WATCH model: newNodeNumber ` + newNodeNumber.value)
+  try{
+    newNodeName.value = store.state.layout.nodeDetails[newNodeNumber.value].name
+    newGroupName.value = store.state.layout.nodeDetails[newNodeNumber.value].group
+  } catch(err){
+    console.log(name + `: WATCH newNodeNumber ` + err)
+  }
+})
+
 
 
 const getNextFreeNodeNumber = () => {
@@ -121,6 +140,7 @@ Click event handlers
 const clickAccept = () => {
   console.log(name + " new node number: " + newNodeNumber.value)
   console.log(name + " new node name: " + newNodeName.value)
+  console.log(name + " new group name: " + newGroupName.value)
 
   if (isNodeNumberFree(newNodeNumber.value)){
     store.methods.set_node_number(newNodeNumber.value)
@@ -138,6 +158,7 @@ const clickAccept = () => {
           store.methods.set_node_number(newNodeNumber.value)
           // setting name will trigger layoutdetails update & create entry if it doesn't exist
           store.setters.node_name(newNodeNumber.value, newNodeName.value)
+          store.setters.node_group(newNodeNumber.value, newGroupName.value)
           model.value = false   // close dialog
         } },
         { label: 'NO', color: 'white', handler: () => { /* ... */ } }

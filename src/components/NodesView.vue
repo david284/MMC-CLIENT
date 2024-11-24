@@ -47,19 +47,19 @@
           <q-td key="events" :props="props">{{ props.row.events }}</q-td>
           <q-td key="actions">
             <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Events"
-              @click="clickEvents(props.row.nodeNumber)" no-caps/>
+              :disabled="!props.row.status" @click="clickEvents(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="md" label="Name"
-              @click="clickNameNode(props.row.nodeNumber)" no-caps/>
+              :disabled="!props.row.status" @click="clickNameNode(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="md" label="Parameters"
               @click="clickParameters(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="md" label="Variables"
-              @click="clickVariables(props.row.nodeNumber)" no-caps/>
+              :disabled="!props.row.status" @click="clickVariables(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline v-if="(!props.row.vlcb)" disabled color="primary" size="md" label="CBUS"
               @click="clickVLCB(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline v-if="(props.row.vlcb)" color="primary" size="md" label="VLCB"
-              @click="clickVLCB(props.row.nodeNumber)" no-caps/>
+              :disabled="!props.row.status" @click="clickVLCB(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" color="blue-grey-1" text-color="blue-grey-14" size="md" label="Advanced"
-              @click="clickNodeAdvanced(props.row.nodeNumber)" no-caps/>
+              :disabled="!props.row.status" @click="clickNodeAdvanced(props.row.nodeNumber)" no-caps/>
 
           </q-td>
         </q-tr>
@@ -248,6 +248,9 @@ const checkNodeParameters = async (nodeNumber) => {
      await sleep (10)
   }
   showNodeParametersLoadingDialog.value = false
+  var result = (store.state.nodes[nodeNumber].parameters[9] != undefined)? true : false
+  console.log(name + ': checkNodeParameters - result ' + result)
+  return result
 }
 
 
@@ -308,10 +311,12 @@ const clickParameters = async (nodeNumber) => {
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   // always re-read parameters
   store.methods.request_all_node_parameters(nodeNumber, 20, 100)
-  await checkNodeParameters(nodeNumber)
-  await select_node_row(nodeNumber)
-  console.log(name + `: clickParameters: node ` + nodeNumber)
-  showNodeParametersDialog.value = true
+  if (await checkNodeParameters(nodeNumber)){
+    console.log(name + `: clickParameters: checkNodeParameters true`)
+    await select_node_row(nodeNumber)
+    console.log(name + `: clickParameters: node ` + nodeNumber)
+    showNodeParametersDialog.value = true
+  }
 }
 
 const clickRefresh = () => {
