@@ -130,7 +130,8 @@
   <modifiedGridConnectDialog v-model='showModifiedGridConnectDialog'
     :busMessage="busMessage"/>
   <newNodeDialog v-model='showNewNodeDialog'
-    :previousNodeNumber="previousNodeNumber" />
+    :previousNodeNumber="previousNodeNumber"
+    :moduleName="nodeModuleName" />
   <startupDialog v-model='store.state.inStartup' />
   <systemDialog v-model='showSystemDialog' />
   <dialogExampleCompositionAPI v-model='showDialogExampleCompositionAPI' />
@@ -187,6 +188,7 @@ const showNewNodeDialog = ref(false)
 const showStartupDialog = ref(true)
 const showSystemDialog = ref(false)
 const previousNodeNumber = ref(0)
+const nodeModuleName = ref('')
 const showDialogExampleCompositionAPI = ref(false)
 const showiFrameDialog = ref(false)
 const exampleURL = ref("dummyModule/index.html")
@@ -256,9 +258,10 @@ const scrollFunc = () => {
 
 
 
-store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber) => {
- console.log(name + ': REQUEST_NODE_NUMBER_EVENT - previous node number ' + nodeNumber)
+store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber, moduleName) => {
+ console.log(name + ': REQUEST_NODE_NUMBER_EVENT - previous node number ' + nodeNumber + ' moduleName ' + moduleName )
  previousNodeNumber.value = nodeNumber
+ nodeModuleName.value = moduleName
  showNewNodeDialog.value = true
 })
 

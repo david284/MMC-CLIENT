@@ -17,7 +17,8 @@
         </div>
         <q-input type="number" style="max-width: 150px" :input-style="{ fontSize: '25px' }" dense v-model="newNodeNumber" autofocus />
         <div class="text-h6">
-          This node was previously {{ props.previousNodeNumber }}
+          This node was previously {{ props.previousNodeNumber }}<br/>
+          The module type is CAN{{ props.moduleName }}<br/>
         </div>
       </q-card-section>
 
@@ -29,7 +30,7 @@
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Accept" v-close-popup @click="clickAccept()"/>
+        <q-btn flat label="Accept" @click="clickAccept()"/>
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -40,7 +41,9 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
+import { date, useQuasar, scroll } from 'quasar'
 
+const $q = useQuasar()
 const store = inject('store')
 const name = "NewNodeDialog"
 const newNodeName = ref("")
@@ -49,7 +52,8 @@ const newNodeNumber = ref(0)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
-  previousNodeNumber:{ type: Number, required: true }
+  previousNodeNumber:{ type: Number, required: true },
+  moduleName:{type:String, default:''}
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -63,7 +67,8 @@ watch(model, () => {
   console.log(name + `: WATCH model`)
   console.log(name + `: WATCH model: previousNodeNumber ` + props.previousNodeNumber)
   newNodeNumber.value = getNextFreeNodeNumber()
-//  newNodeName.value = store.state.layout.nodeDetails[props.previousNodeNumber].name
+  newNodeName.value = "CAN" + props.moduleName
+  //  newNodeName.value = store.state.layout.nodeDetails[props.previousNodeNumber].name
 })
 
 
@@ -89,6 +94,20 @@ const getNextFreeNodeNumber = () => {
 }
 
 
+const isNodeNumberFree = (nodeNumber) => {
+  var nodes = Object.keys(store.state.nodes)  // just get node numbers
+  // loop through all node numbers, checking it it already exists
+    if (nodes.includes(nodeNumber)) {
+      console.log(name + " node number in use: " + nodeNumber)
+      // found nodeNumber, so not free
+      return false
+    } else {
+      console.log(name + " free node number: " + nodeNumber)
+      return true
+    }
+
+}
+
 
 onUpdated(() => {
 })
@@ -102,9 +121,29 @@ Click event handlers
 const clickAccept = () => {
   console.log(name + " new node number: " + newNodeNumber.value)
   console.log(name + " new node name: " + newNodeName.value)
-  store.methods.set_node_number(newNodeNumber.value)
-  // setting name will trigger layoutdetails update & create entry if it doesn't exist
-  store.setters.node_name(newNodeNumber.value, newNodeName.value)
+
+  if (isNodeNumberFree(newNodeNumber.value)){
+    store.methods.set_node_number(newNodeNumber.value)
+    // setting name will trigger layoutdetails update & create entry if it doesn't exist
+    store.setters.node_name(newNodeNumber.value, newNodeName.value)
+    model.value = false // close dialog
+  } else {
+    const result = $q.notify({
+      message: 'node number is already used - still proceed?',
+      timeout: 0,
+      position: 'center',
+      color: 'primary',
+      actions: [
+        { label: 'YES', color: 'white', handler: async () => { 
+          store.methods.set_node_number(newNodeNumber.value)
+          // setting name will trigger layoutdetails update & create entry if it doesn't exist
+          store.setters.node_name(newNodeNumber.value, newNodeName.value)
+          model.value = false   // close dialog
+        } },
+        { label: 'NO', color: 'white', handler: () => { /* ... */ } }
+      ]
+    })
+  }
 }
 
 

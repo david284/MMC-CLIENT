@@ -622,9 +622,9 @@ socket.on("PROGRAM_NODE_PROGRESS", (text) => {
   eventBus.emit('PROGRAM_NODE_PROGRESS', text)
 })
 
-socket.on("REQUEST_NODE_NUMBER", (nodeNumber) => {
-  console.log(`RECEIVED REQUEST_NODE_NUMBER : ` + JSON.stringify(nodeNumber))
-  eventBus.emit('REQUEST_NODE_NUMBER_EVENT', nodeNumber)
+socket.on("REQUEST_NODE_NUMBER", (nodeNumber, moduleName) => {
+  console.log(`RECEIVED REQUEST_NODE_NUMBER : ` + JSON.stringify(nodeNumber) + ' moduleName ' + moduleName)
+  eventBus.emit('REQUEST_NODE_NUMBER_EVENT', nodeNumber, moduleName)
 })
 
 socket.on("SERVER_STATUS", (data) => {
