@@ -149,7 +149,7 @@ const clickAccept = () => {
     model.value = false // close dialog
   } else {
     const result = $q.notify({
-      message: 'node number is already used - still proceed?',
+      message: 'node number is already assigned - still proceed?',
       timeout: 0,
       position: 'center',
       color: 'primary',
