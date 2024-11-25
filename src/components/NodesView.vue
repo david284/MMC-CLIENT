@@ -111,6 +111,7 @@
 
 <script setup>
 import {inject, ref, onBeforeMount, onMounted, computed, watch} from "vue"
+import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import EventsListByNode from "components/EventsListByNode"
 import advancedNodeDialog from "components/dialogs/advancedNodeDialog"
@@ -123,6 +124,7 @@ import NodeVariablesLoadingDialog from "components/dialogs/NodeVariablesLoadingD
 import vlcbServicesDialog from "components/dialogs/VLCBServicesDialog"
 import iFrameDialog from "components/dialogs/iFrameDialog";
 
+const $q = useQuasar()
 
 const columns = [
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node number', align: 'left', sortable: true},
@@ -249,6 +251,16 @@ const checkNodeParameters = async (nodeNumber) => {
   }
   showNodeParametersLoadingDialog.value = false
   var result = (store.state.nodes[nodeNumber].parameters[9] != undefined)? true : false
+  if (result == false){
+    $q.notify({
+      message: 'Reading Node Parameters has failed',
+      caption: 'please check connections to node',
+      timeout: 5000,
+      type: 'warning',
+      position: 'center',
+      actions: [ { label: 'Dismiss' } ]
+    })
+  }
   console.log(name + ': checkNodeParameters - result ' + result)
   return result
 }
