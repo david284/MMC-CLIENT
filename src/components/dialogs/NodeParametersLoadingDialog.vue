@@ -56,11 +56,11 @@ const checkNodeParameters = async (nodeNumber) => {
     var count = 0
     try {
       while (store.state.nodes[nodeNumber].parameters[9] == undefined){
-        await sleep(1)
+        await sleep(100)
         count++
         // if 20 seconds elapsed, then exit by thowing error
-        if (count >20000) {throw "********** failed to read Node Parameters"}
-        if (Date.now() > lastBusTrafficTime + 1000) {throw "********** failed to read Node Parameters"}
+        if (count >200) {throw "********** failed to read Node Parameters"}
+        if (Date.now() > lastBusTrafficTime + 2000) {throw "********** failed to read Node Parameters"}
       }
       model.value = false
     } catch (err){

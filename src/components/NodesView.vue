@@ -321,8 +321,6 @@ const clickNodeAdvanced = async (nodeNumber) => {
 const clickParameters = async (nodeNumber) => {
   console.log(name + `: clickParameters`)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
-  // always re-read parameters
-  store.methods.request_all_node_parameters(nodeNumber, 20, 100)
   if (await checkNodeParameters(nodeNumber)){
     console.log(name + `: clickParameters: checkNodeParameters true`)
     await select_node_row(nodeNumber)
