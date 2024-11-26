@@ -22,6 +22,7 @@ import {sleep} from "components/functions/utils.js"
 
 const store = inject('store')
 const name = "NodeParametersLoadingDialog"
+let lastBusTrafficTime = Date.now()
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -57,8 +58,9 @@ const checkNodeParameters = async (nodeNumber) => {
       while (store.state.nodes[nodeNumber].parameters[9] == undefined){
         await sleep(1)
         count++
-        // if 5 seconds elapsed, then exit by thowing error
-        if (count >500) {throw "********** failed to read Node Parameters"}
+        // if 20 seconds elapsed, then exit by thowing error
+        if (count >20000) {throw "********** failed to read Node Parameters"}
+        if (Date.now() > lastBusTrafficTime + 1000) {throw "********** failed to read Node Parameters"}
       }
       model.value = false
     } catch (err){
@@ -72,6 +74,9 @@ const checkNodeParameters = async (nodeNumber) => {
 }
 
 
+store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
+  lastBusTrafficTime = Date.now()
+})
 
 
 
