@@ -158,7 +158,6 @@
 import {computed, inject, onBeforeMount, onMounted, onUpdated, ref, watch} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import nodesView from "components/NodesView"
-import busEventsDialog from "components/dialogs/BusEventsDialog";
 import busTrafficDialog from "components/dialogs/BusTrafficDialog";
 import cbusErrorsDialog from "components/dialogs/CbusErrorsDialog";
 import jsonDialog from "components/dialogs/JsonDialog";
