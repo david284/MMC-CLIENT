@@ -172,7 +172,7 @@ const update_bus_events = () => {
     let busEvents = store.state.busEvents
     // order keys
     if (busEvents){
-      for (let key of Object.keys(busEvents).sort()) {
+      for (let key of Object.keys(busEvents).sort(function(a, b){return (busEvents[a].eventIdentifier < busEvents[b].eventIdentifier)? -1 : 1;})) {
         var eventNodeNumber = parseInt(busEvents[key].eventIdentifier.slice(0,4), 16)
         if ((viewModeIndex.value == 1) && (eventNodeNumber > 0)){
           // don't add this node as we've selected short events only
