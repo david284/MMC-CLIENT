@@ -32,8 +32,8 @@
 
             <q-card-section  style="width: 400px;" class="no-margin q-py-none">
               <div class="text-subtitle2">
-                The file is matched using the name, module identifier, version number and processor code<br/>
-                If no match is found, then it will fall back to using just the name, module identifier and the version number<br/>
+                The file is matched using the module identifier, version number and processor code, the name portion is not used<br/>
+                If no match is found, then it will fall back to using just the module identifier and the version number<br/>
                 Modules that need files using the processor code are the exception, most won't use it<br/>
               </div>
               <q-card-actions class="text-primary">
