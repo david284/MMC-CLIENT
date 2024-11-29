@@ -7,7 +7,7 @@
           &nbsp; program Node {{ store.getters.node_name(nodeNumber) }}
         </div>
         <template v-slot:action>
-          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+          <q-btn flat color="white" size="md" label="Close" @click="clickClose()"/>
         </template>
       </q-banner>
 
@@ -107,7 +107,7 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 
 const store = inject('store')
 const name = "ProgramNodeDialog"
-const uploadFile = ref()
+const uploadFile = ref(null)
 const checked1 = ref(false)
 const checked2 = ref(false)
 const checked4 = ref(false)
@@ -131,7 +131,7 @@ const model = computed({
 
 watch(model, () => {
 //  console.log(name + `: WATCH model`)
-  uploadFile.value = ''
+  uploadFile.value = null
 })
 
 
@@ -191,7 +191,11 @@ const clickProgram = async () => {
   await actionUpload()
 }
 
-
+const clickClose = async () => {
+  // parameters probably changed due to programming, so reload
+  store.methods.request_all_node_parameters(props.nodeNumber, 20, 100)
+  model.value = false   // close the dialog
+}
 
 </script>
 

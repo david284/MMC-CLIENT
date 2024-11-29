@@ -321,6 +321,8 @@ const clickNodeAdvanced = async (nodeNumber) => {
 const clickParameters = async (nodeNumber) => {
   console.log(name + `: clickParameters`)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
+  // clear out parameters to force them to be reloaded
+  store.state.nodes[nodeNumber].parameters = {}
   if (await checkNodeParameters(nodeNumber)){
     console.log(name + `: clickParameters: checkNodeParameters true`)
     await select_node_row(nodeNumber)

@@ -53,14 +53,14 @@ const checkNodeParameters = async (nodeNumber) => {
     model.value = false
   } else {
     store.methods.request_all_node_parameters(nodeNumber, 20, 100)
-    var count = 0
+    let startTime = Date.now()
     try {
       while (store.state.nodes[nodeNumber].parameters[9] == undefined){
-        await sleep(100)
-        count++
+        await sleep(100)  // give other processes plemty of time
         // if 20 seconds elapsed, then exit by thowing error
-        if (count >200) {throw "********** failed to read Node Parameters"}
-        if (Date.now() > lastBusTrafficTime + 2000) {throw "********** failed to read Node Parameters"}
+        if (Date.now() > startTime + 20000) {throw "********** failed to read Node Parameters: Max time elapsed"}
+        // if no bus traffic for 2 seconds, then exit by thowing error
+        if (Date.now() > lastBusTrafficTime + 2000) {throw "********** failed to read Node Parameters: lastBusTraffic timeout "}
       }
       model.value = false
     } catch (err){
