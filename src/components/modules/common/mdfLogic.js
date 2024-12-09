@@ -3,7 +3,7 @@ import jsonLogic from 'json-logic-js'
 export class mdfLogic {
 
   constructor() {
-    console.log("mdfLogic Constructor")
+//    console.log("mdfLogic Constructor")
     this.node = undefined
     this.eventIdentifier = undefined
 
@@ -74,7 +74,9 @@ export class mdfLogic {
 //    console.log("mdfLogic.parse " + eventIdentifier)
     try{
       let result = jsonLogic.apply(logicExpression)
-      console.log("mdfLogic.parse result " + result)
+      console.log("mdfLogic.parse:" 
+        + ' logic: ' + JSON.stringify(logicExpression)
+        + ' result: ' + result )
       return result
     } catch(err){
       console.log("mdfLogic.parse " + err)

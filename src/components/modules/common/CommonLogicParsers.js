@@ -67,10 +67,12 @@ export function parseLogicElement (nodeNumber, logic, store, argument3) {
 //    console.log(`parseLogicElement: nv result = ` + result)
   }
 
+  // 
+  // call to use jsonLogic
+  //
   if (logic.JLL != undefined){
     let Logic = new mfdLogic.mdfLogic()
     result = Logic.evaluate(store.state.nodes[nodeNumber], logic.JLL, argument3)
-    console.log(`parseLogicElement: JLL element ` + result)
   }
 
 
