@@ -16,16 +16,16 @@ npm install
 quasar dev
 ```
 
+### Run Jest unit tests
+
+```bash
+npm run test:unit
+```
+
 ### Lint the files
 
 ```bash
 npm run lint
-```
-
-### Format the files
-
-```bash
-npm run format
 ```
 
 ### Build the app for production
