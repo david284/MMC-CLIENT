@@ -1,3 +1,7 @@
+import jsonLogic from 'json-logic-js'
+import * as mfdLogic from "components/modules/common/mdfLogic.js";
+
+
 export function overloadedLabel (nodeNumber, element, store) {
   var result = null
   if (element.nv){
@@ -63,6 +67,13 @@ export function parseLogicElement (nodeNumber, logic, store, argument3) {
 //    console.log(`parseLogicElement: nv result = ` + result)
   }
 
+  if (logic.JLL != undefined){
+    let Logic = new mfdLogic.mdfLogic()
+    result = Logic.evaluate(store.state.nodes[nodeNumber], logic.JLL, argument3)
+    console.log(`parseLogicElement: JLL element ` + result)
+  }
+
+
   /*
   // logic for slot - slot is an alias for event index
   // where fixed event index 'slots' are used
@@ -112,5 +123,20 @@ function testCondition(value, logic){
   return result
 }
 
-
+/*
+export function jsonLogicTest (node, logicExpression) {
+  try{
+    var NVoperator = function(a){
+      return node.nodeVariables[a]
+    };
+    jsonLogic.add_operation("NV", NVoperator);
+    let result = jsonLogic.apply(logicExpression)
+    console.log("jsonLogicTest result " + result)
+    return result
+  } catch(err){
+    console.log("jsonLogicTest " + err)
+    return false 
+  }
+}
+  */
 
