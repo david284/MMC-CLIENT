@@ -222,9 +222,8 @@ onBeforeMount(() => {
 
 
 const select_node_row = async (nodeNumber) => {
-//    console.log(name + ': request_all_node_events')
+  console.log(name + ': select_node_row: node ' + nodeNumber)
   store.state.selected_node = nodeNumber
-//  store.methods.request_all_node_events(store.state.selected_node)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   selected_node_valid.value = true
   // give the module chance to report it's events
@@ -242,6 +241,7 @@ store.eventBus.on('NODE_DELETED_EVENT', (nodeNumber) => {
 
 
 const checkNodeParameters = async (nodeNumber) => {
+  console.log(name + ': checkNodeParameters: node ' + nodeNumber)
   nodeParametersLoadingReturn.value=''
   showNodeParametersLoadingDialog.value = true
   // wait for parameters to load
@@ -267,6 +267,7 @@ const checkNodeParameters = async (nodeNumber) => {
 
 
 const checkNodeVariables = async (nodeNumber) => {
+  console.log(name + ': checkNodeVariables: node ' + nodeNumber)
   nodeVariablesLoadingReturn.value =''
   showNodeVariablesLoadingDialog.value = true
   // wait for variables to load
@@ -286,12 +287,12 @@ Click event handlers
 
 
 const clickEvents = async (nodeNumber) => {
-  console.log(name + `: clickEvents`)
+  console.log(name + `: clickEvents: node ` + nodeNumber)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   await checkNodeParameters(nodeNumber)
   await checkNodeVariables(nodeNumber)
+  store.methods.request_all_node_events(nodeNumber)
   await select_node_row(nodeNumber)
-  console.log(name + ': clickEvents: node', nodeNumber)
 }
 
 const clickInfo = () => {
