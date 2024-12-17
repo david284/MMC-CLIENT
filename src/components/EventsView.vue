@@ -252,32 +252,11 @@ const event_colour = (eventIdentifier) => {
 }
 
 
-const nodeDetails = computed(() => {
-  return store.state.nodes
-})
-
-watch(nodeDetails, () => {
-//  console.log(name + `: WATCH Nodes`)
-  update_events_table
-})
-
-
-const nodeList = computed(() => {
-  //console.log(`Computed Events`)
-  return Object.keys(store.state.nodes)
-})
-
-watch(nodeList, () => {
-  //console.log(`WATCH Nodes`)
-  update_events_table
-})
-
-
-
 const getLinkedNodesCount = (eventIdentifier) => {
   var count = 0
+  let nodesList = Object.keys(store.state.nodes)
   try{
-    nodeList.value.forEach(node => {
+    nodesList.forEach(node => {
       if (eventIdentifier in store.state.nodes[node].storedEventsNI){
         count++
       }
