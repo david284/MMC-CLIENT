@@ -150,40 +150,48 @@ const teColumns = [
 ]
 
 
-const nodeList = computed(() => {
-  //console.log(`Computed Events`)
-  return Object.values(store.state.nodes)
+const nodesUpdated = computed(() => {
+//  console.log(name + `: nodesUpdated`)
+  return store.state.nodes.updateTimestamp
 })
 
-watch(nodeList, () => {
-  //console.log(`WATCH Nodes`)
-  update_taught_nodes()
-//  updateGroupList()
+watch(nodesUpdated, () => {
+//  console.log(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
+  if (props.eventIdentifier){
+    update_taught_nodes()
+  }
 })
+
 
 const update_taught_nodes = async () => {
-//  console.log(name + `: update_taught_nodes`)
-  teRows.value = []
-  taughtNodes.value = []
-  nodeList.value.forEach(node => {
-    if (Object.values(node.storedEventsNI).length > 0) {
-      let events = Object.values(node.storedEventsNI)
-      events.forEach(async event => {
-        if (event.eventIdentifier == props.eventIdentifier) {
-          taughtNodes.value.push(node.nodeNumber)
-          var nodeName = store.state.layout.nodeDetails[node.nodeNumber].name
-          teRows.value.push({"number" : node.nodeNumber, "name" : nodeName, "eventIndex":event.eventIndex, "eventIdentifier":event.eventIdentifier})
-//          await checkNodeParameters(node.nodeNumber)
+//  console.log(name + `: update_taught_nodes: eventIdentifier ` + props.eventIdentifier)
+  try{
+    teRows.value = []
+    taughtNodes.value = []
+    var list = Object.values(store.state.nodes)
+    list.forEach(node => {
+      if (node.storedEventsNI){
+        if (Object.values(node.storedEventsNI).length > 0) {
+          let events = Object.values(node.storedEventsNI)
+          events.forEach(async event => {
+            if (event.eventIdentifier == props.eventIdentifier) {
+              taughtNodes.value.push(node.nodeNumber)
+              var nodeName = store.state.layout.nodeDetails[node.nodeNumber].name
+              teRows.value.push({"number" : node.nodeNumber, "name" : nodeName, "eventIndex":event.eventIndex, "eventIdentifier":event.eventIdentifier})
+            }
+          })
         }
-      })
-    }
-  })
-  update_available_nodes()
+      }
+    })
+    update_available_nodes()
+  } catch (err) {
+    console.log(name + `: update_taught_nodes ` + err)
+  }
 }
 
 
 const update_available_nodes = () =>{
-//  console.log(name + `: update_available_nodes`)
+//  console.log(name + `: update_available_nodes ` + props.eventIdentifier)
   try {
     availableNodes.value = []
     var nodes = store.state.nodes
@@ -226,22 +234,11 @@ onMounted(() => {
 })
 
 onUpdated(() => {
-//  console.log("EventTeachDialog onUpdated")
+//  console.log(name + ": onUpdated")
   if (props.eventIdentifier){
     update_taught_nodes()
   }
 })
-
-
-const readEventVariables = (nodeNumber, eventIdentifier) => {
-  // refresh event list
-//  console.log(name + `: readEventVariables: node: ` + nodeNumber + ` eventIdentifier: ` + eventIdentifier)
-  store.methods.request_event_variables_by_identifier(
-    nodeNumber,
-    eventIdentifier
-  );
-}
-
 
 
 const checkNodeParameters = async (nodeNumber) => {

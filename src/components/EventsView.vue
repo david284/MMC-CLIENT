@@ -191,13 +191,13 @@ watch(eventDetails, () => {
   update_events_table()
 })
 
-const nodesDetails = computed(() => {
-//  console.log(name + `: nodesDetails`)
-  return store.state.nodes
+const nodesUpdated = computed(() => {
+//  console.log(name + `: nodesUpdated`)
+  return store.state.nodes.updateTimestamp
 })
 
-watch(nodesDetails, () => {
-//  console.log(name + `: WATCH Nodes`)
+watch(nodesUpdated, () => {
+  console.log(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
   update_events_table()
 })
 
@@ -228,7 +228,7 @@ const update_events_table = () => {
       output['nodeNumber'] = nodeNumber
       output['eventNumber'] = parseInt(eventIdentifier.slice(4,8), 16)
       output['type'] = nodeNumber == 0 ? "short" : "long"
-      output['name'] = events[eventIdentifier].name
+      output['name'] = store.getters.event_name(eventIdentifier)
       output['colour'] = events[eventIdentifier].colour
       output['group'] = events[eventIdentifier].group
       output['status'] = store.state.event_view_status[eventIdentifier]
@@ -386,7 +386,7 @@ const clickInfo = () => {
 
 
 const clickLinkedNodes = (eventIdentifier) => {
-  console.log(name + `: clickLinkedNodes`)
+  console.log(name + `: clickLinkedNodes ` + eventIdentifier)
   selected_event_Identifier.value = eventIdentifier
   showLinkedNodesDialog.value = true
 }
@@ -426,7 +426,7 @@ const clickSendOn = (nodeNumber, eventIdentifier) => {
 
 
 const clickTeach = (eventIndentifier) => {
-  console.log(name + `: clickTeach`)
+  console.log(name + `: clickTeach ` + eventIndentifier)
   selected_event_Identifier.value = eventIndentifier
   showEventTeachDialog.value = true
 }

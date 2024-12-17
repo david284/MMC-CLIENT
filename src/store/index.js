@@ -301,7 +301,6 @@ const methods = {
 const getters = {
   busEvent_status(eventIdentifier){
     if (eventIdentifier in state.busEvents) {
-//      console.log(name + `: busEvent_status ` + state.busEvents[eventIdentifier].status)
       return state.busEvents[eventIdentifier].status
     } else {
       return ''
@@ -309,14 +308,15 @@ const getters = {
   },
   event_name(eventIdentifier) {
     if (eventIdentifier in state.layout.eventDetails) {
-      //console.log(`Event Name`)
-      return state.layout.eventDetails[eventIdentifier].name
+      try {
+        if (state.layout.eventDetails[eventIdentifier].name.length > 0){
+          return state.layout.eventDetails[eventIdentifier].name
+        }
+      } catch {}  // not worried if it fails, we'll sort a return at the end
     } else {
-      //console.log(`Event No Name ${JSON.stringify(eventIdentifier)}`)
-      // create eventdetails entry if it doesn't exist
-      setters.event_name(eventIdentifier, eventIdentifier)
-      return JSON.stringify(eventIdentifier)
+      setters.event_name(eventIdentifier, '')
     }
+    return '(' + eventIdentifier + ')'
   },
   event_colour(eventIdentifier) {
     if (eventIdentifier in state.layout.eventDetails) {
@@ -342,7 +342,7 @@ const getters = {
     try{
       return state.nodes[nodeNumber].storedEventsNI[eventIdentifier].variables[eventVariableIndex]
     } catch (err){
-//      console.log(name + `: event_variable_by_identifier: ${err}`)
+      console.log(name + `: event_variable_by_identifier: ${err}`)
       return 0
     }
   },
@@ -398,7 +398,6 @@ const getters = {
   node_parameter_name(nodeNumber, parameterIndex){
     var result = 'Index: ' + parameterIndex
     try{
-//      result = 'Index: ' + parameterIndex
       result = parameterIndex + ': ' + NodeParameterNames[parameterIndex]   
     } catch (err) {
       console.log(name + `: getters.node_parameter_name: ${err}`)
@@ -428,7 +427,6 @@ const setters = {
       state.layout.eventDetails[eventIdentifier].group = ""
     }
     state.layout.eventDetails[eventIdentifier].name = eventName
-//    console.log(name + ': setter event_name ' + eventIdentifier + ' : ' + eventName)
     state.update_layout_needed = true
   },
   event_colour(eventIdentifier, eventColour) {
@@ -438,7 +436,6 @@ const setters = {
       state.layout.eventDetails[eventIdentifier].group = ""
     }
     state.layout.eventDetails[eventIdentifier].colour = eventColour
-//    console.log(name + ': setter event_colour ' + eventIdentifier + ' : ' + eventColour)
     state.update_layout_needed = true
   },
   event_group(eventIdentifier, eventGroup) {
@@ -448,7 +445,6 @@ const setters = {
       state.layout.eventDetails[eventIdentifier].group = ""
     }
     state.layout.eventDetails[eventIdentifier].group = eventGroup
-//    console.log(name + ': setter event_group ' + eventIdentifier + ' : ' + eventGroup)
     state.update_layout_needed = true
   },
   node_group(nodeNumber, Group){
@@ -467,7 +463,6 @@ const setters = {
       state.layout.nodeDetails[nodeNumber].group = ""
     }
     state.layout.nodeDetails[nodeNumber].name = nodeName
-//    console.log(name + ': setter node_name ' + nodeNumber + ' : ' + nodeName)
     state.update_layout_needed = true
   }
 
@@ -564,6 +559,7 @@ socket.on("MATCHING_MDF_LIST", (location, nodeNumber, list) => {
 
 socket.on("NODE", (data) => {
   console.log(`RECEIVED NODE : ${data.nodeNumber}`)
+  state.nodes["updateTimestamp"] = Date.now()
 //  console.log(`RECEIVED NODE : ${data.nodeNumber} Data: ` + JSON.stringify(data))
   // remove original stored events by Index
   delete data.storedEvents
@@ -582,6 +578,7 @@ socket.on("NODE", (data) => {
 
 socket.on("NODES", (data) => {
   console.log(`RECEIVED NODES`)
+  state.nodes["updateTimestamp"] = Date.now()
   var nodes = Object.values(data)
   // remove original stored events by Index
   nodes.forEach(node =>{

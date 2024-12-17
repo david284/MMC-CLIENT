@@ -58,39 +58,39 @@ watch(model, () => {
 
 const linkedNodeNumbers = ref([])
 
-const nodesDetails = computed(() => {
-//  console.log(name + `: nodesDetails`)
-  return store.state.nodes
+const nodesUpdated = computed(() => {
+//  console.log(name + `: nodesUpdated`)
+  return store.state.nodes.updateTimestamp
 })
 
-watch(nodesDetails, () => {
-//  console.log(name + `: WATCH Nodes`)
-  update_nodes_table()
+watch(nodesUpdated, () => {
+//  console.log(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
+  if (props.eventIdentifier){
+    update_nodes_table()
+  }
 })
 
-const nodeList = computed(() => {
-  //console.log(`Computed Events`)
-  return Object.values(store.state.nodes)
-})
-
-watch(nodeList, () => {
-  //console.log(`WATCH Nodes`)
-  update_nodes_table()
-})
 
 const update_nodes_table = async () => {
 //  console.log(name + `: update__nodes_table`)
-  linkedNodeNumbers.value = []
-  nodeList.value.forEach(node => {
-    if (Object.values(node.storedEventsNI).length > 0) {
-      let events = Object.values(node.storedEventsNI)
-      events.forEach(async event => {
-        if (event.eventIdentifier == props.eventIdentifier) {
-          linkedNodeNumbers.value.push(node.nodeNumber)
+  try {
+    linkedNodeNumbers.value = []
+    let nodeList = Object.values(store.state.nodes)
+    nodeList.forEach(node => {
+      if (node.storedEventsNI){
+        if (Object.values(node.storedEventsNI).length > 0) {
+          let events = Object.values(node.storedEventsNI)
+          events.forEach(async event => {
+            if (event.eventIdentifier == props.eventIdentifier) {
+              linkedNodeNumbers.value.push(node.nodeNumber)
+            }
+          })
         }
-      })
-    }
-  })
+      }
+    })
+  } catch(err){
+    console.log(name + `: update__nodes_table ` + err)
+  }
 }
 
 

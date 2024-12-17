@@ -158,22 +158,13 @@ const exampleURL = ref("dummyModule/index.html")
 const nodeParametersLoadingReturn = ref('')
 const nodeVariablesLoadingReturn = ref('')
 
-const nodeList = computed(() => {
-  return Object.values(store.state.nodes)
+const nodesUpdated = computed(() => {
+//  console.log(name + `: nodesUpdated`)
+  return store.state.nodes.updateTimestamp
 })
 
-watch(nodeList, () => {
-//  console.log(name + `: WATCH Nodes`)
-  update_rows()
-})
-
-
-const nodeDetails = computed(() => {
-  return store.state.layout.nodeDetails
-})
-
-watch(nodeDetails, () => {
-//  console.log(name + `: WATCH Nodes`)
+watch(nodesUpdated, () => {
+  console.log(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
   update_rows()
 })
 
@@ -181,27 +172,30 @@ watch(nodeDetails, () => {
 const update_rows = () => {
 //  console.log(name + ': update_rows')
   rows.value = []
-  nodeList.value.forEach(node => {
-    let output = {}
-    output['nodeNumber'] = node.nodeNumber
-    output['CANID'] = node.CANID
-    output['nodeName'] = store.getters.node_name(node.nodeNumber)
-    output['group'] = store.getters.node_group(node.nodeNumber)
-    output['moduleName'] = node.moduleName
-    output['component'] = node.component
-    output['status'] = node.status
-    if (node.flim){
-      output['mode'] = 'FLiM'
-    } else {
-      if (node.VLCB){
-        output['mode'] = 'unInit'
+  let nodeList = Object.values(store.state.nodes)
+  nodeList.forEach(node => {
+    if (node.nodeNumber){
+      let output = {}
+      output['nodeNumber'] = node.nodeNumber
+      output['CANID'] = node.CANID
+      output['nodeName'] = store.getters.node_name(node.nodeNumber)
+      output['group'] = store.getters.node_group(node.nodeNumber)
+      output['moduleName'] = node.moduleName
+      output['component'] = node.component
+      output['status'] = node.status
+      if (node.flim){
+        output['mode'] = 'FLiM'
       } else {
-        output['mode'] = 'SLiM'
+        if (node.VLCB){
+          output['mode'] = 'unInit'
+        } else {
+          output['mode'] = 'SLiM'
+        }
       }
+      output['events'] = node.eventCount
+      output['vlcb'] = node.VLCB
+      rows.value.push(output)
     }
-    output['events'] = node.eventCount
-    output['vlcb'] = node.VLCB
-    rows.value.push(output)
   })
 }
 

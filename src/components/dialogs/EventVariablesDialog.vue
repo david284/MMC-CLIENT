@@ -232,7 +232,7 @@ const clickClose = async () => {
     // if it's a new event, in the case no variable was changed, ensure an event was created
     // by setting EV1
     // and then refresh all events as index may have changed
-    console.log(name +`: clickClose: ` + JSON.stringify(store.state.nodes[props.nodeNumber].storedEventsNI))
+    console.log(name +`: clickClose: new event`)
     try {
       var nodeEntry = store.state.nodes[props.nodeNumber]
       try{
