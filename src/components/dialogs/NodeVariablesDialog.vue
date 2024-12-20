@@ -114,10 +114,16 @@ const model = computed({
       set(newValue) { emit('update:modelValue', newValue) }
     })
 
-watch(model, () => {
+watch(model, async () => {
 //  console.log(name + `: WATCH model`)
   showRawVariables.value = false
   showVariableDescriptor.value = false
+  if (variablesDescriptor.value == undefined){
+    showRawVariables.value = true
+    showDescriptorWarning.value = true
+  } else {
+    showDescriptorWarning.value = false
+  }
 })
 
 
@@ -156,7 +162,6 @@ onUpdated(async () => {
 //  console.log(name + ': onUpdated')
   if (props.nodeNumber){
 //    console.log('NodeVariableDialog onUpdated - nodeNumber ' + props.nodeNumber)
-    await checkFileLoad()
     if (store.state.nodes[props.nodeNumber].parameters[6] == 0){
       showNoVariablesMessage.value = true
     }else{
@@ -166,31 +171,6 @@ onUpdated(async () => {
 })
 
 
-// raise notification if nodeDescriptor file not present
-const checkFileLoad = async () => {
-  await sleep(2000)
-  //console.log(name + `: checkFileLoad`)
-  if (store.state.loadFile_notification_raised[props.nodeNumber] == undefined) {
-    if (store.state.nodeDescriptors[props.nodeNumber] == undefined)
-    {
-      $q.notify({
-        message: 'NVD: Failed to load descriptor file for module identifier ' + store.state.nodes[props.nodeNumber].moduleIdentifier,
-        timeout: 0,
-        type: 'warning',
-        position: 'center',
-        actions: [ { label: 'Dismiss' } ]
-      })
-      store.state.loadFile_notification_raised[props.nodeNumber]=true;
-    }
-  }
-  if (variablesDescriptor.value == undefined){
-    showRawVariables.value = true
-    showDescriptorWarning.value = true
-  } else {
-    showDescriptorWarning.value = false
-  }
-}
-  
 
 /*/////////////////////////////////////////////////////////////////////////////
 

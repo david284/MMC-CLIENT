@@ -176,7 +176,6 @@ onUpdated(async () => {
         showDescriptorWarning.value = true
   //      console.log(name + ': onUpdated: variablesDescriptor empty')
       }
-      checkFileLoad()
       
     } else {
       showRawVariables.value = true
@@ -185,27 +184,6 @@ onUpdated(async () => {
     console.log(name + ': onUpdated: error: ' + err)    
   }
 })
-
-
-// raise notification if nodeDescriptor file not present
-const checkFileLoad = async () => {
-  await sleep(2000)
-
-//  console.log(name + `: checkFileLoad`)
-  if (store.state.loadFile_notification_raised[props.nodeNumber] != true) {
-    if (store.state.nodeDescriptors[props.nodeNumber] == undefined)
-    {
-      $q.notify({
-        message: 'EVD: Failed to load descriptor file for module identifier ' + store.state.nodes[props.nodeNumber].moduleIdentifier,
-        timeout: 0,
-        type: 'warning',
-        position: 'center',
-        actions: [ { label: 'Dismiss' } ]
-      })
-      store.state.loadFile_notification_raised[props.nodeNumber] = true;
-    }
-  }
-}
 
 
 /*/////////////////////////////////////////////////////////////////////////////

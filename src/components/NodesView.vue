@@ -256,8 +256,29 @@ const checkNodeParameters = async (nodeNumber) => {
     })
   }
   console.log(name + ': checkNodeParameters - result ' + result)
+  await checkFileLoad(nodeNumber)
   return result
 }
+
+// raise notification if nodeDescriptor file not present
+const checkFileLoad = async (nodeNumber) => {
+//  await sleep(500)
+  //console.log(name + `: checkFileLoad`)
+  if (store.state.loadFile_notification_raised[nodeNumber] == undefined) {
+    if (store.state.nodeDescriptors[nodeNumber] == undefined)
+    {
+      $q.notify({
+        message: 'NPD: Failed to load descriptor file for module identifier ' + store.state.nodes[nodeNumber].moduleIdentifier,
+        timeout: 0,
+        type: 'warning',
+        position: 'center',
+        actions: [ { label: 'Dismiss' } ]
+      })
+      store.state.loadFile_notification_raised[nodeNumber]=true;
+    }
+  }
+}
+  
 
 
 const checkNodeVariables = async (nodeNumber) => {
