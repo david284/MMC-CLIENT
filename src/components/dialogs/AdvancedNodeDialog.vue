@@ -37,7 +37,7 @@
         </q-card-actions>
 
         <q-card-actions align="left">
-          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Module Descriptor File"
+          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Manage Module Descriptor"
           @click="clickMDF()"/>
         </q-card-actions>
 

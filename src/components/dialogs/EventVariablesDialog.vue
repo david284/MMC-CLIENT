@@ -32,8 +32,8 @@
             </template>
           </q-card-section>
 
-          <q-card-section class="text-h6" v-if="store.state.nodeDescriptors[props.nodeNumber].eventVariableInformation">
-            {{ store.state.nodeDescriptors[props.nodeNumber].eventVariableInformation }}
+          <q-card-section class="text-h6" v-if="eventVariableInformation">
+            {{ eventVariableInformation }}
           </q-card-section>
 
           <div class="q-pa-xs row">
@@ -119,6 +119,7 @@ const showDescriptorWarning = ref(false)
 const showMDFDialog = ref(false)
 const showVariablesDescriptor = ref(false)
 const showStoredEventJSON = ref(false)
+const eventVariableInformation = ref()
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -166,6 +167,7 @@ onUpdated(async () => {
     
       if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
         variablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].eventVariables
+        eventVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].eventVariableInformation
         showDescriptorWarning.value = false
   //      console.log(name + ': onUpdated: variablesDescriptor valid')
       } else {
@@ -186,34 +188,21 @@ onUpdated(async () => {
 
 
 // raise notification if nodeDescriptor file not present
-const checkFileLoad = () => {
+const checkFileLoad = async () => {
+  await sleep(2000)
+
 //  console.log(name + `: checkFileLoad`)
   if (store.state.loadFile_notification_raised[props.nodeNumber] != true) {
-    // module descriptor filename won't be created if there's no moduleName
-    if( store.state.nodes[props.nodeNumber].moduleName == 'Unknown'){
-      $q.notify({
-        message: 'module name unknown',
-        timeout: 0,
-        type: 'warning',
-        position: 'center',
-        actions: [ { label: 'Dismiss' } ]
-      })
-      store.state.loadFile_notification_raised[props.nodeNumber] = true;
-    }
-    else if ((store.state.nodes[props.nodeNumber].moduleDescriptorFilename != undefined)
-      && (store.state.nodeDescriptors[props.nodeNumber] == undefined))
+    if (store.state.nodeDescriptors[props.nodeNumber] == undefined)
     {
       $q.notify({
-        message: 'Failed to load module file ' + store.state.nodes[props.nodeNumber].moduleDescriptorFilename,
+        message: 'EVD: Failed to load descriptor file for module identifier ' + store.state.nodes[props.nodeNumber].moduleIdentifier,
         timeout: 0,
         type: 'warning',
         position: 'center',
         actions: [ { label: 'Dismiss' } ]
       })
       store.state.loadFile_notification_raised[props.nodeNumber] = true;
-    }
-    if (store.state.loadFile_notification_raised[props.nodeNumber]) {
-//       console.log(name + `: checkLoadFile notification raised`)
     }
   }
 }

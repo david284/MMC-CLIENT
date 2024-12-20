@@ -8,7 +8,7 @@
         </div>
         <template v-slot:action>
           <q-btn color="cyan-1" size="sm" text-color="black" 
-            label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
+            label="manage Module Descriptor" @click="clickManageModuleDescriptor()"/>
           <q-btn flat color="white" size="md" label="Close" v-close-popup/>
         </template>
       </q-banner>
@@ -140,7 +140,7 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
-const clickUpdateModuleDescriptor = () => {
+const clickManageModuleDescriptor = () => {
   console.log(name + `: clickUpdateModuleDescriptor`)
   store.methods.request_matching_mdf_list(props.nodeNumber, "USER")
   store.methods.request_matching_mdf_list(props.nodeNumber, "SYSTEM")

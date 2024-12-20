@@ -25,11 +25,13 @@
         <q-space />
         <q-space />
         <q-space />
+<!-- 
         <q-card-section flat class = "row no-margin q-pa-none">
           <div v-if="(outputOnWrite)">
             <q-btn dense size="sm" label="Test" @click="clickTest()" no-caps/>
           </div>
         </q-card-section>
+ -->        
         <q-space />
         <q-space />
         <q-space />

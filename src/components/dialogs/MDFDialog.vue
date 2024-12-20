@@ -26,7 +26,8 @@
                 Module version: {{ store.state.nodes[nodeNumber].moduleVersion }}<br/>
                 Processor type: {{ store.state.nodes[nodeNumber].cpuName }}<br/>
                 Processor code: {{ store.state.nodes[nodeNumber].parameters[9] }}<br/>
-                Current module descriptor:  {{ moduleDescriptorFilename }}
+                Current module descriptor:  {{ moduleDescriptorFilename }}<br/>
+                Current descriptor location:  {{ moduleDescriptorLocation }}
               </div>
             </q-card-section>
 
@@ -109,6 +110,19 @@
 
       </q-card-section>
 
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Toggle current module descriptor view" @click="clickToggleModuleDescriptor()"/>
+      </q-card-actions>
+
+      <q-card-section class="q-pa-sm" v-if="showModuleDescriptor">
+          <div class="q-pa-xs row">
+            <div class="text-body1">Module descriptor<br></div>
+            <div class="text-body2">
+              <pre>{{ store.state.nodeDescriptors[props.nodeNumber] }}</pre>
+            </div>
+          </div>
+        </q-card-section>
+
     </q-card>
   </q-dialog>
 
@@ -138,6 +152,8 @@ const showMDFDownloadDialog = ref(false)
 const showMDFUploadDialog = ref(false)
 const export_filename = ref()
 const moduleDescriptorFilename = ref()
+const moduleDescriptorLocation = ref()
+const showModuleDescriptor = ref(false)
 
 
 const props = defineProps({
@@ -155,6 +171,7 @@ const model = computed({
 // model changes when Dialog opened & closed
 watch(model, () => {
 //  console.log(name + `: WATCH model`)
+  showModuleDescriptor.value = false
   update_SYSTEM_rows()
   update_USER_rows()
   getModuleDescriptorFilename()
@@ -186,10 +203,14 @@ const getModuleDescriptorFilename = () => {
   moduleDescriptorFilename.value = ''
   try {
     moduleDescriptorFilename.value = store.state.nodeDescriptors[props.nodeNumber].moduleDescriptorFilename
+    if (moduleDescriptorFilename.value){
+      // no point showing location if no filename
+      moduleDescriptorLocation.value = store.state.nodeDescriptors[props.nodeNumber].moduleDescriptorLocation
+    }
   } catch (err){ 
     console.log(name + `: getModuleDescriptorFilename: ` + err)
   }
-  console.log(name + `: getModuleDescriptorFilename: ` + moduleDescriptorFilename.value)
+  //console.log(name + `: getModuleDescriptorFilename: ` + moduleDescriptorFilename.value)
 }
 
 const systemRows = ref([])
@@ -282,6 +303,10 @@ const clickDelete = (filename) => {
   })
 }
 
+const clickToggleModuleDescriptor = () => {
+  console.log(name + `: clickToggleModuleDescriptor`)
+  showModuleDescriptor.value = showModuleDescriptor.value ? false : true
+}
 
 const clickSystemDownload = (filename) => {
   console.log(name + `: clickSystemDownload`)

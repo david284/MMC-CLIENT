@@ -9,7 +9,7 @@
           </div>
           <template v-slot:action>
             <q-btn color="cyan-1" size="sm" text-color="black" 
-              label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
+              label="manage Module Descriptor" @click="clickManageModuleDescriptor()"/>
               <q-btn flat color="white" size="md" label="Close" v-close-popup/>
           </template>
         </q-banner>
@@ -27,9 +27,11 @@
             </div>
           </q-card-section>
 
-          <q-card-section class="text-h6" v-if="store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation">
-            {{ store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation }}
+ 
+          <q-card-section class="text-h6" v-if="nodeVariableInformation">
+            {{ nodeVariableInformation }}
           </q-card-section>
+
 
           <NodeVariables v-if="store.state.nodeDescriptors[props.nodeNumber]"
             :configuration = store.state.nodeDescriptors[props.nodeNumber].nodeVariables
@@ -87,6 +89,7 @@ import { useQuasar } from 'quasar'
 import NodeVariables from "components/modules/common/NodeVariables"
 import NodeVariableRaw from "components/modules/common/NodeVariableRaw"
 import MDFDialog from "components/dialogs/MDFDialog";
+import { sleep } from "../functions/utils";
 
 const $q = useQuasar()
 const store = inject('store')
@@ -96,6 +99,7 @@ const showRawVariables = ref(false)
 const showNoVariablesMessage = ref(false)
 const showMDFDialog = ref(false)
 const showVariableDescriptor = ref(false)
+const nodeVariableInformation = ref()
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -135,6 +139,7 @@ watch(variablesDescriptor, () => {
     showDescriptorWarning.value = true
   } else {
     showDescriptorWarning.value = false
+    nodeVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation
   }
 })
 
@@ -147,11 +152,11 @@ onMounted(() => {
 //  console.log(name + ': onMounted')
 })
 
-onUpdated(() => {
+onUpdated(async () => {
 //  console.log(name + ': onUpdated')
   if (props.nodeNumber){
 //    console.log('NodeVariableDialog onUpdated - nodeNumber ' + props.nodeNumber)
-    checkFileLoad()
+    await checkFileLoad()
     if (store.state.nodes[props.nodeNumber].parameters[6] == 0){
       showNoVariablesMessage.value = true
     }else{
@@ -162,34 +167,20 @@ onUpdated(() => {
 
 
 // raise notification if nodeDescriptor file not present
-const checkFileLoad = () => {
-//  console.log(name + `: checkFileLoad`)
+const checkFileLoad = async () => {
+  await sleep(2000)
+  //console.log(name + `: checkFileLoad`)
   if (store.state.loadFile_notification_raised[props.nodeNumber] == undefined) {
-    // module descriptor filename won't be created if there's no moduleName
-    if( store.state.nodes[props.nodeNumber].moduleName == 'Unknown'){
-      $q.notify({
-        message: 'module name unknown',
-        timeout: 0,
-        type: 'warning',
-        position: 'center',
-        actions: [ { label: 'Dismiss' } ]
-      })
-      store.state.loadFile_notification_raised[props.nodeNumber] = true;
-    } 
-    else if ((store.state.nodes[props.nodeNumber].moduleDescriptorFilename != undefined)  
-      && (store.state.nodeDescriptors[props.nodeNumber] == undefined)) 
+    if (store.state.nodeDescriptors[props.nodeNumber] == undefined)
     {
       $q.notify({
-        message: 'Failed to load module file ' + store.state.nodes[props.nodeNumber].moduleDescriptorFilename,
+        message: 'NVD: Failed to load descriptor file for module identifier ' + store.state.nodes[props.nodeNumber].moduleIdentifier,
         timeout: 0,
         type: 'warning',
         position: 'center',
         actions: [ { label: 'Dismiss' } ]
       })
       store.state.loadFile_notification_raised[props.nodeNumber]=true;
-    }
-    if (store.state.loadFile_notification_raised[props.nodeNumber]) {
-//       console.log(name + `: checkLoadFile notification raised`) 
     }
   }
   if (variablesDescriptor.value == undefined){
@@ -211,6 +202,13 @@ const clickClose = () => {
   console.log(name + `: clickClose`)
 }
 
+const clickManageModuleDescriptor = () => {
+  console.log(name + `: clickUpdateModuleDescriptor`)
+  store.methods.request_matching_mdf_list(props.nodeNumber, "USER")
+  store.methods.request_matching_mdf_list(props.nodeNumber, "SYSTEM")
+  showMDFDialog.value = true
+}
+
 const clickToggleRaw = () => {
   console.log(name + `: clickToggleRaw`)
   if (showRawVariables.value){
@@ -227,13 +225,6 @@ const clickToggleVariablesDescriptor = () => {
   } else {
     showVariableDescriptor.value = true
   }
-}
-
-const clickUpdateModuleDescriptor = () => {
-  console.log(name + `: clickUpdateModuleDescriptor`)
-  store.methods.request_matching_mdf_list(props.nodeNumber, "USER")
-  store.methods.request_matching_mdf_list(props.nodeNumber, "SYSTEM")
-  showMDFDialog.value = true
 }
 
 
