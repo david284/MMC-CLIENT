@@ -131,31 +131,18 @@ const columns = [
   {name: 'eventGroup', field: 'eventGroup', required: false, label: 'Group', align: 'left', sortable: true},
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Event node', align: 'left', sortable: true},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event number', align: 'left', sortable: true},
-//  {name: 'eventIndex', field: 'eventIndex', required: true, label: 'Event index', align: 'left', sortable: true},
   {name: 'eventType', field: 'eventType', required: true, label: 'Event type', align: 'left', sortable: true},
   {name: 'source', field: 'source', required: true, label: 'Event source', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
 ]
+
 
 // need to know if selected node changed
 const selected_node = computed(() =>{
   return props.nodeNumber
 })
 watch(selected_node, () => {
-//  console.log(name + `: WATCH selected_node`)
-  if (props.nodeNumber){
-    update_rows()
-  }
-})
-
-
-const nodesUpdated = computed(() => {
-//  console.log(name + `: nodesUpdated`)
-  return store.state.nodes.updateTimestamp
-})
-
-watch(nodesUpdated, () => {
-  console.log(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
+  //console.log(name + `: WATCH selected_node`)
   if (props.nodeNumber){
     update_rows()
   }
@@ -167,19 +154,33 @@ const busEvents = computed(() =>{
   return Object.values(store.state.busEvents)
 })
 watch(busEvents, () => {
-//  console.log(name + `: WATCH busEvents`)
+  //console.log(name + `: WATCH busEvents`)
   if (props.nodeNumber){
     update_rows()
   }
 })
 
 
-// need to know if event name changes
-const eventDetails = computed(() => {
-  return store.state.layout.eventDetails
+// watch if anything in the layout changes
+const layoutUpdated = computed(() => {
+  return store.state.layout.updateTimestamp
 })
-watch(eventDetails, () => {
-//  console.log(name + `: WATCH eventDetails`)
+
+watch(layoutUpdated, () => {
+  //console.log(name + `: WATCH: layoutUpdated`)
+  if (props.nodeNumber){
+    update_rows()
+  }
+})
+
+
+// watch if any nodes change
+const nodesUpdated = computed(() => {
+  return store.state.nodes.updateTimestamp
+})
+
+watch(nodesUpdated, () => {
+  //console.log(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
   if (props.nodeNumber){
     update_rows()
   }
@@ -252,8 +253,10 @@ const update_rows = () => {
 
 
 onBeforeMount(() => {
-//  console.log(name + ": onBeforeMount")
-  update_rows()
+  //console.log(name + ": onBeforeMount")
+  if (props.nodeNumber){
+    update_rows()
+  }
 })
 
 onMounted(() => {

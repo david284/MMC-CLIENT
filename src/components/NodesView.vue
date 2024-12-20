@@ -159,23 +159,21 @@ const nodeParametersLoadingReturn = ref('')
 const nodeVariablesLoadingReturn = ref('')
 
 const nodesUpdated = computed(() => {
-//  console.log(name + `: nodesUpdated`)
   return store.state.nodes.updateTimestamp
 })
 
 watch(nodesUpdated, () => {
-  console.log(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
+  //console.log(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
   update_rows()
 })
 
 
 const layoutUpdated = computed(() => {
-//  console.log(name + `: nodesUpdated`)
   return store.state.layout.updateTimestamp
 })
 
 watch(layoutUpdated, () => {
-  console.log(name + `: WATCH: layoutUpdated`)
+  //console.log(name + `: WATCH: layoutUpdated`)
   update_rows()
 })
 

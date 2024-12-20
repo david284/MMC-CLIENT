@@ -200,7 +200,7 @@ const nodeTraffic = computed(() => {
 })
 
 watch(nodeTraffic, () => {
-//  console.log(name + `: WATCH nodeTraffic`)
+  //console.log(name + `: WATCH nodeTraffic`)
   scrollAreaRef.value.setScrollPercentage('vertical', 1)
   oneShotScroll = setTimeout(scrollFunc,200);
 })
@@ -232,7 +232,7 @@ onUpdated(() =>{
 
 
 const eventIntervalFunc = () => {
-//  console.log(name + ": interval " + Date.now())
+  //console.log(name + ": interval " + Date.now())
   store.methods.request_server_status()
 }
 

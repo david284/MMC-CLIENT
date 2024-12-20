@@ -172,32 +172,22 @@ const columns = [
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
-const EventsList = computed(() => {
-  //console.log(`Computed Events`)
-  return Object.values(store.state.layout.eventDetails)
+const layoutUpdated = computed(() => {
+  return store.state.layout.updateTimestamp
 })
 
-watch(EventsList, () => {
-  //console.log(`WATCH Events`)
+watch(layoutUpdated, () => {
+  //console.log(name + `: WATCH: layoutUpdated`)
   update_events_table()
 })
 
-const eventDetails = computed(() => {
-  return store.state.layout.eventDetails
-})
-
-watch(eventDetails, () => {
-  //console.log(`WATCH Details`)
-  update_events_table()
-})
 
 const nodesUpdated = computed(() => {
-//  console.log(name + `: nodesUpdated`)
   return store.state.nodes.updateTimestamp
 })
 
 watch(nodesUpdated, () => {
-  console.log(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
+  //console.log(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
   update_events_table()
 })
 
@@ -206,7 +196,7 @@ const busEvents = computed(() => {
 })
 
 watch(busEvents, () => {
-  console.log(name + `: WATCH busEvents`)
+  //console.log(name + `: WATCH busEvents`)
   update_events_table()
 })
 
