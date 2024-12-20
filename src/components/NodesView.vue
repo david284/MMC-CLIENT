@@ -169,6 +169,17 @@ watch(nodesUpdated, () => {
 })
 
 
+const layoutUpdated = computed(() => {
+//  console.log(name + `: nodesUpdated`)
+  return store.state.layout.updateTimestamp
+})
+
+watch(layoutUpdated, () => {
+  console.log(name + `: WATCH: layoutUpdated`)
+  update_rows()
+})
+
+
 const update_rows = () => {
 //  console.log(name + ': update_rows')
   rows.value = []

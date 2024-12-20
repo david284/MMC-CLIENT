@@ -222,7 +222,7 @@ onBeforeMount(() => {
 
 onMounted(() => {
   setInterval(eventIntervalFunc,5000);
-  setInterval(layoutDetailsIntervalFunc,2000);
+  setInterval(layoutDetailsIntervalFunc,1000);
 })
 
 onUpdated(() =>{
@@ -245,6 +245,7 @@ const layoutDetailsIntervalFunc = () => {
   if (store.state.update_layout_needed == true){
     // clear the flag immediately, so something else can set it again whilt update in process
     store.state.update_layout_needed = false
+    store.state.layout.updateTimestamp = Date.now()
     store.methods.update_layout()
   }
 }
