@@ -201,6 +201,7 @@ watch(server_node, () => {
 
 const getModuleDescriptorFilename = () => {
   moduleDescriptorFilename.value = ''
+  moduleDescriptorLocation.value = ''
   try {
     moduleDescriptorFilename.value = store.state.nodeDescriptors[props.nodeNumber].moduleDescriptorFilename
     if (moduleDescriptorFilename.value){
