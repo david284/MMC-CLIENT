@@ -536,6 +536,8 @@ socket.on("error", (data) => {
 socket.on('LAYOUT_DATA', (data) => {
   console.log(`RECEIVED Layout Data`)
   state.layout = data;
+  // put a fresh timestamp on it
+  state.layout.updateTimestamp = Date.now()
 })
 
 socket.on('LAYOUTS_LIST', (data) => {
