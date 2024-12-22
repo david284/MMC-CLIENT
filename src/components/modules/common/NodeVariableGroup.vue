@@ -1,5 +1,5 @@
 <template>
-  <div class="q-py-none no-margin">
+  <div class="q-pa-xs no-margin">
 
     <div style="border:2px solid grey" class="q-py-none no-margin">
       <div class = "GroupTitle q-py-none no-margin"> {{ configuration.displayTitle }}</div>
