@@ -14,12 +14,17 @@
       <q-tab-panels keep-alive v-model="selectedTab">
         <q-tab-panel v-for="tab in tabPanels" :key="tab.displayTitle" :name="tab.displayTitle" >
 
-          <div class="no-padding no-margin row"  style="border:1px solid grey">
-            <EventVariables
-              :configuration = tab.items
-              :nodeNumber = props.nodeNumber
-              :eventIdentifier = props.eventIdentifier>
-            </EventVariables>
+          <div class="no-padding no-margin"  style="border:1px solid grey">
+            <q-card-section class="q-py-none no-margin text-body1">
+              <b>{{ tab.displaySubTitle }}</b>
+            </q-card-section>
+            <q-card-section class="row">
+              <EventVariables
+                :configuration = tab.items
+                :nodeNumber = props.nodeNumber
+                :eventIdentifier = props.eventIdentifier>
+              </EventVariables>
+            </q-card-section>
           </div>
 
         </q-tab-panel>

@@ -12,10 +12,14 @@
 
     <q-tab-panels keep-alive v-model="selectedTab" class="no-padding no-margin" >
       <q-tab-panel v-for="tab in tabPanels" :key="tab.displayTitle" :name="tab.displayTitle"  class="no-padding no-margin">
-
-          <div class="no-padding no-margin row"  style="border:1px solid grey">
-            <NodeVariables :configuration = tab.items />
-          </div>
+          <div class="no-padding no-margin"  style="border:1px solid grey">
+            <q-card-section class="q-py-none no-margin text-body1">
+              <b>{{ tab.displaySubTitle }}</b>
+            </q-card-section>
+            <q-card-section class="no-padding no-margin row">
+              <NodeVariables :configuration = tab.items />
+            </q-card-section>
+        </div>
 
       </q-tab-panel>
     </q-tab-panels>

@@ -1,11 +1,14 @@
 <template>
-  <div class="q-pa-xs row">
+  <div class="q-py-none no-margin">
 
-    <div style="border:2px solid grey" class="q-pa-xs no-margin">
-      <div class = "GroupTitle q-py-none"> {{ configuration.displayTitle }}</div>
-
-      <NodeVariables :configuration = configuration.groupItems />
-
+    <div style="border:2px solid grey" class="q-py-none no-margin">
+      <div class = "GroupTitle q-py-none no-margin"> {{ configuration.displayTitle }}</div>
+      <q-card-section class="q-py-none no-margin text-body1">
+        <b>{{ configuration.displaySubTitle }}</b>
+      </q-card-section>
+      <q-card-section class="q-py-none no-margin row">
+        <NodeVariables :configuration = configuration.groupItems />
+      </q-card-section>
     </div>
 
   </div>
