@@ -51,9 +51,9 @@ watch(model, async () => {
 
 const checkNodeVariables = async (nodeNumber) => {
   var maxNodeVariableIndex = store.state.nodes[nodeNumber].parameters[6]
-//  console.log(name + ": checkNodeParameters: start: maxNodeVariableIndex value  " + store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex])
+  //console.log(name + ": checkNodeParameters: start: maxNodeVariableIndex value  " + store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex])
   if(store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex] != undefined){
-//    console.log(name + ": checkNodeParameters: already read")
+    //console.log(name + ": checkNodeParameters: already read")
   } else {
     store.methods.request_all_node_variables(
       nodeNumber,

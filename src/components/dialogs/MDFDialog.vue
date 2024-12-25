@@ -170,7 +170,7 @@ const model = computed({
 
 // model changes when Dialog opened & closed
 watch(model, () => {
-//  console.log(name + `: WATCH model`)
+  //console.log(name + `: WATCH model`)
   showModuleDescriptor.value = false
   update_SYSTEM_rows()
   update_USER_rows()
@@ -183,7 +183,7 @@ const MDFupdateTimestamp = computed(() =>{
 })
 
 watch(MDFupdateTimestamp, () => {
-  console.log(name + `: WATCH: MDFupdateTimestamp`)
+  //console.log(name + `: WATCH: MDFupdateTimestamp`)
   update_SYSTEM_rows()
   update_USER_rows()
   getModuleDescriptorFilename()
@@ -194,7 +194,7 @@ const server_node = computed(() =>{
   return store.state.server.nodes[props.nodeNumber]
 })
 watch(server_node, () => {
-  console.log(name + `: WATCH: server_node`)
+  //console.log(name + `: WATCH: server_node`)
   update_SYSTEM_rows()
   update_USER_rows()
 })
@@ -208,10 +208,9 @@ const getModuleDescriptorFilename = () => {
       // no point showing location if no filename
       moduleDescriptorLocation.value = store.state.nodeDescriptors[props.nodeNumber].moduleDescriptorLocation
     }
-  } catch (err){ 
-    console.log(name + `: getModuleDescriptorFilename: ` + err)
+  } catch { 
+    //console.log(name + `: getModuleDescriptorFilename: no filename for node ` + props.nodeNumber)
   }
-  //console.log(name + `: getModuleDescriptorFilename: ` + moduleDescriptorFilename.value)
 }
 
 const systemRows = ref([])
@@ -232,7 +231,7 @@ const userColumns = [
 
 const update_SYSTEM_rows = async () => {
 //  await sleep(500)
-  console.log(name + `: update_SYSTEM_rows`)
+  //console.log(name + `: update_SYSTEM_rows`)
   if (server_node.value != undefined){
     systemRows.value = []
     if (server_node.value.SYSTEM_MDF_List != undefined){
@@ -248,7 +247,7 @@ const update_SYSTEM_rows = async () => {
 
 const update_USER_rows = async () => {
 //  await sleep(500)
-  console.log(name + `: update_USER_rows`)
+  //console.log(name + `: update_USER_rows`)
   if (server_node.value != undefined){
     userRows.value = []
     if (server_node.value.USER_MDF_List != undefined){
@@ -277,7 +276,7 @@ onMounted(() => {
 })
 
 onUpdated(() => {
-//  console.log("EventTeachDialog onUpdated")
+  //console.log("EventTeachDialog onUpdated")
 })
 
 /*/////////////////////////////////////////////////////////////////////////////
@@ -288,7 +287,7 @@ Click event handlers
 
 
 const clickDelete = (filename) => {
-  console.log(name + `: clickDelete`)
+  console.log(name + `: clickDelete ` + filename)
   const result = $q.notify({
     message: 'Are you sure you want to delete file ' + filename,
     timeout: 0,

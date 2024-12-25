@@ -67,7 +67,7 @@ const checkNodeParameters = async (nodeNumber) => {
       console.log(name + ": checkNodeParameters: " + err)
       model.value = false
     }
-//    console.log(name + ": checkNodeParameters: count " + count)
+    //console.log(name + ": checkNodeParameters: count " + count)
   }
   // signal it's complete
   emit('NodeParametersLoadingDialog', 'finished normally')

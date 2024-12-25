@@ -475,22 +475,22 @@ const setters = {
 const socket = io(`http://${host}:${port}`)
 
 socket.on('BACKUPS_LIST', (data) => {
-  console.log(name + `RECEIVED BACKUPS_LIST ` + JSON.stringify(data))
+  console.log(secondsNow() + ': ' + name + `RECEIVED BACKUPS_LIST ` + JSON.stringify(data))
   state.backups_list = data;
 })
 
 socket.on("BUS_EVENTS", (data) => {
-  console.log(name + `: RECEIVED BUS_EVENTS Data`)
+  console.log(secondsNow() + ': ' + name + `: RECEIVED BUS_EVENTS Data`)
   state.busEvents = data
 })
 
 socket.on("CBUS_ERRORS", (data) => {
-  console.log(`RECEIVED CBUS_ERRORS `)
+  console.log(secondsNow() + ': ' + name + `: RECEIVED CBUS_ERRORS `)
   state.cbus_errors = data
 })
 
 socket.on("CBUS_NO_SUPPORT", (data) => {
-  console.log(`RECEIVED CBUS_NO_SUPPORT `)
+  console.log(secondsNow() + ': ' + name + `: RECEIVED CBUS_NO_SUPPORT `)
 })
 
 socket.on("CBUS_TRAFFIC", (data) => {
@@ -535,26 +535,26 @@ socket.on("error", (data) => {
 })
 
 socket.on('LAYOUT_DATA', (data) => {
-  console.log(`RECEIVED Layout Data`)
+  console.log(secondsNow() + ': ' + name + `: RECEIVED Layout Data`)
   state.layout = data;
   // put a fresh timestamp on it
   state.layout.updateTimestamp = Date.now()
 })
 
 socket.on('LAYOUTS_LIST', (data) => {
-  console.log(`RECEIVED Layouts list`)
+  console.log(secondsNow() + ': ' + name + `: RECEIVED LAYOUTS_LIST`)
   state.layouts_list = data;
 })
 
 
 socket.on("MDF_EXPORT", (location, filename, MDF) => {
-  console.log(`RECEIVED MDF_EXPORT ` + location + ' ' + filename)
+  console.log(secondsNow() + ': ' + name + `: RECEIVED MDF_EXPORT ` + location + ' ' + filename)
   state.exported_MDF = MDF
   state.MDFupdateTimestamp = Date.now()
 })
 
 socket.on("MATCHING_MDF_LIST", (location, nodeNumber, list) => {
-  console.log(`RECEIVED MATCHING_MDF_LIST ` + nodeNumber + ' ' + location + ' ' + list.length)
+  console.log(secondsNow() + ': ' + name + `: RECEIVED MATCHING_MDF_LIST ` + nodeNumber + ' ' + location + ' ' + list.length)
   if (state.server.nodes[nodeNumber] == undefined){state.server.nodes[nodeNumber] = {} }
   state.server.nodes[nodeNumber][location + '_MDF_List'] = list
   state.MDFupdateTimestamp = Date.now()
@@ -563,11 +563,9 @@ socket.on("MATCHING_MDF_LIST", (location, nodeNumber, list) => {
 socket.on("NODE", (data) => {
   state.nodes["updateTimestamp"] = Date.now()
   console.log(secondsNow() + ': ' + name + `: RECEIVED NODE: ${data.nodeNumber}`)
-//  console.log(`RECEIVED NODE : ${data.nodeNumber} Data: ` + JSON.stringify(data))
   // remove original stored events by Index
   delete data.storedEvents
   state.nodes[data.nodeNumber] = data
-  //console.log(name + `: socket.on NODE: ` + JSON.stringify(data))
   try{
     var events = Object.values(state.nodes[data.nodeNumber].storedEventsNI)
     events.forEach(event => {
@@ -588,7 +586,6 @@ socket.on("NODES", (data) => {
     delete data[node.nodeNumber].storedEvents
   })
   state.nodes = data
-//  console.log(name + `: socket.on NODES: ` + JSON.stringify(data))
   try{
     var nodes = Object.values(state.nodes)
     nodes.forEach(node =>{
@@ -606,24 +603,24 @@ socket.on("NODES", (data) => {
 socket.on("NODE_DESCRIPTOR", (data) => {
   var nodeNumber = Object.keys(data)[0]   // get first key
   var moduleDescriptor = Object.values(data)[0] // get first value
-  console.log(`RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber + ' ' + moduleDescriptor.moduleDescriptorFilename)
+  console.log(secondsNow() + ': ' + name + `: RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber + ' ' + moduleDescriptor.moduleDescriptorFilename)
   state.nodeDescriptors[nodeNumber] = moduleDescriptor    
   state.MDFupdateTimestamp = Date.now()
 })
 
 socket.on("NODE_DESCRIPTOR_FILE_LIST", (nodeNumber, list) => {
-  console.log(`RECEIVED NODE_DESCRIPTOR_FILE_LIST : node ` + nodeNumber)
+  console.log(secondsNow() + ': ' + name + `: RECEIVED NODE_DESCRIPTOR_FILE_LIST : node ` + nodeNumber)
 //  console.log(`RECEIVED NODE_DESCRIPTOR_FILE_LIST : list ` + list)
   state.nodeDescriptorList[nodeNumber] = list
 })
 
 socket.on("PROGRAM_NODE_PROGRESS", (text) => {
-  console.log(`RECEIVED PROGRAM_NODE_PROGRESS : ` + text)
+  console.log(secondsNow() + ': ' + name + `: RECEIVED PROGRAM_NODE_PROGRESS : ` + text)
   eventBus.emit('PROGRAM_NODE_PROGRESS', text)
 })
 
 socket.on("REQUEST_NODE_NUMBER", (nodeNumber, moduleName) => {
-  console.log(`RECEIVED REQUEST_NODE_NUMBER : ` + JSON.stringify(nodeNumber) + ' moduleName ' + moduleName)
+  console.log(secondsNow() + ': ' + name + `: RECEIVED REQUEST_NODE_NUMBER : ` + JSON.stringify(nodeNumber) + ' moduleName ' + moduleName)
   eventBus.emit('REQUEST_NODE_NUMBER_EVENT', nodeNumber, moduleName)
 })
 
@@ -633,11 +630,10 @@ socket.on("SERVER_STATUS", (data) => {
   }
   state.serverStatus = data
   eventBus.emit('SERVER_STATUS_EVENT', data)
-//  console.log(name + `: RECEIVED SERVER_STATUS ` + JSON.stringify(data))
 })
 
 socket.on("VERSION", (data) => {
-  console.log(`RECEIVED VERSION ` + JSON.stringify(data))
+  console.log(secondsNow() + ': ' + name + `: RECEIVED VERSION ` + JSON.stringify(data))
   state.version = data
 })
 

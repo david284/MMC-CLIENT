@@ -225,7 +225,7 @@ onBeforeMount(() => {
 
 
 const select_node_row = async (nodeNumber) => {
-  console.log(name + ': select_node_row: node ' + nodeNumber)
+  //console.log(name + ': select_node_row: node ' + nodeNumber)
   store.state.selected_node = nodeNumber
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   selected_node_valid.value = true
@@ -244,7 +244,7 @@ store.eventBus.on('NODE_DELETED_EVENT', (nodeNumber) => {
 
 
 const checkNodeParameters = async (nodeNumber) => {
-  console.log(name + ': checkNodeParameters: node ' + nodeNumber)
+  //console.log(name + ': checkNodeParameters: node ' + nodeNumber)
   nodeParametersLoadingReturn.value=''
   showNodeParametersLoadingDialog.value = true
   // wait for parameters to load
@@ -264,7 +264,7 @@ const checkNodeParameters = async (nodeNumber) => {
       actions: [ { label: 'Dismiss' } ]
     })
   }
-  console.log(name + ': checkNodeParameters - result ' + result)
+  //console.log(name + ': checkNodeParameters - result ' + result)
   await checkFileLoad(nodeNumber)
   return result
 }
@@ -291,7 +291,7 @@ const checkFileLoad = async (nodeNumber) => {
 
 
 const checkNodeVariables = async (nodeNumber) => {
-  console.log(name + ': checkNodeVariables: node ' + nodeNumber)
+  //console.log(name + ': checkNodeVariables: node ' + nodeNumber)
   nodeVariablesLoadingReturn.value =''
   showNodeVariablesLoadingDialog.value = true
   // wait for variables to load
@@ -349,9 +349,9 @@ const clickParameters = async (nodeNumber) => {
   // clear out parameters to force them to be reloaded
   store.state.nodes[nodeNumber].parameters = {}
   if (await checkNodeParameters(nodeNumber)){
-    console.log(name + `: clickParameters: checkNodeParameters true`)
+    //console.log(name + `: clickParameters: checkNodeParameters true`)
     await select_node_row(nodeNumber)
-    console.log(name + `: clickParameters: node ` + nodeNumber)
+    //console.log(name + `: clickParameters: node ` + nodeNumber)
     showNodeParametersDialog.value = true
   }
 }
