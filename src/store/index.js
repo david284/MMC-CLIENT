@@ -3,6 +3,7 @@ import io from 'socket.io-client'
 //import VueSocketIO from 'vue-socket.io'
 import { EventBus } from 'quasar'
 import {NodeParameterNames} from "src/definitions/Text_NodeParameterNames"
+import {secondsNow} from "components/functions/utils.js"
 
 const eventBus = new EventBus()
 const host = window.location.hostname
@@ -560,8 +561,8 @@ socket.on("MATCHING_MDF_LIST", (location, nodeNumber, list) => {
 })
 
 socket.on("NODE", (data) => {
-  console.log(`RECEIVED NODE : ${data.nodeNumber}`)
   state.nodes["updateTimestamp"] = Date.now()
+  console.log(secondsNow() + ': ' + name + `: RECEIVED NODE: ${data.nodeNumber}`)
 //  console.log(`RECEIVED NODE : ${data.nodeNumber} Data: ` + JSON.stringify(data))
   // remove original stored events by Index
   delete data.storedEvents
@@ -579,8 +580,8 @@ socket.on("NODE", (data) => {
 })
 
 socket.on("NODES", (data) => {
-  console.log(`RECEIVED NODES`)
   state.nodes["updateTimestamp"] = Date.now()
+  console.log(secondsNow() + ': ' + name + ': RECEIVED NODES')
   var nodes = Object.values(data)
   // remove original stored events by Index
   nodes.forEach(node =>{

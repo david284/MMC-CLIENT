@@ -103,7 +103,7 @@ const actionUpload = () => {
           var resultOBJ = JSON.parse(reader.result)
           resultOBJ["moduleDescriptorFilename"] = fileName
           console.log(name + `: actionUpload: ` + resultOBJ.moduleDescriptorFilename)
-          console.log(name + `: actionUpload: result: ` + JSON.stringify(resultOBJ))
+//          console.log(name + `: actionUpload: result: ` + JSON.stringify(resultOBJ))
           store.methods.import_module_descriptor(props.nodeNumber, resultOBJ)
         } catch(e){
           console.log(name + `: actionUpload: failed JSON parse`)

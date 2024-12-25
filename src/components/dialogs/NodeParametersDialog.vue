@@ -121,7 +121,10 @@ const model = computed({
 })
 
 const moduleDescriptorFilename = computed(() => {
-  return store.state.nodes[props.nodeNumber].moduleDescriptorFilename
+  try{
+    return store.state.nodeDescriptors[props.nodeNumber].moduleDescriptorFilename
+  } catch { return null}
+//  return store.state.nodes[props.nodeNumber].moduleDescriptorFilename
 })
 
 

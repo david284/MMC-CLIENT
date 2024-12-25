@@ -16,4 +16,16 @@ export function sleep(timeout) {
 };
 
 
+//
+// usage: import {sleep} from "components/functions/utils.js"
+//
+export function secondsNow() {
+  var time = new Date()
+  var timeStamp = String( String(time.getSeconds()).padStart(2, '0') + '.' 
+    + String(time.getMilliseconds()).padStart(3, '0'))
+	return timeStamp
+}
+
+
+
 
