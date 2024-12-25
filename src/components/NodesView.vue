@@ -59,7 +59,7 @@
             <q-btn dense class="q-mx-xs q-my-none" outline v-if="(props.row.vlcb)" color="primary" size="md" label="VLCB"
               :disabled="!props.row.status" @click="clickVLCB(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" color="blue-grey-1" text-color="blue-grey-14" size="md" label="Advanced"
-              :disabled="!props.row.status" @click="clickNodeAdvanced(props.row.nodeNumber)" no-caps/>
+              @click="clickNodeAdvanced(props.row.nodeNumber)" no-caps/>
 
           </q-td>
         </q-tr>

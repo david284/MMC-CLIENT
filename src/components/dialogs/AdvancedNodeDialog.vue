@@ -16,29 +16,30 @@
           @click="clickDeleteNode()"  v-close-popup/>
         </q-card-actions>
 
+        
         <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="CAN ID Enumeration"
-          @click="clickCanIdEnumeration()"/>
+          :disabled="!store.state.nodes[nodeNumber].status" @click="clickCanIdEnumeration()"/>
         </q-card-actions>
 
         <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Set CANID"
-          @click="clickSetCAN_ID()"/>
+          :disabled="!store.state.nodes[nodeNumber].status" @click="clickSetCAN_ID()"/>
         </q-card-actions>
 
         <q-card-actions align="left">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="reset Node"
-          @click="clickResetNode()"/>
+          :disabled="!store.state.nodes[nodeNumber].status" @click="clickResetNode()"/>
         </q-card-actions>
 
         <q-card-actions align="left">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="program Node"
-          @click="clickProgramNode()"/>
+          :disabled="!store.state.nodes[nodeNumber].status" @click="clickProgramNode()"/>
         </q-card-actions>
 
         <q-card-actions align="left">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Manage Module Descriptor"
-          @click="clickMDF()"/>
+          :disabled="!store.state.nodes[nodeNumber].status" @click="clickMDF()"/>
         </q-card-actions>
 
       </q-card>
