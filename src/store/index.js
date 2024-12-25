@@ -24,7 +24,7 @@ const state = reactive({
   layout: {},
   layouts_list: [],
   loadFile_notification_raised: {},
-  MDFChanged: false,
+  MDFupdateTimestamp: Date.now(),
   nodeDescriptors: {},
   nodeDescriptorList: {},
   nodes: {},
@@ -550,14 +550,14 @@ socket.on('LAYOUTS_LIST', (data) => {
 socket.on("MDF_EXPORT", (location, filename, MDF) => {
   console.log(`RECEIVED MDF_EXPORT ` + location + ' ' + filename)
   state.exported_MDF = MDF
-  state.MDFChanged = state.MDFChanged? false : true
+  state.MDFupdateTimestamp = Date.now()
 })
 
 socket.on("MATCHING_MDF_LIST", (location, nodeNumber, list) => {
   console.log(`RECEIVED MATCHING_MDF_LIST ` + nodeNumber + ' ' + location + ' ' + list.length)
   if (state.server.nodes[nodeNumber] == undefined){state.server.nodes[nodeNumber] = {} }
   state.server.nodes[nodeNumber][location + '_MDF_List'] = list
-  state.MDFChanged = state.MDFChanged? false : true
+  state.MDFupdateTimestamp = Date.now()
 })
 
 socket.on("NODE", (data) => {
@@ -608,7 +608,7 @@ socket.on("NODE_DESCRIPTOR", (data) => {
   var moduleDescriptor = Object.values(data)[0] // get first value
   console.log(`RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber + ' ' + moduleDescriptor.moduleDescriptorFilename)
   state.nodeDescriptors[nodeNumber] = moduleDescriptor    
-  state.MDFChanged = state.MDFChanged? false : true
+  state.MDFupdateTimestamp = Date.now()
 })
 
 socket.on("NODE_DESCRIPTOR_FILE_LIST", (nodeNumber, list) => {

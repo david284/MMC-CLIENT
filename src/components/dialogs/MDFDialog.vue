@@ -178,16 +178,16 @@ watch(model, () => {
 })
 
 
-const MDFChanged = computed(() =>{
-  return store.state.MDFChanged
+const MDFupdateTimestamp = computed(() =>{
+  return store.state.MDFupdateTimestamp
 })
-watch(MDFChanged, () => {
-  console.log(name + `: WATCH: MDFChanged`)
+
+watch(MDFupdateTimestamp, () => {
+  console.log(name + `: WATCH: MDFupdateTimestamp`)
   update_SYSTEM_rows()
   update_USER_rows()
   getModuleDescriptorFilename()
 })
-
 
 
 const server_node = computed(() =>{
