@@ -11,6 +11,9 @@
             <q-icon size="sm" name="search"/>
         </q-input>
         &nbsp;&nbsp;
+        <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Advanced" 
+          v-if="(store.state.develop)" @click="clickNodesViewAdvanced()"/>
+        &nbsp;&nbsp;
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
       </template>
     </q-banner>
@@ -45,6 +48,7 @@
             <q-chip dense color="white" text-color="red" v-else>Error</q-chip>
           </q-td>
           <q-td key="events" :props="props">{{ props.row.events }}</q-td>
+          <q-td key="spaceLeft" :props="props">{{ props.row.spaceLeft }}</q-td>
           <q-td key="actions">
             <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Events"
               :disabled="!props.row.status" @click="clickEvents(props.row.nodeNumber)" no-caps/>
@@ -66,12 +70,12 @@
       </template>
       </q-table>
       
+      <advancedNodeDialog v-model='showAdvancedNodeDialog'
+        :nodeNumber = selectedNode
+      />
+     
       <EventsListByNode v-if="(selected_node_valid == true)"
         :nodeNumber = store.state.selected_node
-      />
-
-      <advancedNodeDialog v-model='showAdvancedDialog'
-        :nodeNumber = selectedNode
       />
 
       <nameNodeDialog v-model='showNameNodeDialog'
@@ -90,6 +94,8 @@
         :nodeNumber = selected_nodeNumber
          @NodeParametersLoadingDialog="nodeParametersLoadingReturn = $event"
       />
+
+      <NodesViewAdvancedDialog v-model='showNodesViewAdvancedDialog'/>
 
       <NodesViewInfoDialog v-model='showNodesViewInfoDialog'/>
 
@@ -119,6 +125,7 @@ import nameNodeDialog from "components/dialogs/NameNodeDialog"
 import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
 import nodeVariablesDialog from "components/dialogs/NodeVariablesDialog"
 import NodeParametersLoadingDialog from "components/dialogs/NodeParametersLoadingDialog"
+import NodesViewAdvancedDialog from "components/dialogs/NodesViewAdvancedDialog"
 import NodesViewInfoDialog from "components/dialogs/NodesViewInfoDialog"
 import NodeVariablesLoadingDialog from "components/dialogs/NodeVariablesLoadingDialog"
 import vlcbServicesDialog from "components/dialogs/VLCBServicesDialog"
@@ -135,6 +142,7 @@ const columns = [
   {name: 'mode', field: 'mode', required: true, label: 'Mode', align: 'left', sortable: true},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},
   {name: 'events', field: 'events', required: true, label: 'Stored Events', align: 'left', sortable: true},
+  {name: 'spaceLeft', field: 'spaceLeft', required: true, label: 'Space Left', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
@@ -144,7 +152,8 @@ const filter = ref('')
 const rows = ref([])
 const selectedNode = ref()
 const selected_node_valid = ref(false)
-const showAdvancedDialog = ref(false)
+const showAdvancedNodeDialog = ref(false)
+const showNodesViewAdvancedDialog = ref(false)
 const showNameNodeDialog = ref(false)
 const showNodeParametersDialog = ref(false)
 const showNodeParametersLoadingDialog = ref(false)
@@ -183,7 +192,8 @@ const update_rows = () => {
   rows.value = []
   let nodeList = Object.values(store.state.nodes)
   nodeList.forEach(node => {
-    if (node.nodeNumber){
+    // don't show node number 0
+    if (node.nodeNumber > 0){
       let output = {}
       output['nodeNumber'] = node.nodeNumber
       output['CANID'] = node.CANID
@@ -202,6 +212,7 @@ const update_rows = () => {
         }
       }
       output['events'] = node.eventCount
+      output['spaceLeft'] = node.eventSpaceLeft
       output['vlcb'] = node.VLCB
       rows.value.push(output)
     }
@@ -309,6 +320,10 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
+const clickNodesViewAdvanced = async () => {
+  console.log(name + `: clickNodesViewAdvanced:`)
+  showNodesViewAdvancedDialog.value = true
+}
 
 const clickEvents = async (nodeNumber) => {
   console.log(name + `: clickEvents: node ` + nodeNumber)
@@ -338,7 +353,7 @@ const clickNodeAdvanced = async (nodeNumber) => {
   await checkNodeParameters(nodeNumber)
   await select_node_row(nodeNumber)
   selectedNode.value = nodeNumber
-  showAdvancedDialog.value=true
+  showAdvancedNodeDialog.value=true
   console.log(name + ': clickAdvanced: node' + store.state.selected_node)
 }
 

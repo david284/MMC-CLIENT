@@ -176,7 +176,7 @@ const update_taught_nodes = async () => {
           events.forEach(async event => {
             if (event.eventIdentifier == props.eventIdentifier) {
               taughtNodes.value.push(node.nodeNumber)
-              var nodeName = store.state.layout.nodeDetails[node.nodeNumber].name
+              var nodeName = store.getters.node_name(node.nodeNumber)
               teRows.value.push({"number" : node.nodeNumber, "name" : nodeName, "eventIndex":event.eventIndex, "eventIdentifier":event.eventIdentifier})
             }
           })
@@ -213,10 +213,7 @@ const update_available_nodes = () =>{
         if (nodes[nodeNumber].consumer){
           var entry = nodeNumber + ': '
           if(store.state.layout){
-            if (store.state.layout.nodeDetails[nodeNumber]){
-              // add node name if it exists
-              entry += store.state.layout.nodeDetails[nodeNumber].name
-            }
+            entry += store.getters.node_name(nodeNumber)
             availableNodes.value.push(entry)
           }
         }
