@@ -15,7 +15,7 @@
           <q-icon size="sm" name="search"/>
         </q-input>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <q-btn class="q-mx-xs q-my-none" size="sm" color="negative" label="Clear Events" @click="store.methods.clear_bus_events()" no-caps/>
+        <q-btn class="q-mx-xs q-my-none" size="sm" color="blue" label="CLEAR BUS EVENTS" @click="clickClearAllBusEvents()" no-caps/>
       </template>
     </q-banner>
 
@@ -106,11 +106,13 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
+import { date, useQuasar, scroll } from 'quasar'
 import sendEventDialog from "components/dialogs/SendEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
 import BusEventsViewInfoDialog from "components/dialogs/BusEventsViewInfoDialog"
 
+const $q = useQuasar()
 const store = inject('store')
 const name = "BusEventsView"
 const tab = ref('nodes')
@@ -218,6 +220,23 @@ onMounted(() => {
 Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
+
+const clickClearAllBusEvents = () => {
+  console.log(name + `: clickClearAllBusEvents`)
+  const result = $q.notify({
+    message: 'Are you sure you want to clear all bus events?',
+    timeout: 0,
+    position: 'center',
+    color: 'primary',
+    actions: [
+      { label: 'YES', color: 'white', handler: async () => { 
+          store.methods.clear_bus_events()
+        } 
+      },
+      { label: 'NO', color: 'white', handler: () => { /* ... */ } }
+    ]
+  })
+}
 
 const clickEventName = (eventIdentifier) => {
   console.log(name + `: clickEventName ` + eventIdentifier)
