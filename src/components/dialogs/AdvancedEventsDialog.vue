@@ -13,7 +13,7 @@
         </q-banner>
 
         <q-card-actions align="left" class="text-primary">
-          <q-btn flat color="positive" label="Delete all events" v-close-popup @click="deleteAllEvents()"/>
+          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Delete all events" v-close-popup @click="deleteAllEvents()"/>
         </q-card-actions>
       </q-card>
     </q-dialog>
