@@ -18,12 +18,6 @@
       </q-card>
     </q-dialog>
 
-    <deleteAllEventsDialog v-model='showDeleteAllEventsDialog'
-      :nodeNumber = nodeNumber
-    />
-
-
-
 </template>
 
 
@@ -31,11 +25,11 @@
 
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
-import deleteAllEventsDialog from "components/dialogs/DeleteAllEventsDialog"
+import { date, useQuasar, scroll } from 'quasar'
 
+const $q = useQuasar()
 const store = inject('store')
 const name = "AdvancedEventsDialog"
-const showDeleteAllEventsDialog = ref(false)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -57,7 +51,18 @@ Click event handlers
 
 const deleteAllEvents = () => {
   console.log(name + `: deleteAllEvents ` + props.nodeNumber)
-  showDeleteAllEventsDialog.value = true
+  const result = $q.notify({
+    message: 'Are you sure you want to delete all events for node '+ store.getters.node_name(props.nodeNumber),
+    timeout: 0,
+    position: 'center',
+    color: 'primary',
+    actions: [
+      { label: 'YES', color: 'white', handler: async () => { 
+        store.methods.delete_all_events(props.nodeNumber)
+      } },
+      { label: 'NO', color: 'white', handler: () => { /* ... */ } }
+    ]
+  })
 }
 
 
