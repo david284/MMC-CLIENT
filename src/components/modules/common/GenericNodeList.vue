@@ -153,7 +153,7 @@ Click event handlers
 const clickDelete = (nodeNumber) => {
   console.log(name + `: clickDelete`)
   const result = $q.notify({
-    message: 'Are you sure you want to delete this event?',
+    message: 'Are you sure you want to delete event ' + store.getters.event_name(props.eventIdentifier) + ' from node ' + store.getters.node_name(nodeNumber),
     timeout: 0,
     position: 'center',
     color: 'primary',

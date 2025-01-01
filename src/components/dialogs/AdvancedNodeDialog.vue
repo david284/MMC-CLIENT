@@ -45,10 +45,6 @@
       </q-card>
     </q-dialog>
 
-    <deleteNodeDialog v-model='showDeleteNodeDialog'
-      :nodeNumber = nodeNumber
-    />
-
     <MDFDialog v-model='showMDFDialog'
       :nodeNumber = nodeNumber
     />
@@ -66,17 +62,16 @@
 
 <script setup>
 
-
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
+import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
-import deleteNodeDialog from "components/dialogs/DeleteNodeDialog"
 import MDFDialog from "components/dialogs/MDFDialog"
 import programNodeDialog from "components/dialogs/programNodeDialog"
 import setCanIdDialog from "components/dialogs/setCanIdDialog"
 
+const $q = useQuasar()
 const store = inject('store')
 const name = "AdvancedNodeDialog"
-const showDeleteNodeDialog = ref(false)
 const showMDFDialog = ref(false)
 const showProgramNodeDialog = ref(false)
 const showSetCanIdDialog = ref(false)
@@ -115,7 +110,19 @@ const clickCanIdEnumeration = () => {
 
 const clickDeleteNode = () => {
   console.log(name + `: clickDeleteNode ` + props.nodeNumber)
-  showDeleteNodeDialog.value = true
+  const result = $q.notify({
+    message: 'Are you sure you want to delete node '+ store.getters.node_name(props.nodeNumber),
+    timeout: 0,
+    position: 'center',
+    color: 'primary',
+    actions: [
+      { label: 'YES', color: 'white', handler: async () => { 
+        store.methods.remove_node(props.nodeNumber)
+        store.eventBus.emit('NODE_DELETED_EVENT', props.nodeNumber)
+      } },
+      { label: 'NO', color: 'white', handler: () => { /* ... */ } }
+    ]
+  })
 }
 
 const clickMDF = () => {

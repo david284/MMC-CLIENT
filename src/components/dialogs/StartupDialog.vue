@@ -229,7 +229,7 @@ const clickAddNewLayout = async () => {
 const clickDeleteLayout = async (row) => {
   console.log(name + ': clickDeleteLayout ', row)
   const result = $q.notify({
-    message: 'Are you sure you want to delete this?',
+    message: 'Are you sure you want to delete layout ' + row,
     timeout: 0,
     position: 'center',
     color: 'primary',
