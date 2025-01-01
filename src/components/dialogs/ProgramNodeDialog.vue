@@ -7,6 +7,9 @@
           &nbsp; program Node {{ store.getters.node_name(nodeNumber) }}
         </div>
         <template v-slot:action>
+          <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
+            @click="clickInfo()" />
+          <q-space/>
           <q-btn flat color="white" size="md" label="Close" @click="clickClose()"/>
         </template>
       </q-banner>
@@ -90,6 +93,9 @@
 
     </q-card>
   </q-dialog>
+
+  <ProgramNodeInfoDialog v-model='showInfoDialog'/>
+
 </template>
 
 
@@ -104,6 +110,7 @@
 //
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
+import ProgramNodeInfoDialog from "components/dialogs/ProgramNodeInfoDialog"
 
 const store = inject('store')
 const name = "ProgramNodeDialog"
@@ -114,6 +121,7 @@ const checked4 = ref(false)
 const checked8 = ref(false)
 const FIRMWARE_STATUS = ref()
 const progressText = ref('')
+const showInfoDialog = ref(false)
 var flags = 0
 var cpuType = undefined
 
@@ -178,6 +186,12 @@ store.eventBus.on('PROGRAM_NODE_PROGRESS', (text) => {
 // Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
+
+const clickInfo = () => {
+  console.log(name + `: clickInfo`)
+  showInfoDialog.value = true
+}
+
 
 
 const clickProgram = async () => {

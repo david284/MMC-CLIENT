@@ -12,7 +12,7 @@
         </q-input>
         &nbsp;&nbsp;
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Advanced" 
-          v-if="(store.state.develop)" @click="clickNodesViewAdvanced()"/>
+          @click="clickNodesViewAdvanced()"/>
         &nbsp;&nbsp;
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
       </template>
