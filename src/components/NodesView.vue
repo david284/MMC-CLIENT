@@ -134,15 +134,15 @@ import iFrameDialog from "components/dialogs/iFrameDialog";
 const $q = useQuasar()
 
 const columns = [
-  {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node number', align: 'left', sortable: true},
-  {name: 'CANID', field: 'CANID', required: true, label: 'CAN ID', align: 'left', sortable: true},
+  {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node number', align: 'center', sortable: true},
+  {name: 'CANID', field: 'CANID', required: true, label: 'CAN ID', align: 'center', sortable: true},
   {name: 'nodeName', field: 'nodeName', required: true, label: 'Name', align: 'left', sortable: true},
   {name: 'group', field: 'group', required: true, label: 'Group', align: 'left', sortable: true},
   {name: 'moduleName', field: 'moduleName', required: true, label: 'Module name', align: 'left', sortable: true},
   {name: 'mode', field: 'mode', required: true, label: 'Mode', align: 'left', sortable: true},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},
-  {name: 'events', field: 'events', required: true, label: 'Stored Events', align: 'left', sortable: true},
-  {name: 'spaceLeft', field: 'spaceLeft', required: true, label: 'Space Left', align: 'left', sortable: true},
+  {name: 'events', field: 'events', required: true, label: 'Stored Events', align: 'center', sortable: true},
+  {name: 'spaceLeft', field: 'spaceLeft', required: true, label: 'Space Left', align: 'center', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 

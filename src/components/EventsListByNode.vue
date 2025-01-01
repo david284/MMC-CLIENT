@@ -274,7 +274,19 @@ Click event handlers
 
 const clickAddEvent = () => {
   console.log(name + `: clickAddEvent`)
-  showAddEventDialog.value = true
+  if(store.state.nodes[props.nodeNumber].eventSpaceLeft > 0 ) {
+    showAddEventDialog.value = true
+  } else {
+    const result = $q.notify({
+      message: 'no event space left',
+      timeout: 0,
+      position: 'center',
+      color: 'primary',
+      actions: [
+        { label: 'dismiss', color: 'white', handler: () => { /* ... */ } }
+      ]
+    })
+  }
 }
 
 

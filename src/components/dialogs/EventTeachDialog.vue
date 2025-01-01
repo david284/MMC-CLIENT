@@ -98,12 +98,14 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
+import { date, useQuasar, scroll } from 'quasar'
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import {createNewEvent} from "components/functions/EventFunctions.js"
 import {sleep} from "components/functions/utils.js"
 import NodeParametersLoadingDialog from "components/dialogs/NodeParametersLoadingDialog"
 import NodeVariablesLoadingDialog from "components/dialogs/NodeVariablesLoadingDialog"
 
+const $q = useQuasar()
 const store = inject('store')
 const name = 'EventTeachDialog'
 
@@ -170,16 +172,18 @@ const update_taught_nodes = async () => {
     taughtNodes.value = []
     var list = Object.values(store.state.nodes)
     list.forEach(node => {
-      if (node.storedEventsNI){
-        if (Object.values(node.storedEventsNI).length > 0) {
-          let events = Object.values(node.storedEventsNI)
-          events.forEach(async event => {
-            if (event.eventIdentifier == props.eventIdentifier) {
-              taughtNodes.value.push(node.nodeNumber)
-              var nodeName = store.getters.node_name(node.nodeNumber)
-              teRows.value.push({"number" : node.nodeNumber, "name" : nodeName, "eventIndex":event.eventIndex, "eventIdentifier":event.eventIdentifier})
-            }
-          })
+      if (node.nodeNumber > 0){
+        if (node.storedEventsNI){
+          if (Object.values(node.storedEventsNI).length > 0) {
+            let events = Object.values(node.storedEventsNI)
+            events.forEach(async event => {
+              if (event.eventIdentifier == props.eventIdentifier) {
+                taughtNodes.value.push(node.nodeNumber)
+                var nodeName = store.getters.node_name(node.nodeNumber)
+                teRows.value.push({"number" : node.nodeNumber, "name" : nodeName, "eventIndex":event.eventIndex, "eventIdentifier":event.eventIdentifier})
+              }
+            })
+          }
         }
       }
     })
@@ -209,8 +213,7 @@ const update_available_nodes = () =>{
         }
       }
       if (notAdded){
-        // not already taught, but only add to list if consumer node
-        if (nodes[nodeNumber].consumer){
+        if (nodeNumber > 0) {
           var entry = nodeNumber + ': '
           if(store.state.layout){
             entry += store.getters.node_name(nodeNumber)
@@ -278,13 +281,26 @@ const clickTeachEvent = async () => {
     var nodeNumberToBeTaught = parseInt(array[0])
     selected_event_node.value = nodeNumberToBeTaught
 
-    await checkNodeParameters(nodeNumberToBeTaught)
-    await checkNodeVariables(nodeNumberToBeTaught)
-    createNewEvent(store, nodeNumberToBeTaught, props.eventIdentifier)             
+    if(store.state.nodes[nodeNumberToBeTaught].eventSpaceLeft > 0){
+      await checkNodeParameters(nodeNumberToBeTaught)
+      await checkNodeVariables(nodeNumberToBeTaught)
+      createNewEvent(store, nodeNumberToBeTaught, props.eventIdentifier)             
 
-    selected_event_Identifier.value = props.eventIdentifier
-    isNewEvent.value=true
-    showEventVariablesDialog.value = true
+      selected_event_Identifier.value = props.eventIdentifier
+      isNewEvent.value=true
+      showEventVariablesDialog.value = true
+    } else {
+      const result = $q.notify({
+        message: 'no event space left',
+        timeout: 0,
+        position: 'center',
+        color: 'primary',
+        actions: [
+          { label: 'dismiss', color: 'white', handler: () => { /* ... */ } }
+        ]
+      })
+    }
+
     newNode.value = undefined
   }
 }
