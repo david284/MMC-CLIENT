@@ -299,7 +299,7 @@ const clickAdvanced = () => {
 const clickDelete = (eventIdentifier) => {
   console.log(name + `: clickDelete`)
   const result = $q.notify({
-    message: 'Are you sure you want to delete this event?',
+    message: 'Are you sure you want to delete event ' + store.getters.event_name(eventIdentifier),
     timeout: 0,
     position: 'center',
     color: 'primary',
