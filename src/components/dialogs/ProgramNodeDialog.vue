@@ -195,10 +195,10 @@ const clickInfo = () => {
 
 
 const clickProgram = async () => {
-  flags = checked1.value ? flags | 1 : flags & ~1
-  flags = checked2.value ? flags | 2 : flags & ~2
-  flags = checked4.value ? flags | 4 : flags & ~4
-  flags = checked8.value ? flags | 8 : flags & ~8
+  flags = checked1.value ? flags | 1 : flags & ~1   // program CONFIG
+  flags = checked2.value ? flags | 2 : flags & ~2   // program EEPROM
+  flags = checked4.value ? flags | 4 : flags & ~4   // igoner CPUTYPE
+  flags = checked8.value ? flags | 8 : flags & ~8   // program in BOOTMODE
   cpuType = store.state.nodes[props.nodeNumber].parameters[9]
   console.log(name + ": clickProgram: node: " + props.nodeNumber + ' cpuType: '+ cpuType +' flags: ' + flags)
   FIRMWARE_STATUS.value = ''
@@ -206,8 +206,14 @@ const clickProgram = async () => {
 }
 
 const clickClose = async () => {
-  // parameters probably changed due to programming, so reload
-  store.methods.request_all_node_parameters(props.nodeNumber, 20, 100)
+  console.log(name + ': clickClose: flags: ' + flags)
+  if (flags & 2){
+    // re-programmed EEPROM, so refresh node list
+    store.methods.query_all_nodes()
+  } else {
+    // parameters probably changed due to programming, so reload
+    store.methods.request_all_node_parameters(props.nodeNumber, 20, 100)
+  }
   model.value = false   // close the dialog
 }
 
