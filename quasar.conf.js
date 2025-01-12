@@ -141,7 +141,7 @@ module.exports = configure(function (ctx) {
 
       manifest: {
         name: `MMC-CLIENT`,
-        short_name: `MMC`,
+        short_name: `MMC-CLIENT`,
         description: `Module Management Console Client`,
         display: "standalone",
         orientation: "portrait",

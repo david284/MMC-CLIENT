@@ -41,9 +41,11 @@ const state = reactive({
 //  Methods
 //-----------------------------------------------------------------------------
 const methods = {
-  change_layout(data){
-    console.log(name + `: CHANGE_LAYOUT: ` + JSON.stringify(data))
-    socket.emit('CHANGE_LAYOUT', data)
+  change_layout(layoutName){
+    console.log(name + `: CHANGE_LAYOUT: ` + JSON.stringify(layoutName))
+    socket.emit('CHANGE_LAYOUT', {
+      "layoutName": layoutName
+    })
   },
   clear_bus_events() {
     socket.emit('CLEAR_BUS_EVENTS')

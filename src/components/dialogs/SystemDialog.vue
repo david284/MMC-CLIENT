@@ -29,7 +29,10 @@
       </q-card>
 
       <q-card class="q-pa-md" flat bordered>
-        <div><span class="text-h6">user directory &nbsp;</span> {{ store.state.serverStatus.userDirectory }}
+        <div><span class="text-h6">app storage directory &nbsp;</span> {{ store.state.serverStatus.appStorageDirectory }}
+          &nbsp; <q-btn dense color="primary" size="xs" label="copy" @click="clickCopyApp()" no-caps/>
+        </div>
+        <div><span class="text-h6">current user directory &nbsp;</span> {{ store.state.serverStatus.currentUserDirectory }}
           &nbsp; <q-btn dense color="primary" size="xs" label="copy" @click="clickCopyUser()" no-caps/>
         </div>
         <div><span class="text-h6">system directory &nbsp;</span> {{ store.state.serverStatus.systemDirectory }}
@@ -111,6 +114,16 @@ const clickBackup = () => {
   showBackupDialog.value = true
 }
 
+const clickCopyApp = () => {
+  copyToClipboard(store.state.serverStatus.appStorageDirectory)
+  .then(() => {
+    // success!
+  })
+  .catch(() => {
+    // fail
+  })
+}
+
 const clickCopySystem = () => {
   copyToClipboard(store.state.serverStatus.systemDirectory)
   .then(() => {
@@ -122,7 +135,7 @@ const clickCopySystem = () => {
 }
 
 const clickCopyUser = () => {
-  copyToClipboard(store.state.serverStatus.userDirectory)
+  copyToClipboard(store.state.serverStatus.currentUserDirectory)
   .then(() => {
     // success!
   })
