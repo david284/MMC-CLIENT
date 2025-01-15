@@ -24,15 +24,17 @@ style="min-width: 350px; min-height: 200px;"
           <q-btn align="left" dense color="blue" label = "-5" size="sm" @click="clickNegative5()" no-caps/>
         </q-card-section>
         <q-space />
-        <q-space />
+        <q-card-section flat class = "row no-margin q-pa-none">
+          <div v-if="(outputOnWrite)">
+            <q-btn dense size="sm" label="Center" @click="clickCenter()" no-caps/>
+          </div>
+        </q-card-section>
         <q-space />
         <q-card-section flat class = "row no-margin q-pa-none">
           <div v-if="(outputOnWrite)">
             <q-btn dense size="sm" label="Test" @click="clickTest()" no-caps/>
           </div>
         </q-card-section>
-        <q-space />
-        <q-space />
         <q-space />
         <q-card-section align="right" flat class = "row no-margin q-pa-none">
           <q-btn align="right" dense color="blue" label="+5" size="sm" @click="clickPositive5()" no-caps/>
@@ -201,6 +203,11 @@ onMounted(() => {
 Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
+
+const clickCenter = () => {
+  console.log(name + `: clickCenter`)
+  sliderValue.value = 127
+}
 
 const clickNegative = () => {
   console.log(name + `: clickNegative`)
