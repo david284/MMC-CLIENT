@@ -136,6 +136,9 @@ const methods = {
   },
 
   remove_node(nodeNumber) {
+    // remove node from layout data
+    delete state.layout.nodeDetails[nodeNumber]
+    state.update_layout_needed = true
     socket.emit('REMOVE_NODE', nodeNumber)
     console.log(name + ': sent REMOVE_NODE ' + nodeNumber)
   },
