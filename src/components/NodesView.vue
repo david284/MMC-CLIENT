@@ -45,7 +45,7 @@
           </q-td>
           <q-td key="status" :props="props">
             <q-chip dense color="white" text-color="green" v-if="props.row.status">OK</q-chip>
-            <q-chip dense color="white" text-color="red" v-else>Error</q-chip>
+            <q-chip dense color="white" text-color="red" v-else>OFFLINE</q-chip>
           </q-td>
           <q-td key="events" :props="props">{{ props.row.events }}</q-td>
           <q-td key="spaceLeft" :props="props">{{ props.row.spaceLeft }}</q-td>
@@ -53,7 +53,7 @@
             <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Events"
               :disabled="!props.row.status" @click="clickEvents(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="md" label="Name"
-              :disabled="!props.row.status" @click="clickNameNode(props.row.nodeNumber)" no-caps/>
+              @click="clickNameNode(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="md" label="Parameters"
               @click="clickParameters(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="md" label="Variables"
@@ -202,14 +202,12 @@ const update_rows = () => {
       output['moduleName'] = node.moduleName
       output['component'] = node.component
       output['status'] = node.status
-      if (node.flim){
+      if (node.flim == true) {
         output['mode'] = 'FLiM'
+      } else if (node.flim == false) {
+        output['mode'] = 'SLiM'
       } else {
-        if (node.VLCB){
-          output['mode'] = 'unInit'
-        } else {
-          output['mode'] = 'SLiM'
-        }
+        output['mode'] = 'unknown'
       }
       output['events'] = node.eventCount
       output['spaceLeft'] = node.eventSpaceLeft
@@ -342,7 +340,7 @@ const clickInfo = () => {
 const clickNameNode = async (nodeNumber) => {
   console.log(name + `: clickNameNode: node ` + nodeNumber)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
-  await checkNodeParameters(nodeNumber)
+//  await checkNodeParameters(nodeNumber)
   await select_node_row(nodeNumber)
   showNameNodeDialog.value = true;
 }

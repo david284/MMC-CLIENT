@@ -38,6 +38,9 @@
         <node-parameter Name="Consume own Events"
                         :Value=store.state.nodes[props.nodeNumber].coe>
         </node-parameter>
+        <node-parameter Name="FLiM"
+                        :Value=store.state.nodes[props.nodeNumber].flim>
+        </node-parameter>
         <node-parameter Name="VLCB"
                         :Value=store.state.nodes[props.nodeNumber].VLCB>
         </node-parameter>
