@@ -199,7 +199,7 @@ const update_rows = () => {
       output['CANID'] = node.CANID
       output['nodeName'] = store.getters.node_name(node.nodeNumber)
       output['group'] = store.getters.node_group(node.nodeNumber)
-      output['moduleName'] = node.moduleName
+      output['moduleName'] = store.getters.module_name(node.nodeNumber)
       output['component'] = node.component
       output['status'] = node.status
       if (node.flim == true) {

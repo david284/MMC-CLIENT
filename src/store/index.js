@@ -352,6 +352,17 @@ const getters = {
       return 0
     }
   },
+  module_name(nodeNumber){
+    try{
+      if (state.nodes[nodeNumber].moduleName){
+        return state.nodes[nodeNumber].moduleName
+      } else {
+        return state.layout.nodeDetails[nodeNumber].moduleName
+      }
+    } catch{
+      return "unknown"
+    }
+  },
   node_can_id(nodeNumber){
     var CAN_ID = undefined
     try{
@@ -366,7 +377,6 @@ const getters = {
       if (nodeNumber in state.layout.nodeDetails == false){
         state.layout.nodeDetails[nodeNumber] = {}
         state.layout.nodeDetails[nodeNumber].name = undefined
-//        state.nodes[nodeNumber].moduleName + ' (' + nodeNumber.toString() + ')'
         state.layout.nodeDetails[nodeNumber].colour = "black"
         state.layout.nodeDetails[nodeNumber].group = ""
         state.update_layout_needed = true
@@ -430,6 +440,29 @@ const getters = {
 //  setters
 //-----------------------------------------------------------------------------
 const setters = {
+  addNodeToLayout(nodeNumber, moduleIdentifer, moduleName){
+    console.log(secondsNow() + ': ' + name + `: addNodeToLayout: ${nodeNumber} ${moduleIdentifer} ${moduleName}`)
+    if (nodeNumber != undefined){
+      if (nodeNumber in state.layout.nodeDetails === false){
+        state.layout.nodeDetails[nodeNumber] = {}
+        state.layout.nodeDetails[nodeNumber].colour = "black"
+        state.layout.nodeDetails[nodeNumber].group = ""
+        state.update_layout_needed = true
+      }
+      if (moduleIdentifer != undefined){
+        if (state.layout.nodeDetails[nodeNumber].moduleIdentifer != moduleIdentifer){
+          state.layout.nodeDetails[nodeNumber].moduleIdentifer = moduleIdentifer
+          state.update_layout_needed = true
+        }
+      }
+      if (moduleName != undefined){
+        if (state.layout.nodeDetails[nodeNumber].moduleName != moduleName){
+          state.layout.nodeDetails[nodeNumber].moduleName = moduleName
+          state.update_layout_needed = true
+        }
+      }
+    }
+  },
   event_name(eventIdentifier, eventName) {
     if (eventIdentifier in state.layout.eventDetails === false) {
       state.layout.eventDetails[eventIdentifier] = {}
@@ -575,6 +608,7 @@ socket.on("NODE", (data) => {
   // remove original stored events by Index
   delete data.storedEvents
   state.nodes[data.nodeNumber] = data
+  setters.addNodeToLayout(data.nodeNumber, data.moduleIdentifier, data.moduleName)
   try{
     var events = Object.values(state.nodes[data.nodeNumber].storedEventsNI)
     events.forEach(event => {
@@ -598,6 +632,7 @@ socket.on("NODES", (data) => {
   try{
     var nodes = Object.values(state.nodes)
     nodes.forEach(node =>{
+      setters.addNodeToLayout(node.nodeNumber, node.moduleIdentifer, node.moduleName)
       var storedEvents = Object.values(state.nodes[node.nodeNumber].storedEventsNI)
       storedEvents.forEach(event => {
         // call the get event name, as this will populate eventDetails if it doesn't exist
