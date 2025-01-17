@@ -82,8 +82,13 @@ watch(model, () => {
 watch(newNodeNumber, () => {
   console.log(name + `: WATCH model: newNodeNumber ` + newNodeNumber.value)
   try{
-    newNodeName.value = store.state.layout.nodeDetails[newNodeNumber.value].name
-    newGroupName.value = store.state.layout.nodeDetails[newNodeNumber.value].group
+    if(newNodeNumber.value in store.state.layout.nodeDetails){
+      newNodeName.value = store.state.layout.nodeDetails[newNodeNumber.value].name
+      newGroupName.value = store.state.layout.nodeDetails[newNodeNumber.value].group
+    } else {
+      newNodeName.value = ""
+      newGroupName.value = ""
+    }
   } catch(err){
     console.log(name + `: WATCH newNodeNumber ` + err)
   }
