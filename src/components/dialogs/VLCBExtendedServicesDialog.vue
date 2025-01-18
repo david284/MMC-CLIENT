@@ -17,7 +17,7 @@
         <q-card-section class="no-margin q-pa-xs">
 
           <q-table
-            class="vlcb-diagnostics-table"
+            class="vlcb-ESD-table"
             dense
             :rows=rows
             :columns="columns"
@@ -119,7 +119,7 @@ Click event handlers
 </script>
 
 <style lang="sass">
-.vlcb-diagnostics-table
+.vlcb-ESD-table
   /* height or max-height is important */
   height: 150px
 

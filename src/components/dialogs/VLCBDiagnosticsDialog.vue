@@ -155,7 +155,7 @@ const clickToggleShowDiagnosticsJSON = () => {
 <style lang="sass">
 .vlcb-diagnostics-table
   /* height or max-height is important */
-  height: 500px
+  max-height: 800px
 
   .q-table__top,
   .q-table__bottom,
