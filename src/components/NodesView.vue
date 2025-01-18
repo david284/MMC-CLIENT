@@ -195,7 +195,7 @@ const update_rows = () => {
     // don't show node number 0
     if (node.nodeNumber > 0){
       let output = {}
-      output['nodeNumber'] = node.nodeNumber
+      output['nodeNumber'] = parseInt(node.nodeNumber)
       output['CANID'] = node.CANID
       output['nodeName'] = store.getters.node_name(node.nodeNumber)
       output['group'] = store.getters.node_group(node.nodeNumber)
