@@ -25,16 +25,9 @@
           />
 
           <q-card-section>
-            <div class="text-subtitle2">Current node:</div>
-            <div class="text-subtitle2">
-              Module name: {{ store.state.nodes[store.state.selected_node].moduleName }}<br/>
-              Module identifier: {{ store.state.nodes[store.state.selected_node].moduleIdentifier }}<br/>
-              Module version: {{ store.state.nodes[store.state.selected_node].moduleVersion }}<br/>
-            </div>
           </q-card-section>
 
           <q-card-section>
-            <div class="text-subtitle2">If this module descriptor already exists on the server, it will be overwritten  </div>
           </q-card-section>
 
           <q-card-actions align="right" class="text-primary">
@@ -52,6 +45,7 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import {sleep} from "components/functions/utils.js"
 
+const convert = require('xml-js');
 const store = inject('store')
 const name = "ImportDialog"
 const importFile = ref()
@@ -88,7 +82,21 @@ Click event handlers
 
 
 const clickImport = () => {
+  console.log(name + `: clickImport ` + importFile.value.name)
+  var jsonResult = null
+  let reader = new FileReader();
+  reader.readAsText(importFile.value)
+  reader.onload = function() {
+    try{
+      jsonResult = convert.xml2js(reader.result, { compact: true })
+      jsonResult.MergModuleDataSet.userNodes.forEach( node => {
+        console.log(node.nodeNum._text + ' ' + node.nodeName._text)    
+      })
+    } catch(e){
+      console.log(name + `: clickImport: ` + e)
+    }
   }
+}
 
 
 </script>
