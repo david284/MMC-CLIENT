@@ -121,7 +121,7 @@ Click event handlers
 <style lang="sass">
 .vlcb-ESD-table
   /* height or max-height is important */
-  height: 150px
+  max-height: 200px
 
   .q-table__top,
   .q-table__bottom,

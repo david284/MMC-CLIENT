@@ -20,7 +20,7 @@
 
     <div>
         <q-table
-        class="my-sticky-header-table"
+        class="nodes-view-table"
         bordered
         dense
         :rows=rows
@@ -403,7 +403,7 @@ const clickVLCB = async (nodeNumber) => {
 </script>
 
 <style lang="sass">
-.my-sticky-header-table
+.nodes-view-table
   /* height or max-height is important */
   height: 42vh
 

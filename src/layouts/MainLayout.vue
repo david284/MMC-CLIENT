@@ -6,8 +6,8 @@
         <q-btn flat dense icon="menu">
           <q-menu auto-close>
             <q-list style="min-width: 100px">
-              <q-item clickable @click="clickLayout()">
-                <q-item-section>Layout</q-item-section>
+              <q-item clickable @click="clickImport()">
+                <q-item-section>Import</q-item-section>
               </q-item>
               <q-item clickable @click="clickJson()">
                 <q-item-section>JSON</q-item-section>
@@ -126,7 +126,7 @@
   <busTrafficDialog v-model='showBusTrafficDialog' />
   <cbusErrorsDialog v-model='showCbusErrorsDialog' />
   <jsonDialog v-model='showJsonDialog' />
-  <layoutDialog v-model='showLayoutDialog' />
+  <ImportDialog v-model='showImportDialog' />
   <modifiedGridConnectDialog v-model='showModifiedGridConnectDialog'
     :busMessage="busMessage"/>
   <newNodeDialog v-model='showNewNodeDialog'
@@ -161,7 +161,7 @@ import nodesView from "components/NodesView"
 import busTrafficDialog from "components/dialogs/BusTrafficDialog";
 import cbusErrorsDialog from "components/dialogs/CbusErrorsDialog";
 import jsonDialog from "components/dialogs/JsonDialog";
-import layoutDialog from "components/dialogs/LayoutDialog";
+import ImportDialog from "components/dialogs/ImportDialog";
 import modifiedGridConnectDialog from "components/dialogs/ModifiedGridConnectDialog";
 import newNodeDialog from "components/dialogs/NewNodeDialog";
 import startupDialog from "components/dialogs/StartupDialog";
@@ -181,7 +181,7 @@ const leftDrawerOpen = ref(false)
 const showBusTrafficDialog = ref(false)
 const showCbusErrorsDialog = ref(false)
 const showJsonDialog = ref(false)
-const showLayoutDialog = ref(false)
+const showImportDialog = ref(false)
 const showModifiedGridConnectDialog = ref(false)
 const showNewNodeDialog = ref(false)
 const showStartupDialog = ref(true)
@@ -353,9 +353,9 @@ const clickJson = () => {
   showJsonDialog.value = true
 }
 
-const clickLayout = () => {
-  console.log(name + ': clickLayout')
-  showLayoutDialog.value = true
+const clickImport = () => {
+  console.log(name + ': clickImport')
+  showImportDialog.value = true
 }
 
 const clickSingleBusEvent = (message) => {

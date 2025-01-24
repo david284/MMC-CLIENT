@@ -303,7 +303,7 @@ const clickToggleViewMode = () => {
 <style lang="sass">
 .bus-events-table
   /* height or max-height is important */
-  height: 600px
+  max-height: 600px
 
   .q-table__top,
   .q-table__bottom,

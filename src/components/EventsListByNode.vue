@@ -21,7 +21,7 @@
 
     <div class="full-width" >
     <q-table
-      class="my-sticky-header-table"
+      class="events-list-by-node-table"
       bordered
       dense
       :rows=rows
@@ -374,7 +374,7 @@ const clickVariables = async (eventIdentifier) => {
 </script>
 
 <style lang="sass">
-.my-sticky-header-table
+.events-list-by-node-table
   /* height or max-height is important */
   height: 43vh
 

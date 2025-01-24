@@ -424,7 +424,7 @@ const clickToggleViewMode = () => {
 <style lang="sass">
 .events-table
   /* height or max-height is important */
-  height: 600px
+  height: 82vh
 
   .q-table__top,
   .q-table__bottom,
