@@ -190,7 +190,7 @@ const clickESD = (serviceIndex) => {
 <style lang="sass">
 .vlcb-services-table
   /* height or max-height is important */
-  max-height: 800px
+  max-height: 900px
 
   .q-table__top,
   .q-table__bottom,
