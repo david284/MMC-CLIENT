@@ -499,6 +499,13 @@ const setters = {
     state.layout.nodeDetails[nodeNumber].group = Group
     state.update_layout_needed = true
   },
+  node_moduleName(nodeNumber, moduleName){
+    if (nodeNumber in state.layout.nodeDetails === false){
+      setters.addNodeToLayout(data.nodeNumber)
+    }
+    state.layout.nodeDetails[nodeNumber].moduleName = moduleName
+    state.update_layout_needed = true
+  },
   node_name(nodeNumber, nodeName){
     if (nodeNumber in state.layout.nodeDetails === false){
       state.layout.nodeDetails[nodeNumber] = {}

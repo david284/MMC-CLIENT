@@ -26,6 +26,8 @@ export function secondsNow() {
 	return timeStamp
 }
 
+export function decToHex(num, len) {return parseInt(num).toString(16).toUpperCase().padStart(len, '0');}
+
 
 
 
