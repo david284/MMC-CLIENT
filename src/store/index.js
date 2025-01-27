@@ -29,6 +29,7 @@ const state = reactive({
   nodeDescriptorList: {},
   nodes: {},
   nodeTraffic: [],
+  restoredData,
   server: { "nodes":{} },
   selected_node: 0,
   serverStatus: {},
@@ -142,12 +143,12 @@ const methods = {
     socket.emit('REMOVE_NODE', nodeNumber)
     console.log(name + ': sent REMOVE_NODE ' + nodeNumber)
   },
-  request_backups_list(layoutName) {
-    console.log(`request_backups_list : ` + layoutName)
-    socket.emit('REQUEST_BACKUPS_LIST', {"layoutName":layoutName})
+  request_backup(filename) {
+    console.log(`REQUEST_BACKUP : ` + filename)
+    socket.emit('REQUEST_BACKUP', {"filename":filename})
   },
   request_backups_list(layoutName) {
-    console.log(`request_backups_list : ` + layoutName)
+    console.log(`REQUEST_BACKUPS_LIST : ` + layoutName)
     socket.emit('REQUEST_BACKUPS_LIST', {"layoutName":layoutName})
   },
   request_diagnostics(nodeNumber, serviceIndex) {
@@ -668,6 +669,13 @@ socket.on("NODE_DESCRIPTOR_FILE_LIST", (nodeNumber, list) => {
 socket.on("PROGRAM_NODE_PROGRESS", (text) => {
   console.log(secondsNow() + ': ' + name + `: RECEIVED PROGRAM_NODE_PROGRESS : ` + text)
   eventBus.emit('PROGRAM_NODE_PROGRESS', text)
+})
+
+socket.on('RESTORED_DATA', (data) => {
+  console.log(secondsNow() + ': ' + name + `: RECEIVED RESTORED_DATA`)
+  state.restoredData = data;
+  // put a fresh timestamp on it
+  state.restoredData.updateTimestamp = Date.now()
 })
 
 socket.on("REQUEST_NODE_NUMBER", (nodeNumber, moduleName) => {

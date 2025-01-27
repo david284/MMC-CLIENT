@@ -67,12 +67,14 @@
 
         </q-card-section>
 
+<!-- 
         <q-card-section class="q-pa-xs">
           <q-card-actions align="center">
             <q-btn v-if="readyToProceed" color="primary" label="Proceed" @click="clickRestore()"/>
             <q-btn v-if="!readyToProceed" disabled color="primary" label="Proceed" @click="clickRestore()"/>
           </q-card-actions>
         </q-card-section>
+ -->
 
         </q-card>
 
@@ -155,6 +157,7 @@ Click event handlers
 const clickBackupList = (row) => {
   console.log(name + ': clickBackupList on ', row)
   backupFilename.value = row
+  store.methods.request_backup(backupFilename.value)
 }
 
 
