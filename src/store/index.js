@@ -440,6 +440,38 @@ const getters = {
 //  setters
 //-----------------------------------------------------------------------------
 const setters = {
+  //
+  // Events
+  addeventTolayout(eventIdentifier){
+    if (eventIdentifier in state.layout.eventDetails === false) {
+      state.layout.eventDetails[eventIdentifier] = {}
+      state.layout.eventDetails[eventIdentifier].colour = "black"
+      state.layout.eventDetails[eventIdentifier].group = ""
+    }
+  },
+  event_name(eventIdentifier, eventName) {
+    if (eventIdentifier in state.layout.eventDetails === false) {
+      setters.addEventToLayout(eventIdentifier)
+    }
+    state.layout.eventDetails[eventIdentifier].name = eventName
+    state.update_layout_needed = true
+  },
+  event_colour(eventIdentifier, eventColour) {
+    if (eventIdentifier in state.layout.eventDetails === false) {
+      setters.addEventToLayout(eventIdentifier)
+    }
+    state.layout.eventDetails[eventIdentifier].colour = eventColour
+    state.update_layout_needed = true
+  },
+  event_group(eventIdentifier, eventGroup) {
+    if (eventIdentifier in state.layout.eventDetails === false) {
+      setters.addEventToLayout(eventIdentifier)
+    }
+    state.layout.eventDetails[eventIdentifier].group = eventGroup
+    state.update_layout_needed = true
+  },
+  //
+  // Nodes
   addNodeToLayout(nodeNumber, moduleIdentifer, moduleName){
     console.log(secondsNow() + ': ' + name + `: addNodeToLayout: ${nodeNumber} ${moduleIdentifer} ${moduleName}`)
     if (nodeNumber != undefined){
@@ -463,59 +495,27 @@ const setters = {
       }
     }
   },
-  event_name(eventIdentifier, eventName) {
-    if (eventIdentifier in state.layout.eventDetails === false) {
-      state.layout.eventDetails[eventIdentifier] = {}
-      state.layout.eventDetails[eventIdentifier].colour = "black"
-      state.layout.eventDetails[eventIdentifier].group = ""
-    }
-    state.layout.eventDetails[eventIdentifier].name = eventName
-    state.update_layout_needed = true
-  },
-  event_colour(eventIdentifier, eventColour) {
-    if (eventIdentifier in state.layout.eventDetails === false) {
-      state.layout.eventDetails[eventIdentifier] = {}
-      state.layout.eventDetails[eventIdentifier].colour = "black"
-      state.layout.eventDetails[eventIdentifier].group = ""
-    }
-    state.layout.eventDetails[eventIdentifier].colour = eventColour
-    state.update_layout_needed = true
-  },
-  event_group(eventIdentifier, eventGroup) {
-    if (eventIdentifier in state.layout.eventDetails === false) {
-      state.layout.eventDetails[eventIdentifier] = {}
-      state.layout.eventDetails[eventIdentifier].colour = "black"
-      state.layout.eventDetails[eventIdentifier].group = ""
-    }
-    state.layout.eventDetails[eventIdentifier].group = eventGroup
-    state.update_layout_needed = true
-  },
   node_group(nodeNumber, Group){
     if (nodeNumber in state.layout.nodeDetails === false){
-      state.layout.nodeDetails[nodeNumber] = {}
-      state.layout.nodeDetails[nodeNumber].colour = "black"
-      state.layout.nodeDetails[nodeNumber].group = ""
+      setters.addNodeToLayout(nodeNumber)
     }
     state.layout.nodeDetails[nodeNumber].group = Group
     state.update_layout_needed = true
   },
   node_moduleName(nodeNumber, moduleName){
     if (nodeNumber in state.layout.nodeDetails === false){
-      setters.addNodeToLayout(data.nodeNumber)
+      setters.addNodeToLayout(nodeNumber)
     }
     state.layout.nodeDetails[nodeNumber].moduleName = moduleName
     state.update_layout_needed = true
   },
   node_name(nodeNumber, nodeName){
     if (nodeNumber in state.layout.nodeDetails === false){
-      state.layout.nodeDetails[nodeNumber] = {}
-      state.layout.nodeDetails[nodeNumber].colour = "black"
-      state.layout.nodeDetails[nodeNumber].group = ""
+      setters.addNodeToLayout(nodeNumber)
     }
     state.layout.nodeDetails[nodeNumber].name = nodeName
     state.update_layout_needed = true
   }
-
 }
 
 //-----------------------------------------------------------------------------
