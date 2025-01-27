@@ -12,9 +12,9 @@
         </q-banner>
 
         <q-card-section>
-          <div class="text-subtitle2">Select a file to import</div>
+          <div class="text-subtitle2">Select an FCU configuration file to import</div>
           <div class="text-subtitle2">
-            The data used in the import includes node & event names
+            The data imported from the configuration file includes node & event names
           </div>
         </q-card-section>
 
@@ -46,7 +46,8 @@
 
           <q-card-actions align="right" class="text-primary">
             <!-- // Only close top dialog - this gives time for underlying dialogs to update -->
-            <q-btn color="positive" label="Import" v-close-popup  @click="clickImport()" />
+            <q-btn color="positive" label="Import" v-close-popup
+              :disabled="!importFile"   @click="clickImport()" />
           </q-card-actions>
 
     </q-card>
@@ -81,7 +82,11 @@ const model = computed({
 })
 
 watch(model, () => {
-  console.log(name + `: WATCH model`)
+  //console.log(name + `: WATCH model`)
+  if (model.value){
+    // now clear filename when dialog opened
+    importFile.value = undefined
+  }
 })
 
 
