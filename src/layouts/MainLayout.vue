@@ -257,6 +257,25 @@ const scrollFunc = () => {
 }
 
 
+//
+// general notfication method
+// types are 'positive', 'negative', 'warning', 'info', 'ongoing'
+//
+store.eventBus.on('GENERAL_MESSAGE_EVENT', (message, caption, type) => {
+  console.log(name + ': GENERAL_MESSAGE_EVENT ' + JSON.stringify(message))
+  try{
+    $q.notify({
+      message: message,
+      caption: caption,
+      timeout: 0,
+      type: type,
+      position: 'center',
+      actions: [ { label: 'Dismiss' } ]
+    })
+  } catch(err){
+    console.log(name + ': MESSAGE_EVENT: ' + err)    
+  }
+})
 
 store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber, moduleName) => {
  console.log(name + ': REQUEST_NODE_NUMBER_EVENT - previous node number ' + nodeNumber + ' moduleName ' + moduleName )

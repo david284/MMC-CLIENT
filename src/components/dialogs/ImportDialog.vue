@@ -110,37 +110,12 @@ const clickImport = () => {
       console.log(name + ': Import JSON ' + JSON.stringify(jsonResult, null, "  "))
 
       importFCU(jsonResult, store, mode.value)
-      /*
-      jsonResult.MergModuleDataSet.userNodes.forEach( node => {
-        console.log(name + ': Import Node ' + node.nodeNum._text + ' ' + node.nodeName._text)
-        let nodeNumber = parseInt(node.nodeNum._text)
-        // not interested in node 0, so skip
-        if (nodeNumber > 0){
-          let nodeName = node.nodeName._text
-          if (store.state.layout.nodeDetails[nodeNumber] == undefined){
-            // node doesn't exist, so create it with name
-            store.setters.node_name(nodeNumber, nodeName)
-            console.log("new node " + nodeNumber + " " + nodeName)
-          } else if (store.state.layout.nodeDetails[nodeNumber].name == undefined ){
-            // node not named, so name it
-            store.setters.node_name(nodeNumber, nodeName)
-            console.log('node ' + nodeNumber + ' named')
-          } else if (store.state.layout.nodeDetails[nodeNumber].name == nodeName) {
-            console.log('node ' + nodeNumber + ' stored name matches import name')
-            // do nothing
-          } else {
-            // stored name doesn't match import name
-            console.log('node ' + nodeNumber + " stored name doesn't match import name")
-            if (mode.value == "overwrite"){
-              console.log('node ' + nodeNumber + " overwrite")
-              store.setters.node_name(nodeNumber, nodeName)
-            }
-          }
-        }
-      })
-        */
-    } catch(e){
-      console.log(name + `: clickImport: ` + e)
+      store.eventBus.emit('GENERAL_MESSAGE_EVENT', "import " + importFile.value.name, "successful", 'info')
+
+    } catch(err){
+      console.log(name + `: clickImport: ` + err)
+      store.eventBus.emit('GENERAL_MESSAGE_EVENT', "import " + importFile.value.name + " failed", err, 'warning')
+
     }
   }
 }
