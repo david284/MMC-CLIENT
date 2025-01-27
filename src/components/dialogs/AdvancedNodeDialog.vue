@@ -38,6 +38,11 @@
         </q-card-actions>
 
         <q-card-actions align="left">
+          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Restore Node"
+          :disabled="!store.state.nodes[nodeNumber].status" @click="clickRestoreNode()"/>
+        </q-card-actions>
+
+        <q-card-actions align="left">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Manage Module Descriptor"
           :disabled="!store.state.nodes[nodeNumber].status" @click="clickMDF()"/>
         </q-card-actions>
@@ -53,6 +58,10 @@
       :nodeNumber = nodeNumber
     />
 
+    <RestoreNodeDialog  v-model='showRestoreNodeDialog'
+        :nodeNumber = nodeNumber
+      />
+
     <setCanIdDialog v-model='showSetCanIdDialog'
       :nodeNumber = nodeNumber
     />
@@ -67,6 +76,7 @@ import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import MDFDialog from "components/dialogs/MDFDialog"
 import programNodeDialog from "components/dialogs/programNodeDialog"
+import RestoreNodeDialog from "components/dialogs/RestoreNodeDialog"
 import setCanIdDialog from "components/dialogs/setCanIdDialog"
 
 const $q = useQuasar()
@@ -74,6 +84,7 @@ const store = inject('store')
 const name = "AdvancedNodeDialog"
 const showMDFDialog = ref(false)
 const showProgramNodeDialog = ref(false)
+const showRestoreNodeDialog = ref(false)
 const showSetCanIdDialog = ref(false)
 
 const props = defineProps({
@@ -140,6 +151,11 @@ const clickProgramNode = () => {
 const clickResetNode = () => {
   console.log(name + `: clickResetNode ` + props.nodeNumber)
   store.methods.reset_node(props.nodeNumber)
+}
+
+const clickRestoreNode = () => {
+  console.log(name + `: clickRestoreNode ` + props.nodeNumber)
+  showRestoreNodeDialog.value = true
 }
 
 const clickSetCAN_ID = () => {

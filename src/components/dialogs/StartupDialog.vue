@@ -18,16 +18,19 @@
         <div class="q-pa-md row">
 
           <q-card inline class="q-pa-xs" flat style="width: 380px">
-            <q-card-section class="q-pa-xs" style="height: 450px">
-              <div class="text-h6">Select Layout</div>
+            <div class="text-h6">Select Layout</div>
+            <q-card-section style="max-height: 60vh" class="scroll q-ma-xs q-pa-xs">
               <q-table
-                flat bordered
+                class="startup-table"
                 dense
                 :rows="teRows"
                 :columns="teColumns"
                 row-key="name"
+                virtual-scroll
+                :rows-per-page-options="[0]"
+                :virtual-scroll-sticky-size-start="0"
                 hide-header
-                :pagination="{rowsPerPage: 8}"
+                hide-bottom
               >
                 <template #body-cell="props">
                     <q-td key="layout" :props="props">
@@ -293,6 +296,31 @@ const clickSelectLayout = async (row) => {
 
 </script>
 
-<style scoped>
+<style lang="sass">
+.startup-table
+  /* height or max-height is important */
+  max-height: 55vh
 
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    /* otherwise you see the table scrolling underneath the header */
+    background-color: $blue-grey-1
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
 </style>
