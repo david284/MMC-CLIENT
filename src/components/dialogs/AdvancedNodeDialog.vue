@@ -12,7 +12,7 @@
           </template>
         </q-banner>
         
-        <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
+        <q-card-actions align="left">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Backup Node"
           @click="clickBackupNode()"/>
         </q-card-actions>
@@ -54,6 +54,10 @@
       :nodeNumber = nodeNumber
     />
 
+    <NodeBackupDialog v-model='showNodeBackupDialog'
+      :nodeNumber = nodeNumber
+    />
+
     <programNodeDialog v-model='showProgramNodeDialog'
       :nodeNumber = nodeNumber
     />
@@ -66,6 +70,12 @@
       :nodeNumber = nodeNumber
     />
 
+    <NodeVariablesLoadingDialog v-model='showNodeVariablesLoadingDialog'
+      :nodeNumber = nodeNumber
+      @NodeVariablesLoadingDialog="nodeVariablesLoadingReturn = $event"
+    />
+
+
 </template>
 
 
@@ -75,6 +85,8 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import MDFDialog from "components/dialogs/MDFDialog"
+import NodeBackupDialog from "components/dialogs/NodeBackupDialog"
+import NodeVariablesLoadingDialog from "components/dialogs/NodeVariablesLoadingDialog"
 import programNodeDialog from "components/dialogs/programNodeDialog"
 import RestoreNodeDialog from "components/dialogs/RestoreNodeDialog"
 import setCanIdDialog from "components/dialogs/setCanIdDialog"
@@ -82,7 +94,10 @@ import setCanIdDialog from "components/dialogs/setCanIdDialog"
 const $q = useQuasar()
 const store = inject('store')
 const name = "AdvancedNodeDialog"
+const nodeVariablesLoadingReturn = ref('')
 const showMDFDialog = ref(false)
+const showNodeBackupDialog = ref(false)
+const showNodeVariablesLoadingDialog = ref(false)
 const showProgramNodeDialog = ref(false)
 const showRestoreNodeDialog = ref(false)
 const showSetCanIdDialog = ref(false)
@@ -114,9 +129,13 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 //
+// At this point we already have all the node parameters
+// So read all the node variables
+// and then read all the events & variables
 //
-const clickBackupNode = () => {
+const clickBackupNode = async () => {
   console.log(name + `: clickBackupNode ` + props.nodeNumber)
+  showNodeBackupDialog.value=true
 }
 
 //
