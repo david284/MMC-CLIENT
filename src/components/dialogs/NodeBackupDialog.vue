@@ -16,6 +16,10 @@
       </q-card>
     </q-dialog>
 
+    <EventVariablesLoadingDialog v-model='showEventVariablesLoadingDialog'
+      :nodeNumber = nodeNumber
+      @EventVariablesLoadingDialog="eventVariablesLoadingReturn = $event"
+    />
 
     <NodeVariablesLoadingDialog v-model='showNodeVariablesLoadingDialog'
       :nodeNumber = nodeNumber
@@ -31,12 +35,15 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
+import EventVariablesLoadingDialog from "components/dialogs/EventVariablesLoadingDialog"
 import NodeVariablesLoadingDialog from "components/dialogs/NodeVariablesLoadingDialog"
 
 const $q = useQuasar()
 const store = inject('store')
 const name = "NodeBackupDialog"
+const eventVariablesLoadingReturn = ref('')
 const nodeVariablesLoadingReturn = ref('')
+const showEventVariablesLoadingDialog = ref(false)
 const showNodeVariablesLoadingDialog = ref(false)
 
 const props = defineProps({
@@ -54,7 +61,7 @@ const model = computed({
 watch(model, () => {
   //console.log(name + `: WATCH model`)
   if (model.value){
-    console.log(name + `: WATCH model is true`)
+    // model is true when dialog made visible
     backupNode()
   }
 })
@@ -66,16 +73,47 @@ watch(model, () => {
 // and then read all the events & variables
 //
 const backupNode = async () => {
-  console.log(name + `: clickBackupNode ` + props.nodeNumber)
+  console.log(name + `: backupNode ` + props.nodeNumber)
+  var failure = true
+
+  //
   // load node variables
   nodeVariablesLoadingReturn.value =''
   showNodeVariablesLoadingDialog.value = true
   // wait for variables to load
-  for (let i = 0; i < 10000; i++){
-     if (nodeVariablesLoadingReturn.value.length > 0) break
-     await sleep (10)
+  for (let i = 0; i < 1000; i++){
+    if (nodeVariablesLoadingReturn.value.length > 0) 
+    {
+      failure = false
+      break
+    }
+    await sleep (10)
   }
   showNodeVariablesLoadingDialog.value = false
+  if (failure) {
+    console.log(name + `: backupNode ` + props.nodeNumber + ' failed to load Node variables')
+    return
+  }
+
+  //
+  // now load all event variables
+  eventVariablesLoadingReturn.value =''
+  showEventVariablesLoadingDialog.value = true
+  // wait for variables to load
+  for (let i = 0; i < 1000; i++){
+    if (eventVariablesLoadingReturn.value.length > 0) 
+    {
+      failure = false
+      break
+    }
+    await sleep (10)
+  }
+  showEventVariablesLoadingDialog.value = false
+  if (failure) {
+    console.log(name + `: backupNode ` + props.nodeNumber + ' failed to load Event variables')
+    return
+  } 
+
 }
 
 

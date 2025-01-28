@@ -45,7 +45,10 @@ const model = computed({
 // model changes when Dialog opened & closed
 watch(model, async () => {
 //  console.log(name + `: WATCH model ` + model.value)
-  if (model.value == true){await checkNodeVariables(props.nodeNumber)}
+  if (model.value == true){
+    console.log(name + ": ReadNodeVariables: " + props.nodeNumber)
+    await checkNodeVariables(props.nodeNumber)
+  }
 })
 
 
