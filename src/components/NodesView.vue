@@ -63,7 +63,9 @@
             <q-btn dense class="q-mx-xs q-my-none" outline v-if="(props.row.vlcb)" color="primary" size="md" label="VLCB"
               :disabled="!props.row.status" @click="clickVLCB(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" color="blue-grey-1" text-color="blue-grey-14" size="md" label="Advanced"
-              @click="clickNodeAdvanced(props.row.nodeNumber)" no-caps/>
+              :disabled="!store.state.nodes[props.row.nodeNumber].status" @click="clickNodeAdvanced(props.row.nodeNumber)" no-caps/>
+            <q-btn dense class="q-mx-xs q-my-none" outline color="negative" size="md" label="Delete"
+              @click="clickDeleteNode(props.row.nodeNumber)" no-caps/>
 
           </q-td>
         </q-tr>
@@ -318,11 +320,27 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
-const clickNodesViewAdvanced = async () => {
-  console.log(name + `: clickNodesViewAdvanced:`)
-  showNodesViewAdvancedDialog.value = true
+//
+//
+const clickDeleteNode = (nodeNumber) => {
+  console.log(name + `: clickDeleteNode ` + nodeNumber)
+  const result = $q.notify({
+    message: 'Are you sure you want to delete node '+ store.getters.node_name(nodeNumber),
+    timeout: 0,
+    position: 'center',
+    color: 'primary',
+    actions: [
+      { label: 'YES', color: 'white', handler: async () => { 
+        store.methods.remove_node(nodeNumber)
+        store.eventBus.emit('NODE_DELETED_EVENT', nodeNumber)
+      } },
+      { label: 'NO', color: 'white', handler: () => { /* ... */ } }
+    ]
+  })
 }
 
+//
+//
 const clickEvents = async (nodeNumber) => {
   console.log(name + `: clickEvents: node ` + nodeNumber)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
@@ -332,11 +350,15 @@ const clickEvents = async (nodeNumber) => {
   await select_node_row(nodeNumber)
 }
 
+//
+//
 const clickInfo = () => {
   console.log(name + `: clickInfo`)
   showNodesViewInfoDialog.value = true
 }
 
+//
+//
 const clickNameNode = async (nodeNumber) => {
   console.log(name + `: clickNameNode: node ` + nodeNumber)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
@@ -345,6 +367,8 @@ const clickNameNode = async (nodeNumber) => {
   showNameNodeDialog.value = true;
 }
 
+//
+//
 const clickNodeAdvanced = async (nodeNumber) => {
   console.log(name + `: clickNodeAdvanced`)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
@@ -355,7 +379,15 @@ const clickNodeAdvanced = async (nodeNumber) => {
   console.log(name + ': clickAdvanced: node' + store.state.selected_node)
 }
 
+//
+//
+const clickNodesViewAdvanced = async () => {
+  console.log(name + `: clickNodesViewAdvanced:`)
+  showNodesViewAdvancedDialog.value = true
+}
 
+//
+//
 const clickParameters = async (nodeNumber) => {
   console.log(name + `: clickParameters`)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
@@ -369,12 +401,15 @@ const clickParameters = async (nodeNumber) => {
   }
 }
 
+//
+//
 const clickRefresh = () => {
   console.log(name + ': clickRefresh')
   store.methods.query_all_nodes()
 }
 
-
+//
+//
 const clickVariables = async (nodeNumber) => {
   console.log(name + `: clickVariables: node ` + nodeNumber)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
@@ -388,6 +423,8 @@ const clickVariables = async (nodeNumber) => {
     }
 }
 
+//
+//
 const clickVLCB = async (nodeNumber) => {
   console.log(name + ': clickVLCB')
   selected_nodeNumber.value = nodeNumber    // used to highlight row

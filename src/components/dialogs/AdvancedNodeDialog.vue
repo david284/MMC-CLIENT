@@ -11,40 +11,35 @@
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
           </template>
         </q-banner>
-        <q-card-actions align="left">
-          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Delete node"
-          @click="clickDeleteNode()"  v-close-popup/>
-        </q-card-actions>
-
         
         <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="CAN ID Enumeration"
-          :disabled="!store.state.nodes[nodeNumber].status" @click="clickCanIdEnumeration()"/>
+          @click="clickCanIdEnumeration()"/>
         </q-card-actions>
 
         <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Set CANID"
-          :disabled="!store.state.nodes[nodeNumber].status" @click="clickSetCAN_ID()"/>
+          @click="clickSetCAN_ID()"/>
         </q-card-actions>
 
         <q-card-actions align="left">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="reset Node"
-          :disabled="!store.state.nodes[nodeNumber].status" @click="clickResetNode()"/>
+          @click="clickResetNode()"/>
         </q-card-actions>
 
         <q-card-actions align="left">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="program Node"
-          :disabled="!store.state.nodes[nodeNumber].status" @click="clickProgramNode()"/>
+          @click="clickProgramNode()"/>
         </q-card-actions>
 
         <q-card-actions align="left">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Restore Node"
-          :disabled="!store.state.nodes[nodeNumber].status" @click="clickRestoreNode()"/>
+          @click="clickRestoreNode()"/>
         </q-card-actions>
 
         <q-card-actions align="left">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Manage Module Descriptor"
-          :disabled="!store.state.nodes[nodeNumber].status" @click="clickMDF()"/>
+          @click="clickMDF()"/>
         </q-card-actions>
 
       </q-card>
@@ -117,23 +112,6 @@ Click event handlers
 const clickCanIdEnumeration = () => {
   console.log(name + `: clickCanIdEnumeration ` + props.nodeNumber)
   store.methods.node_can_id_enum(props.nodeNumber)
-}
-
-const clickDeleteNode = () => {
-  console.log(name + `: clickDeleteNode ` + props.nodeNumber)
-  const result = $q.notify({
-    message: 'Are you sure you want to delete node '+ store.getters.node_name(props.nodeNumber),
-    timeout: 0,
-    position: 'center',
-    color: 'primary',
-    actions: [
-      { label: 'YES', color: 'white', handler: async () => { 
-        store.methods.remove_node(props.nodeNumber)
-        store.eventBus.emit('NODE_DELETED_EVENT', props.nodeNumber)
-      } },
-      { label: 'NO', color: 'white', handler: () => { /* ... */ } }
-    ]
-  })
 }
 
 const clickMDF = () => {
