@@ -144,7 +144,7 @@ const columns = [
   {name: 'mode', field: 'mode', required: true, label: 'Mode', align: 'left', sortable: true},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},
   {name: 'events', field: 'events', required: true, label: 'Stored Events', align: 'center', sortable: true},
-  {name: 'spaceLeft', field: 'spaceLeft', required: true, label: 'Space Left', align: 'center', sortable: true},
+  {name: 'spaceLeft', field: 'spaceLeft', required: true, label: 'Space', align: 'center', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 

@@ -13,18 +13,18 @@
         </q-banner>
         
         <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
+          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Backup Node"
+          @click="clickBackupNode()"/>
+        </q-card-actions>
+
+        <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="CAN ID Enumeration"
           @click="clickCanIdEnumeration()"/>
         </q-card-actions>
 
-        <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
-          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Set CANID"
-          @click="clickSetCAN_ID()"/>
-        </q-card-actions>
-
         <q-card-actions align="left">
-          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="reset Node"
-          @click="clickResetNode()"/>
+          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Manage Module Descriptor"
+          @click="clickMDF()"/>
         </q-card-actions>
 
         <q-card-actions align="left">
@@ -33,13 +33,18 @@
         </q-card-actions>
 
         <q-card-actions align="left">
+          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="reset Node"
+          @click="clickResetNode()"/>
+        </q-card-actions>
+
+        <q-card-actions align="left">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Restore Node"
           @click="clickRestoreNode()"/>
         </q-card-actions>
 
-        <q-card-actions align="left">
-          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Manage Module Descriptor"
-          @click="clickMDF()"/>
+        <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
+          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Set CANID"
+          @click="clickSetCAN_ID()"/>
         </q-card-actions>
 
       </q-card>
@@ -108,7 +113,14 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
+//
+//
+const clickBackupNode = () => {
+  console.log(name + `: clickBackupNode ` + props.nodeNumber)
+}
 
+//
+//
 const clickCanIdEnumeration = () => {
   console.log(name + `: clickCanIdEnumeration ` + props.nodeNumber)
   store.methods.node_can_id_enum(props.nodeNumber)
