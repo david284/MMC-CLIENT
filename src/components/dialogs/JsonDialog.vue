@@ -29,9 +29,10 @@
           <q-tab name="layout" label="Layout"/>
           <q-tab name="layouts" label="Layouts"/>
           <q-tab name="nodes" label="Nodes"/>
-          <q-tab name="server" label="Server"/>
           <q-tab name="nodeDescriptors" label="Node Descriptors"/>
           <q-tab name="nodeDescriptorList" label="Node Descriptor Lists"/>
+          <q-tab name="restoredData" label="RestoredData"/>
+          <q-tab name="server" label="Server"/>
           <q-tab name="serverStatus" label="server Status"/>
           <q-tab name="traffic" label="Traffic"/>
         </q-tabs>
@@ -96,6 +97,15 @@
               <div class="text-h6">Nodes</div>
               <pre>
                 {{ store.state.nodes }}
+              </pre>
+            </q-card-section>
+          </q-tab-panel>
+
+          <q-tab-panel name="restoredData">
+            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
+              <div class="text-h6">restoredData</div>
+              <pre>
+                {{ store.state.restoredData }}
               </pre>
             </q-card-section>
           </q-tab-panel>

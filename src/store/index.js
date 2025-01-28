@@ -29,7 +29,7 @@ const state = reactive({
   nodeDescriptorList: {},
   nodes: {},
   nodeTraffic: [],
-  restoredData,
+  restoredData: {},
   server: { "nodes":{} },
   selected_node: 0,
   serverStatus: {},
@@ -126,16 +126,12 @@ const methods = {
     socket.emit('QUERY_ALL_NODES')
   },
 
-  request_MDF_delete(filename) {
-    console.log(`REQUEST_MDF_DELETE : ` + filename)
-    socket.emit('REQUEST_MDF_DELETE', {"filename":filename})
+  remove_event(nodeNumber, eventName) {
+    socket.emit('REMOVE_EVENT', {
+        "nodeNumber": nodeNumber,
+        "eventName": eventName
+    })
   },
-
-  request_MDF_export(location, filename) {
-    console.log(`REQUEST_MDF_EXPORT : ` + location + ' ' + filename)
-    socket.emit('REQUEST_MDF_EXPORT', {"location":location, "filename":filename})
-  },
-
   remove_node(nodeNumber) {
     // remove node from layout data
     delete state.layout.nodeDetails[nodeNumber]
@@ -143,9 +139,9 @@ const methods = {
     socket.emit('REMOVE_NODE', nodeNumber)
     console.log(name + ': sent REMOVE_NODE ' + nodeNumber)
   },
-  request_backup(filename) {
-    console.log(`REQUEST_BACKUP : ` + filename)
-    socket.emit('REQUEST_BACKUP', {"filename":filename})
+  request_backup(layoutName, filename) {
+    console.log(`REQUEST_BACKUP : ` + layoutName + ' ' + filename)
+    socket.emit('REQUEST_BACKUP', {"layoutName":layoutName, "fileName":filename})
   },
   request_backups_list(layoutName) {
     console.log(`REQUEST_BACKUPS_LIST : ` + layoutName)
@@ -155,12 +151,6 @@ const methods = {
     if (serviceIndex == undefined){serviceIndex = 0;}
     console.log(`Request Service Diagnostics : node ` + nodeNumber + ' Service Index ' + serviceIndex )
     socket.emit('REQUEST_DIAGNOSTICS', {"nodeNumber":nodeNumber, "serviceIndex":serviceIndex})
-  },
-  remove_event(nodeNumber, eventName) {
-    socket.emit('REMOVE_EVENT', {
-        "nodeNumber": nodeNumber,
-        "eventName": eventName
-    })
   },
   request_all_node_parameters(nodeNumber, parameters, delay) {
     socket.emit('REQUEST_ALL_NODE_PARAMETERS', {"nodeNumber": nodeNumber, "parameters": parameters, "delay": delay})
@@ -181,6 +171,14 @@ const methods = {
   refresh_bus_events() {
     socket.emit('REQUEST_BUS_EVENTS')
     console.log(name + `: REQUEST_BUS_EVENTS`)
+  },
+  request_MDF_delete(filename) {
+    console.log(`REQUEST_MDF_DELETE : ` + filename)
+    socket.emit('REQUEST_MDF_DELETE', {"filename":filename})
+  },
+  request_MDF_export(location, filename) {
+    console.log(`REQUEST_MDF_EXPORT : ` + location + ' ' + filename)
+    socket.emit('REQUEST_MDF_EXPORT', {"location":location, "filename":filename})
   },
   request_node_variable(nodeNumber, variable) {
     socket.emit('REQUEST_NODE_VARIABLE', {
@@ -672,7 +670,7 @@ socket.on("PROGRAM_NODE_PROGRESS", (text) => {
 })
 
 socket.on('RESTORED_DATA', (data) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED RESTORED_DATA`)
+  console.log(secondsNow() + ': ' + name + `: RECEIVED RESTORED_DATA ` + JSON.stringify(data))
   state.restoredData = data;
   // put a fresh timestamp on it
   state.restoredData.updateTimestamp = Date.now()

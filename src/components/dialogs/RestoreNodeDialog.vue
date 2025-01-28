@@ -15,11 +15,13 @@
         </q-banner>
       </q-card-section>
 
-      <div class="q-pa-md row">
+      <div style="max-height: 85vh" class="scroll no-margin no-padding">
 
-        <q-card flat inline class="q-pa-none q-ma-none" style="width: 450px">
+      <div class="q-pa-md row" style="max-height: 80vh">
+
+        <q-card flat inline class="q-pa-none q-ma-none" style="width: 400px">
           <div class="text-h6">List of Backups</div>
-          <q-card-section style="max-height: 70vh" class="scroll no-margin q-pa-xs">
+          <q-card-section style="max-height: 75vh" class="scroll no-margin q-pa-xs">
 
             <q-table
               class="restore-node-table"
@@ -54,7 +56,7 @@
 
         <q-card flat inline class="q-pa-xs" style="width: 400px">
 
-        <q-card-section class="q-pa-xs" style="height: 400px">
+        <q-card-section class="q-pa-xs" style="height: 350px">
 
           <q-card-section>
             <div class="text-h6">
@@ -78,8 +80,18 @@
 
         </q-card>
 
-
       </div>
+
+      <q-card class="no-margin no-padding">
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Toggle node json" @click="clickToggleNodeJSON()"/>
+        </q-card-actions>
+        <q-card-section v-if="showNodeJSON" style="width: 350px" class="text-body2 no-margin no-padding">
+          <pre>{{ store.state.restoredData }}</pre>
+        </q-card-section>
+      </q-card>
+
+    </div>
 
     </q-card>
 
@@ -99,6 +111,7 @@ const $q = useQuasar()
 const store = inject('store')
 const name = "RestoreNodeDialog"
 const backupFilename = ref("")
+const showNodeJSON = ref(false)
 const teRows = ref([])
 
 const teColumns = [
@@ -157,7 +170,8 @@ Click event handlers
 const clickBackupList = (row) => {
   console.log(name + ': clickBackupList on ', row)
   backupFilename.value = row
-  store.methods.request_backup(backupFilename.value)
+  store.methods.request_backup(store.state.layout.layoutDetails.title, backupFilename.value)
+
 }
 
 
@@ -181,6 +195,13 @@ const clickDelete = (row) => {
 const clickRestore = (row) => {
   console.log(name + ': clickRestore')
 }
+
+
+const clickToggleNodeJSON = () => {
+  console.log(name + `: clickToggleNodeJSON`)
+  showNodeJSON.value  = showNodeJSON.value ? false : true
+}
+
 
 
 </script>
