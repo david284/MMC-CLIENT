@@ -21,6 +21,7 @@ const state = reactive({
   event_view_status: [],
   exported_MDF: {},
   inStartup: true,
+  cbusTrafficTimeStamp: 0,
   layout: {},
   layouts_list: [],
   loadFile_notification_raised: {},
@@ -226,6 +227,15 @@ const methods = {
     console.log(`SAVE_BACKUP`)
     data['layoutName'] = state.layout.layoutDetails.title
     socket.emit('SAVE_BACKUP', data)
+  },
+  save_node_backup(nodeNumber){
+    console.log(`SAVE_NODE_BACKUP`)
+    let data = {
+      'layoutName': state.layout.layoutDetails.title,
+      'nodeNumber': nodeNumber,
+      'layout': state.layout
+    }
+    socket.emit('SAVE_NODE_BACKUP', data)
   },
   set_can_id(nodeNumber, CAN_ID){
     var data = {}
@@ -543,6 +553,7 @@ socket.on("CBUS_NO_SUPPORT", (data) => {
 
 socket.on("CBUS_TRAFFIC", (data) => {
 //  console.log(`RECEIVED CBUS_TRAFFIC`)
+  state.cbusTrafficTimeStamp = Date.now()
   state.nodeTraffic.push(data)
   if (state.nodeTraffic.length > 32) {
     state.nodeTraffic.shift()

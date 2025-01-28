@@ -74,7 +74,7 @@ watch(model, () => {
 //
 const backupNode = async () => {
   console.log(name + `: backupNode ` + props.nodeNumber)
-  var failure = true
+  var failure = false
 
   //
   // load node variables
@@ -88,6 +88,7 @@ const backupNode = async () => {
       break
     }
     await sleep (10)
+    var failure = true
   }
   showNodeVariablesLoadingDialog.value = false
   if (failure) {
@@ -100,7 +101,7 @@ const backupNode = async () => {
   eventVariablesLoadingReturn.value =''
   showEventVariablesLoadingDialog.value = true
   // wait for variables to load
-  for (let i = 0; i < 1000; i++){
+  for (let i = 0; i < 10000; i++){
     if (eventVariablesLoadingReturn.value.length > 0) 
     {
       failure = false
@@ -114,6 +115,9 @@ const backupNode = async () => {
     return
   } 
 
+  store.methods.save_node_backup(props.nodeNumber)
+  // close dialog
+  model.value = false
 }
 
 
