@@ -467,7 +467,7 @@ const getters = {
 const setters = {
   //
   // Events
-  addeventTolayout(eventIdentifier){
+  addEventToLayout(eventIdentifier){
     if (eventIdentifier in state.layout.eventDetails === false) {
       state.layout.eventDetails[eventIdentifier] = {}
       state.layout.eventDetails[eventIdentifier].colour = "black"

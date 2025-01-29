@@ -37,7 +37,7 @@
           @click="clickResetNode()"/>
         </q-card-actions>
 
-        <q-card-actions align="left">
+        <q-card-actions align="left" v-if="(store.state.develop)">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Restore Node"
           @click="clickRestoreNode()"/>
         </q-card-actions>

@@ -40,11 +40,6 @@
         </div>
       </q-card>
 
-      <q-card v-if="(store.state.develop)" class="q-pa-md" flat>
-        <q-btn color="positive" label="Backup" @click="clickBackup()" no-caps/>
-        &emsp; Open the dialog to manage backups
-      </q-card>
-
       <q-card class="q-pa-md" flat v-show="store.state.advanced">
         <q-input
           label="Base Node Number"
@@ -64,8 +59,6 @@
     </q-card>
   </q-dialog>
 
-  <backupDialog v-model='showBackupDialog' />
-
 </template>
 
 
@@ -73,12 +66,10 @@
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref, version} from "vue";
 import packageInfo from './../../../package.json';
-import backupDialog from "components/dialogs/BackupDialog"
 import { copyToClipboard } from 'quasar'
 
 const store = inject('store')
 const name = "SystemDialog"
-const showBackupDialog = ref(false)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true }
@@ -108,11 +99,6 @@ onMounted(() => {
 Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
-
-const clickBackup = () => {
-  console.log(name + `: clickBackup`)
-  showBackupDialog.value = true
-}
 
 const clickCopyApp = () => {
   copyToClipboard(store.state.serverStatus.appStorageDirectory)
