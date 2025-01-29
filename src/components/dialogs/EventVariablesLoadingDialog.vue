@@ -50,6 +50,7 @@ watch(model, async () => {
   //console.log(name + `: WATCH model ` + model.value)
   if (model.value == true){
     //console.log(name + `: WATCH model ` + model.value)
+    timeSpan.value = 0
     await ReadAllEventVariables(props.nodeNumber)
   }
 })

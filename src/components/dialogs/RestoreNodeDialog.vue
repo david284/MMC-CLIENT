@@ -135,6 +135,7 @@ const model = computed({
 watch(model, () => {
   //console.log(name + `: WATCH model`)
   if (model.value){
+    backupFilename.value = undefined
     store.methods.request_node_backups_list(store.state.layout.layoutDetails.title, props.nodeNumber)
     store.state.restoredData = {}
   }

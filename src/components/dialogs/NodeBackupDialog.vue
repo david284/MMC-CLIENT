@@ -75,6 +75,7 @@ watch(model, () => {
 const backupNode = async () => {
   console.log(name + `: backupNode ` + props.nodeNumber)
   var failure = false
+  var result = ''
 
   //
   // load node variables
@@ -84,40 +85,53 @@ const backupNode = async () => {
   for (let i = 0; i < 1000; i++){
     if (nodeVariablesLoadingReturn.value.length > 0) 
     {
-      failure = false
+      failure = false  // not failed it we exit early
       break
     }
     await sleep (10)
-    var failure = true
+    var failure = true  // ensure it's marked as failure in case it times out
   }
   showNodeVariablesLoadingDialog.value = false
   if (failure) {
     console.log(name + `: backupNode ` + props.nodeNumber + ' failed to load Node variables')
-    return
+    result = "Node variable load failed"
   }
 
-  //
-  // now load all event variables
-  eventVariablesLoadingReturn.value =''
-  showEventVariablesLoadingDialog.value = true
-  // wait for variables to load
-  for (let i = 0; i < 10000; i++){
-    if (eventVariablesLoadingReturn.value.length > 0) 
-    {
-      failure = false
-      break
+  if (failure == false){
+    //
+    // now load all event variables
+    eventVariablesLoadingReturn.value =''
+    showEventVariablesLoadingDialog.value = true
+    // wait for variables to load
+    for (let i = 0; i < 10000; i++){
+      if (eventVariablesLoadingReturn.value.length > 0) 
+      {
+        failure = false  // not failed it we exit early
+        break
+      }
+      await sleep (10)
+      var failure = true  // ensure it's marked as failure in case it times out
     }
-    await sleep (10)
+    showEventVariablesLoadingDialog.value = false
+    
+    if (failure) {
+      console.log(name + `: backupNode ` + props.nodeNumber + ' failed to load Event variables')
+      result = "Event variable load failed"
+    } else {
+      // now store backup if it was successfull
+      store.methods.save_node_backup(props.nodeNumber)
+      result = "Backup completed"
+    }
   }
-  showEventVariablesLoadingDialog.value = false
-  if (failure) {
-    console.log(name + `: backupNode ` + props.nodeNumber + ' failed to load Event variables')
-    return
-  } 
 
-  store.methods.save_node_backup(props.nodeNumber)
-  // close dialog
-  model.value = false
+  $q.notify({
+    message: result,
+    timeout: 0,
+    type: 'info',
+    position: 'center',
+    actions: [ { label: 'Dismiss', handler: () => { model.value = false }} ]
+  })
+
 }
 
 
