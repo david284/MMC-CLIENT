@@ -1,0 +1,512 @@
+<?xml version="1.0" standalone="yes"?>
+<MergModuleDataSet>
+  <mergModules moduleId="1">
+    <moduleName>CANACC4</moduleName>
+    <moduleType>1</moduleType>
+    <moduleEvents>32</moduleEvents>
+    <moduleValues>2</moduleValues>
+    <numNvs>16</numNvs>
+  </mergModules>
+  <mergModules moduleId="2">
+    <moduleName>CANACC5</moduleName>
+    <moduleType>1</moduleType>
+    <moduleEvents>128</moduleEvents>
+    <moduleValues>2</moduleValues>
+    <numNvs>8</numNvs>
+  </mergModules>
+  <mergModules moduleId="3">
+    <moduleName>CANACC8</moduleName>
+    <moduleType>1</moduleType>
+    <moduleEvents>32</moduleEvents>
+    <moduleValues>2</moduleValues>
+    <numNvs>8</numNvs>
+  </mergModules>
+  <mergModules moduleId="4">
+    <moduleName>CANACE3</moduleName>
+    <moduleType>2</moduleType>
+    <moduleEvents>0</moduleEvents>
+    <moduleValues>0</moduleValues>
+    <numNvs>1</numNvs>
+  </mergModules>
+  <mergModules moduleId="5">
+    <moduleName>CANACE8C</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>32</moduleEvents>
+    <moduleValues>2</moduleValues>
+    <numNvs>1</numNvs>
+  </mergModules>
+  <mergModules moduleId="6">
+    <moduleName>CANLED</moduleName>
+    <moduleType>1</moduleType>
+    <moduleEvents>250</moduleEvents>
+    <moduleValues>1</moduleValues>
+    <numNvs>0</numNvs>
+  </mergModules>
+  <mergModules moduleId="7">
+    <moduleName>CANLED64</moduleName>
+    <moduleType>1</moduleType>
+    <moduleEvents>255</moduleEvents>
+    <moduleValues>17</moduleValues>
+    <numNvs>0</numNvs>
+  </mergModules>
+  <mergModules moduleId="8">
+    <moduleName>CANACC4_2</moduleName>
+    <moduleType>1</moduleType>
+    <moduleEvents>32</moduleEvents>
+    <moduleValues>2</moduleValues>
+    <numNvs>16</numNvs>
+  </mergModules>
+  <mergModules moduleId="9">
+    <moduleName>CANCAB</moduleName>
+    <moduleType>2</moduleType>
+    <moduleEvents>0</moduleEvents>
+    <moduleValues>0</moduleValues>
+    <numNvs>0</numNvs>
+  </mergModules>
+  <mergModules moduleId="10">
+    <moduleName>CANCMD</moduleName>
+    <moduleType>2</moduleType>
+    <moduleEvents>0</moduleEvents>
+    <moduleValues>0</moduleValues>
+    <numNvs>0</numNvs>
+  </mergModules>
+  <mergModules moduleId="11">
+    <moduleName>CANSERVO</moduleName>
+    <moduleType>1</moduleType>
+    <moduleEvents>32</moduleEvents>
+    <moduleValues>2</moduleValues>
+    <numNvs>36</numNvs>
+  </mergModules>
+  <mergModules moduleId="12">
+    <moduleName>CANBC</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>128</moduleEvents>
+    <moduleValues>10</moduleValues>
+    <numNvs>144</numNvs>
+  </mergModules>
+  <mergModules moduleId="14">
+    <moduleName>CANTTCA</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>32</moduleEvents>
+    <moduleValues>2</moduleValues>
+    <numNvs>0</numNvs>
+  </mergModules>
+  <mergModules moduleId="15">
+    <moduleName>CANTTCB</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>32</moduleEvents>
+    <moduleValues>2</moduleValues>
+    <numNvs>0</numNvs>
+  </mergModules>
+  <mergModules moduleId="16">
+    <moduleName>CANHS</moduleName>
+    <moduleType>2</moduleType>
+    <moduleEvents>0</moduleEvents>
+    <moduleValues>0</moduleValues>
+    <numNvs>4</numNvs>
+  </mergModules>
+  <mergModules moduleId="17">
+    <moduleName>CANTOTI</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>32</moduleEvents>
+    <moduleValues>2</moduleValues>
+    <numNvs>6</numNvs>
+  </mergModules>
+  <mergModules moduleId="19">
+    <moduleName>CANSERVO8C</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>128</moduleEvents>
+    <moduleValues>3</moduleValues>
+    <numNvs>36</numNvs>
+  </mergModules>
+  <mergModules moduleId="25">
+    <moduleName>CANEther</moduleName>
+    <moduleType>0</moduleType>
+    <moduleEvents>0</moduleEvents>
+    <moduleValues>0</moduleValues>
+    <numNvs>17</numNvs>
+  </mergModules>
+  <mergModules moduleId="26">
+    <moduleName>CANSIG64</moduleName>
+    <moduleType>1</moduleType>
+    <moduleEvents>255</moduleEvents>
+    <moduleValues>17</moduleValues>
+    <numNvs>6</numNvs>
+  </mergModules>
+  <mergModules moduleId="27">
+    <moduleName>CANSIG8</moduleName>
+    <moduleType>1</moduleType>
+    <moduleEvents>255</moduleEvents>
+    <moduleValues>17</moduleValues>
+    <numNvs>6</numNvs>
+  </mergModules>
+  <mergModules moduleId="28">
+    <moduleName>CANCOND8C</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>128</moduleEvents>
+    <moduleValues>17</moduleValues>
+    <numNvs>8</numNvs>
+  </mergModules>
+  <mergModules moduleId="29">
+    <moduleName>CANPAN</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>128</moduleEvents>
+    <moduleValues>13</moduleValues>
+    <numNvs>1</numNvs>
+  </mergModules>
+  <mergModules moduleId="30">
+    <moduleName>CANACE3C</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>0</moduleEvents>
+    <moduleValues>0</moduleValues>
+    <numNvs>8</numNvs>
+  </mergModules>
+  <mergModules moduleId="32">
+    <moduleName>CANMIO</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>255</moduleEvents>
+    <moduleValues>20</moduleValues>
+    <numNvs>127</numNvs>
+  </mergModules>
+  <mergModules moduleId="33">
+    <moduleName>CANACE8MIO</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>32</moduleEvents>
+    <moduleValues>2</moduleValues>
+    <numNvs>6</numNvs>
+  </mergModules>
+  <mergModules moduleId="34">
+    <moduleName>CANSOL</moduleName>
+    <moduleType>1</moduleType>
+    <moduleEvents>128</moduleEvents>
+    <moduleValues>2</moduleValues>
+    <numNvs>16</numNvs>
+  </mergModules>
+  <mergModules moduleId="36">
+    <moduleName>CANCDU</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>128</moduleEvents>
+    <moduleValues>2</moduleValues>
+    <numNvs>16</numNvs>
+  </mergModules>
+  <mergModules moduleId="44">
+    <moduleName>CANRFID8</moduleName>
+    <moduleType>2</moduleType>
+    <moduleEvents>8</moduleEvents>
+    <moduleValues>0</moduleValues>
+    <numNvs>1</numNvs>
+  </mergModules>
+  <mergModules moduleId="45">
+    <moduleName>CANmchRFID</moduleName>
+    <moduleType>2</moduleType>
+    <moduleEvents>8</moduleEvents>
+    <moduleValues>0</moduleValues>
+    <numNvs>1</numNvs>
+  </mergModules>
+  <mergModules moduleId="46">
+    <moduleName>CANPiWi</moduleName>
+    <moduleType>2</moduleType>
+    <moduleEvents>0</moduleEvents>
+    <moduleValues>0</moduleValues>
+    <numNvs>71</numNvs>
+  </mergModules>
+  <mergModules moduleId="253">
+    <moduleName>CANUSB</moduleName>
+    <moduleType>2</moduleType>
+    <moduleEvents>0</moduleEvents>
+    <moduleValues>0</moduleValues>
+    <numNvs>0</numNvs>
+  </mergModules>
+  <mergModules moduleId="254">
+    <moduleName>CANBLANK</moduleName>
+    <moduleType>2</moduleType>
+    <moduleEvents>0</moduleEvents>
+    <moduleValues>0</moduleValues>
+    <numNvs>0</numNvs>
+  </mergModules>
+  <mergModules moduleId="255">
+    <moduleName>CAN_SW</moduleName>
+    <moduleType>2</moduleType>
+    <moduleEvents>0</moduleEvents>
+    <moduleValues>0</moduleValues>
+    <numNvs>0</numNvs>
+  </mergModules>
+  <mergModules moduleId="17922">
+    <moduleName>CANGC2</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>16</moduleEvents>
+    <moduleValues>0</moduleValues>
+    <numNvs>17</numNvs>
+  </mergModules>
+  <mergModules moduleId="17924">
+    <moduleName>CANGC4</moduleName>
+    <moduleType>2</moduleType>
+    <moduleEvents>0</moduleEvents>
+    <moduleValues>0</moduleValues>
+    <numNvs>0</numNvs>
+  </mergModules>
+  <mergModules moduleId="17931">
+    <moduleName>CANGC1e</moduleName>
+    <moduleType>0</moduleType>
+    <moduleEvents>0</moduleEvents>
+    <moduleValues>0</moduleValues>
+    <numNvs>17</numNvs>
+  </mergModules>
+  <mergModules moduleId="49">
+    <moduleName>CANSCAN</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>252</moduleEvents>
+    <moduleValues>4</moduleValues>
+    <numNvs>1</numNvs>
+  </mergModules>
+  <mergModules moduleId="50">
+    <moduleName>CANMIO-SVO</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>128</moduleEvents>
+    <moduleValues>3</moduleValues>
+    <numNvs>36</numNvs>
+  </mergModules>
+  <mergModules moduleId="51">
+    <moduleName>CANMIO-INP</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>32</moduleEvents>
+    <moduleValues>2</moduleValues>
+    <numNvs>1</numNvs>
+  </mergModules>
+  <mergModules moduleId="52">
+    <moduleName>CANMIO-OUT</moduleName>
+    <moduleType>1</moduleType>
+    <moduleEvents>128</moduleEvents>
+    <moduleValues>3</moduleValues>
+    <numNvs>12</numNvs>
+  </mergModules>
+  <mergModules moduleId="53">
+    <moduleName>CANBIP-OUT</moduleName>
+    <moduleType>1</moduleType>
+    <moduleEvents>128</moduleEvents>
+    <moduleValues>3</moduleValues>
+    <numNvs>12</numNvs>
+  </mergModules>
+  <mergModules moduleId="54">
+    <moduleName>CANASTOP</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>128</moduleEvents>
+    <moduleValues>3</moduleValues>
+    <numNvs>5</numNvs>
+  </mergModules>
+  <mergModules moduleId="55">
+    <moduleName>CANCSB</moduleName>
+    <moduleType>2</moduleType>
+    <moduleEvents>0</moduleEvents>
+    <moduleValues>0</moduleValues>
+    <numNvs>0</numNvs>
+  </mergModules>
+  <mergModules moduleId="56">
+    <moduleName>CANMAG</moduleName>
+    <moduleType>2</moduleType>
+    <moduleEvents>14</moduleEvents>
+    <moduleValues>0</moduleValues>
+    <numNvs>10</numNvs>
+  </mergModules>
+  <mergModules moduleId="57">
+    <moduleName>CANACE16CMIO</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>252</moduleEvents>
+    <moduleValues>4</moduleValues>
+    <numNvs>1</numNvs>
+  </mergModules>
+  <mergModules moduleId="58">
+    <moduleName>CANPINODE</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>128</moduleEvents>
+    <moduleValues>3</moduleValues>
+    <numNvs>2</numNvs>
+  </mergModules>
+  <mergModules moduleId="59">
+    <moduleName>CANDISP</moduleName>
+    <moduleType>1</moduleType>
+    <moduleEvents>255</moduleEvents>
+    <moduleValues>17</moduleValues>
+    <numNvs>0</numNvs>
+  </mergModules>
+  <mergModules moduleId="60">
+    <moduleName>CANCOMPUTE</moduleName>
+    <moduleType>1</moduleType>
+    <moduleEvents>50</moduleEvents>
+    <moduleValues>1</moduleValues>
+    <numNvs>255</numNvs>
+  </mergModules>
+  <mergModules moduleId="62">
+    <moduleName>CANINP</moduleName>
+    <moduleType>3</moduleType>
+    <moduleEvents>32</moduleEvents>
+    <moduleValues>2</moduleValues>
+    <numNvs>1</numNvs>
+  </mergModules>
+  <mergModules moduleId="63">
+    <moduleName>CANOUT</moduleName>
+    <moduleType>1</moduleType>
+    <moduleEvents>32</moduleEvents>
+    <moduleValues>2</moduleValues>
+    <numNvs>8</numNvs>
+  </mergModules>
+  <userEvents>
+    <eventId>1</eventId>
+    <ownerNode>0</ownerNode>
+    <nodeName>Short Events List</nodeName>
+    <eventName>SW1</eventName>
+    <Values />
+    <eventNode>0</eventNode>
+    <eventValue>101</eventValue>
+  </userEvents>
+  <userEvents>
+    <eventId>2</eventId>
+    <ownerNode>0</ownerNode>
+    <nodeName>Short Events List</nodeName>
+    <eventName>SW3</eventName>
+    <Values />
+    <eventNode>0</eventNode>
+    <eventValue>103</eventValue>
+  </userEvents>
+  <userEvents>
+    <eventId>3</eventId>
+    <ownerNode>0</ownerNode>
+    <nodeName>Short Events List</nodeName>
+    <eventName>SW2</eventName>
+    <Values />
+    <eventNode>0</eventNode>
+    <eventValue>102</eventValue>
+  </userEvents>
+  <userEvents>
+    <eventId>4</eventId>
+    <ownerNode>0</ownerNode>
+    <nodeName>Short Events List</nodeName>
+    <eventName>SW4</eventName>
+    <Values />
+    <eventNode>0</eventNode>
+    <eventValue>104</eventValue>
+  </userEvents>
+  <userEvents>
+    <eventId>5</eventId>
+    <ownerNode>0</ownerNode>
+    <nodeName>Short Events List</nodeName>
+    <eventName>SW5</eventName>
+    <Values />
+    <eventNode>0</eventNode>
+    <eventValue>105</eventValue>
+  </userEvents>
+  <userEvents>
+    <eventId>6</eventId>
+    <ownerNode>0</ownerNode>
+    <nodeName>Short Events List</nodeName>
+    <eventName>SW7</eventName>
+    <Values />
+    <eventNode>0</eventNode>
+    <eventValue>107</eventValue>
+  </userEvents>
+  <userEvents>
+    <eventId>7</eventId>
+    <ownerNode>0</ownerNode>
+    <nodeName>Short Events List</nodeName>
+    <eventName>SW6</eventName>
+    <Values />
+    <eventNode>0</eventNode>
+    <eventValue>106</eventValue>
+  </userEvents>
+  <userEvents>
+    <eventId>8</eventId>
+    <ownerNode>0</ownerNode>
+    <nodeName>Short Events List</nodeName>
+    <eventName>SW8</eventName>
+    <Values />
+    <eventNode>0</eventNode>
+    <eventValue>108</eventValue>
+  </userEvents>
+  <userEvents>
+    <eventId>9</eventId>
+    <ownerNode>0</ownerNode>
+    <nodeName>Short Events List</nodeName>
+    <eventName>LED1</eventName>
+    <Values />
+    <eventNode>0</eventNode>
+    <eventValue>201</eventValue>
+  </userEvents>
+  <userEvents>
+    <eventId>10</eventId>
+    <ownerNode>0</ownerNode>
+    <nodeName>Short Events List</nodeName>
+    <eventName>LED2</eventName>
+    <Values />
+    <eventNode>0</eventNode>
+    <eventValue>202</eventValue>
+  </userEvents>
+  <userEvents>
+    <eventId>11</eventId>
+    <ownerNode>0</ownerNode>
+    <nodeName>Short Events List</nodeName>
+    <eventName>LED3</eventName>
+    <Values />
+    <eventNode>0</eventNode>
+    <eventValue>203</eventValue>
+  </userEvents>
+  <userEvents>
+    <eventId>12</eventId>
+    <ownerNode>0</ownerNode>
+    <nodeName>Short Events List</nodeName>
+    <eventName>LED4</eventName>
+    <Values />
+    <eventNode>0</eventNode>
+    <eventValue>204</eventValue>
+  </userEvents>
+  <userEvents>
+    <eventId>13</eventId>
+    <ownerNode>0</ownerNode>
+    <nodeName>Short Events List</nodeName>
+    <eventName>LED5</eventName>
+    <Values />
+    <eventNode>0</eventNode>
+    <eventValue>205</eventValue>
+  </userEvents>
+  <userEvents>
+    <eventId>14</eventId>
+    <ownerNode>0</ownerNode>
+    <nodeName>Short Events List</nodeName>
+    <eventName>LED6</eventName>
+    <Values />
+    <eventNode>0</eventNode>
+    <eventValue>206</eventValue>
+  </userEvents>
+  <userEvents>
+    <eventId>15</eventId>
+    <ownerNode>0</ownerNode>
+    <nodeName>Short Events List</nodeName>
+    <eventName>LED7</eventName>
+    <Values />
+    <eventNode>0</eventNode>
+    <eventValue>207</eventValue>
+  </userEvents>
+  <userEvents>
+    <eventId>16</eventId>
+    <ownerNode>0</ownerNode>
+    <nodeName>Short Events List</nodeName>
+    <eventName>LED8</eventName>
+    <Values />
+    <eventNode>0</eventNode>
+    <eventValue>208</eventValue>
+  </userEvents>
+  <userNodes>
+    <moduleId>255</moduleId>
+    <moduleName>CAN_SW</moduleName>
+    <nodeNum>0</nodeNum>
+    <nodeName>Short Events List</nodeName>
+    <numEvents>16</numEvents>
+    <inUse>true</inUse>
+    <Flim>true</Flim>
+    <NodeVars>256</NodeVars>
+    <maxEvents>0</maxEvents>
+    <Version />
+    <CanId>0</CanId>
+    <maxNVs>0</maxNVs>
+    <ProcId>""</ProcId>
+  </userNodes>
+</MergModuleDataSet>
