@@ -77,6 +77,14 @@ const methods = {
     console.log(name + `: DELETE_LAYOUT ${layoutName}`)
   },
 
+  delete_node_backup(layoutName, nodeNumber, fileName) {
+    console.log(name + `: DELETE_NODE_BACKUP ${layoutName} ${nodeNumber} ${fileName}`)
+    socket.emit('DELETE_NODE_BACKUP', {
+        "layoutName": layoutName,
+        "nodeNumber":nodeNumber,
+        "fileName":fileName
+    })
+  },
   event_teach_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex, eventVariableValue){
     console.log(name + `: event_teach_by_identifier : ${nodeNumber} : ${eventIdentifier} : ${eventVariableIndex} : ${eventVariableValue} `)
     socket.emit('EVENT_TEACH_BY_IDENTIFIER',{

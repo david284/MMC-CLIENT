@@ -193,16 +193,21 @@ const clickBackupList = (row) => {
 }
 
 
-const clickDelete = (row) => {
-  console.log(name + ': clickDelete ', row)
+const clickDelete = (fileName) => {
+  console.log(name + ': clickDelete ', fileName)
   const result = $q.notify({
-    message: 'Are you sure you want to delete backup ' + row,
+    message: 'Are you sure you want to delete backup ' + fileName,
     timeout: 0,
     position: 'center',
     color: 'primary',
     actions: [
       { label: 'YES', color: 'white', handler: async () => { 
+        store.methods.delete_node_backup(
+          store.state.layout.layoutDetails.title, 
+          props.nodeNumber, 
+          fileName)
         await sleep(50)     // allow a bit of a delay for the change
+        store.methods.request_node_backups_list(store.state.layout.layoutDetails.title, props.nodeNumber)
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
     ]
