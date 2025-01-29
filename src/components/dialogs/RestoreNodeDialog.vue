@@ -87,7 +87,7 @@
           <q-btn flat label="Toggle node json" @click="clickToggleNodeJSON()"/>
         </q-card-actions>
         <q-card-section v-if="showNodeJSON" style="width: 350px" class="text-body2 no-margin no-padding">
-          <pre>{{ store.state.restoredData }}</pre>
+          <pre>{{ restoredNode }}</pre>
         </q-card-section>
       </q-card>
 
@@ -111,6 +111,7 @@ const $q = useQuasar()
 const store = inject('store')
 const name = "RestoreNodeDialog"
 const backupFilename = ref("")
+const restoredNode = ref("")
 const showNodeJSON = ref(false)
 const teRows = ref([])
 
@@ -132,8 +133,25 @@ const model = computed({
 
 // model changes when Dialog opened & closed
 watch(model, () => {
-  console.log(name + `: WATCH model`)
-  store.methods.request_backups_list(store.state.layout.layoutDetails.title)
+  //console.log(name + `: WATCH model`)
+  if (model.value){
+    store.methods.request_node_backups_list(store.state.layout.layoutDetails.title, props.nodeNumber)
+    store.state.restoredData = {}
+  }
+})
+
+const restoredData = computed(() => {
+    return store.state.restoredData
+})
+
+watch(restoredData, () => {
+  //console.log(name + `: WATCH restoredData`)
+  try {
+    restoredNode.value = restoredData.value.nodeConfig.nodes[props.nodeNumber]
+  } catch (err) {
+    console.log(name + `: WATCH restoredData ` + err)
+    restoredNode.value = {}
+  }
 })
 
 const backupList = computed(() => {
@@ -142,14 +160,14 @@ const backupList = computed(() => {
 
 // need to update when new layout added
 watch(backupList, () => {
-  console.log(name + `: WATCH backupList`)
+  //console.log(name + `: WATCH backupList`)
   updateBackupList()
 })
 
 const updateBackupList = () => {
   teRows.value = []
   backupList.value.forEach(backup => {
-    console.log(name + `: update ` + backup)
+    //console.log(name + `: update ` + backup)
     teRows.value.push({"backup" : backup})
   })
 }
@@ -170,7 +188,7 @@ Click event handlers
 const clickBackupList = (row) => {
   console.log(name + ': clickBackupList on ', row)
   backupFilename.value = row
-  store.methods.request_backup(store.state.layout.layoutDetails.title, backupFilename.value)
+  store.methods.request_node_backup(store.state.layout.layoutDetails.title, props.nodeNumber, backupFilename.value)
 
 }
 

@@ -86,7 +86,7 @@ const model = computed({
 
 // model changes when Dialog opened & closed
 watch(model, () => {
-  console.log(name + `: WATCH model`)
+  //console.log(name + `: WATCH model`)
   store.methods.request_backups_list(store.state.layout.layoutDetails.title)
 })
 
@@ -96,14 +96,14 @@ const backupList = computed(() => {
 
 // need to update when new layout added
 watch(backupList, () => {
-  console.log(name + `: WATCH backupList`)
+  //console.log(name + `: WATCH backupList`)
   updateBackupList()
 })
 
 const updateBackupList = () => {
   teRows.value = []
   backupList.value.forEach(backup => {
-    console.log(name + `: update ` + backup)
+    //console.log(name + `: update ` + backup)
     teRows.value.push({"backup" : backup})
   })
 }

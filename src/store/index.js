@@ -181,6 +181,14 @@ const methods = {
     console.log(`REQUEST_MDF_EXPORT : ` + location + ' ' + filename)
     socket.emit('REQUEST_MDF_EXPORT', {"location":location, "filename":filename})
   },
+  request_node_backup(layoutName, nodeNumber, filename) {
+    console.log(`REQUEST_NODE_BACKUP : ` + layoutName + ' ' + nodeNumber + ' ' + filename)
+    socket.emit('REQUEST_NODE_BACKUP', {"layoutName":layoutName, "nodeNumber":nodeNumber, "fileName":filename})
+  },
+  request_node_backups_list(layoutName, nodeNumber) {
+    console.log(`REQUEST_NODE_BACKUPS_LIST : ` + layoutName)
+    socket.emit('REQUEST_NODE_BACKUPS_LIST', {"layoutName":layoutName, 'nodeNumber':nodeNumber})
+  },
   request_node_variable(nodeNumber, variable) {
     socket.emit('REQUEST_NODE_VARIABLE', {
       "nodeNumber": nodeNumber,
@@ -533,7 +541,12 @@ const setters = {
 const socket = io(`http://${host}:${port}`)
 
 socket.on('BACKUPS_LIST', (data) => {
-  console.log(secondsNow() + ': ' + name + `RECEIVED BACKUPS_LIST ` + JSON.stringify(data))
+  console.log(secondsNow() + ': ' + name + `: RECEIVED BACKUPS_LIST ` + JSON.stringify(data))
+  state.backups_list = data;
+})
+
+socket.on('NODE_BACKUPS_LIST', (data) => {
+  console.log(secondsNow() + ': ' + name + `: RECEIVED NODE_BACKUPS_LIST ` + JSON.stringify(data))
   state.backups_list = data;
 })
 
@@ -597,7 +610,7 @@ socket.on('LAYOUT_DATA', (data) => {
   console.log(secondsNow() + ': ' + name + `: RECEIVED Layout Data`)
   state.layout = data;
   // put a fresh timestamp on it
-  state.layout.updateTimestamp = Date.now()
+  state.layout['updateTimestamp'] = Date.now()
 })
 
 socket.on('LAYOUTS_LIST', (data) => {
@@ -684,7 +697,7 @@ socket.on('RESTORED_DATA', (data) => {
   console.log(secondsNow() + ': ' + name + `: RECEIVED RESTORED_DATA ` + JSON.stringify(data))
   state.restoredData = data;
   // put a fresh timestamp on it
-  state.restoredData.updateTimestamp = Date.now()
+  state.restoredData['updateTimestamp'] = Date.now()
 })
 
 socket.on("REQUEST_NODE_NUMBER", (nodeNumber, moduleName) => {
