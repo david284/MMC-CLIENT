@@ -45,6 +45,8 @@
                   />
                 </q-td>
                 <q-td >
+                  <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="xs" label="Rename"
+                  @click="prompt = true" no-caps />
                   <q-btn dense class="q-mx-xs q-my-none" outline color="negative" size="xs" label="Delete"
                   @click="clickDelete(props.value)" no-caps />
                 </q-td>
@@ -54,23 +56,37 @@
         </q-card>
 
 
-        <q-card flat inline class="q-pa-xs" style="width: 400px">
+        <q-card flat inline class="q-pa-none q-ma-sm" style="width: 400px">
 
-        <q-card-section class="q-pa-xs" style="height: 350px">
-
-          <q-card-section>
+          <q-card-section style="height: 50px" class="text-subtitle2">
+            This node - Module Name: {{ store.getters.module_name(nodeNumber) }}
+          </q-card-section>
+          <q-card style="height: 70px;" class="q-pa-sm q-ma-sm">
+            <div class="text-primary">Selected Backup</div>
             <div class="text-h6">
-              Selected Backup
-            </div>
-            <div class="bg-light-blue-1 text-h6">
               {{ backupFilename }}
             </div>
-          </q-card-section>
+          </q-card>
+          <!-- margin outside, padding inside border -->
+          <q-card class="q-pa-sm q-ma-sm">
+            <div class="text-primary">Backup file</div>
+            <div class="text-subtitle2">Module name: {{ moduleName }}</div>
+            <div class="text-subtitle2">Number of Node variables: {{ numberOfNVs }}</div>
+            <div class="text-subtitle2">Number of Events: {{ numberOfEvents }}</div>
+            <div class="text-subtitle2">Number of Event variables: {{ numberOfEVs }}</div>
+          </q-card>
+          <q-card style="height: 100px" class="q-pa-sm q-ma-sm">
+            <div class="text-primary">status</div>
+            <div class="text-subtitle2">{{ restoreStatus }}</div>
+            <q-spinner-orbit v-if="inProgress"
+              color="primary"
+              size="2em"
+            />
+          </q-card>
 
-        </q-card-section>
 
 
-        <q-card-section class="q-pa-xs">
+        <q-card-section>
           <q-card-actions align="center">
             <q-btn :disabled="!ready" color="primary" label="Restore Node" @click="clickRestore()"/>
           </q-card-actions>
@@ -96,6 +112,22 @@
 
   </q-dialog>
 
+  <q-dialog v-model="prompt" persistent>
+    <q-card style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">enter new filename</div>
+      </q-card-section>
+      <q-card-section class="q-pt-none">
+        <q-input dense v-model="newFilename" autofocus @keyup.enter="prompt = false"></q-input>
+      </q-card-section>
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Close" v-close-popup></q-btn>
+        <q-btn flat label="change Filename" @click="clickChangeFilename()" v-close-popup></q-btn>
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
+
 </template>
 
 
@@ -114,6 +146,15 @@ const ready = ref(false)
 const restoredNode = ref("")
 const showNodeJSON = ref(false)
 const teRows = ref([])
+const moduleName = ref("")
+const numberOfNVs = ref("")
+const numberOfEvents = ref("")
+const numberOfEVs = ref("")
+const restoreStatus = ref("awaiting backup selection")
+const inProgress = ref(false)
+const prompt = ref(false)
+const newFilename = ref("")
+
 
 const teColumns = [
   {name: 'backup', field: 'backup', required: true, label: 'backup', align: 'left', sortable: true},
@@ -137,6 +178,11 @@ watch(model, () => {
   if (model.value){
     backupFilename.value = undefined
     ready.value = false
+    moduleName.value = ""
+    numberOfNVs.value = ""
+    numberOfEvents.value = ""
+    numberOfEVs.value = ""
+    inProgress.value = false
     store.methods.request_node_backups_list(store.state.layout.layoutDetails.title, props.nodeNumber)
     store.state.restoredData = {}
   }
@@ -150,9 +196,17 @@ watch(restoredData, () => {
   //console.log(name + `: WATCH restoredData`)
   try {
     restoredNode.value = restoredData.value.nodeConfig.nodes[props.nodeNumber]
+    moduleName.value = restoredNode.value.moduleName
+    numberOfNVs.value = restoredNode.value.parameters[6]
+    numberOfEvents.value = restoredNode.value.eventCount
+    numberOfEVs.value = restoredNode.value.parameters[5]
   } catch (err) {
     console.log(name + `: WATCH restoredData ` + err)
     restoredNode.value = {}
+    moduleName.value = ""
+    numberOfNVs.value = ""
+    numberOfEvents.value = ""
+    numberOfEVs.value = ""
   }
 })
 
@@ -174,21 +228,33 @@ const updateBackupList = () => {
   })
 }
 
-const restoreNodeVariables = () => {
+const restoreNodeVariables = async () => {
   console.log(name + ': restoreNodeVariables')
+  restoreStatus.value = "restoring Node Variables"
+  inProgress.value = true
   try{
     let nodeVariables = restoredNode.value.nodeVariables
     for (let i=1; i<nodeVariables.length-1; i++){
       //console.log(name + `: Node variable ${i} ${nodeVariables[i]}`)
       store.methods.update_node_variable(props.nodeNumber, i, nodeVariables[i])
+      await sleep(100)  // allow a little time between requests
     }
   } catch (err){
     console.log(name + ': restoreNodeVariables: ' + err)
   }
+
+  await sleep(1000)
+
+  while ((Date.now() - store.state.cbusTrafficTimeStamp) < 1000) {
+    await sleep(100)
+  }
+  inProgress.value = false
 }
 
-const restoreEvents = () => {
+const restoreEvents = async () => {
   console.log(name + ': restoreEvents')
+  restoreStatus.value = "restoring Event Variables"
+  inProgress.value = true
   try{
     var storedEventsNI = Object.values(restoredNode.value.storedEventsNI)
     storedEventsNI.forEach(event => {
@@ -198,9 +264,17 @@ const restoreEvents = () => {
   } catch (err){
     console.log(name + ': restoreEvents: ' + err)
   }
+
+  await sleep(2000)
+
+  while ((Date.now() - store.state.cbusTrafficTimeStamp) < 1000) {
+    await sleep(100)
+  }
+  inProgress.value = false
+
 }
 
-const restoreEventVariables = (eventIdentifier) => {
+const restoreEventVariables = async (eventIdentifier) => {
   console.log(name + ': restoreEventVariables ' + eventIdentifier)
   try{
     let eventVariables = restoredNode.value.storedEventsNI[eventIdentifier].variables
@@ -211,6 +285,7 @@ const restoreEventVariables = (eventIdentifier) => {
         let variable = restoredNode.value.storedEventsNI[eventIdentifier].variables[index]
         console.log(name + `: restoreEventVariables: ${index} ${variable}` )
         store.methods.event_teach_by_identifier(props.nodeNumber, eventIdentifier, index, variable)
+        await sleep(50)  // allow a little time between requests
       }
 
     }
@@ -233,16 +308,25 @@ onMounted(() => {
 Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
+//
+//
+const clickChangeFilename = () => {
+  console.log(name + ': clickChangeFilename ', newFilename.value)
+}
 
 
+//
+//
 const clickBackupList = (row) => {
   console.log(name + ': clickBackupList on ', row)
   backupFilename.value = row
   store.methods.request_node_backup(store.state.layout.layoutDetails.title, props.nodeNumber, backupFilename.value)
   ready.value = true
+  restoreStatus.value = "ready to restore"
 }
 
-
+//
+//
 const clickDelete = (fileName) => {
   console.log(name + ': clickDelete ', fileName)
   const result = $q.notify({
@@ -264,14 +348,19 @@ const clickDelete = (fileName) => {
   })
 }
 
-
-const clickRestore = (row) => {
+//
+//
+const clickRestore = async (row) => {
+  ready.value = false
   console.log(name + ': clickRestore')
-  restoreNodeVariables()
-  restoreEvents()
+  restoreStatus.value = "restore in progress"
+  await restoreNodeVariables()
+  await restoreEvents()
+  restoreStatus.value = "restore complete\n(select a backup to run again)"
 }
 
-
+//
+//
 const clickToggleNodeJSON = () => {
   console.log(name + `: clickToggleNodeJSON`)
   showNodeJSON.value  = showNodeJSON.value ? false : true
