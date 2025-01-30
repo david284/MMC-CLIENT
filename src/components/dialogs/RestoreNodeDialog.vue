@@ -46,7 +46,7 @@
                 </q-td>
                 <q-td >
                   <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="xs" label="Rename"
-                  @click="prompt = true" no-caps />
+                  @click="() => {oldFilename = props.value; prompt = true;}" no-caps />
                   <q-btn dense class="q-mx-xs q-my-none" outline color="negative" size="xs" label="Delete"
                   @click="clickDelete(props.value)" no-caps />
                 </q-td>
@@ -115,7 +115,7 @@
   <q-dialog v-model="prompt" persistent>
     <q-card style="min-width: 350px">
       <q-card-section>
-        <div class="text-h6">enter new filename</div>
+        <div class="text-h6">enter new filename for {{ oldFilename }}</div>
       </q-card-section>
       <q-card-section class="q-pt-none">
         <q-input dense v-model="newFilename" autofocus @keyup.enter="prompt = false"></q-input>
@@ -154,6 +154,7 @@ const restoreStatus = ref("awaiting backup selection")
 const inProgress = ref(false)
 const prompt = ref(false)
 const newFilename = ref("")
+const oldFilename = ref("")
 
 
 const teColumns = [
@@ -310,8 +311,13 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 //
 //
-const clickChangeFilename = () => {
-  console.log(name + ': clickChangeFilename ', newFilename.value)
+const clickChangeFilename = async() => {
+  console.log(name + `: clickChangeFilename ${oldFilename.value} ${newFilename.value}`)
+  if (newFilename.value.length > 0){
+    // rename_node_backup should invoke a new list to be returned
+    store.methods.rename_node_backup(store.state.layout.layoutDetails.title, props.nodeNumber, oldFilename.value, newFilename.value)
+  }
+  newFilename.value = ""
 }
 
 

@@ -44,40 +44,46 @@ const state = reactive({
 //  Methods
 //-----------------------------------------------------------------------------
 const methods = {
+
+  //
   change_layout(layoutName){
     console.log(name + `: CHANGE_LAYOUT: ` + JSON.stringify(layoutName))
     socket.emit('CHANGE_LAYOUT', {
       "layoutName": layoutName
     })
   },
+  //
   clear_bus_events() {
     socket.emit('CLEAR_BUS_EVENTS')
     console.log(name + `: CLEAR_BUS_EVENTS`)
   },
+  //
   clear_cbus_errors() {
     socket.emit('CLEAR_CBUS_ERRORS')
     console.log(`CLEAR_CBUS_ERRORS`)
   },
+  //
   clear_node_events(nodeNumber) {
     console.log(`CLEAR_NODE_EVENTS ${nodeNumber}`)
     socket.emit('CLEAR_NODE_EVENTS',{
       "nodeNumber": nodeNumber
     })
   },
-
+  //
   delete_all_events(nodeNumber) {
     socket.emit('DELETE_ALL_EVENTS', {
         "nodeNumber": nodeNumber
     })
     console.log(name + `: DELETE_ALL_EVENTS ${nodeNumber}`)
   },
+  //
   delete_layout(layoutName) {
     socket.emit('DELETE_LAYOUT', {
         "layoutName": layoutName
     })
     console.log(name + `: DELETE_LAYOUT ${layoutName}`)
   },
-
+  //
   delete_node_backup(layoutName, nodeNumber, fileName) {
     console.log(name + `: DELETE_NODE_BACKUP ${layoutName} ${nodeNumber} ${fileName}`)
     socket.emit('DELETE_NODE_BACKUP', {
@@ -86,6 +92,7 @@ const methods = {
         "fileName":fileName
     })
   },
+  //
   event_teach_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex, eventVariableValue){
     console.log(name + `: event_teach_by_identifier : ${nodeNumber} : ${eventIdentifier} : ${eventVariableIndex} : ${eventVariableValue} `)
     socket.emit('EVENT_TEACH_BY_IDENTIFIER',{
@@ -95,12 +102,12 @@ const methods = {
       "eventVariableValue": parseInt(eventVariableValue)
     })
   },
-
+  //
   import_module_descriptor(nodeNumber, moduleDescriptor) {
     console.log(`import_module_descriptor : ` + moduleDescriptor.moduleDescriptorFilename)
     socket.emit('IMPORT_MODULE_DESCRIPTOR', {"nodeNumber":nodeNumber, "moduleDescriptor":moduleDescriptor})
   },
-
+  //
   long_on_event(nodeNumber, eventNumber){
     console.log(`ACON ${nodeNumber} : ${eventNumber}`)
     socket.emit('ACCESSORY_LONG_ON', {
@@ -108,6 +115,7 @@ const methods = {
       "eventNumber": eventNumber
     })
   },
+  //
   long_off_event(nodeNumber, eventNumber){
     console.log(`ACOF ${nodeNumber} : ${eventNumber}`)
     socket.emit('ACCESSORY_LONG_OFF', {
@@ -115,12 +123,12 @@ const methods = {
       "eventNumber": eventNumber
     })
   },
-
+  //
   node_can_id_enum(nodeNumber){
     console.log(name + `: CANID_ENUM : ` + nodeNumber)
     socket.emit('CANID_ENUM', nodeNumber)
   },
-
+  //
   program_node(nodeNumber, cpuType, flags, hexFile) {
     console.log(name + `: PROGRAM_NODE : ` + nodeNumber)
     socket.emit('PROGRAM_NODE', {
@@ -130,18 +138,19 @@ const methods = {
       "hexFile": hexFile
     })
   },
-
+  //
   query_all_nodes() {
     console.log(`QUERY_ALL_NODES`)
     socket.emit('QUERY_ALL_NODES')
   },
-
+  //
   remove_event(nodeNumber, eventName) {
     socket.emit('REMOVE_EVENT', {
         "nodeNumber": nodeNumber,
         "eventName": eventName
     })
   },
+  //
   remove_node(nodeNumber) {
     // remove node from layout data
     delete state.layout.nodeDetails[nodeNumber]
@@ -149,26 +158,43 @@ const methods = {
     socket.emit('REMOVE_NODE', nodeNumber)
     console.log(name + ': sent REMOVE_NODE ' + nodeNumber)
   },
+  //
+  rename_node_backup(layoutName, nodeNumber, fileName, newFileName) {
+    let data = {
+      "layoutName": layoutName,
+      "nodeNumber": nodeNumber,
+      "fileName": fileName,
+      "newFileName": newFileName
+    }
+    socket.emit('RENAME_NODE_BACKUP', data)
+    console.log(name + ': sent RENAME_NODE_BACKUP ' + JSON.stringify(data))
+  },
+  //
   request_backup(layoutName, filename) {
     console.log(`REQUEST_BACKUP : ` + layoutName + ' ' + filename)
     socket.emit('REQUEST_BACKUP', {"layoutName":layoutName, "fileName":filename})
   },
+  //
   request_backups_list(layoutName) {
     console.log(`REQUEST_BACKUPS_LIST : ` + layoutName)
     socket.emit('REQUEST_BACKUPS_LIST', {"layoutName":layoutName})
   },
+  //
   request_diagnostics(nodeNumber, serviceIndex) {
     if (serviceIndex == undefined){serviceIndex = 0;}
     console.log(`Request Service Diagnostics : node ` + nodeNumber + ' Service Index ' + serviceIndex )
     socket.emit('REQUEST_DIAGNOSTICS', {"nodeNumber":nodeNumber, "serviceIndex":serviceIndex})
   },
+  //
   request_all_node_parameters(nodeNumber, parameters, delay) {
     socket.emit('REQUEST_ALL_NODE_PARAMETERS', {"nodeNumber": nodeNumber, "parameters": parameters, "delay": delay})
     console.log(`REQUEST_ALL_NODE_PARAMETERS`)
   },
+  //
   request_node_parameter(nodeNumber, parameter) {
     socket.emit('RQNPN', {"nodeNumber": nodeNumber, "parameter": parameter})
   },
+  //
   request_all_node_variables(nodeNumber, variables, delay, start) {
     socket.emit('REQUEST_ALL_NODE_VARIABLES', {
       "nodeNumber": nodeNumber,
@@ -178,36 +204,44 @@ const methods = {
     })
     console.log(`REQUEST_ALL_NODE_VARIABLES: node ` + nodeNumber + ' variables ' + variables)
   },
+  //
   refresh_bus_events() {
     socket.emit('REQUEST_BUS_EVENTS')
     console.log(name + `: REQUEST_BUS_EVENTS`)
   },
+  //
   request_MDF_delete(filename) {
     console.log(`REQUEST_MDF_DELETE : ` + filename)
     socket.emit('REQUEST_MDF_DELETE', {"filename":filename})
   },
+  //
   request_MDF_export(location, filename) {
     console.log(`REQUEST_MDF_EXPORT : ` + location + ' ' + filename)
     socket.emit('REQUEST_MDF_EXPORT', {"location":location, "filename":filename})
   },
+  //
   request_node_backup(layoutName, nodeNumber, filename) {
     console.log(`REQUEST_NODE_BACKUP : ` + layoutName + ' ' + nodeNumber + ' ' + filename)
     socket.emit('REQUEST_NODE_BACKUP', {"layoutName":layoutName, "nodeNumber":nodeNumber, "fileName":filename})
   },
+  //
   request_node_backups_list(layoutName, nodeNumber) {
     console.log(`REQUEST_NODE_BACKUPS_LIST : ` + layoutName)
     socket.emit('REQUEST_NODE_BACKUPS_LIST', {"layoutName":layoutName, 'nodeNumber':nodeNumber})
   },
+  //
   request_node_variable(nodeNumber, variable) {
     socket.emit('REQUEST_NODE_VARIABLE', {
       "nodeNumber": nodeNumber,
       "variableId": variable,
     })
   },
+  //
   request_all_node_events(nodeNumber) {
     socket.emit('REQUEST_ALL_NODE_EVENTS', {"nodeNumber": nodeNumber})
     console.log(`REQUEST_ALL_NODE_EVENTS`)
   },
+  //
   request_event_variables_by_identifier(nodeNumber, eventIdentifier) {
     console.log(name + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER: nodeNumber: ` + nodeNumber + ` eventIdentifier: ` + eventIdentifier)
     socket.emit('REQUEST_EVENT_VARIABLES_BY_IDENTIFIER', {
@@ -215,36 +249,43 @@ const methods = {
       "eventIdentifier": eventIdentifier
     })
   },
+  //
   request_service_discovery(nodeNumber) {
     console.log(`Request Service Discovery : ` + nodeNumber)
     socket.emit('REQUEST_SERVICE_DISCOVERY', {"nodeNumber":nodeNumber})
   },
-
+  //
   request_server_status(){
     socket.emit('REQUEST_SERVER_STATUS')
   },
+  //
   request_version(){
     socket.emit('REQUEST_VERSION')
   },
+  //
   request_layout_list(){
     console.log(name + `: request_layout_list:`)
     socket.emit('REQUEST_LAYOUTS_LIST')
   },
+  //
   request_matching_mdf_list(nodeNumber, location) {
     console.log(name + ': REQUEST_MATCHING_MDF_LIST: ' + location)
     if (state.server.nodes[nodeNumber] == undefined){state.server.nodes[nodeNumber] = {} }
     state.server.nodes[nodeNumber][location + '_MDF_List'] = []
     socket.emit('REQUEST_MATCHING_MDF_LIST', {"nodeNumber":nodeNumber, "location":location})
   },
+  //
   reset_node(nodeNumber) {
     socket.emit('RESET_NODE', nodeNumber)
     console.log(name + ': RESET_NODE ' + nodeNumber)
   },
+  //
   save_backup(data){
     console.log(`SAVE_BACKUP`)
     data['layoutName'] = state.layout.layoutDetails.title
     socket.emit('SAVE_BACKUP', data)
   },
+  //
   save_node_backup(nodeNumber){
     console.log(`SAVE_NODE_BACKUP`)
     let data = {
@@ -254,6 +295,7 @@ const methods = {
     }
     socket.emit('SAVE_NODE_BACKUP', data)
   },
+  //
   set_can_id(nodeNumber, CAN_ID){
     var data = {}
     data['nodeNumber'] = nodeNumber
@@ -261,15 +303,18 @@ const methods = {
     socket.emit('SET_CAN_ID', data)
     console.log(name + `: SET_CAN_ID: node ` + JSON.stringify(data))
   },
+  //
   STOP_SERVER(nodeNumber) {
     socket.emit('STOP_SERVER')
     console.log(`STOP SERVER`)
     window.close()
   },
+  //
   set_node_number(nodeNumber){
     console.log(name + `: emit SET_NODE_NUMBER ${nodeNumber}`)
     socket.emit('SET_NODE_NUMBER', nodeNumber)
   },
+  //
   short_on_event(nodeNumber, eventNumber){
     console.log(`ASON ${nodeNumber} : ${eventNumber}`)
     socket.emit('ACCESSORY_SHORT_ON', {
@@ -277,6 +322,7 @@ const methods = {
       "deviceNumber": eventNumber
     })
   },
+  //
   short_off_event(nodeNumber, eventNumber){
     console.log(`ASOF ${nodeNumber} : ${eventNumber}`)
     socket.emit('ACCESSORY_SHORT_OFF', {
@@ -284,14 +330,17 @@ const methods = {
       "deviceNumber": eventNumber
     })
   },
+  //
   start_connection(data) {
     console.log(name + `: start_connection : ` + JSON.stringify(data))
     socket.emit('START_CONNECTION', data)
   },
+  //
   update_layout() {
       console.log(`Update Layout Data : ` + state.title)
       socket.emit('UPDATE_LAYOUT_DATA', state.layout)
   },
+  //
   update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue) {
     state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
     
@@ -313,6 +362,7 @@ const methods = {
        })
     }
   },
+  //
   update_node_variable_in_learn_mode(nodeNumber, nodeVariableIndex, nodeVariableValue) {
     console.log(`MAIN Update Node Variable in Learn Mode:`+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue)
     state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
