@@ -18,6 +18,7 @@ const state = reactive({
   dcc_sessions: {},
   dcc_errors: {},
   develop: false,
+  //develop: true,
   event_view_status: [],
   exported_MDF: {},
   inStartup: true,
@@ -294,7 +295,7 @@ const methods = {
   update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue) {
     state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
     
-    console.log(`NVsetNeedsLearnMode : ` + JSON.stringify(state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode))
+    //console.log(`NVsetNeedsLearnMode : ` + JSON.stringify(state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode))
     if((state.nodeDescriptors[nodeNumber])
         && (state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode)){
           console.log(`MAIN Update Node Variable in learn mode : `+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue)
@@ -498,9 +499,10 @@ const setters = {
   //
   // Nodes
   addNodeToLayout(nodeNumber, moduleIdentifer, moduleName){
-    console.log(secondsNow() + ': ' + name + `: addNodeToLayout: ${nodeNumber} ${moduleIdentifer} ${moduleName}`)
+    //console.log(secondsNow() + ': ' + name + `: addNodeToLayout: ${nodeNumber} ${moduleIdentifer} ${moduleName}`)
     if (nodeNumber != undefined){
       if (nodeNumber in state.layout.nodeDetails === false){
+        console.log(secondsNow() + ': ' + name + `: addNodeToLayout: nodeNumber: ${nodeNumber}`)
         state.layout.nodeDetails[nodeNumber] = {}
         state.layout.nodeDetails[nodeNumber].colour = "black"
         state.layout.nodeDetails[nodeNumber].group = ""
@@ -508,12 +510,14 @@ const setters = {
       }
       if (moduleIdentifer != undefined){
         if (state.layout.nodeDetails[nodeNumber].moduleIdentifer != moduleIdentifer){
+          console.log(secondsNow() + ': ' + name + `: addNodeToLayout: moduleIdentifier: ${moduleIdentifer}`)
           state.layout.nodeDetails[nodeNumber].moduleIdentifer = moduleIdentifer
           state.update_layout_needed = true
         }
       }
       if (moduleName != undefined){
         if (state.layout.nodeDetails[nodeNumber].moduleName != moduleName){
+          console.log(secondsNow() + ': ' + name + `: addNodeToLayout: moduleName: ${moduleName}`)
           state.layout.nodeDetails[nodeNumber].moduleName = moduleName
           state.update_layout_needed = true
         }
@@ -549,12 +553,12 @@ const setters = {
 const socket = io(`http://${host}:${port}`)
 
 socket.on('BACKUPS_LIST', (data) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED BACKUPS_LIST ` + JSON.stringify(data))
+  console.log(secondsNow() + ': ' + name + `: RECEIVED BACKUPS_LIST`)
   state.backups_list = data;
 })
 
 socket.on('NODE_BACKUPS_LIST', (data) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED NODE_BACKUPS_LIST ` + JSON.stringify(data))
+  console.log(secondsNow() + ': ' + name + `: RECEIVED NODE_BACKUPS_LIST`)
   state.backups_list = data;
 })
 
@@ -702,7 +706,7 @@ socket.on("PROGRAM_NODE_PROGRESS", (text) => {
 })
 
 socket.on('RESTORED_DATA', (data) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED RESTORED_DATA ` + JSON.stringify(data))
+  console.log(secondsNow() + ': ' + name + `: RECEIVED RESTORED_DATA`)
   state.restoredData = data;
   // put a fresh timestamp on it
   state.restoredData['updateTimestamp'] = Date.now()

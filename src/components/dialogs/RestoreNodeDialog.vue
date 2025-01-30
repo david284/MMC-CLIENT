@@ -69,14 +69,13 @@
 
         </q-card-section>
 
-<!-- 
+
         <q-card-section class="q-pa-xs">
           <q-card-actions align="center">
-            <q-btn v-if="readyToProceed" color="primary" label="Proceed" @click="clickRestore()"/>
-            <q-btn v-if="!readyToProceed" disabled color="primary" label="Proceed" @click="clickRestore()"/>
+            <q-btn :disabled="!ready" color="primary" label="Restore Node" @click="clickRestore()"/>
           </q-card-actions>
         </q-card-section>
- -->
+
 
         </q-card>
 
@@ -111,6 +110,7 @@ const $q = useQuasar()
 const store = inject('store')
 const name = "RestoreNodeDialog"
 const backupFilename = ref("")
+const ready = ref(false)
 const restoredNode = ref("")
 const showNodeJSON = ref(false)
 const teRows = ref([])
@@ -136,6 +136,7 @@ watch(model, () => {
   //console.log(name + `: WATCH model`)
   if (model.value){
     backupFilename.value = undefined
+    ready.value = false
     store.methods.request_node_backups_list(store.state.layout.layoutDetails.title, props.nodeNumber)
     store.state.restoredData = {}
   }
@@ -173,6 +174,54 @@ const updateBackupList = () => {
   })
 }
 
+const restoreNodeVariables = () => {
+  console.log(name + ': restoreNodeVariables')
+  try{
+    let nodeVariables = restoredNode.value.nodeVariables
+    for (let i=1; i<nodeVariables.length-1; i++){
+      //console.log(name + `: Node variable ${i} ${nodeVariables[i]}`)
+      store.methods.update_node_variable(props.nodeNumber, i, nodeVariables[i])
+    }
+  } catch (err){
+    console.log(name + ': restoreNodeVariables: ' + err)
+  }
+}
+
+const restoreEvents = () => {
+  console.log(name + ': restoreEvents')
+  try{
+    var storedEventsNI = Object.values(restoredNode.value.storedEventsNI)
+    storedEventsNI.forEach(event => {
+      console.log(name + ': restoreEvents: ' + event.eventIdentifier)
+      restoreEventVariables(event.eventIdentifier)
+    })   
+  } catch (err){
+    console.log(name + ': restoreEvents: ' + err)
+  }
+}
+
+const restoreEventVariables = (eventIdentifier) => {
+  console.log(name + ': restoreEventVariables ' + eventIdentifier)
+  try{
+    let eventVariables = restoredNode.value.storedEventsNI[eventIdentifier].variables
+    // ensure variables are restored in ascending index order
+    for (let index of Object.keys(eventVariables).sort(function(a, b){return a - b})) {
+      if (index > 0)
+      {
+        let variable = restoredNode.value.storedEventsNI[eventIdentifier].variables[index]
+        console.log(name + `: restoreEventVariables: ${index} ${variable}` )
+        store.methods.event_teach_by_identifier(props.nodeNumber, eventIdentifier, index, variable)
+      }
+
+    }
+
+  } catch (err){
+    console.log(name + ': restoreEventVariables: ' + err)
+  }
+}
+
+
+
 onBeforeMount(() => {
 })
 
@@ -190,7 +239,7 @@ const clickBackupList = (row) => {
   console.log(name + ': clickBackupList on ', row)
   backupFilename.value = row
   store.methods.request_node_backup(store.state.layout.layoutDetails.title, props.nodeNumber, backupFilename.value)
-
+  ready.value = true
 }
 
 
@@ -218,6 +267,8 @@ const clickDelete = (fileName) => {
 
 const clickRestore = (row) => {
   console.log(name + ': clickRestore')
+  restoreNodeVariables()
+  restoreEvents()
 }
 
 
