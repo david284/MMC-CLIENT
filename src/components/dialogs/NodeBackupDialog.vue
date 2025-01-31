@@ -119,7 +119,7 @@ const backupNode = async () => {
       result = "Event variable load failed"
     } else {
       // now store backup if it was successfull
-      store.methods.save_node_backup(props.nodeNumber)
+      store.methods.save_node_backup(props.nodeNumber, store.state.nodes[props.nodeNumber])
       result = "Backup completed"
     }
   }

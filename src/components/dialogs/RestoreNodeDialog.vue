@@ -59,7 +59,7 @@
         <q-card flat inline class="q-pa-none q-ma-sm" style="width: 400px">
 
           <q-card-section style="height: 50px" class="text-subtitle2">
-            This node - Module Name: {{ store.getters.module_name(nodeNumber) }}
+            Restore node {{ nodeNumber }} - Module Name: {{ store.getters.module_name(nodeNumber) }}
           </q-card-section>
           <q-card style="height: 70px;" class="q-pa-sm q-ma-sm">
             <div class="text-primary">Selected Backup</div>
@@ -196,7 +196,7 @@ const restoredData = computed(() => {
 watch(restoredData, () => {
   //console.log(name + `: WATCH restoredData`)
   try {
-    restoredNode.value = restoredData.value.nodeConfig.nodes[props.nodeNumber]
+    restoredNode.value = restoredData.value.backupNode
     moduleName.value = restoredNode.value.moduleName
     numberOfNVs.value = restoredNode.value.parameters[6]
     numberOfEvents.value = restoredNode.value.eventCount
@@ -257,6 +257,10 @@ const restoreEvents = async () => {
   restoreStatus.value = "restoring Event Variables"
   inProgress.value = true
   try{
+    // first remove all existing events - even if there's no events in the backup
+    store.methods.delete_all_events(props.nodeNumber)
+    await sleep(100)  // allow a little time for this to take effect
+    //
     var storedEventsNI = Object.values(restoredNode.value.storedEventsNI)
     storedEventsNI.forEach(event => {
       console.log(name + ': restoreEvents: ' + event.eventIdentifier)
@@ -359,10 +363,25 @@ const clickDelete = (fileName) => {
 const clickRestore = async (row) => {
   ready.value = false
   console.log(name + ': clickRestore')
-  restoreStatus.value = "restore in progress"
-  await restoreNodeVariables()
-  await restoreEvents()
-  restoreStatus.value = "restore complete\n(select a backup to run again)"
+  // check the module name matches
+  if (moduleName.value == store.getters.module_name(props.nodeNumber)) {
+    restoreStatus.value = "restore in progress"
+    await restoreNodeVariables()
+    await restoreEvents()
+    restoreStatus.value = "restore complete\n(select a backup to run again)"
+  } else {
+    const result = $q.notify({
+      message: 'backup module name \'' + moduleName.value + '\' doesnt match restore module name',
+      caption: 'restore module name \'' + store.getters.module_name(props.nodeNumber) + '\'',
+      timeout: 0,
+      position: 'center',
+      color: 'negative"',
+      multiLine: true,
+      actions: [
+        { label: 'dismiss', color: 'white', handler: () => { /* ... */ } }
+      ]
+    })
+  }
 }
 
 //

@@ -17,8 +17,8 @@ const state = reactive({
   colours: ["black", "red", "pink", "purple", "deep-purple", "indigo", "blue", "light-blue", "cyan", "teal", "green", "light-green", "lime", "yellow", "amber", "orange", "deep-orange", "brown", "blue-grey", "grey"],
   dcc_sessions: {},
   dcc_errors: {},
-  //develop: false,
-  develop: true,
+  develop: false,
+  //develop: true,
   event_view_status: [],
   exported_MDF: {},
   inStartup: true,
@@ -286,12 +286,13 @@ const methods = {
     socket.emit('SAVE_BACKUP', data)
   },
   //
-  save_node_backup(nodeNumber){
+  save_node_backup(nodeNumber, backupNode){
     console.log(`SAVE_NODE_BACKUP`)
     let data = {
       'layoutName': state.layout.layoutDetails.title,
       'nodeNumber': nodeNumber,
-      'layout': state.layout
+      'layout': state.layout,
+      'backupNode': backupNode
     }
     socket.emit('SAVE_NODE_BACKUP', data)
   },
