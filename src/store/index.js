@@ -93,13 +93,15 @@ const methods = {
     })
   },
   //
-  event_teach_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex, eventVariableValue){
+  // reLoad false to surpress reLoading of variables after writing - like when restoring node
+  event_teach_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex, eventVariableValue, reLoad){
     console.log(name + `: event_teach_by_identifier : ${nodeNumber} : ${eventIdentifier} : ${eventVariableIndex} : ${eventVariableValue} `)
     socket.emit('EVENT_TEACH_BY_IDENTIFIER',{
       "nodeNumber": nodeNumber,
       "eventIdentifier": eventIdentifier,
       "eventVariableIndex": eventVariableIndex,
-      "eventVariableValue": parseInt(eventVariableValue)
+      "eventVariableValue": parseInt(eventVariableValue),
+      "reLoad": reLoad
     })
   },
   //
