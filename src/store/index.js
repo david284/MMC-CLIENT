@@ -344,24 +344,26 @@ const methods = {
       socket.emit('UPDATE_LAYOUT_DATA', state.layout)
   },
   //
-  update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue) {
+  update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue, reLoad) {
     state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
     
     //console.log(`NVsetNeedsLearnMode : ` + JSON.stringify(state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode))
     if((state.nodeDescriptors[nodeNumber])
         && (state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode)){
-          console.log(`MAIN Update Node Variable in learn mode : `+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue)
+          console.log(`MAIN Update Node Variable in learn mode : `+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue, reLoad)
           socket.emit('UPDATE_NODE_VARIABLE_IN_LEARN_MODE', {
         "nodeNumber": nodeNumber,
         "variableId": nodeVariableIndex,
-        "variableValue": parseInt(nodeVariableValue)
+        "variableValue": parseInt(nodeVariableValue),
+        "reLoad":reLoad
       })
     } else {
-      console.log(`MAIN Update Node Variable : `+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue)
+      console.log(`MAIN Update Node Variable : `+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue, reLoad)
       socket.emit('UPDATE_NODE_VARIABLE', {
         "nodeNumber": nodeNumber,
         "variableId": nodeVariableIndex,
-        "variableValue": parseInt(nodeVariableValue)
+        "variableValue": parseInt(nodeVariableValue),
+        "reLoad":reLoad
        })
     }
   },

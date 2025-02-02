@@ -63,7 +63,7 @@
           </q-card-section>
           <q-card style="height: 70px;" class="q-pa-sm q-ma-sm">
             <div class="text-primary">Selected Backup</div>
-            <div class="text-h6">
+            <div class="text-subtitle2">
               {{ backupFilename }}
             </div>
           </q-card>
@@ -237,8 +237,9 @@ const restoreNodeVariables = async () => {
     let nodeVariables = restoredNode.value.nodeVariables
     for (let i=1; i<nodeVariables.length-1; i++){
       //console.log(name + `: Node variable ${i} ${nodeVariables[i]}`)
-      store.methods.update_node_variable(props.nodeNumber, i, nodeVariables[i])
-      await sleep(250)  // allow a little time between requests
+      let reLoad = false  // don't readback NV
+      store.methods.update_node_variable(props.nodeNumber, i, nodeVariables[i], reLoad)
+      await sleep(100)  // allow a little time between requests
     }
   } catch (err){
     console.log(name + ': restoreNodeVariables: ' + err)
@@ -259,33 +260,25 @@ const restoreEvents = async () => {
     // first remove all existing events - even if there's no events in the backup
     restoreStatus.value = "erasing Events"
     store.methods.delete_all_events(props.nodeNumber)
-    await sleep(2000)  // allow a little time for this to take effect
+    await sleep(1000)  // allow a little time for this to take effect
     //
     restoreStatus.value = "restoring Events & Variables"
-    /*
-    var storedEventsNI = Object.values(restoredNode.value.storedEventsNI)
-    storedEventsNI.forEach(async (event) => {
-      console.log(name + ': restoreEvents: ' + event.eventIdentifier)
-      await restoreEventVariables(event.eventIdentifier)
-    })
-    */  
+    // don't use forEach, as couldn't get it to work with async/await
     var storedEventsNI = restoredNode.value.storedEventsNI
     for(const eventIdentifier in storedEventsNI){
       console.log(name + ': restoreEvents: ' + eventIdentifier)
       await restoreEventVariables(eventIdentifier)
     }
-
   } catch (err){
     console.log(name + ': restoreEvents: ' + err)
   }
-
   await sleep(1000)
-
   while ((Date.now() - store.state.cbusTrafficTimeStamp) < 1000) {
-    await sleep(100)
+    await sleep(10)
   }
+  // now lets refresh all events 
+  store.methods.request_all_node_events(props.nodeNumber)
   inProgress.value = false
-
 }
 
 const restoreEventVariables = async (eventIdentifier) => {
@@ -302,9 +295,7 @@ const restoreEventVariables = async (eventIdentifier) => {
         store.methods.event_teach_by_identifier(props.nodeNumber, eventIdentifier, index, variable, reLoad)
         await sleep(100)  // allow a little time between requests
       }
-
     }
-
   } catch (err){
     console.log(name + ': restoreEventVariables: ' + err)
   }
