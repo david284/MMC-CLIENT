@@ -56,7 +56,7 @@
         </q-card>
 
 
-        <q-card flat inline class="q-pa-none q-ma-sm" style="width: 400px">
+        <q-card flat inline class="q-pa-none q-ma-sm" style="max-width: 400px">
 
           <q-card-section style="height: 50px" class="text-subtitle2">
             Restore node {{ nodeNumber }} - Module Name: {{ store.getters.module_name(nodeNumber) }}
