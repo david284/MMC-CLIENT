@@ -107,7 +107,6 @@ const clickExport = async (filename) => {
   for (let eventIdentifier of Object.keys(eventDetails).sort()) {
     let output = []
     output['eventName'] = eventDetails[eventIdentifier].name ? eventDetails[eventIdentifier].name : ''
-    output['eventIdentifier'] = eventIdentifier
     output['nodeNumber'] = parseInt(eventIdentifier.slice(0,3), 16)
     output['eventNumber'] = parseInt(eventIdentifier.slice(4,8), 16)
     output['group'] = eventDetails[eventIdentifier].group
