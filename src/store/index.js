@@ -12,6 +12,7 @@ const name = "store"
 
 const state = reactive({
   backups_list: [],
+  busConnection_notify: true,
   busEvents: {},
   cbus_errors: {},
   colours: ["black", "red", "pink", "purple", "deep-purple", "indigo", "blue", "light-blue", "cyan", "teal", "green", "light-green", "lime", "yellow", "amber", "orange", "deep-orange", "brown", "blue-grey", "grey"],

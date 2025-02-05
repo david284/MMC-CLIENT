@@ -293,19 +293,27 @@ store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber, moduleName) => {
 
 store.eventBus.on('SERVER_STATUS_EVENT', (serverStatus) => {
 //  console.log(name + ': SERVER_STATUS_EVENT ' + JSON.stringify(serverStatus))
-  try{
-    if (serverStatus.busConnection.state == false){
-      $q.notify({
-        message: 'Server has no connection to the CAN BUS',
-        caption: 'attempting to re-connect',
-        timeout: 2000,
-        type: 'warning',
-        position: 'center',
-        actions: [ { label: 'Dismiss' } ]
-      })
+  if(store.state.busConnection_notify){
+    try{
+      if (serverStatus.busConnection.state == false){
+        $q.notify({
+          message: 'Server has no connection to the CAN BUS',
+          caption: 'attempting to re-connect',
+          timeout: 2000,
+          type: 'warning',
+          position: 'center',
+          actions: [ 
+            { label: `Don't remind me again`, 
+              handler: () => { store.state.busConnection_notify = false }  
+            }, 
+            { label: 'Dismiss' } 
+          ]
+        })
+      }
+      
+    } catch(err){
+      console.log(name + ': SERVER_STATUS_EVENT: ' + err)    
     }
-  } catch(err){
-    console.log(name + ': SERVER_STATUS_EVENT: ' + err)    
   }
 })
 
