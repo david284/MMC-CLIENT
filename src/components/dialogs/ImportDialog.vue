@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model='model' persistent>
-    <q-card style="min-width: 350px">
+    <q-card style="min-width: 800px">
 
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
           <div class="text-h6">
@@ -12,17 +12,27 @@
         </q-banner>
 
         <q-card-section>
-          <div class="text-subtitle2">Select an FCU configuration file to import</div>
-          <div class="text-subtitle2">
-            The data imported from the configuration file includes node & event names
+          <div class="text-h6">
+            This allows the import of names & groups for Events & Nodes from external files
           </div>
+          <div class="text-h6">The data imported depends on the file type</div>
+          <div class="text-h6">Click the info button by each file type for more details</div>
+        </q-card-section>
+
+        <q-card-section class="dense no-padding no-margin">
+            <q-radio v-model="importType" val="SPREADSHEET" label="Spreadsheet import" /> &nbsp; &nbsp; 
+            <q-btn dense color="primary" size="sm" label="info" @click="clickSheetInfo()" no-caps/>
+        </q-card-section>
+        <q-card-section class="dense no-padding no-margin">
+          <q-radio v-model="importType" val="FCU" label="FCU configuration file import" /> &nbsp; &nbsp; 
+          <q-btn dense color="primary" size="sm" label="info" @click="clickFCUInfo()" no-caps/>
         </q-card-section>
 
         <q-file
             v-model="importFile"
             label="Pick one file"
             filled
-            style="max-width: 300px"
+            style="max-width: 400px"
           />
           <q-card-section>
             <div class="text-subtitle2">
@@ -46,12 +56,56 @@
 
           <q-card-actions align="right" class="text-primary">
             <!-- // Only close top dialog - this gives time for underlying dialogs to update -->
-            <q-btn color="positive" label="Import" v-close-popup
+            <q-btn color="positive" label="IMPORT" v-close-popup
               :disabled="!importFile"   @click="clickImport()" />
           </q-card-actions>
 
     </q-card>
   </q-dialog>
+
+  <q-dialog v-model='showSheetInfo'>
+    <q-card style="min-width: 800px">
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+          <div class="text-h6">
+            Import spreadsheet information
+          </div>
+          <template v-slot:action>
+            <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+          </template>
+        </q-banner>
+      <q-card-section>
+        <div class="text-subtitle2">
+          The import will accept most spreadsheet types, such as xls, xlsx & ods, but NOT csv 
+          (which stricly isn't really a spreadsheet format)
+        </div>
+        <div class="text-subtitle2">
+          The event information is expected to be on a sheet named 'Events'
+        </div>
+        <div class="text-subtitle2">
+          The node information is expected to be on a sheet named 'Nodes'
+        </div>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
+
+  <q-dialog v-model='showFCUInfo'>
+    <q-card style="min-width: 800px">
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+          <div class="text-h6">
+            Import FCU configuration information
+          </div>
+          <template v-slot:action>
+            <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+          </template>
+        </q-banner>
+      <q-card-section>
+        <div class="text-subtitle2">
+          FCU confiduration files contain names for events and nodes, but doesn't support groups
+        </div>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
+
 </template>
 
 
@@ -60,14 +114,17 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import {importFCU} from "components/functions/ImportFunctions.js"
+import {importSPREADSHEET} from "components/functions/ImportFunctions.js"
 import {sleep} from "components/functions/utils.js"
 
 const $q = useQuasar()
-const convert = require('xml-js');
 const store = inject('store')
 const name = "ImportDialog"
 const importFile = ref()
+const importType = ref("SPREADSHEET")
 const mode = ref("retain")
+const showFCUInfo = ref(false)
+const showSheetInfo = ref(false)
 
 
 const props = defineProps({
@@ -86,6 +143,9 @@ watch(model, () => {
   if (model.value){
     // now clear filename when dialog opened
     importFile.value = undefined
+    importType.value = "SPREADSHEET"
+    showFCUInfo.value = false
+    showSheetInfo.value = false
   }
 })
 
@@ -103,28 +163,41 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
+const clickFCUInfo = () => {
+  console.log(name + `: clickFCUInfo`)
+  showFCUInfo.value = true
+}
 
 const clickImport = () => {
   console.log(name + `: clickImport ` + importFile.value.name)
   var jsonResult = null
   let reader = new FileReader();
-  reader.readAsText(importFile.value)
-  reader.onload = function() {
-    try{
-      jsonResult = convert.xml2js(reader.result, { compact: true })
-      console.log(name + ': Import JSON ' + JSON.stringify(jsonResult, null, "  "))
-
-      importFCU(jsonResult, store, mode.value)
-      store.eventBus.emit('GENERAL_MESSAGE_EVENT', "import " + importFile.value.name, "successful", 'info')
-
-    } catch(err){
-      console.log(name + `: clickImport: ` + err)
-      store.eventBus.emit('GENERAL_MESSAGE_EVENT', "import " + importFile.value.name + " failed", err, 'warning')
-
+  try{
+    if (importType.value == "FCU"){
+      reader.readAsText(importFile.value)
+      reader.onload = function() {
+        importFCU(reader.result, store, mode.value)
+        store.eventBus.emit('GENERAL_MESSAGE_EVENT', "import " + importFile.value.name, "successful", 'info')
+      }
     }
+    else if (importType.value == "SPREADSHEET"){
+      reader.readAsArrayBuffer(importFile.value)
+      reader.onload = function() {
+        importSPREADSHEET(reader.result, store, mode.value)
+        store.eventBus.emit('GENERAL_MESSAGE_EVENT', "import " + importFile.value.name, "successful", 'info')
+      }
+    }
+  } catch(err){
+    console.log(name + `: clickImport: ` + err)
+    store.eventBus.emit('GENERAL_MESSAGE_EVENT', "import " + importFile.value.name + " failed", err, 'warning')
+
   }
 }
 
+const clickSheetInfo = () => {
+  console.log(name + `: clickSheetInfo`)
+  showSheetInfo.value = true
+}
 
 </script>
 
