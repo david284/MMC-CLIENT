@@ -13,7 +13,7 @@
 
         <q-card-section>
           <div class="text-h6">
-            This allows the import of names & groups for Events & Nodes from external files
+            This allows the import of names, groups & modules for Events & Nodes from external files
           </div>
           <div class="text-h6">The data imported depends on the file type</div>
           <div class="text-h6">Click the info button by each file type for more details</div>
@@ -66,23 +66,61 @@
   <q-dialog v-model='showSheetInfo'>
     <q-card style="min-width: 800px">
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
-          <div class="text-h6">
-            Import spreadsheet information
-          </div>
-          <template v-slot:action>
-            <q-btn flat color="white" size="md" label="Close" v-close-popup/>
-          </template>
-        </q-banner>
+        <div class="text-h6">
+          Import spreadsheet information
+        </div>
+        <template v-slot:action>
+          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+        </template>
+      </q-banner>
       <q-card-section>
         <div class="text-subtitle2">
           The import will accept most spreadsheet types, such as xls, xlsx & ods, but NOT csv 
-          (which stricly isn't really a spreadsheet format)
+          (which strictly isn't a spreadsheet format)
         </div>
+      </q-card-section>
+      <q-card-section>
         <div class="text-subtitle2">
-          The event information is expected to be on a sheet named 'Events'
+          The information for long events is expected to be on a sheet named 'Long_Events'
         </div>
+        <div>
+          <q-img
+            src="~/assets/Long_Events_Sheet.png"
+            spinner-color="white"
+            style="width: 500px"
+          />
+        </div>
+      </q-card-section>
+      <q-card-section>
+        <div class="text-subtitle2">
+          The information for short events is expected to be on a sheet named 'Short_Events', and doesn't need the 'EventNodeNumber' column
+        </div>
+        <div>
+          <q-img
+            src="~/assets/Short_Events_Sheet.png"
+            spinner-color="white"
+            style="width: 500px"
+          />
+        </div>
+      </q-card-section>
+      <q-card-section>
         <div class="text-subtitle2">
           The node information is expected to be on a sheet named 'Nodes'
+        </div>
+        <div>
+          <q-img
+            src="~/assets/Nodes_sheet.png"
+            spinner-color="white"
+            style="width: 500px"
+          />
+        </div>
+      </q-card-section>
+      <q-card-section>
+        <div class="text-subtitle2">
+          NOTE: the column names are case sensitive and have no spaces, but the order of the columns doesn't matter, as it looks for columns by name, not position
+        </div>
+        <div class="text-subtitle2">
+          Additional columns with different headers are ignored, as are other sheets with different names
         </div>
       </q-card-section>
     </q-card>
@@ -100,7 +138,16 @@
         </q-banner>
       <q-card-section>
         <div class="text-subtitle2">
-          FCU confiduration files contain names for events and nodes, but doesn't support groups
+          FCU confiduration files contain names for events, nodes and modules, but doesn't support groups
+        </div>
+        <div class="text-subtitle2">
+          FCU confiduration files are xml, and the elements used are as follows
+        </div>
+        <div class="text-subtitle2">
+          For events, the elements used are: eventNode, eventValue and eventName
+        </div>
+        <div class="text-subtitle2">
+          For nodes, the elements used are: nodeNum, nodeName and moduleName
         </div>
       </q-card-section>
     </q-card>

@@ -35,7 +35,9 @@ export function importFCU(file, store, modeValue) {
   let eventRows = []
   try {
     fcuConfig.MergModuleDataSet.userEvents.forEach( event => {
-      addEventName(store, event.eventNode._text, event.eventId, event.eventName._text, modeValue)
+      if (event.eventValue._text !=0){
+        addEventName(store, event.eventNode._text, event.eventValue._text, event.eventName._text, modeValue)
+      }
     })
   } catch (err){
     console.log(name + ': Import Node: userEvents ' + err )        
@@ -53,17 +55,30 @@ export function importSPREADSHEET(file, store, modeValue) {
     if (workbook.Workbook != undefined){
       for (let i =0; i< workbook.SheetNames.length; i++){
 //        console.log (name + "importSPREADSHEET: SheetName: " + workbook.SheetNames[i])
-        if (workbook.SheetNames[i].toUpperCase() == "EVENTS"){
+        if (workbook.SheetNames[i].toUpperCase() == "SHORT_EVENTS"){
           importedEvents = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
-          console.log (name + "importSPREADSHEET: workbook number of Events  imported: " + importedEvents.length)
+          console.log (name + "importSPREADSHEET: workbook number of Short Events imported: " + importedEvents.length)
           for ( let j=0; j < importedEvents.length; j++) {
             if (importedEvents[j].eventNumber != undefined){
               console.log (name + `importSPREADSHEET: workbook events: 
                 ${importedEvents[j].eventName}  
-                ${importedEvents[j].nodeNumber}:${importedEvents[j].eventNumber}`)
+                ${importedEvents[j].eventNumber}`)
             }
-            addEventName(store, importedEvents[j].nodeNumber, importedEvents[j].eventNumber, importedEvents[j].eventName, modeValue)
-            addEventGroup(store, importedEvents[j].nodeNumber, importedEvents[j].eventNumber, importedEvents[j].eventGroup, modeValue)
+            addEventName(store, 0, importedEvents[j].eventNumber, importedEvents[j].eventName, modeValue)
+            addEventGroup(store, 0, importedEvents[j].eventNumber, importedEvents[j].eventGroup, modeValue)
+          }
+        }
+        if (workbook.SheetNames[i].toUpperCase() == "LONG_EVENTS"){
+          importedEvents = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
+          console.log (name + "importSPREADSHEET: workbook number of Long Events imported: " + importedEvents.length)
+          for ( let j=0; j < importedEvents.length; j++) {
+            if (importedEvents[j].eventNumber != undefined){
+              console.log (name + `importSPREADSHEET: workbook events: 
+                ${importedEvents[j].eventName}  
+                ${importedEvents[j].eventNodeNumber}:${importedEvents[j].eventNumber}`)
+            }
+            addEventName(store, importedEvents[j].eventNodeNumber, importedEvents[j].eventNumber, importedEvents[j].eventName, modeValue)
+            addEventGroup(store, importedEvents[j].eventNodeNumber, importedEvents[j].eventNumber, importedEvents[j].eventGroup, modeValue)
           }
         }
         if (workbook.SheetNames[i].toUpperCase() == "NODES"){
@@ -92,25 +107,27 @@ export function importSPREADSHEET(file, store, modeValue) {
 //
 //
 function addEventName(store, eventNodeNumber, eventNumber, eventName, modeValue){
-  let eventIdentifier = decToHex(eventNodeNumber,4) + decToHex(eventNumber,4)
-  if (store.state.layout.eventDetails[eventIdentifier] == undefined){
-    // event doesn't exist
-    store.setters.event_name(eventIdentifier, eventName)
-    console.log("new event: " + eventIdentifier + ' addEventName: ' + eventName)
-  } else if ((store.state.layout.eventDetails[eventIdentifier].name == undefined) ||
-    (store.state.layout.eventDetails[eventIdentifier].name.length < 1)){
-    // event name doesn't exist
-    store.setters.event_name(eventIdentifier, eventName)
-    console.log('Event: ' + eventIdentifier + ": addEventName: " + eventName + ' updated')
-  } else  if (store.state.layout.eventDetails[eventIdentifier].name == eventName) {
-    console.log('Event: ' + eventIdentifier + ": addEventName: " + eventName + ' match')
-    // do nothing
-  } else {
-    if (modeValue == "overwrite"){
+  if (eventNumber > 0){
+    let eventIdentifier = decToHex(eventNodeNumber,4) + decToHex(eventNumber,4)
+    if (store.state.layout.eventDetails[eventIdentifier] == undefined){
+      // event doesn't exist
       store.setters.event_name(eventIdentifier, eventName)
-      console.log('Event ' + eventIdentifier + ": addEventName: " + eventName + " overwrite")
+      console.log("new event: " + eventIdentifier + ' addEventName: ' + eventName)
+    } else if ((store.state.layout.eventDetails[eventIdentifier].name == undefined) ||
+      (store.state.layout.eventDetails[eventIdentifier].name.length < 1)){
+      // event name doesn't exist
+      store.setters.event_name(eventIdentifier, eventName)
+      console.log('Event: ' + eventIdentifier + ": addEventName: " + eventName + ' updated')
+    } else  if (store.state.layout.eventDetails[eventIdentifier].name == eventName) {
+      console.log('Event: ' + eventIdentifier + ": addEventName: " + eventName + ' match')
+      // do nothing
     } else {
-      console.log('Event ' + eventIdentifier + ": addEventName: " + eventName + " retain")
+      if (modeValue == "overwrite"){
+        store.setters.event_name(eventIdentifier, eventName)
+        console.log('Event ' + eventIdentifier + ": addEventName: " + eventName + " overwrite")
+      } else {
+        console.log('Event ' + eventIdentifier + ": addEventName: " + eventName + " retain")
+      }
     }
   }
 }
@@ -118,25 +135,27 @@ function addEventName(store, eventNodeNumber, eventNumber, eventName, modeValue)
 //
 //
 function addEventGroup(store, eventNodeNumber, eventNumber, eventGroup, modeValue){
-  let eventIdentifier = decToHex(eventNodeNumber,4) + decToHex(eventNumber,4)
-  if (store.state.layout.eventDetails[eventIdentifier] == undefined){
-    // event doesn't exist
-    store.setters.event_group(eventIdentifier, eventGroup)
-    console.log("new event: " + eventIdentifier + ' addEventGroup: ' + eventGroup)
-  } else if ((store.state.layout.eventDetails[eventIdentifier].group == undefined) ||
-    (store.state.layout.eventDetails[eventIdentifier].group.length < 1)){
-    // event name doesn't exist
-    store.setters.event_group(eventIdentifier, eventGroup)
-    console.log('Event: ' + eventIdentifier + ": addEventGroup: " + eventGroup + ' updated')
-  } else  if (store.state.layout.eventDetails[eventIdentifier].group == eventGroup) {
-    console.log('Event: ' + eventIdentifier + ": addEventGroup: " + eventGroup + ' match')
-    // do nothing
-  } else {
-    if (modeValue == "overwrite"){
+  if (eventNumber > 0){
+    let eventIdentifier = decToHex(eventNodeNumber,4) + decToHex(eventNumber,4)
+    if (store.state.layout.eventDetails[eventIdentifier] == undefined){
+      // event doesn't exist
       store.setters.event_group(eventIdentifier, eventGroup)
-      console.log('Event ' + eventIdentifier + ": addEventGroup: " + eventGroup + " overwrite")
+      console.log("new event: " + eventIdentifier + ' addEventGroup: ' + eventGroup)
+    } else if ((store.state.layout.eventDetails[eventIdentifier].group == undefined) ||
+      (store.state.layout.eventDetails[eventIdentifier].group.length < 1)){
+      // event name doesn't exist
+      store.setters.event_group(eventIdentifier, eventGroup)
+      console.log('Event: ' + eventIdentifier + ": addEventGroup: " + eventGroup + ' updated')
+    } else  if (store.state.layout.eventDetails[eventIdentifier].group == eventGroup) {
+      console.log('Event: ' + eventIdentifier + ": addEventGroup: " + eventGroup + ' match')
+      // do nothing
     } else {
-      console.log('Event ' + eventIdentifier + ": addEventGroup: " + eventGroup + " retain")
+      if (modeValue == "overwrite"){
+        store.setters.event_group(eventIdentifier, eventGroup)
+        console.log('Event ' + eventIdentifier + ": addEventGroup: " + eventGroup + " overwrite")
+      } else {
+        console.log('Event ' + eventIdentifier + ": addEventGroup: " + eventGroup + " retain")
+      }
     }
   }
 }

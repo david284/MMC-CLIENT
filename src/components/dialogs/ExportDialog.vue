@@ -81,14 +81,23 @@ const clickExport = async (filename) => {
   console.log(name + `: clickExport`)
 
   let eventDetails = store.state.layout.eventDetails
-  let events = []
+  let shortEvents = []
+  let longEvents = []
   for (let eventIdentifier of Object.keys(eventDetails).sort()) {
-    let output = []
-    output['eventName'] = eventDetails[eventIdentifier].name ? eventDetails[eventIdentifier].name : ''
-    output['nodeNumber'] = parseInt(eventIdentifier.slice(0,3), 16)
-    output['eventNumber'] = parseInt(eventIdentifier.slice(4,8), 16)
-    output['group'] = eventDetails[eventIdentifier].group
-    events.push(output)
+    if (eventIdentifier != '00000000'){
+      let output = []
+      let eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
+      output['eventName'] = eventDetails[eventIdentifier].name ? eventDetails[eventIdentifier].name : ''
+      output['eventNodeNumber'] = eventNodeNumber
+      output['eventNumber'] = parseInt(eventIdentifier.slice(4,8), 16)
+      output['eventGroup'] = eventDetails[eventIdentifier].group
+      if (eventNodeNumber == 0){
+        delete output.eventNodeNumber // not needed for short events
+        shortEvents.push(output)
+      } else {
+        longEvents.push(output)
+      }
+    }
   }
 
   let nodeDetails = store.state.layout.nodeDetails
@@ -97,24 +106,26 @@ const clickExport = async (filename) => {
     let output = []
     output['nodeName'] = nodeDetails[nodeNumber].name ? nodeDetails[nodeNumber].name : ''
     output['moduleName'] = nodeDetails[nodeNumber].moduleName    
-    output['nodeNumber'] = parseint(nodeNumber)
-    output['group'] = nodeDetails[nodeNumber].group
+    output['nodeNumber'] = parseInt(nodeNumber)
+    output['nodeGroup'] = nodeDetails[nodeNumber].group
     nodes.push(output)
   }
-
-  const eventsWorksheet = xlsx.utils.json_to_sheet(events);
+  const shortEventsWorksheet = xlsx.utils.json_to_sheet(shortEvents);
+  const longEventsWorksheet = xlsx.utils.json_to_sheet(longEvents);
   /* calculate column width */
-  const events_max_width = events.reduce((w, r) => Math.max(w, r.eventName.length), 20);
-  eventsWorksheet["!cols"] = [ { wch: events_max_width + 5 }, { wch: 20 }, { wch: 20 }, { wch: 20 } ];
+  const short_events_max_width = shortEvents.reduce((w, r) => Math.max(w, r.eventName.length), 20);
+  shortEventsWorksheet["!cols"] = [ { wch: short_events_max_width + 5 }, { wch: 20 }, { wch: 20 }, { wch: 20 } ];
+  const long_events_max_width = longEvents.reduce((w, r) => Math.max(w, r.eventName.length), 20);
+  longEventsWorksheet["!cols"] = [ { wch: long_events_max_width + 5 }, { wch: 20 }, { wch: 20 }, { wch: 20 } ];
   
   const nodesWorksheet = xlsx.utils.json_to_sheet(nodes);
   /* calculate column width */
   const nodes_max_width = nodes.reduce((w, r) => Math.max(w, r.nodeName.length), 20);
-  nodesWorksheet["!cols"] = [ { wch: events_max_width + 5 }, { wch: 20 }, { wch: 20 }, { wch: 20 } ];
+  nodesWorksheet["!cols"] = [ { wch: nodes_max_width + 5 }, { wch: 20 }, { wch: 20 }, { wch: 20 } ];
   
   const workbook = xlsx.utils.book_new();
-  xlsx.utils.book_append_sheet(workbook, eventsWorksheet, "Events");
-
+  xlsx.utils.book_append_sheet(workbook, shortEventsWorksheet, "Short_Events");
+  xlsx.utils.book_append_sheet(workbook, longEventsWorksheet, "Long_Events");
   xlsx.utils.book_append_sheet(workbook, nodesWorksheet, "Nodes");
 
   const fileName = store.state.layout.layoutDetails.title + ' export.ods'
