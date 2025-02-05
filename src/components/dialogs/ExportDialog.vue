@@ -80,28 +80,6 @@ Click event handlers
 const clickExport = async (filename) => {
   console.log(name + `: clickExport`)
 
-  let rows = [
-    { name: "George Washington", birthday: "1732-02-22" },
-    { name: "John Adams", birthday: "1735-10-19" }
-  ]
-
-  /*
-  let events = [
-    {"event": "00000001", 
-      "colour": "black",
-      "group": "",
-      "name": "Short event 1"
-    },
-    {"event": "00000002",
-      "colour": "black",
-      "group": "",
-      "name": "Short event 2"
-    }
-  ]
-    */
-
-//  console.log (name + ': rows ' + JSON.stringify(events))
-
   let eventDetails = store.state.layout.eventDetails
   let events = []
   for (let eventIdentifier of Object.keys(eventDetails).sort()) {
@@ -119,7 +97,7 @@ const clickExport = async (filename) => {
     let output = []
     output['nodeName'] = nodeDetails[nodeNumber].name ? nodeDetails[nodeNumber].name : ''
     output['moduleName'] = nodeDetails[nodeNumber].moduleName    
-    output['nodeNumber'] = nodeNumber
+    output['nodeNumber'] = parseint(nodeNumber)
     output['group'] = nodeDetails[nodeNumber].group
     nodes.push(output)
   }
@@ -142,20 +120,7 @@ const clickExport = async (filename) => {
   const fileName = store.state.layout.layoutDetails.title + ' export.ods'
   xlsx.writeFile(workbook, fileName, { bookType:'ods', compression: true, cellStyles: true });
 
-  /*
-    await sleep(500)
-    let text = JSON.stringify(store.state.exported_MDF, null, "  ")
-    let element = document.createElement('a');
-    element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(text));
-    element.setAttribute('download', filename);
-
-    element.style.display = 'none';
-    document.body.appendChild(element);
-
-    element.click();
-    document.body.removeChild(element);
-    */
-  }
+}
 
 
 </script>
