@@ -81,8 +81,8 @@ const clickExport = async (filename) => {
   console.log(name + `: clickExport`)
 
   let eventDetails = store.state.layout.eventDetails
-  let shortEvents = []
   let longEvents = []
+  let shortEvents = []
   for (let eventIdentifier of Object.keys(eventDetails).sort()) {
     if (eventIdentifier != '00000000'){
       let output = []
@@ -110,13 +110,13 @@ const clickExport = async (filename) => {
     output['nodeGroup'] = nodeDetails[nodeNumber].group
     nodes.push(output)
   }
-  const shortEventsWorksheet = xlsx.utils.json_to_sheet(shortEvents);
   const longEventsWorksheet = xlsx.utils.json_to_sheet(longEvents);
+  const shortEventsWorksheet = xlsx.utils.json_to_sheet(shortEvents);
   /* calculate column width */
-  const short_events_max_width = shortEvents.reduce((w, r) => Math.max(w, r.eventName.length), 20);
-  shortEventsWorksheet["!cols"] = [ { wch: short_events_max_width + 5 }, { wch: 20 }, { wch: 20 }, { wch: 20 } ];
   const long_events_max_width = longEvents.reduce((w, r) => Math.max(w, r.eventName.length), 20);
   longEventsWorksheet["!cols"] = [ { wch: long_events_max_width + 5 }, { wch: 20 }, { wch: 20 }, { wch: 20 } ];
+  const short_events_max_width = shortEvents.reduce((w, r) => Math.max(w, r.eventName.length), 20);
+  shortEventsWorksheet["!cols"] = [ { wch: short_events_max_width + 5 }, { wch: 20 }, { wch: 20 }, { wch: 20 } ];
   
   const nodesWorksheet = xlsx.utils.json_to_sheet(nodes);
   /* calculate column width */
@@ -124,9 +124,9 @@ const clickExport = async (filename) => {
   nodesWorksheet["!cols"] = [ { wch: nodes_max_width + 5 }, { wch: 20 }, { wch: 20 }, { wch: 20 } ];
   
   const workbook = xlsx.utils.book_new();
-  xlsx.utils.book_append_sheet(workbook, shortEventsWorksheet, "Short_Events");
-  xlsx.utils.book_append_sheet(workbook, longEventsWorksheet, "Long_Events");
   xlsx.utils.book_append_sheet(workbook, nodesWorksheet, "Nodes");
+  xlsx.utils.book_append_sheet(workbook, longEventsWorksheet, "Long_Events");
+  xlsx.utils.book_append_sheet(workbook, shortEventsWorksheet, "Short_Events");
 
   const fileName = store.state.layout.layoutDetails.title + ' export.ods'
   xlsx.writeFile(workbook, fileName, { bookType:'ods', compression: true, cellStyles: true });
