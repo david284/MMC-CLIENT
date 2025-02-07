@@ -4,7 +4,7 @@
     <q-card style="min-width: 350px; min-height: 200px;">
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
-          Add event for node {{ store.getters.node_name(props.nodeNumber) }}
+          {{ title }}
         </div>
         <template v-slot:action>
           <q-btn flat color="white" size="md" label="Close" v-close-popup/>
@@ -98,7 +98,6 @@
         :newEvent = true
   />
 
-
 </template>
 
 <script setup>
@@ -132,6 +131,7 @@ const eventAlreadyExistsInLayoutData = ref(false)
 var eventType = ref()
 const showEventVariablesDialog = ref(false)
 const new_event_Identifier = ref("")
+const title = ref('')
 
 var entered_event_identifier = null
 
@@ -142,12 +142,27 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
+//
+//
 const model = computed({
       get() { return props.modelValue },
       set(newValue) { emit('update:modelValue', newValue) }
     })
 
+//
+//
+watch (model, () => {
+  if (model.value == true){
+    if (props.nodeNumber == undefined){
+      title.value = "Add event"
+    } else {
+      title.value = "Add event for node " + store.getters.node_name(props.nodeNumber)
+    }
+  }
+})
 
+//
+//
 watch(newEventNumber, () => {
 //  console.log(name + `: WATCH newEventNumber`)
   // enable add event button if conditions met
@@ -156,6 +171,8 @@ watch(newEventNumber, () => {
   }
 })
 
+//
+//
 watch(newEventNodeNumber, () => {
 //  console.log(name + `: WATCH newEventNodeNumber`)
   // enable add event button if conditions met
@@ -164,7 +181,8 @@ watch(newEventNodeNumber, () => {
   }
 })
 
-
+//
+//
 const checkLayoutData = (eventIdentifier) => {
   if (eventIdentifier){
     if (eventIdentifier in store.state.layout.eventDetails){
@@ -175,7 +193,8 @@ const checkLayoutData = (eventIdentifier) => {
   }
 }
 
-
+//
+//
 onUpdated(() =>{
 //  console.log(name + ` OnUpdated`)
   // check if this module actually supports any stored events
@@ -200,10 +219,11 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
-
+//
+//
 const clickAddEvent = () => {
   console.log(name + `: clickAddEvent ` + newEventNodeNumber.value + ' ' + newEventNumber.value)
-
+  //
   // adding an event to an actual node, create a new event & open variables dialog
   new_event_Identifier.value = entered_event_identifier
   if (props.nodeNumber != undefined){
@@ -211,17 +231,17 @@ const clickAddEvent = () => {
       showEventVariablesDialog.value = true
     }
   }
-
+  //
   // always add it to Layout Data if it doesn't already exist
   if (!eventAlreadyExistsInLayoutData.value){
     store.setters.event_name(new_event_Identifier.value, newEventName.value)
     store.setters.event_group(new_event_Identifier.value, newEventGroup.value)
   }
-
   model.value = false
 }
 
-
+//
+//
 const clickNext = () => {
   console.log(name + `: clickNext `)
 
@@ -262,7 +282,6 @@ const clickNext = () => {
     // doesn't alread exist so enable
     addEventEnabled.value = true
   }
-
 }
 
 </script>

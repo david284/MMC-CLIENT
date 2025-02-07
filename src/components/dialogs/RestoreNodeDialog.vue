@@ -235,11 +235,16 @@ const restoreNodeVariables = async () => {
   inProgress.value = true
   try{
     let nodeVariables = restoredNode.value.nodeVariables
-    for (let i=1; i<nodeVariables.length-1; i++){
-      //console.log(name + `: Node variable ${i} ${nodeVariables[i]}`)
-      let reLoad = false  // don't readback NV
-      store.methods.update_node_variable(props.nodeNumber, i, nodeVariables[i], reLoad)
-      await sleep(100)  // allow a little time between requests
+    // ensure variables are restored in ascending index order
+    for (let index of Object.keys(nodeVariables).sort(function(a, b){return a - b})) {
+      if (index > 0)
+      {
+        let variable = nodeVariables[index]
+        console.log(name + `: restoreNodeVariables: ${index} ${variable}` )
+        let reLoad = false  // don't reLoad variables after teaching
+        store.methods.update_node_variable(props.nodeNumber, index, variable, reLoad)
+        await sleep(100)  // allow a little time between requests
+      }
     }
   } catch (err){
     console.log(name + ': restoreNodeVariables: ' + err)
@@ -276,8 +281,6 @@ const restoreEvents = async () => {
   while ((Date.now() - store.state.cbusTrafficTimeStamp) < 1000) {
     await sleep(10)
   }
-  // now lets refresh all events 
-  store.methods.request_all_node_events(props.nodeNumber)
   inProgress.value = false
 }
 
@@ -369,6 +372,10 @@ const clickRestore = async (row) => {
     restoreStatus.value = "restore in progress"
     await restoreNodeVariables()
     await restoreEvents()
+    // now lets refresh all node variables
+    store.methods.request_all_node_events(props.nodeNumber)
+    // now lets refresh all events 
+    store.methods.request_all_node_events(props.nodeNumber)
     restoreStatus.value = "restore complete\n(select a backup to run again)"
   } else {
     const result = $q.notify({
