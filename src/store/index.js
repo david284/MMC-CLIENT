@@ -198,12 +198,10 @@ const methods = {
     socket.emit('RQNPN', {"nodeNumber": nodeNumber, "parameter": parameter})
   },
   //
-  request_all_node_variables(nodeNumber, variables, delay, start) {
+  request_all_node_variables(nodeNumber, variables) {
     socket.emit('REQUEST_ALL_NODE_VARIABLES', {
       "nodeNumber": nodeNumber,
-      "variables": variables,
-      "delay": delay,
-      "start": start
+      "variables": variables
     })
     console.log(`REQUEST_ALL_NODE_VARIABLES: node ` + nodeNumber + ' variables ' + variables)
   },

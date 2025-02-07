@@ -60,9 +60,7 @@ const checkNodeVariables = async (nodeNumber) => {
   } else {
     store.methods.request_all_node_variables(
       nodeNumber,
-      store.state.nodes[nodeNumber].parameters[6],
-      100,
-      1
+      store.state.nodes[nodeNumber].parameters[6]
     )
     // set a count down based on number of node variables
     // but add minimum offset
