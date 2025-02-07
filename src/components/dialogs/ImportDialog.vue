@@ -107,6 +107,9 @@
         <div class="text-subtitle2">
           The node information is expected to be on a sheet named 'Nodes'
         </div>
+        <div class="text-subtitle2">
+          'moduleName' is optional, and will be updated when the node connects anyway, but useful if the node isn't connected
+        </div>
         <div>
           <q-img
             src="~/assets/Nodes_sheet.png"

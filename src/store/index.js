@@ -347,6 +347,7 @@ const methods = {
   //
   update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue, reLoad) {
     state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
+    if (reLoad != false){reLoad = true}
     
     //console.log(`NVsetNeedsLearnMode : ` + JSON.stringify(state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode))
     if((state.nodeDescriptors[nodeNumber])
@@ -367,20 +368,7 @@ const methods = {
         "reLoad":reLoad
        })
     }
-  },
-  //
-  update_node_variable_in_learn_mode(nodeNumber, nodeVariableIndex, nodeVariableValue) {
-    console.log(`MAIN Update Node Variable in Learn Mode:`+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue)
-    state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
-    //if (nodeVariableValue !="" ) {
-      socket.emit('UPDATE_NODE_VARIABLE_IN_LEARN_MODE', {
-        "nodeNumber": nodeNumber,
-        "variableId": nodeVariableIndex,
-        "variableValue": parseInt(nodeVariableValue)
-      })
-    //}
   }
-
 }
 
 //-----------------------------------------------------------------------------
