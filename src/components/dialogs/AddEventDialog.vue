@@ -1,10 +1,10 @@
 <template>
 
   <q-dialog v-model='model' persistent>
-    <q-card style="min-width: 350px; min-height: 200px;">
+    <q-card style="width: 600px; min-height: 200px;">
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
-          Add event for node {{ store.getters.node_name(props.nodeNumber) }}
+          {{ title }}
         </div>
         <template v-slot:action>
           <q-btn flat color="white" size="md" label="Close" v-close-popup/>
@@ -27,43 +27,58 @@
             <q-space/>
         </q-card-section>
 
-        <q-card-section v-if="(eventType == 'long')">
-          <q-card-section class="q-pa-none q-ma-none">
-            <div class="text-body">Consumed events will need the number of the node that produces the event</div>
-            <div class="text-body">Events produced by this node will need the number of this node, as well as editing the event variables</div>
-          </q-card-section>
-          <q-card-section class="q-pa-none q-ma-none">
-            <div class="text-h6">Node Number</div>
-          </q-card-section>
-          <q-card-section class="q-pa-none q-ma-none">
-            <q-input dense v-model="newEventNodeNumber" autofocus />
-          </q-card-section>
-          <q-card-section class="q-pa-none q-ma-none">
-            <div class="text-h6">Event Number</div>
-          </q-card-section>
-          <q-card-section class="q-pa-none q-ma-none">
-            <q-input dense v-model="newEventNumber" />
-          </q-card-section>
-        </q-card-section>
+        <q-card style="min-height: 280px;">
 
-        <q-card-section v-if="(eventType == 'short')">
-          <q-card-section class="q-pa-none q-ma-none">
-            <div class="text-h6">Device Number</div>
+          <q-card-section style="min-height: 80px;">
+            <q-card-section v-if="(eventType == 'long')" class="q-pa-none q-ma-none">
+              <div class="text-body">Consumed events will need the number of the node that produces the event</div>
+              <div class="text-body">Events produced by this node will need the number of this node, as well as editing the event variables</div>
+            </q-card-section>
           </q-card-section>
-          <q-card-section class="q-pa-none q-ma-none">
-            <q-input dense v-model="newEventNumber" autofocus />
-          </q-card-section>
-        </q-card-section>
+
+          <q-card class="q-py-none q-ma-xs row">
+
+            <q-card style="width: 200px;">
+              <q-card-section v-if="(eventType == 'long')">
+                <q-card-section class="q-pa-none q-ma-none">
+                  <div class="text-h6">Node Number</div>
+                </q-card-section>
+                <q-card-section class="q-pa-none q-ma-none">
+                  <q-input dense v-model="newEventNodeNumber" type="number" autofocus />
+                </q-card-section>
+                <q-card-section class="q-pa-none q-ma-none">
+                  <div class="text-h6">Event Number</div>
+                </q-card-section>
+                <q-card-section class="q-pa-none q-ma-none">
+                  <q-input dense v-model="newEventNumber" type="number" />
+                </q-card-section>
+              </q-card-section>
+
+              <q-card-section v-if="(eventType == 'short')">
+                <q-card-section class="q-pa-none q-ma-none">
+                  <div class="text-h6">Device Number</div>
+                </q-card-section>
+                <q-card-section class="q-pa-none q-ma-none">
+                  <q-input dense v-model="newEventNumber" type="number" autofocus />
+                </q-card-section>
+              </q-card-section>
+            </q-card>
+
+            <q-card-section style="width: 350px;">
+              <q-card-actions v-if="(!addEventEnabled && (eventType != null))" align="center" class="q-pa-none q-ma-none">
+                <q-btn :disable="!eventEntered" color="blue" label="check event" v-close-popup @click="clickCheckEvent()"/>
+              </q-card-actions>
+              <q-card-section v-if="(addEventEnabled)" class="q-pa-none q-ma-none">
+                <div class="text-h6" style="color:dodgerblue;">Event OK</div>
+              </q-card-section>
+            </q-card-section>
+
+          </q-card>
+
+        </q-card>
 
 
-        <q-card-section v-if="(!addEventEnabled && (eventType != null))">
-          <q-card-actions align="right" class="q-pa-none q-ma-none">
-            <q-btn :disable="!eventEntered" color="blue" label="Next" v-close-popup @click="clickNext()"/>
-          </q-card-actions>
-        </q-card-section>
-
-
-        <q-card-section v-if="addEventEnabled">
+        <q-card-section>
           <div class="text-body">Event Name and Event Group are optional values</div>
           <div class="text-body">Input will be disabled if previously entered</div>
           <q-card-section class="q-pa-none q-ma-none">
@@ -80,7 +95,7 @@
           </q-card-section>
         </q-card-section>
 
-        <q-card-section v-if="addEventEnabled">
+        <q-card-section>
           <q-card-actions align="right" class=" q-pa-none q-ma-none">
             <q-btn :disable="!addEventEnabled" color="blue" label="Add Event" v-close-popup @click="clickAddEvent()"/>
           </q-card-actions>
@@ -97,7 +112,6 @@
         :eventIdentifier = new_event_Identifier
         :newEvent = true
   />
-
 
 </template>
 
@@ -129,9 +143,10 @@ const addEventEnabled = ref(false)
 const eventEntered = ref(false)
 const storedEventsSupported = ref(true)
 const eventAlreadyExistsInLayoutData = ref(false)
-var eventType = ref()
+const eventType = ref()
 const showEventVariablesDialog = ref(false)
 const new_event_Identifier = ref("")
+const title = ref('')
 
 var entered_event_identifier = null
 
@@ -142,12 +157,28 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
+//
+//
 const model = computed({
       get() { return props.modelValue },
       set(newValue) { emit('update:modelValue', newValue) }
     })
 
+//
+//
+watch (model, () => {
+  if (model.value == true){
+    eventType.value = undefined
+    if (props.nodeNumber == undefined){
+      title.value = "Add event"
+    } else {
+      title.value = "Add event for node " + store.getters.node_name(props.nodeNumber)
+    }
+  }
+})
 
+//
+//
 watch(newEventNumber, () => {
 //  console.log(name + `: WATCH newEventNumber`)
   // enable add event button if conditions met
@@ -156,6 +187,8 @@ watch(newEventNumber, () => {
   }
 })
 
+//
+//
 watch(newEventNodeNumber, () => {
 //  console.log(name + `: WATCH newEventNodeNumber`)
   // enable add event button if conditions met
@@ -164,7 +197,8 @@ watch(newEventNodeNumber, () => {
   }
 })
 
-
+//
+//
 const checkLayoutData = (eventIdentifier) => {
   if (eventIdentifier){
     if (eventIdentifier in store.state.layout.eventDetails){
@@ -175,7 +209,8 @@ const checkLayoutData = (eventIdentifier) => {
   }
 }
 
-
+//
+//
 onUpdated(() =>{
 //  console.log(name + ` OnUpdated`)
   // check if this module actually supports any stored events
@@ -200,10 +235,11 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
-
+//
+//
 const clickAddEvent = () => {
   console.log(name + `: clickAddEvent ` + newEventNodeNumber.value + ' ' + newEventNumber.value)
-
+  //
   // adding an event to an actual node, create a new event & open variables dialog
   new_event_Identifier.value = entered_event_identifier
   if (props.nodeNumber != undefined){
@@ -211,18 +247,18 @@ const clickAddEvent = () => {
       showEventVariablesDialog.value = true
     }
   }
-
+  //
   // always add it to Layout Data if it doesn't already exist
   if (!eventAlreadyExistsInLayoutData.value){
     store.setters.event_name(new_event_Identifier.value, newEventName.value)
     store.setters.event_group(new_event_Identifier.value, newEventGroup.value)
   }
-
   model.value = false
 }
 
-
-const clickNext = () => {
+//
+//
+const clickCheckEvent = () => {
   console.log(name + `: clickNext `)
 
   // to program a short event, the node number must be zero
@@ -262,7 +298,6 @@ const clickNext = () => {
     // doesn't alread exist so enable
     addEventEnabled.value = true
   }
-
 }
 
 </script>

@@ -12,6 +12,7 @@ const name = "store"
 
 const state = reactive({
   backups_list: [],
+  busConnection_notify: true,
   busEvents: {},
   cbus_errors: {},
   colours: ["black", "red", "pink", "purple", "deep-purple", "indigo", "blue", "light-blue", "cyan", "teal", "green", "light-green", "lime", "yellow", "amber", "orange", "deep-orange", "brown", "blue-grey", "grey"],
@@ -197,12 +198,10 @@ const methods = {
     socket.emit('RQNPN', {"nodeNumber": nodeNumber, "parameter": parameter})
   },
   //
-  request_all_node_variables(nodeNumber, variables, delay, start) {
+  request_all_node_variables(nodeNumber, variables) {
     socket.emit('REQUEST_ALL_NODE_VARIABLES', {
       "nodeNumber": nodeNumber,
-      "variables": variables,
-      "delay": delay,
-      "start": start
+      "variables": variables
     })
     console.log(`REQUEST_ALL_NODE_VARIABLES: node ` + nodeNumber + ' variables ' + variables)
   },
@@ -346,6 +345,7 @@ const methods = {
   //
   update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue, reLoad) {
     state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
+    if (reLoad != false){reLoad = true}
     
     //console.log(`NVsetNeedsLearnMode : ` + JSON.stringify(state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode))
     if((state.nodeDescriptors[nodeNumber])
@@ -366,20 +366,7 @@ const methods = {
         "reLoad":reLoad
        })
     }
-  },
-  //
-  update_node_variable_in_learn_mode(nodeNumber, nodeVariableIndex, nodeVariableValue) {
-    console.log(`MAIN Update Node Variable in Learn Mode:`+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue)
-    state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
-    //if (nodeVariableValue !="" ) {
-      socket.emit('UPDATE_NODE_VARIABLE_IN_LEARN_MODE', {
-        "nodeNumber": nodeNumber,
-        "variableId": nodeVariableIndex,
-        "variableValue": parseInt(nodeVariableValue)
-      })
-    //}
   }
-
 }
 
 //-----------------------------------------------------------------------------

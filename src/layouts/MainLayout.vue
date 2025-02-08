@@ -6,6 +6,9 @@
         <q-btn flat dense icon="menu">
           <q-menu auto-close>
             <q-list style="min-width: 100px">
+              <q-item clickable @click="clickExport()">
+                <q-item-section>Export</q-item-section>
+              </q-item>
               <q-item clickable @click="clickImport()">
                 <q-item-section>Import</q-item-section>
               </q-item>
@@ -125,6 +128,7 @@
 
   <busTrafficDialog v-model='showBusTrafficDialog' />
   <cbusErrorsDialog v-model='showCbusErrorsDialog' />
+  <ExportDialog v-model='showExportDialog' />
   <jsonDialog v-model='showJsonDialog' />
   <ImportDialog v-model='showImportDialog' />
   <modifiedGridConnectDialog v-model='showModifiedGridConnectDialog'
@@ -160,6 +164,7 @@ import { date, useQuasar, scroll } from 'quasar'
 import nodesView from "components/NodesView"
 import busTrafficDialog from "components/dialogs/BusTrafficDialog";
 import cbusErrorsDialog from "components/dialogs/CbusErrorsDialog";
+import ExportDialog from "components/dialogs/ExportDialog";
 import jsonDialog from "components/dialogs/JsonDialog";
 import ImportDialog from "components/dialogs/ImportDialog";
 import modifiedGridConnectDialog from "components/dialogs/ModifiedGridConnectDialog";
@@ -180,6 +185,7 @@ const busMessage = ref({})
 const leftDrawerOpen = ref(false)
 const showBusTrafficDialog = ref(false)
 const showCbusErrorsDialog = ref(false)
+const showExportDialog = ref(false)
 const showJsonDialog = ref(false)
 const showImportDialog = ref(false)
 const showModifiedGridConnectDialog = ref(false)
@@ -287,19 +293,27 @@ store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber, moduleName) => {
 
 store.eventBus.on('SERVER_STATUS_EVENT', (serverStatus) => {
 //  console.log(name + ': SERVER_STATUS_EVENT ' + JSON.stringify(serverStatus))
-  try{
-    if (serverStatus.busConnection.state == false){
-      $q.notify({
-        message: 'Server has no connection to the CAN BUS',
-        caption: 'attempting to re-connect',
-        timeout: 2000,
-        type: 'warning',
-        position: 'center',
-        actions: [ { label: 'Dismiss' } ]
-      })
+  if(store.state.busConnection_notify){
+    try{
+      if (serverStatus.busConnection.state == false){
+        $q.notify({
+          message: 'Server has no connection to the CAN BUS',
+          caption: 'attempting to re-connect',
+          timeout: 2000,
+          type: 'warning',
+          position: 'center',
+          actions: [ 
+            { label: `Don't remind me again`, 
+              handler: () => { store.state.busConnection_notify = false }  
+            }, 
+            { label: 'Dismiss' } 
+          ]
+        })
+      }
+      
+    } catch(err){
+      console.log(name + ': SERVER_STATUS_EVENT: ' + err)    
     }
-  } catch(err){
-    console.log(name + ': SERVER_STATUS_EVENT: ' + err)    
   }
 })
 
@@ -319,32 +333,43 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
+//
+//
 const clickBusEventsView = () => {
   console.log(name + ': clickBusEventsView')
   selectedView.value = 'BusEventsView'
 }
 
+//
+//
 const clickEventsView = () => {
   console.log(name + ': clickEventView')
   selectedView.value = 'EventsView'
 }
 
+//
+//
 const clickNodesView = () => {
   console.log(name + ': clickNodeView')
   selectedView.value = 'NodesView'
 }
 
+//
+//
 const clickCbusErrors = () => {
   console.log(name + ': clickCbusErrors')
   showCbusErrorsDialog.value = true
 }
 
+//
+//
 const clickExample = () => {
   console.log(name + `: clickExample`)
   showDialogExampleCompositionAPI.value = true
 }
 
-
+//
+//
 const clickExit = () => {
   console.log(name + `: clickExit`)
   const result = $q.notify({
@@ -362,21 +387,36 @@ const clickExit = () => {
   })
 }
 
+//
+//
+const clickExport = () => {
+  console.log(name + ': clickExport')
+  showExportDialog.value = true
+}
+
+//
+//
 const clickiframe = () => {
   console.log(name + ': clickiframe')
   showiFrameDialog.value = true
 }
 
+//
+//
 const clickJson = () => {
   console.log(name + ': clickJson')
   showJsonDialog.value = true
 }
 
+//
+//
 const clickImport = () => {
   console.log(name + ': clickImport')
   showImportDialog.value = true
 }
 
+//
+//
 const clickSingleBusEvent = (message) => {
   console.log(name + ': clickSingleBusEvent')
   busMessage.value = message
@@ -386,11 +426,12 @@ const clickSingleBusEvent = (message) => {
 //  showBusTrafficDialog.value = true
 }
 
+//
+//
 const clickSystem = () => {
   console.log(name + ': clickSystem')
   showSystemDialog.value = true
 }
-
 
 </script>
 

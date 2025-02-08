@@ -1,0 +1,18 @@
+
+Item,S Event,Group
+SoD ,8,Service
+SENS ,9,Service
+Point No. 1 & 2 ON/OFF,21,Points
+Point No. 3 & 4 ON/OFF,23,Points
+Point No. 5 ON/OFF,25,Points
+Point No. 6 ON/OFF,26,Points
+Point sense 1 & 2,121,Point Sense
+Point sense 3 & 4,123,Point Sense
+Point sense 5,125,Point Sense
+Point sense 6,126,Point Sense
+DCC fault CRANE FY,51,Faults
+DCC fault CRANE,52,Faults
+DCC fault FACTORY,53,Faults
+DCC fault FACTORY FY,54,Faults
+Inner Track Status,201,Message
+Outer Track Status,202,Message

@@ -46,12 +46,7 @@ const variableValue = computed({
     return store.state.nodes[props.nodeNumber].nodeVariables[props.variableIndex]
   },
   set(newValue) {
-    //console.log(`NewValue : ${newValue}`)
-    if (props.learn) {
-      store.methods.update_node_variable_in_learn_mode(props.nodeNumber, props.variableIndex, newValue)
-    } else {
-      store.methods.update_node_variable(props.nodeNumber, props.variableIndex, newValue)
-    }
+    store.methods.update_node_variable(props.nodeNumber, props.variableIndex, newValue)
   }
 })
 
@@ -71,11 +66,7 @@ const update_checked = () => {
 //    console.log(`bit ${bitArray[props.bit]} cleared, new byte value ${byteValue}`)
   }
   //store.methods.update_node_variable(props.NodeNumber, props.VariableIndex, byteValue)
-  if (props.learn) {
-    store.methods.update_node_variable_in_learn_mode(props.nodeNumber, props.variableIndex, byteValue)
-  } else {
-    store.methods.update_node_variable(props.nodeNumber, props.variableIndex, byteValue)
-  }
+  store.methods.update_node_variable(props.nodeNumber, props.variableIndex, byteValue)
 
 }
 
