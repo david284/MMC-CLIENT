@@ -1,7 +1,7 @@
 <template>
 
   <q-dialog v-model='model' persistent>
-    <q-card style="min-width: 350px; min-height: 200px;">
+    <q-card style="width: 600px; min-height: 200px;">
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
           {{ title }}
@@ -27,43 +27,58 @@
             <q-space/>
         </q-card-section>
 
-        <q-card-section v-if="(eventType == 'long')">
-          <q-card-section class="q-pa-none q-ma-none">
-            <div class="text-body">Consumed events will need the number of the node that produces the event</div>
-            <div class="text-body">Events produced by this node will need the number of this node, as well as editing the event variables</div>
-          </q-card-section>
-          <q-card-section class="q-pa-none q-ma-none">
-            <div class="text-h6">Node Number</div>
-          </q-card-section>
-          <q-card-section class="q-pa-none q-ma-none">
-            <q-input dense v-model="newEventNodeNumber" autofocus />
-          </q-card-section>
-          <q-card-section class="q-pa-none q-ma-none">
-            <div class="text-h6">Event Number</div>
-          </q-card-section>
-          <q-card-section class="q-pa-none q-ma-none">
-            <q-input dense v-model="newEventNumber" />
-          </q-card-section>
-        </q-card-section>
+        <q-card style="min-height: 280px;">
 
-        <q-card-section v-if="(eventType == 'short')">
-          <q-card-section class="q-pa-none q-ma-none">
-            <div class="text-h6">Device Number</div>
+          <q-card-section style="min-height: 80px;">
+            <q-card-section v-if="(eventType == 'long')" class="q-pa-none q-ma-none">
+              <div class="text-body">Consumed events will need the number of the node that produces the event</div>
+              <div class="text-body">Events produced by this node will need the number of this node, as well as editing the event variables</div>
+            </q-card-section>
           </q-card-section>
-          <q-card-section class="q-pa-none q-ma-none">
-            <q-input dense v-model="newEventNumber" autofocus />
-          </q-card-section>
-        </q-card-section>
+
+          <q-card class="q-py-none q-ma-xs row">
+
+            <q-card style="width: 200px;">
+              <q-card-section v-if="(eventType == 'long')">
+                <q-card-section class="q-pa-none q-ma-none">
+                  <div class="text-h6">Node Number</div>
+                </q-card-section>
+                <q-card-section class="q-pa-none q-ma-none">
+                  <q-input dense v-model="newEventNodeNumber" type="number" autofocus />
+                </q-card-section>
+                <q-card-section class="q-pa-none q-ma-none">
+                  <div class="text-h6">Event Number</div>
+                </q-card-section>
+                <q-card-section class="q-pa-none q-ma-none">
+                  <q-input dense v-model="newEventNumber" type="number" />
+                </q-card-section>
+              </q-card-section>
+
+              <q-card-section v-if="(eventType == 'short')">
+                <q-card-section class="q-pa-none q-ma-none">
+                  <div class="text-h6">Device Number</div>
+                </q-card-section>
+                <q-card-section class="q-pa-none q-ma-none">
+                  <q-input dense v-model="newEventNumber" type="number" autofocus />
+                </q-card-section>
+              </q-card-section>
+            </q-card>
+
+            <q-card-section style="width: 350px;">
+              <q-card-actions v-if="(!addEventEnabled && (eventType != null))" align="center" class="q-pa-none q-ma-none">
+                <q-btn :disable="!eventEntered" color="blue" label="check event" v-close-popup @click="clickCheckEvent()"/>
+              </q-card-actions>
+              <q-card-section v-if="(addEventEnabled)" class="q-pa-none q-ma-none">
+                <div class="text-h6" style="color:dodgerblue;">Event OK</div>
+              </q-card-section>
+            </q-card-section>
+
+          </q-card>
+
+        </q-card>
 
 
-        <q-card-section v-if="(!addEventEnabled && (eventType != null))">
-          <q-card-actions align="right" class="q-pa-none q-ma-none">
-            <q-btn :disable="!eventEntered" color="blue" label="Next" v-close-popup @click="clickNext()"/>
-          </q-card-actions>
-        </q-card-section>
-
-
-        <q-card-section v-if="addEventEnabled">
+        <q-card-section>
           <div class="text-body">Event Name and Event Group are optional values</div>
           <div class="text-body">Input will be disabled if previously entered</div>
           <q-card-section class="q-pa-none q-ma-none">
@@ -80,7 +95,7 @@
           </q-card-section>
         </q-card-section>
 
-        <q-card-section v-if="addEventEnabled">
+        <q-card-section>
           <q-card-actions align="right" class=" q-pa-none q-ma-none">
             <q-btn :disable="!addEventEnabled" color="blue" label="Add Event" v-close-popup @click="clickAddEvent()"/>
           </q-card-actions>
@@ -128,7 +143,7 @@ const addEventEnabled = ref(false)
 const eventEntered = ref(false)
 const storedEventsSupported = ref(true)
 const eventAlreadyExistsInLayoutData = ref(false)
-var eventType = ref()
+const eventType = ref()
 const showEventVariablesDialog = ref(false)
 const new_event_Identifier = ref("")
 const title = ref('')
@@ -153,6 +168,7 @@ const model = computed({
 //
 watch (model, () => {
   if (model.value == true){
+    eventType.value = undefined
     if (props.nodeNumber == undefined){
       title.value = "Add event"
     } else {
@@ -242,7 +258,7 @@ const clickAddEvent = () => {
 
 //
 //
-const clickNext = () => {
+const clickCheckEvent = () => {
   console.log(name + `: clickNext `)
 
   // to program a short event, the node number must be zero

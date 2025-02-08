@@ -2,7 +2,15 @@ style="min-width: 350px; min-height: 200px;"
 <template>
   <q-card class="q-ma-xs no-padding" style ="min-width: 200px;">
     <q-card-section :style="cardHeight" class="no-margin q-py-none">
-      <div class="text-h6">{{ displayTitle }}</div>
+      <div class="text-h6">{{ displayTitle }} &nbsp;
+<!--
+        <q-icon name="info" color="blue" class ="float-right">
+          <q-tooltip>
+            {{ configuration }}
+          </q-tooltip>
+        </q-icon>
+-->        
+      </div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
       <q-badge color="secondary">
         {{ displayValue }} {{ displayUnits }}
