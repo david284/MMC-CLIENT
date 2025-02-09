@@ -101,6 +101,7 @@ import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from 
 import { date, useQuasar, scroll } from 'quasar'
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import {createNewEvent} from "components/functions/EventFunctions.js"
+import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import {sleep} from "components/functions/utils.js"
 import NodeParametersLoadingDialog from "components/dialogs/NodeParametersLoadingDialog"
 import NodeVariablesLoadingDialog from "components/dialogs/NodeVariablesLoadingDialog"
@@ -313,6 +314,7 @@ const clickVariables = async (nodeNumber, eventIdentifier) => {
   isNewEvent.value=false
   await checkNodeParameters(nodeNumber)
   await checkNodeVariables(nodeNumber)
+  await refreshEventIndexes(store, props.nodeNumber)
   await store.methods.request_event_variables_by_identifier(nodeNumber, eventIdentifier)
   showEventVariablesDialog.value = true
 }

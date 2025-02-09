@@ -102,6 +102,8 @@ import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import EventsByNodeViewInfoDialog from "components/dialogs/EventsByNodeViewInfoDialog"
+import {refreshEventIndexes} from "components/functions/EventFunctions.js"
+
 
 const $q = useQuasar()
 const store = inject('store')
@@ -365,8 +367,8 @@ const clickTeach = (eventIndentifier) => {
 
 
 const clickVariables = async (eventIdentifier) => {
-  store.methods.request_all_node_events(props.nodeNumber)
-  await(100)  // give it a bit of time...
+  // make sure the indexes are up to date
+  await refreshEventIndexes(store, props.nodeNumber)
   await store.methods.request_event_variables_by_identifier(props.nodeNumber, eventIdentifier)
   selected_event_Identifier.value = eventIdentifier
   console.log(name + `: clickVariables: node ` + props.nodeNumber)

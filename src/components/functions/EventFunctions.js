@@ -1,5 +1,6 @@
 
 import {inject} from "vue";
+import {sleep} from "components/functions/utils.js"
 
 const name = "EventFunctions"
 
@@ -8,6 +9,19 @@ export function  getEventCount (nodeNumber, store) {
   var count = Object.keys(getEventslist(nodeNumber, store)).length
   console.log (name + " getEventList - count " + count)
   return count
+}
+
+//
+// always call this with the 'await' prefix
+// this ensures the function can use sleep
+// we want to try to ensure the indexes have been updated before we
+// issue any other event read commands
+//
+export async function refreshEventIndexes (store, nodeNumber, eventIdentifier) {
+  // request all node events in advance of loading events as it refreshes the indexes
+  console.log (name + ": refreshEventIndexes: Node " + nodeNumber)
+  store.methods.request_all_node_events(nodeNumber)
+  await sleep(500)
 }
 
 

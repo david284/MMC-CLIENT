@@ -23,6 +23,8 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import {sleep} from "components/functions/utils.js"
 import {secondsNow} from "components/functions/utils.js"
+import {refreshEventIndexes} from "components/functions/EventFunctions.js"
+
 
 const store = inject('store')
 const name = "EventVariablesLoadingDialog"
@@ -60,19 +62,24 @@ watch(model, async () => {
 const ReadAllEventVariables = async (nodeNumber) => {
   console.log(name + ": ReadAllEventVariables: " + nodeNumber)
   var count = 0
+  let startTime = Date.now()
+
   try{
-    // do stored events for this node first.....
-    var storedEventsNI = Object.values(store.state.nodes[props.nodeNumber].storedEventsNI)
-    storedEventsNI.forEach(event => {
-      let eventIdentifier = event.eventIdentifier
+    await refreshEventIndexes(store, props.nodeNumber)
+    await (2000)
+
+    // don't use forEach, as couldn't get it to work with async/await
+    var storedEventsNI = store.state.nodes[props.nodeNumber].storedEventsNI
+    for(const eventIdentifier in storedEventsNI){
       console.log(name + ": ReadAllEventVariables: event " + eventIdentifier)
       store.methods.request_event_variables_by_identifier(nodeNumber, eventIdentifier)
-    }) 
+      timeSpan.value = ((Date.now() - startTime) / 1000).toFixed(1) 
+      await sleep(100)
+    }
+
   } catch (err) {
     console.log(name + ": ReadAllEventVariables: " + err)
   }
-
-  let startTime = Date.now()
 
   await sleep(1000)
 

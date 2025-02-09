@@ -76,9 +76,6 @@ const backupNode = async () => {
   console.log(name + `: backupNode ` + props.nodeNumber)
   var failure = false
   var result = ''
-  // request all node events in advance of loading events as it refreshes the indexes
-  store.methods.request_all_node_events(props.nodeNumber)
-  await(100)  // give it a bit of time...
 
   //
   // load node variables

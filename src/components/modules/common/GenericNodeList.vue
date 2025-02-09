@@ -56,6 +56,7 @@
 import {inject, ref, onBeforeMount, onMounted, onUpdated, computed, watch} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
+import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import NodeParametersLoadingDialog from "components/dialogs/NodeParametersLoadingDialog"
 import NodeVariablesLoadingDialog from "components/dialogs/NodeVariablesLoadingDialog"
 import EventVariablesDialog from "components/dialogs/EventVariablesDialog"
@@ -173,6 +174,7 @@ const clickVariables = async (nodeNumber) => {
   selected_nodeNumber.value = nodeNumber
   await checkNodeParameters(nodeNumber)
   await checkNodeVariables(nodeNumber)
+  await refreshEventIndexes(store, props.nodeNumber)
   await store.methods.request_event_variables_by_identifier(nodeNumber, props.eventIdentifier)
   showEventVariablesDialog.value = true
 }
