@@ -35,6 +35,7 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
+import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import EventVariablesLoadingDialog from "components/dialogs/EventVariablesLoadingDialog"
 import NodeVariablesLoadingDialog from "components/dialogs/NodeVariablesLoadingDialog"
 
@@ -77,6 +78,10 @@ const backupNode = async () => {
   var failure = false
   var result = ''
 
+  // refresh event indexes in advance of needing it
+  await refreshEventIndexes(store, props.nodeNumber)
+  let startTime = Date.now()
+
   //
   // load node variables
   nodeVariablesLoadingReturn.value =''
@@ -96,6 +101,12 @@ const backupNode = async () => {
     console.log(name + `: backupNode ` + props.nodeNumber + ' failed to load Node variables')
     result = "Node variable load failed"
   }
+
+  // wait until enough time elapsed for refresh indexes
+  while ((Date.now() - startTime) < 2000) {
+    await sleep(100)
+  }
+
 
   if (failure == false){
     //

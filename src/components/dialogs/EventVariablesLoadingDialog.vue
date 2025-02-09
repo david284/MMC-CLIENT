@@ -58,16 +58,14 @@ watch(model, async () => {
 })
 
 
-
+//
+// This assumes the event indexes have already been refreshed
+//
 const ReadAllEventVariables = async (nodeNumber) => {
   console.log(name + ": ReadAllEventVariables: " + nodeNumber)
-  var count = 0
   let startTime = Date.now()
 
   try{
-    await refreshEventIndexes(store, props.nodeNumber)
-    await (2000)
-
     // don't use forEach, as couldn't get it to work with async/await
     var storedEventsNI = store.state.nodes[props.nodeNumber].storedEventsNI
     for(const eventIdentifier in storedEventsNI){
@@ -81,12 +79,14 @@ const ReadAllEventVariables = async (nodeNumber) => {
     console.log(name + ": ReadAllEventVariables: " + err)
   }
 
-  await sleep(1000)
+  await sleep(2000)
 
   while ((Date.now() - store.state.cbusTrafficTimeStamp) < 2000) {
     timeSpan.value = ((Date.now() - startTime) / 1000).toFixed(1) 
     await sleep(100)
   }
+
+  await sleep(2000)       // allow some time for the responses to catch up
 
   // signal it's complete
   emit('EventVariablesLoadingDialog', 'finished normally')
