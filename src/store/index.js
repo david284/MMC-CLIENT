@@ -240,7 +240,7 @@ const methods = {
   //
   request_all_node_events(nodeNumber) {
     socket.emit('REQUEST_ALL_NODE_EVENTS', {"nodeNumber": nodeNumber})
-    console.log(`REQUEST_ALL_NODE_EVENTS`)
+    console.log(`REQUEST_ALL_NODE_EVENTS ${nodeNumber}`)
   },
   //
   request_event_variables_by_identifier(nodeNumber, eventIdentifier) {

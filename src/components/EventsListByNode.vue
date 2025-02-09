@@ -365,6 +365,8 @@ const clickTeach = (eventIndentifier) => {
 
 
 const clickVariables = async (eventIdentifier) => {
+  store.methods.request_all_node_events(props.nodeNumber)
+  await(100)  // give it a bit of time...
   await store.methods.request_event_variables_by_identifier(props.nodeNumber, eventIdentifier)
   selected_event_Identifier.value = eventIdentifier
   console.log(name + `: clickVariables: node ` + props.nodeNumber)
