@@ -12,6 +12,15 @@
           </template>
         </q-banner>
         
+        <q-card-section>
+          <div></div>
+          <div></div>
+        </q-card-section>
+
+        <q-card-section>
+          <div class="text-h6">Node backup is starting...</div>
+          <div class="text-h6">Please wait</div>
+        </q-card-section>
 
       </q-card>
     </q-dialog>
