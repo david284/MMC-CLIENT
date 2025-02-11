@@ -364,7 +364,9 @@ const methods = {
     }
     // let capture the last timestamp
     data["lastReceiveTimestamp"] = state.nodes[nodeNumber].lastReceiveTimestamp
-    eventBus.emit('UPDATE_NODE_VARIABLE', {show:true})
+    if (reLoad){
+      eventBus.emit('UPDATE_NODE_VARIABLE', {show:true})
+    }
   }
 }
 
