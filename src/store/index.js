@@ -344,28 +344,27 @@ const methods = {
   },
   //
   update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue, reLoad) {
+    console.log(name + `: update_node_variable: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad}`)
     state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
     if (reLoad != false){reLoad = true}
-    
+    let data = {
+      "nodeNumber": nodeNumber,
+      "variableId": nodeVariableIndex,
+      "variableValue": parseInt(nodeVariableValue),
+      "reLoad":reLoad
+    }
     //console.log(`NVsetNeedsLearnMode : ` + JSON.stringify(state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode))
     if((state.nodeDescriptors[nodeNumber])
         && (state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode)){
-          console.log(`MAIN Update Node Variable in learn mode : `+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue, reLoad)
-          socket.emit('UPDATE_NODE_VARIABLE_IN_LEARN_MODE', {
-        "nodeNumber": nodeNumber,
-        "variableId": nodeVariableIndex,
-        "variableValue": parseInt(nodeVariableValue),
-        "reLoad":reLoad
-      })
+          console.log(name + `: Update Node Variable in learn mode: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad}`)
+          socket.emit('UPDATE_NODE_VARIABLE_IN_LEARN_MODE', data)
     } else {
-      console.log(`MAIN Update Node Variable : `+nodeNumber+' : '+nodeVariableIndex+' : '+  nodeVariableValue, reLoad)
-      socket.emit('UPDATE_NODE_VARIABLE', {
-        "nodeNumber": nodeNumber,
-        "variableId": nodeVariableIndex,
-        "variableValue": parseInt(nodeVariableValue),
-        "reLoad":reLoad
-       })
+      console.log(name + `: Update Node Variable: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad}`)
+      socket.emit('UPDATE_NODE_VARIABLE', data)
     }
+    // let capture the last timestamp
+    data["lastReceiveTimestamp"] = state.nodes[nodeNumber].lastReceiveTimestamp
+    eventBus.emit('UPDATE_NODE_VARIABLE', {show:true})
   }
 }
 
@@ -702,6 +701,7 @@ socket.on("NODE", (data) => {
   } catch(err){
     console.log(name + `: socket.on NODE: ` + err)
   }
+//  eventBus.emit('UPDATE_NODE_VARIABLE', {show:false})
 })
 
 socket.on("NODES", (data) => {

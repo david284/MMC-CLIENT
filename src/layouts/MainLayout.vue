@@ -125,6 +125,18 @@
     </q-page-container>
   </q-layout>
 
+  <q-dialog v-model="showNVloading" persistent>
+    <q-card style="min-width: 350px" class="q-pa-md q-ma-md">
+      <q-card-section>
+        <div class="text-h6">Refreshing node variables</div>
+      </q-card-section>
+      <q-spinner-orbit color="primary" size="2em"/>
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Close" v-close-popup/>
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
 
   <busTrafficDialog v-model='showBusTrafficDialog' />
   <cbusErrorsDialog v-model='showCbusErrorsDialog' />
@@ -200,18 +212,25 @@ const exampleURL = ref("dummyModule/index.html")
 const scrollAreaRef = ref(null)
 const selectedView = ref('NodesView')
 var oneShotScroll
+const showNVloading = ref(false)
+var NVLoadingTimeStamp = null
 
+//
+//
 const nodeTraffic = computed(() => {
   return Object.values(store.state.nodeTraffic)
 })
 
+//
+//
 watch(nodeTraffic, () => {
   //console.log(name + `: WATCH nodeTraffic`)
   scrollAreaRef.value.setScrollPercentage('vertical', 1)
   oneShotScroll = setTimeout(scrollFunc,200);
 })
 
-
+//
+//
 const layoutDataTitle = computed(() => {
   var value = ''
   try{
@@ -220,23 +239,30 @@ const layoutDataTitle = computed(() => {
   return value
 })
 
-
+//
+//
 onBeforeMount(() => {
   store.methods.request_server_status()
   store.methods.request_layout_list()
 })
 
+//
+//
 onMounted(() => {
   setInterval(eventIntervalFunc,5000);
   setInterval(layoutDetailsIntervalFunc,1000);
+  setInterval(fastIntervalFunction, 100);
 })
 
+//
+//
 onUpdated(() =>{
   scrollAreaRef.value.setScrollPercentage('vertical', 1)
 //  oneShotScroll = setInterval(scrollIntervalFunc,1000);
 })
 
-
+//
+//
 const eventIntervalFunc = () => {
   //console.log(name + ": interval " + Date.now())
   store.methods.request_server_status()
@@ -255,6 +281,23 @@ const layoutDetailsIntervalFunc = () => {
     store.methods.update_layout()
   }
 }
+
+//
+// Method
+//
+const fastIntervalFunction = () => {
+  // check if traffic has stopped, and reset various things if so
+  if ((Date.now() - store.state.cbusTrafficTimeStamp) > 1000) {
+    // for NVloading, check that it did actually start before cancelling the dialog
+    // if the last traffic was after NVLoading started, then it's ok
+    if (store.state.cbusTrafficTimeStamp > NVLoadingTimeStamp ){
+      showNVloading.value = false
+    }
+  }
+
+}
+
+
 
 const scrollFunc = () => {
 //  console.log(name + ": scroll timeout " + Date.now())
@@ -283,6 +326,8 @@ store.eventBus.on('GENERAL_MESSAGE_EVENT', (message, caption, type) => {
   }
 })
 
+//
+//
 store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber, moduleName) => {
  console.log(name + ': REQUEST_NODE_NUMBER_EVENT - previous node number ' + nodeNumber + ' moduleName ' + moduleName )
  previousNodeNumber.value = nodeNumber
@@ -290,7 +335,8 @@ store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber, moduleName) => {
  showNewNodeDialog.value = true
 })
 
-
+//
+//
 store.eventBus.on('SERVER_STATUS_EVENT', (serverStatus) => {
 //  console.log(name + ': SERVER_STATUS_EVENT ' + JSON.stringify(serverStatus))
   if(store.state.busConnection_notify){
@@ -317,6 +363,8 @@ store.eventBus.on('SERVER_STATUS_EVENT', (serverStatus) => {
   }
 })
 
+//
+//
 store.eventBus.on('SERVER_DISCONNECT', () => {
   $q.notify({
     message: 'MMC-server has disconnected',
@@ -327,6 +375,15 @@ store.eventBus.on('SERVER_DISCONNECT', () => {
     actions: [ { label: 'Dismiss' } ]
   })
 })
+
+//
+//
+store.eventBus.on('UPDATE_NODE_VARIABLE', (data) => {
+  console.log(name + `: UPDATE_NODE_VARIABLE: show ${data.show}`)
+  NVLoadingTimeStamp = Date.now()
+  showNVloading.value = data.show
+})
+
 /*/////////////////////////////////////////////////////////////////////////////
 
 Click event handlers
