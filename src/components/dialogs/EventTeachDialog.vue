@@ -203,17 +203,23 @@ const update_available_nodes = () =>{
     // loop through json object properties with a for-in loop
     // returns top level property even if a nested object (not an index like an array)
     for (var nodeNumber in nodes) {
-  //    console.log(name + `: update_available_nodes: node ` + nodeNumber)
-  //    console.log(name + `: update_available_nodes: taughtNodes ` + JSON.stringify(taughtNodes.value))
+      // loop through each node, but check if it's valid to be added first  
+      let addNode = true  // assume we'll add it unless we find otherwise
+      //    console.log(name + `: update_available_nodes: node ` + nodeNumber)
+      //    console.log(name + `: update_available_nodes: taughtNodes ` + JSON.stringify(taughtNodes.value))
+      //
       // don't add node if event already taught to this node
-      var notAdded = true
       for (var index in taughtNodes.value){
         if (taughtNodes.value[index] == nodeNumber){
-          notAdded = false
-  //        console.log(name + "update_available_nodes: event " + props.eventIdentifier + " already in node " + nodeNumber)
+          addNode = false
         }
       }
-      if (notAdded){
+      //
+      // if node isn't ok, then don't try teaching
+      if(store.state.nodes[nodeNumber].status != true){ addNode = false }
+      //
+      // ok, now check if we still want to add this node, then do it
+      if (addNode){
         if (nodeNumber > 0) {
           var entry = nodeNumber + ': '
           if(store.state.layout){
