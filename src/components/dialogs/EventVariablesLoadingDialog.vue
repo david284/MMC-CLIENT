@@ -7,7 +7,7 @@
           <div class="text-h6">Please wait</div>
         </q-card-section>
         <q-card-section class="text-h6" align="center">
-          <div>elapsed time: {{ timeSpan }}</div>
+          <q-spinner-orbit color="primary" size="2em"/>
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Close" v-close-popup/>
@@ -29,7 +29,6 @@ import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 const store = inject('store')
 const name = "EventVariablesLoadingDialog"
 const variableCount = ref(0)
-const timeSpan = ref(0)
 const cbusTrafficTime = ref(0)
 
 const props = defineProps({
@@ -52,7 +51,6 @@ watch(model, async () => {
   //console.log(name + `: WATCH model ` + model.value)
   if (model.value == true){
     //console.log(name + `: WATCH model ` + model.value)
-    timeSpan.value = 0
     await ReadAllEventVariables(props.nodeNumber)
   }
 })
@@ -71,7 +69,6 @@ const ReadAllEventVariables = async (nodeNumber) => {
     for(const eventIdentifier in storedEventsNI){
       console.log(name + ": ReadAllEventVariables: event " + eventIdentifier)
       store.methods.request_event_variables_by_identifier(nodeNumber, eventIdentifier)
-      timeSpan.value = ((Date.now() - startTime) / 1000).toFixed(1) 
       await sleep(100)
     }
 
@@ -82,7 +79,6 @@ const ReadAllEventVariables = async (nodeNumber) => {
   await sleep(2000)
 
   while ((Date.now() - store.state.cbusTrafficTimeStamp) < 2000) {
-    timeSpan.value = ((Date.now() - startTime) / 1000).toFixed(1) 
     await sleep(100)
   }
 

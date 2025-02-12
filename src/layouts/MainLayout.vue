@@ -130,7 +130,9 @@
       <q-card-section>
         <div class="text-h6">Refreshing node variables</div>
       </q-card-section>
-      <q-spinner-orbit color="primary" size="2em"/>
+      <q-card-section class="text-h6" align="center">
+        <q-spinner-orbit color="primary" size="2em"/>
+      </q-card-section>
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Close" v-close-popup/>
       </q-card-actions>

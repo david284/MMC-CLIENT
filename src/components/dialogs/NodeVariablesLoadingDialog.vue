@@ -7,7 +7,7 @@
           <div class="text-h6">Please wait</div>
         </q-card-section>
         <q-card-section class="text-h6" align="center">
-          Variable count: {{ variableCount }}
+          <q-spinner-orbit color="primary" size="2em"/>
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Close" v-close-popup/>
@@ -25,7 +25,6 @@ import {sleep} from "components/functions/utils.js"
 
 const store = inject('store')
 const name = "NodeVariablesLoadingDialog"
-const variableCount = ref(0)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -67,7 +66,6 @@ const checkNodeVariables = async (nodeNumber) => {
     var countDown = (maxNodeVariableIndex * 20) + 20
     try {
       while (store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex] == undefined){
-        variableCount.value = Object.keys(store.state.nodes[nodeNumber].nodeVariables).length
         await sleep(1)
         countDown--
         // 
