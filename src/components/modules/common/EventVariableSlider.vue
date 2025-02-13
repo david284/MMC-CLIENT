@@ -51,6 +51,7 @@
 
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
+import {getLinkedEventVariables} from "components/modules/common/commonFunctions.js"
 
 const props = defineProps({
   "nodeNumber": {
@@ -100,6 +101,10 @@ const props = defineProps({
   "endBit":{
     type: Number,
     default: 7
+  },
+  configuration: {
+    type: Object,
+    required: true
   }
 })
 
@@ -153,7 +158,14 @@ const sliderValue = computed({
 
       error.value = false
       error_message.value = ''
-      store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex, newByteValue)
+      store.methods.event_teach_by_identifier(
+        props.nodeNumber, 
+        props.eventIdentifier, 
+        props.eventVariableIndex, 
+        newByteValue,
+        true,
+        getLinkedEventVariables(props.configuration)
+      )
     } else {
       console.log(name + `: Invalid Value : ${newValue}`)
       error_message.value = 'Invalid Value'

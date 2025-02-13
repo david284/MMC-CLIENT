@@ -13,7 +13,7 @@
           :variableIndex = variableIndex
           :bit = item.bitPosition
           :label = item.label
-          :configuration = item
+          :configuration = configuration
         ></node-variable-bit>
       </div>
     </q-card-section>

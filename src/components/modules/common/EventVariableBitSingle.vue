@@ -8,6 +8,7 @@
         :eventIdentifier=eventIdentifier
         :eventVariableIndex=eventVariableIndex
         :bit=bit
+        :configuration=configuration
       >
       </EventVariableBit>
     </q-card-section>
@@ -45,6 +46,10 @@ const props = defineProps({
   },
   "bit": {
     type: Number,
+    required: true
+  },
+  configuration: {
+    type: Object,
     required: true
   }
 })

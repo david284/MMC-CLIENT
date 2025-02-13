@@ -11,6 +11,7 @@
           :eventIdentifier=eventIdentifier
           :bit=item.bitPosition
           :name=item.label
+          :configuration=configuration
         ></event-variable-bit>
       </div>
      </q-card-section>
@@ -40,17 +41,17 @@ const props = defineProps({
   bitCollection: {
     required: true
   },
-  "displayTitle": {
+  displayTitle: {
     type: String,
     required: false
   },
-  "displaySubTitle": {
+  displaySubTitle: {
     type: String,
     default: ""
   },
-  "learn": {
-    type: Boolean,
-    default: false
+  configuration: {
+    type: Object,
+    required: true
   }
 })
 

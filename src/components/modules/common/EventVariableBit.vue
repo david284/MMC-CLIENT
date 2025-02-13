@@ -9,6 +9,7 @@
 
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
+import {getLinkedEventVariables} from "components/modules/common/commonFunctions.js"
 
 //name: "EventVariable"
 const props = defineProps({
@@ -32,9 +33,9 @@ const props = defineProps({
     type: String,
     required: false
   },
-  "hint": {
-    type: String,
-    default: ""
+  configuration: {
+    type: Object,
+    required: true
   }
 })
 
@@ -63,7 +64,14 @@ const update_checked = () => {
     byteValue = byteValue & ~bitArray[props.bit]									// clear bit by 'and-ing' inverse bit value
   }
   console.log(`EventVariableBit update_checked-2 ${checked.value} ${byteValue}`)
-  store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex, byteValue)
+  store.methods.event_teach_by_identifier(
+    props.nodeNumber, 
+    props.eventIdentifier, 
+    props.eventVariableIndex, 
+    byteValue,
+    true,
+    getLinkedEventVariables(props.configuration)
+    )
 }
 
 //console.log(`EventVariableBit ` + eventVariableValue.value)

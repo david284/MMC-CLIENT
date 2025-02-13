@@ -2,75 +2,74 @@
   <div class="q-pa-xs row">
 
     <div v-for="item in configuration" :key="item">
-
        <EventVariableBitArray v-if="(item.type=='EventVariableBitArray') && (isVisible(item))"
-                            :nodeNumber = "props.nodeNumber"
-                            :eventIdentifier = "props.eventIdentifier"
-                            :eventVariableIndex=item.eventVariableIndex
-                            :bitCollection = item.bitCollection
-                            :displayTitle="item.displayTitle"
-                            :displaySubTitle="item.displaySubTitle">
+        :nodeNumber = "props.nodeNumber"
+        :eventIdentifier = "props.eventIdentifier"
+        :eventVariableIndex=item.eventVariableIndex
+        :bitCollection = item.bitCollection
+        :displayTitle="item.displayTitle"
+        :displaySubTitle="item.displaySubTitle"
+        :configuration=item>
       </EventVariableBitArray>
-
       <EventVariableBitSingle v-if="(item.type=='EventVariableBitSingle') && (isVisible(item))"
-                            :nodeNumber = "props.nodeNumber"
-                            :eventIdentifier = "props.eventIdentifier"
-                            :eventVariableIndex=item.eventVariableIndex
-                            :bit = "item.bit"
-                            :displayTitle="item.displayTitle"
-                            :displaySubTitle="item.displaySubTitle">
+        :nodeNumber = "props.nodeNumber"
+        :eventIdentifier = "props.eventIdentifier"
+        :eventVariableIndex=item.eventVariableIndex
+        :bit = "item.bit"
+        :displayTitle="item.displayTitle"
+        :displaySubTitle="item.displaySubTitle"
+        :configuration=item>
       </EventVariableBitSingle>
-
       <EventVariableGroup v-if="(item.type=='EventVariableGroup') && (isVisible(item))"
         :node-number=props.nodeNumber
         :eventIdentifier= props.eventIdentifier
         :configuration = item>
       </EventVariableGroup>
-
       <EventVariableNumber v-if="(item.type=='EventVariableNumber') && (isVisible(item))"
-                  :node-number=props.nodeNumber
-                  :eventIdentifier = "props.eventIdentifier"
-                  :eventVariableIndex= "item.eventVariableIndex"
-                  :displayTitle="item.displayTitle"
-                  :displaySubTitle="item.displaySubTitle"
-                  :displayScale = "item.displayScale"
-                  :displayOffset = "item.displayOffset"
-                  :displayUnits="item.displayUnits"
-                  :startBit = "item.startBit"
-                  :endBit = "item.endBit"
-                  :min = "item.min"
-                  :max = "item.max"
-                  :configuration = item>
+        :node-number=props.nodeNumber
+        :eventIdentifier = "props.eventIdentifier"
+        :eventVariableIndex= "item.eventVariableIndex"
+        :displayTitle="item.displayTitle"
+        :displaySubTitle="item.displaySubTitle"
+        :displayScale = "item.displayScale"
+        :displayOffset = "item.displayOffset"
+        :displayUnits="item.displayUnits"
+        :startBit = "item.startBit"
+        :endBit = "item.endBit"
+        :min = "item.min"
+        :max = "item.max"
+        :configuration = item>
       </EventVariableNumber>
       <EventVariableSelect v-if="(item.type=='EventVariableSelect') && (isVisible(item))"
-                        :nodeNumber="props.nodeNumber"
-                        :eventIdentifier = "props.eventIdentifier"
-                        :eventVariableIndex= "item.eventVariableIndex"
-                        :bitMask = "item.bitMask"
-                        :displayTitle="item.displayTitle"
-                        :displaySubTitle="item.displaySubTitle"
-                        :options= "item.options">
+        :nodeNumber="props.nodeNumber"
+        :eventIdentifier = "props.eventIdentifier"
+        :eventVariableIndex= "item.eventVariableIndex"
+        :bitMask = "item.bitMask"
+        :displayTitle="item.displayTitle"
+        :displaySubTitle="item.displaySubTitle"
+        :options= "item.options"
+        :configuration=item>
       </EventVariableSelect>
       <EventVariableSlider v-if="(item.type=='EventVariableSlider') && (isVisible(item))"
-                            :node-number="props.nodeNumber"
-                            :eventIdentifier = "props.eventIdentifier"
-                            :eventVariableIndex= "item.eventVariableIndex"
-                            :displayTitle="item.displayTitle"
-                            :displaySubTitle = "item.displaySubTitle"
-                            :displayScale="item.displayScale"
-                            :displayUnits="item.displayUnits"
-                            :displayOffset = "item.displayOffset"
-                            :min = "item.min"
-                            :max = "item.max"
-                            :startBit = "item.startBit"
-                            :endBit = "item.endBit">
+        :node-number="props.nodeNumber"
+        :eventIdentifier = "props.eventIdentifier"
+        :eventVariableIndex= "item.eventVariableIndex"
+        :displayTitle="item.displayTitle"
+        :displaySubTitle = "item.displaySubTitle"
+        :displayScale="item.displayScale"
+        :displayUnits="item.displayUnits"
+        :displayOffset = "item.displayOffset"
+        :min = "item.min"
+        :max = "item.max"
+        :startBit = "item.startBit"
+        :endBit = "item.endBit"
+        :configuration=item>
       </EventVariableSlider>
       <EventVariableTabs v-if="(item.type=='EventVariableTabs') && (isVisible(item))"
         :node-number=props.nodeNumber
         :eventIdentifier= props.eventIdentifier
         :configuration=item>
       </EventVariableTabs>
-
     </div>
 
   </div>
