@@ -57,13 +57,13 @@ watch(eventVariableValue, () => {
 const update_checked = () => {
 
   let byteValue = eventVariableValue.value
-  console.log(`EventVariableBit update_checked ${checked.value} ${byteValue}`)
+  //console.log(`EventVariableBit update_checked ${checked.value} ${byteValue}`)
   if (checked.value) {
     byteValue = byteValue | bitArray[props.bit]										// set bit by 'or-ing' bit value
   } else {
     byteValue = byteValue & ~bitArray[props.bit]									// clear bit by 'and-ing' inverse bit value
   }
-  console.log(`EventVariableBit update_checked-2 ${checked.value} ${byteValue}`)
+  //console.log(`EventVariableBit update_checked-2 ${checked.value} ${byteValue}`)
   store.methods.event_teach_by_identifier(
     props.nodeNumber, 
     props.eventIdentifier, 

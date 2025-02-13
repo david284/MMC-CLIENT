@@ -82,7 +82,7 @@ const update_variable = (newValue) => {
   // clear bits, but only if they match bits in the bitmask
   byteValue = byteValue & (newValue.value | ~props.bitMask)							// clear bit by 'and-ing' inverse bit value
 
-  console.log(`EventVariableSelect: byteValue ${byteValue}`);
+  //console.log(`EventVariableSelect: byteValue ${byteValue}`);
   
   store.methods.event_teach_by_identifier(
     props.nodeNumber, 
@@ -95,13 +95,13 @@ const update_variable = (newValue) => {
 }
 
 onMounted(() => {
-//  console.log(name + `: onMounted`)
+  //console.log(name + `: onMounted`)
   let startValue = store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
   selectVariable.value = startValue & props.bitMask
-//  console.log(name + `: props: ${JSON.stringify(props)}`)
+  //console.log(name + `: props: ${JSON.stringify(props)}`)
   items.value = []
   for (var i in props.options){
-//    console.log(name + `: ComplexSelect: item: ${i}`)
+    //console.log(name + `: ComplexSelect: item: ${i}`)
     if (props.options[i].overload != undefined) {   
       var label = overloadedLabel(props.nodeNumber, props.options[i].overload, store) 
       if (label) {
@@ -112,7 +112,7 @@ onMounted(() => {
       items.value.push(props.options[i])
     }
   }
-//  console.log(name + `: items: ${JSON.stringify(items.value)}`)
+  //console.log(name + `: items: ${JSON.stringify(items.value)}`)
 })
 
 
