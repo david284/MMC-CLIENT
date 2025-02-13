@@ -1,7 +1,11 @@
 <template>
   <q-card class="q-ma-xs no-padding">
     <q-card-section style="height: 150px" class="no-margin q-py-none">
-      <div class="text-h6">{{ displayTitle }}</div>
+      <div class="text-h6">{{ displayTitle }}
+        <q-card-section style ="min-width: 10px; height: 10px" class="no-margin no-padding float-right text-caption">
+            {{ nodeVariableIndex }}
+        </q-card-section>
+      </div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
       <q-badge color="secondary">
         range {{ minValue }} to {{ maxValue }} {{ displayUnits }}
@@ -24,6 +28,7 @@
 import {inject, ref, onMounted, computed, watch} from "vue";
 import {setByteVariable} from "components/modules/common/commonFunctions.js"
 import {getDisplayValue} from "components/modules/common/commonFunctions.js"
+import {getLinkedNodeVariables} from "components/modules/common/commonFunctions.js"
 
 
 const props = defineProps({
@@ -72,6 +77,10 @@ const props = defineProps({
   "endBit":{
     type: Number,
     default: 7
+  },
+  "configuration": {
+    type: Object,
+    required: true
   }
 })
 
@@ -139,7 +148,13 @@ const update_variable = (newValue) => {
     byteValue = setByteVariable(byteValue, processedValue, props.displayScale, props.displayOffset, props.startBit, props.endBit)
     error.value = false
     error_message.value = ''
-    store.methods.update_node_variable(props.nodeNumber, props.nodeVariableIndex, byteValue)
+    store.methods.update_node_variable(
+      props.nodeNumber, 
+      props.nodeVariableIndex, 
+      byteValue,
+      true,
+      getLinkedNodeVariables(props.configuration)
+    )
   }
 }
 

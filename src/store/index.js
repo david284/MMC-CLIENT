@@ -95,14 +95,15 @@ const methods = {
   },
   //
   // reLoad false to surpress reLoading of variables after writing - like when restoring node
-  event_teach_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex, eventVariableValue, reLoad){
-    console.log(name + `: event_teach_by_identifier : ${nodeNumber} : ${eventIdentifier} : ${eventVariableIndex} : ${eventVariableValue} `)
+  event_teach_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex, eventVariableValue, reLoad, linkedVariableList){
+    console.log(name + `: event_teach_by_identifier : ${nodeNumber} ${eventIdentifier} ${eventVariableIndex} ${eventVariableValue} ${JSON.stringify(linkedVariableList)} `)
     socket.emit('EVENT_TEACH_BY_IDENTIFIER',{
       "nodeNumber": nodeNumber,
       "eventIdentifier": eventIdentifier,
       "eventVariableIndex": eventVariableIndex,
       "eventVariableValue": parseInt(eventVariableValue),
-      "reLoad": reLoad
+      "reLoad": reLoad,
+      "linkedVariableList": linkedVariableList
     })
   },
   //
@@ -343,30 +344,28 @@ const methods = {
       socket.emit('UPDATE_LAYOUT_DATA', state.layout)
   },
   //
-  update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue, reLoad) {
-    console.log(name + `: update_node_variable: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad}`)
+  update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue, reLoad, linkedVariableList) {
+    console.log(name + `: update_node_variable: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad} ${JSON.stringify(linkedVariableList)}`)
     state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
     if (reLoad != false){reLoad = true}
     let data = {
       "nodeNumber": nodeNumber,
       "variableId": nodeVariableIndex,
       "variableValue": parseInt(nodeVariableValue),
-      "reLoad":reLoad
+      "reLoad":reLoad,
+      "linkedVariableList": linkedVariableList
     }
     //console.log(`NVsetNeedsLearnMode : ` + JSON.stringify(state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode))
     if((state.nodeDescriptors[nodeNumber])
         && (state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode)){
-          console.log(name + `: Update Node Variable in learn mode: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad}`)
+          //console.log(name + `: Update Node Variable in learn mode: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad}`)
           socket.emit('UPDATE_NODE_VARIABLE_IN_LEARN_MODE', data)
     } else {
-      console.log(name + `: Update Node Variable: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad}`)
+      //console.log(name + `: Update Node Variable: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad}`)
       socket.emit('UPDATE_NODE_VARIABLE', data)
     }
     // let capture the last timestamp
     data["lastReceiveTimestamp"] = state.nodes[nodeNumber].lastReceiveTimestamp
-    if (reLoad){
-      eventBus.emit('UPDATE_NODE_VARIABLE', {show:true})
-    }
   }
 }
 
@@ -414,10 +413,11 @@ const getters = {
     }
   },
   event_variable_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex){
+    //console.log(name + `: event_variable_by_identifier: ${nodeNumber} ${eventIdentifier} ${eventVariableIndex}`)
     try{
       return state.nodes[nodeNumber].storedEventsNI[eventIdentifier].variables[eventVariableIndex]
     } catch (err){
-      console.log(name + `: event_variable_by_identifier: ${err}`)
+      // don't worry if can't read, as may have not yet filled in storedEventsNI structure
       return 0
     }
   },
@@ -703,7 +703,6 @@ socket.on("NODE", (data) => {
   } catch(err){
     console.log(name + `: socket.on NODE: ` + err)
   }
-//  eventBus.emit('UPDATE_NODE_VARIABLE', {show:false})
 })
 
 socket.on("NODES", (data) => {

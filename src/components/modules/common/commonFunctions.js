@@ -28,7 +28,7 @@ export function getDisplayValue (byteVariable, scaling, offset, startBit, endBit
     startBit = 0
     bitMask = 0xFF
   }
-  console.log (name + ": getDisplayValue: bitMask: "  + bitMask)
+  //console.log (name + ": getDisplayValue: bitMask: "  + bitMask)
 
   if (scaling == undefined){scaling = 1}
   if (offset == undefined){offset = 0}
@@ -89,7 +89,21 @@ export function  setByteVariable (byteVariable, newValue, scaling, offset, start
   return newByteVariable
 }
 
+export function getLinkedEventVariables(configuration){
+  let linkedVariables = undefined
+  if (configuration.linkedVariables != undefined){
+    linkedVariables = (configuration.linkedVariables.EV != undefined) ? configuration.linkedVariables.EV : undefined 
+  }
+  return linkedVariables
+}
 
+export function getLinkedNodeVariables(configuration){
+  let linkedVariables = undefined
+  if (configuration.linkedVariables != undefined){
+    linkedVariables = (configuration.linkedVariables.NV != undefined) ? configuration.linkedVariables.NV : undefined 
+  }
+  return linkedVariables
+}
 
 
 

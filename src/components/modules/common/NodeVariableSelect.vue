@@ -1,7 +1,11 @@
 <template>
   <q-card  class="q-ma-xs no-padding">
     <q-card-section style="height: 120px" class="no-margin q-py-none">
-      <div class="text-h6">{{ displayTitle }}</div>
+      <div class="text-h6">{{ displayTitle }}
+        <q-card-section style ="min-width: 10px; height: 10px" class="no-margin no-padding float-right text-caption">
+            {{ nodeVariableIndex }}
+        </q-card-section>
+      </div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
     <q-select
       v-model="selectValue"
@@ -16,6 +20,8 @@
 
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
+import {getLinkedNodeVariables} from "components/modules/common/commonFunctions.js"
+
 const name = "NodeVariableSelect"
 
 const props = defineProps({
@@ -50,9 +56,8 @@ const props = defineProps({
     type: String,
     required: false
   },
-  "learn": {
-    type: Boolean,
-    default: false
+  "configuration": {
+    type: Object
   }
 })
 
@@ -66,11 +71,11 @@ const nodeVariable = computed(() =>{
 
 watch(nodeVariable, () => {
   selectValue.value = nodeVariable.value & props.bitMask
-//  console.log(name + `: watch variableValue ` + selectValue.value + ' bitMask ' + props.bitMask)
+  //console.log(name + `: watch variableValue ` + selectValue.value + ' bitMask ' + props.bitMask)
 })
 
 const update_variable = (newValue) => {
-  console.log(`NodeVariableSelect update_variable ${newValue.value}`)
+  //console.log(`NodeVariableSelect update_variable ${newValue.value}`)
 
   // get previous value
   let byteValue = nodeVariable.value
@@ -79,10 +84,17 @@ const update_variable = (newValue) => {
   // clear bits, but only if they match bits in the bitmask
   byteValue = byteValue & (newValue.value | ~props.bitMask)							// clear bit by 'and-ing' inverse bit value
 
-  // console.log(`NodeVariableSelect: byteValue ${byteValue}`);
+  //console.log(`NodeVariableSelect: byteValue ${byteValue}`);
   
+  store.methods.update_node_variable(
+    props.nodeNumber, 
+    props.nodeVariableIndex, 
+    byteValue, 
+    true,
+    getLinkedNodeVariables(props.configuration)
+  )
 
-  store.methods.update_node_variable(props.nodeNumber, props.nodeVariableIndex, byteValue)
+//  store.methods.update_node_variable(props.nodeNumber, props.nodeVariableIndex, byteValue)
 }
 
 

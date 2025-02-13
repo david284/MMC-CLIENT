@@ -10,6 +10,9 @@ style="min-width: 350px; min-height: 200px;"
           </q-tooltip>
         </q-icon>
 -->        
+        <q-card-section style ="min-width: 10px; height: 10px" class="no-margin no-padding float-right text-caption">
+          {{ nodeVariableIndex }}
+        </q-card-section>
       </div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
       <q-badge color="secondary">
@@ -59,6 +62,8 @@ style="min-width: 350px; min-height: 200px;"
 
 <script setup>
 import {inject, ref, onMounted, computed, onUpdated, watch} from "vue";
+import {getLinkedNodeVariables} from "components/modules/common/commonFunctions.js"
+
 const name = 'NodeVariableSlider'
 
 const props = defineProps({
@@ -107,7 +112,8 @@ const props = defineProps({
     default: 7
   },
   "configuration": {
-    type: Object
+    type: Object,
+    required: true
   }
 })
 
@@ -182,7 +188,14 @@ const sliderValue = computed({
 
       error.value = false
       error_message.value = ''
-      store.methods.update_node_variable(props.nodeNumber, props.nodeVariableIndex, newByteValue)
+
+      store.methods.update_node_variable(
+        props.nodeNumber, 
+        props.nodeVariableIndex, 
+        newByteValue, 
+        true,
+        getLinkedNodeVariables(props.configuration)
+      )
 //      console.log(`NewByteValue : ${newByteValue}`)
     } else {
       console.log(name + `: Invalid Value : ${newValue}`)

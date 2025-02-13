@@ -125,19 +125,6 @@
     </q-page-container>
   </q-layout>
 
-  <q-dialog v-model="showNVloading" persistent>
-    <q-card style="min-width: 350px" class="q-pa-md q-ma-md">
-      <q-card-section>
-        <div class="text-h6">Refreshing node variables</div>
-      </q-card-section>
-      <q-card-section class="text-h6" align="center">
-        <q-spinner-orbit color="primary" size="2em"/>
-      </q-card-section>
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Close" v-close-popup/>
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
 
 
   <busTrafficDialog v-model='showBusTrafficDialog' />
@@ -214,8 +201,6 @@ const exampleURL = ref("dummyModule/index.html")
 const scrollAreaRef = ref(null)
 const selectedView = ref('NodesView')
 var oneShotScroll
-const showNVloading = ref(false)
-var NVLoadingTimeStamp = null
 
 //
 //
@@ -290,11 +275,6 @@ const layoutDetailsIntervalFunc = () => {
 const fastIntervalFunction = () => {
   // check if traffic has stopped, and reset various things if so
   if ((Date.now() - store.state.cbusTrafficTimeStamp) > 1000) {
-    // for NVloading, check that it did actually start before cancelling the dialog
-    // if the last traffic was after NVLoading started, then it's ok
-    if (store.state.cbusTrafficTimeStamp > NVLoadingTimeStamp ){
-      showNVloading.value = false
-    }
   }
 
 }
@@ -378,13 +358,6 @@ store.eventBus.on('SERVER_DISCONNECT', () => {
   })
 })
 
-//
-//
-store.eventBus.on('UPDATE_NODE_VARIABLE', (data) => {
-  console.log(name + `: UPDATE_NODE_VARIABLE: show ${data.show}`)
-  NVLoadingTimeStamp = Date.now()
-  showNVloading.value = data.show
-})
 
 /*/////////////////////////////////////////////////////////////////////////////
 

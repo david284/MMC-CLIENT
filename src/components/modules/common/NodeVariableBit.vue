@@ -9,6 +9,7 @@
 
 <script setup>
 import {inject, ref, onMounted, computed, watch } from "vue";
+import {getLinkedNodeVariables} from "components/modules/common/commonFunctions.js"
 
 const props = defineProps({
   "nodeNumber": {
@@ -26,6 +27,10 @@ const props = defineProps({
   "label": {
     type: String,
     required: false
+  },
+  "configuration": {
+    type: Object,
+    required: true
   }
 })
 
@@ -46,7 +51,7 @@ const variableValue = computed({
     return store.state.nodes[props.nodeNumber].nodeVariables[props.variableIndex]
   },
   set(newValue) {
-    store.methods.update_node_variable(props.nodeNumber, props.variableIndex, newValue)
+//    store.methods.update_node_variable(props.nodeNumber, props.variableIndex, newValue)
   }
 })
 
@@ -66,7 +71,13 @@ const update_checked = () => {
 //    console.log(`bit ${bitArray[props.bit]} cleared, new byte value ${byteValue}`)
   }
   //store.methods.update_node_variable(props.NodeNumber, props.VariableIndex, byteValue)
-  store.methods.update_node_variable(props.nodeNumber, props.variableIndex, byteValue)
+  store.methods.update_node_variable(
+    props.nodeNumber, 
+    props.variableIndex, 
+    byteValue,
+    true,
+    getLinkedNodeVariables(props.configuration)
+  )
 
 }
 

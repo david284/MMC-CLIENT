@@ -23,6 +23,9 @@
 import {inject, ref, onMounted, computed, watch} from "vue";
 import {setByteVariable} from "components/modules/common/commonFunctions.js"
 import {getDisplayValue} from "components/modules/common/commonFunctions.js"
+import {getLinkedEventVariables} from "components/modules/common/commonFunctions.js"
+
+const name = "EventVariableNumber"
 
 const props = defineProps({
   "nodeNumber": {
@@ -74,6 +77,10 @@ const props = defineProps({
   "endBit":{
     type: Number,
     default: 7
+  },
+  "configuration": {
+    type: Object,
+    required: true
   }
 })
 
@@ -139,7 +146,14 @@ const update_event = (newValue) => {
     byteValue = setByteVariable(byteValue, processedValue, props.displayScale, props.displayOffset, props.startBit, props.endBit)
     error_message.value = ''
     error.value = false
-    store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex, byteValue)
+    store.methods.event_teach_by_identifier(
+      props.nodeNumber, 
+      props.eventIdentifier, 
+      props.eventVariableIndex, 
+      byteValue,
+      true,
+      getLinkedEventVariables(props.configuration)
+    )
   }
 }
 

@@ -218,6 +218,9 @@ const update_available_nodes = () =>{
       // if node isn't ok, then don't try teaching
       if(store.state.nodes[nodeNumber].status != true){ addNode = false }
       //
+      // if node isn't in flim mode, then don't try teaching
+      if(store.state.nodes[nodeNumber].flim != true){ addNode = false }
+      //
       // ok, now check if we still want to add this node, then do it
       if (addNode){
         if (nodeNumber > 0) {

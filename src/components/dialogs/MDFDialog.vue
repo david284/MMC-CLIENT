@@ -36,6 +36,7 @@
                 The file is matched using the module identifier, version number and processor code, the name portion is not used<br/>
                 If no match is found, then it will fall back to using just the module identifier and the version number<br/>
                 Modules that need files using the processor code are the exception, most won't use it<br/>
+                User files take precedence if same filename exists in System<br/>
               </div>
               <q-card-actions class="text-primary">
                 <q-btn color="positive" size="sm" label="Upload new file" @click="clickUpload()" />

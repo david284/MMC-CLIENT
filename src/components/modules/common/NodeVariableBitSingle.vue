@@ -1,12 +1,17 @@
 <template>
   <q-card class="q-ma-xs no-padding">
-    <q-card-section style="height: 120px" class="no-margin q-py-none">
-      <div class="text-h6">{{ displayTitle }}</div>
+    <q-card-section style="min-width:120px; height: 120px;" class="no-margin q-py-none">
+      <div class="text-h6">{{ displayTitle }}
+        <q-card-section style ="min-width: 10px; height: 10px" class="no-margin no-padding float-right text-caption">
+            {{ variableIndex }}
+        </q-card-section>
+      </div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
       <node-variable-bit
         :nodeNumber = nodeNumber
         :variableIndex = variableIndex
         :bit = bit
+        :configuration = configuration
       >
       </node-variable-bit>
     </q-card-section>
@@ -50,6 +55,10 @@ const props = defineProps({
   },
   "bit": {
     type: Number,
+    required: true
+  },
+  "configuration": {
+    type: Object,
     required: true
   }
 })

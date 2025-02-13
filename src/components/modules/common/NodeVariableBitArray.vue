@@ -1,7 +1,11 @@
 <template>
-  <q-card class="q-ma-xs no-padding">
+  <q-card class="q-ma-xs no-padding" style ="min-width: 150px;">
     <q-card-section class="no-margin q-py-none">
-      <div class="text-h6">{{ displayTitle }}</div>
+      <div class="text-h6">{{ displayTitle }}
+        <q-card-section style ="min-width: 10px; height: 10px" class="no-margin no-padding float-right text-caption">
+            {{ variableIndex }}
+        </q-card-section>
+      </div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
       <div v-for="item in newBitCollection" :key="item">
         <node-variable-bit
@@ -9,6 +13,7 @@
           :variableIndex = variableIndex
           :bit = item.bitPosition
           :label = item.label
+          :configuration = item
         ></node-variable-bit>
       </div>
     </q-card-section>
@@ -25,6 +30,7 @@ const name = "NodeVariableBitArray"
 const store = inject('store')
 var items = ref();
 var newBitCollection = ref()
+
 
 
 
@@ -47,6 +53,10 @@ const props = defineProps({
   "displaySubTitle": {
     type: String,
     default: ""
+  },
+  "configuration": {
+    type: Object,
+    required: true
   }
 })
 
@@ -76,6 +86,11 @@ function refeshArray() {
     } else 
     if (props.bitCollection[i].label){
       newBitCollection.value.push(props.bitCollection[i])
+    }
+    if(newBitCollection.value[i] != undefined){
+      if (props.configuration.linkedVariables != undefined){
+        newBitCollection.value[i]['linkedVariables'] = props.configuration.linkedVariables
+      }
     }
   }
 }
