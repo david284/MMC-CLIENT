@@ -259,13 +259,22 @@ const checkNodeParameters = async (nodeNumber) => {
   nodeParametersLoadingReturn.value=''
   showNodeParametersLoadingDialog.value = true
   // wait for parameters to load
-  for (let i = 0; i < 1000; i++){
+  let startTime = Date.now()
+  store.state.cbusTrafficTimeStamp = Date.now() // refresh timestamp, so we don't exit early
+  while ((Date.now() - store.state.cbusTrafficTimeStamp) < 1000) {
      if (nodeParametersLoadingReturn.value.length > 0) break
-     await sleep (10)
+     // break out if more than 30 secs
+     if ((Date.now() - startTime) > 30000) {
+      console.log(name + `: checkNodeParameters: node ${nodeNumber} timeout`)
+      break
+     }
+    await sleep(100)
   }
+
   showNodeParametersLoadingDialog.value = false
   var result = (store.state.nodes[nodeNumber].parameters[9] != undefined)? true : false
   if (result == false){
+    console.log(name + `: checkNodeParameters: node ${nodeNumber} failed`)
     $q.notify({
       message: 'Reading Node Parameters has failed',
       caption: 'please check connections to node',
