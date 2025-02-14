@@ -10,8 +10,8 @@ style="min-width: 350px; min-height: 200px;"
           </q-tooltip>
         </q-icon>
 -->        
-        <q-card-section style ="min-width: 10px; height: 10px" class="no-margin no-padding float-right text-caption">
-          {{ nodeVariableIndex }}
+        <q-card-section style ="min-width: 10px; height: 10px" class="no-margin no-padding float-right text-caption text-weight-thin">
+          &nbsp; {{ nodeVariableIndex }}
         </q-card-section>
       </div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>

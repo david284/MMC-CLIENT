@@ -2,8 +2,8 @@
   <q-card class="q-ma-xs no-padding" style ="min-width: 150px;">
     <q-card-section class="no-margin q-py-none">
       <div class="text-h6">{{ displayTitle }}
-        <q-card-section style ="min-width: 10px; height: 10px" class="no-margin no-padding float-right text-caption">
-            {{ variableIndex }}
+        <q-card-section style ="min-width: 10px; height: 10px" class="no-margin no-padding float-right text-caption text-weight-thin">
+          &nbsp; {{ variableIndex }}
         </q-card-section>
       </div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
@@ -86,11 +86,6 @@ function refeshArray() {
     } else 
     if (props.bitCollection[i].label){
       newBitCollection.value.push(props.bitCollection[i])
-    }
-    if(newBitCollection.value[i] != undefined){
-      if (props.configuration.linkedVariables != undefined){
-        newBitCollection.value[i]['linkedVariables'] = props.configuration.linkedVariables
-      }
     }
   }
 }

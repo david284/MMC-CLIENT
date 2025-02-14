@@ -1,7 +1,11 @@
 <template>
   <q-card class="q-ma-xs no-padding">
     <q-card-section style="height: 150px" class="no-margin q-py-none">
-      <div class="text-h6">{{ displayTitle }}</div>
+      <div class="text-h6">{{ displayTitle }}
+        <q-card-section style ="min-width: 10px; height: 10px" class="no-margin no-padding float-right text-caption text-weight-thin">
+          &nbsp; {{ eventVariableIndex }}
+        </q-card-section>
+      </div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
       <q-badge color="secondary">
         range {{ minValue }} to {{ maxValue }} {{ displayUnits }}
