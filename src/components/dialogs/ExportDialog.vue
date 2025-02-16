@@ -33,6 +33,7 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import {importFCU} from "components/functions/ImportFunctions.js"
+import {createDateStamp} from "components/functions/utils.js"
 import {sleep} from "components/functions/utils.js"
 
 const $q = useQuasar()
@@ -128,7 +129,7 @@ const clickExport = async (filename) => {
   xlsx.utils.book_append_sheet(workbook, longEventsWorksheet, "Long_Events");
   xlsx.utils.book_append_sheet(workbook, shortEventsWorksheet, "Short_Events");
 
-  const fileName = store.state.layout.layoutDetails.title + ' export.ods'
+  const fileName = store.state.layout.layoutDetails.title + ' export '+createDateStamp() + '.ods'
   xlsx.writeFile(workbook, fileName, { bookType:'ods', compression: true, cellStyles: true });
 
 }
