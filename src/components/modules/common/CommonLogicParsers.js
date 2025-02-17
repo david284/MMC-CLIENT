@@ -1,20 +1,32 @@
 import jsonLogic from 'json-logic-js'
 import * as mfdLogic from "components/modules/common/mdfLogic.js";
+import jcc from 'json-case-convertor'
 
-
+//
+//  {
+//    "nv": 72, 
+//    "labels": [
+//      {"value": 1, "label": "TRIGGER_INVERTED"},
+//      {"value": 2, "label": "NORMAL"}
+//    ]
+//  }
 export function overloadedLabel (nodeNumber, element, store) {
   var result = null
-  if (element.nv){
-    var value = store.state.nodes[nodeNumber].nodeVariables[element.nv]
+  // the key for the variables (nv & ev) was changed from lower to upper case
+  // for backwards compatability, get the NV value using an upper case key
+  const variable = jcc.upperCaseKeys(element).NV
+  if (variable){
+    var value = store.state.nodes[nodeNumber].nodeVariables[variable]
     for (var i in element.labels){
       if (value == element.labels[i].value){
         result = element.labels[i].label
       }
     }
   }
-//  console.log('overloadedLabel: element ' + JSON.stringify(element) + ' result = ' + result)
+  //console.log('overloadedLabel: element ' + JSON.stringify(element) + ' result = ' + result)
   return result
 }
+
 
 
 //

@@ -19,6 +19,7 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "core-js": "^3.6.5",
+    "json-case-convertor": "^1.4.4",
     "json-logic-js": "^2.0.5",
     "quasar": "^2.0.0",
     "sass": "^1.69.5",

@@ -17,7 +17,7 @@ export function importFCU(file, store, modeValue) {
     console.log(name + ': ImportFCU: convert.xml2js: ' + err )        
     throw "convert.xml2js: " + err;
   }
-  console.log(name + `: ImportFCU: ${JSON.stringify(fcuConfig)}` )    
+  //console.log(name + `: ImportFCU: ${JSON.stringify(fcuConfig)}` )    
   //
   // import nodes
   try {
