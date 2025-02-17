@@ -22,6 +22,7 @@ describe('ImportFunctions Test', () => {
     "setters":{
       event_name(eventIdentifier, eventName){
         event_name_updated = true
+        console.log(`unit_test: event_name updated ${event_name_updated}`)
       },
       node_moduleName(nodeNumber, moduleName){
         node_moduleName_updated = true
@@ -42,16 +43,21 @@ describe('ImportFunctions Test', () => {
   //
   it('fcuImport event#1', () => {
     console.log("fcuImport event#1")
-    const fcuConfig = {"MergModuleDataSet":{
-      "userNodes":[],
-      "userEvents":[
-        {
-          "eventId": {"_text": "100"},
-          "ownerNode": {"_text": "10"},
-          "eventName": {"_text": "event #1"}
-        }
-      ]
-    }}
+
+    const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
+      + "<MergModuleDataSet>"
+      + "<userEvents>"
+        + "<eventValue>100</eventValue>"
+        + "<eventNode>10</eventNode>"
+        + "<eventName>event #1</eventName>"
+      + "</userEvents>"
+      + "<userEvents>"
+        + "<eventValue>101</eventValue>"
+        + "<eventNode>10</eventNode>"
+        + "<eventName>event #1</eventName>"
+      + "</userEvents>"
+    + "</MergModuleDataSet>"
+
     let modeValue = "retain"
     event_name_updated = false
     importFCU(fcuConfig, store, modeValue)
@@ -65,22 +71,21 @@ describe('ImportFunctions Test', () => {
   //
   it('fcuImport event#2', () => {
     console.log("fcuImport event#2")
-    const fcuConfig = {"MergModuleDataSet":{
-      "userNodes":[],
-      "userEvents":[
-        {
-          "eventId": {"_text": "2"},
-          "ownerNode": {"_text": "10"},
-          "eventName": {"_text": "event #1"}
-        }
-      ]
-    }}
+
+    const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
+      + "<MergModuleDataSet>"
+      + "<userEvents>"
+        + "<eventValue>2</eventValue>"
+        + "<eventNode>10</eventNode>"
+        + "<eventName>event #1</eventName>"
+      + "</userEvents>"
+    + "</MergModuleDataSet>"
+
     let modeValue = "retain"
     event_name_updated = false
     importFCU(fcuConfig, store, modeValue)
     expect(event_name_updated).toBe(true)
   });
-
 
   //
   // event name matches
@@ -88,16 +93,16 @@ describe('ImportFunctions Test', () => {
   //
   it('fcuImport event#3', () => {
     console.log("fcuImport event#3")
-    const fcuConfig = {"MergModuleDataSet":{
-      "userNodes":[],
-      "userEvents":[
-        {
-          "eventId": {"_text": "1"},
-          "ownerNode": {"_text": "10"},
-          "eventName": {"_text": "event #1"}
-        }
-      ]
-    }}
+
+    const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
+      + "<MergModuleDataSet>"
+      + "<userEvents>"
+        + "<eventValue>1</eventValue>"
+        + "<eventNode>10</eventNode>"
+        + "<eventName>event #1</eventName>"
+      + "</userEvents>"
+    + "</MergModuleDataSet>"
+
     let modeValue = "retain"
     event_name_updated = false
     importFCU(fcuConfig, store, modeValue)
@@ -111,16 +116,16 @@ describe('ImportFunctions Test', () => {
   //
   it('fcuImport event#4', () => {
     console.log("fcuImport event#4")
-    const fcuConfig = {"MergModuleDataSet":{
-      "userNodes":[],
-      "userEvents":[
-        {
-          "eventId": {"_text": "1"},
-          "ownerNode": {"_text": "10"},
-          "eventName": {"_text": "event #5"}
-        }
-      ]
-    }}
+
+    const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
+    + "<MergModuleDataSet>"
+    + "<userEvents>"
+      + "<eventValue>1</eventValue>"
+      + "<eventNode>10</eventNode>"
+      + "<eventName>event #5</eventName>"
+    + "</userEvents>"
+  + "</MergModuleDataSet>"
+
     let modeValue = "retain"
     event_name_updated = false
     importFCU(fcuConfig, store, modeValue)
@@ -134,16 +139,16 @@ describe('ImportFunctions Test', () => {
   //
   it('fcuImport event#5', () => {
     console.log("fcuImport event#5")
-    const fcuConfig = {"MergModuleDataSet":{
-      "userNodes":[],
-      "userEvents":[
-        {
-          "eventId": {"_text": "1"},
-          "ownerNode": {"_text": "10"},
-          "eventName": {"_text": "event #5"}
-        }
-      ]
-    }}
+
+    const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
+    + "<MergModuleDataSet>"
+      + "<userEvents>"
+        + "<eventValue>1</eventValue>"
+        + "<eventNode>10</eventNode>"
+        + "<eventName>event #5</eventName>"
+      + "</userEvents>"
+    + "</MergModuleDataSet>"
+
     let modeValue = "overwrite"
     event_name_updated = false
     importFCU(fcuConfig, store, modeValue)
@@ -157,16 +162,21 @@ describe('ImportFunctions Test', () => {
   //
   it('fcuImport node#1', () => {
     console.log("fcuImport node#1")
-    const fcuConfig = {"MergModuleDataSet":{
-      "userNodes":[
-        {
-          "nodeNum": {"_text": "100"},
-          "nodeName": {"_text": "CANACC5-100"},
-          "moduleName": {"_text": "CANACC5"}
-        }
-      ],
-      "userEvents":[]
-    }}
+
+    const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
+      + "<MergModuleDataSet>"
+      + "<userNodes>"
+        + "<nodeNum>100</nodeNum>"
+        + "<nodeName>CANACC5-100</nodeName>"
+        + "<moduleName>CANACC5</moduleName>"
+      + "</userNodes>"
+      + "<userNodes>"
+        + "<nodeNum>101</nodeNum>"
+        + "<nodeName>CANACC5-101</nodeName>"
+        + "<moduleName>CANACC5</moduleName>"
+      + "</userNodes>"
+    + "</MergModuleDataSet>"
+
     let modeValue = "retain"
     node_name_updated = false
     node_moduleName_updated = false
@@ -181,10 +191,16 @@ describe('ImportFunctions Test', () => {
   //
   it('fcuImport node#2', () => {
     console.log("fcuImport node#2")
-    const fcuConfig = {"MergModuleDataSet":{
-      "userNodes":[{"nodeNum": {"_text": "20"},"nodeName": {"_text": "CANACC8-20"},"moduleName": {"_text": "CANACC8"}}],
-      "userEvents":[]
-    }}
+
+    const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
+      + "<MergModuleDataSet>"
+      + "<userNodes>"
+        + "<nodeNum>20</nodeNum>"
+        + "<nodeName>CANACC8-20</nodeName>"
+        + "<moduleName>CANACC8</moduleName>"
+      + "</userNodes>"
+    + "</MergModuleDataSet>"
+
     let modeValue = "retain"
     node_name_updated = false
     node_moduleName_updated = false
@@ -199,10 +215,16 @@ describe('ImportFunctions Test', () => {
   //
   it('fcuImport node#3', () => {
     console.log("fcuImport node#3")
-    const fcuConfig = {"MergModuleDataSet":{
-      "userNodes":[{"nodeNum": {"_text": "10"},"nodeName": {"_text": "CANACC5-10"},"moduleName": {"_text": "CANACC5"}}],
-      "userEvents":[]
-    }}
+
+    const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
+      + "<MergModuleDataSet>"
+      + "<userNodes>"
+        + "<nodeNum>10</nodeNum>"
+        + "<nodeName>CANACC5-10</nodeName>"
+        + "<moduleName>CANACC5</moduleName>"
+      + "</userNodes>"
+    + "</MergModuleDataSet>"
+
     let modeValue = "overwrite"
     node_name_updated = false
     node_moduleName_updated = false
@@ -217,10 +239,16 @@ describe('ImportFunctions Test', () => {
   //
   it('fcuImport node#4', () => {
     console.log("fcuImport node#4")
-    const fcuConfig = {"MergModuleDataSet":{
-      "userNodes":[{"nodeNum": {"_text": "10"},"nodeName": {"_text": "CANACE8C-10"},"moduleName": {"_text": "CANACE8C"}}],
-      "userEvents":[]
-    }}
+
+    const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
+      + "<MergModuleDataSet>"
+      + "<userNodes>"
+        + "<nodeNum>10</nodeNum>"
+        + "<nodeName>CANACE8C-10</nodeName>"
+        + "<moduleName>CANACE8C</moduleName>"
+      + "</userNodes>"
+    + "</MergModuleDataSet>"
+
     let modeValue = "retain"
     node_name_updated = false
     node_moduleName_updated = false
@@ -235,10 +263,16 @@ describe('ImportFunctions Test', () => {
   //
   it('fcuImport node#5', () => {
     console.log("fcuImport node#5")
-    const fcuConfig = {"MergModuleDataSet":{
-      "userNodes":[{"nodeNum": {"_text": "10"},"nodeName": {"_text": "CANACE8C-10"},"moduleName": {"_text": "CANACE8C"}}],
-      "userEvents":[]
-    }}
+
+    const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
+      + "<MergModuleDataSet>"
+      + "<userNodes>"
+        + "<nodeNum>10</nodeNum>"
+        + "<nodeName>CANACE8C-10</nodeName>"
+        + "<moduleName>CANACE8C</moduleName>"
+      + "</userNodes>"
+    + "</MergModuleDataSet>"
+
     let modeValue = "overwrite"
     node_name_updated = false
     node_moduleName_updated = false
@@ -246,7 +280,6 @@ describe('ImportFunctions Test', () => {
     expect(node_name_updated).toBe(true)
     expect(node_moduleName_updated).toBe(true)
   });
-
 
 });
 
