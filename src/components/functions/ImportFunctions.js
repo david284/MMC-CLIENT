@@ -8,39 +8,48 @@ import {decToHex} from "components/functions/utils.js"
 //
 //
 export function importFCU(file, store, modeValue) {
-
   //
   //
   var fcuConfig
   try{
     fcuConfig = convert.xml2js(file, { compact: true })
   } catch (err){
-    console.log(name + ': Import Node: convert.xml2js: ' + err )        
+    console.log(name + ': ImportFCU: convert.xml2js: ' + err )        
     throw "convert.xml2js: " + err;
   }
-
+  console.log(name + `: ImportFCU: ${JSON.stringify(fcuConfig)}` )    
   //
   // import nodes
   try {
-    fcuConfig.MergModuleDataSet.userNodes.forEach( node => {
+    if (Array.isArray(fcuConfig.MergModuleDataSet.userNodes)) {    
+      fcuConfig.MergModuleDataSet.userNodes.forEach( node => {
+        addNodeName(store, parseInt(node.nodeNum._text), node.nodeName._text, modeValue)
+        addNodeModulename(store, parseInt(node.nodeNum._text), node.moduleName._text, modeValue)
+      })
+    } else{
+      let node = fcuConfig.MergModuleDataSet.userNodes
       addNodeName(store, parseInt(node.nodeNum._text), node.nodeName._text, modeValue)
       addNodeModulename(store, parseInt(node.nodeNum._text), node.moduleName._text, modeValue)
-    })
+    }
   } catch (err) {
-    console.log(name + ': Import Node: userNodes ' + err )    
+    console.log(name + ': ImportFCU: userNodes ' + err )    
   }
-
   //
   // import events
   let eventRows = []
   try {
-    fcuConfig.MergModuleDataSet.userEvents.forEach( event => {
-      if (event.eventValue._text !=0){
-        addEventName(store, event.eventNode._text, event.eventValue._text, event.eventName._text, modeValue)
-      }
-    })
+    if (Array.isArray(fcuConfig.MergModuleDataSet.userEvents)) {    
+      fcuConfig.MergModuleDataSet.userEvents.forEach( event => {
+        if (event.eventValue._text !=0){
+          addEventName(store, event.eventNode._text, event.eventValue._text, event.eventName._text, modeValue)
+        }
+      })
+    } else{
+      let event = fcuConfig.MergModuleDataSet.userEvents
+      addEventName(store, event.eventNode._text, event.eventValue._text, event.eventName._text, modeValue)
+    }
   } catch (err){
-    console.log(name + ': Import Node: userEvents ' + err )        
+    console.log(name + ': ImportFCU: userEvents ' + err )        
   }
 };
 
