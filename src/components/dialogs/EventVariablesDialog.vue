@@ -14,7 +14,8 @@
           <template v-slot:action>
             <q-btn color="cyan-1" size="sm" text-color="black"
               label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
-              <q-btn flat color="white" size="md" label="Close" v-close-popup @click="clickClose"/>
+            <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
+            <q-btn flat color="white" size="md" label="Close" v-close-popup @click="clickClose"/>
           </template>
         </q-banner>
       </q-card-section>
@@ -216,6 +217,10 @@ const clickClose = async () => {
       console.log(name + ': clickClose ' + err)        
     }
   }
+}
+
+const clickRefresh = () => {
+  console.log(name + `: clickRefresh`)
 }
 
 const clickToggleVariablesDescriptor = () => {
