@@ -10,6 +10,7 @@
           <template v-slot:action>
             <q-btn color="cyan-1" size="sm" text-color="black" 
               label="manage Module Descriptor" @click="clickManageModuleDescriptor()"/>
+              <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
               <q-btn flat color="white" size="md" label="Close" v-close-popup/>
           </template>
         </q-banner>
@@ -187,6 +188,10 @@ const clickManageModuleDescriptor = () => {
   store.methods.request_matching_mdf_list(props.nodeNumber, "USER")
   store.methods.request_matching_mdf_list(props.nodeNumber, "SYSTEM")
   showMDFDialog.value = true
+}
+
+const clickRefresh = () => {
+  console.log(name + `: clickRefresh`)
 }
 
 const clickToggleRaw = () => {
