@@ -97,6 +97,11 @@
     :nodeNumber = nodeNumber
   />
 
+  <SingleEventVariablesLoadingDialog v-model='showEventVariablesLoadingDialog'
+    :nodeNumber = nodeNumber
+    :eventIdentifier = eventIdentifier
+  />
+
 
 </template>
 
@@ -107,7 +112,9 @@ import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from 
 import { useQuasar } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import {createNewEvent} from "components/functions/EventFunctions.js"
+import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import EventVariables from "components/modules/common/EventVariables"
+import SingleEventVariablesLoadingDialog from "components/dialogs/SingleEventVariablesLoadingDialog"
 import EventVariableRaw from "components/modules/common/EventVariableRaw"
 import MDFDialog from "components/dialogs/MDFDialog";
 
@@ -115,6 +122,8 @@ const $q = useQuasar()
 const store = inject('store')
 const name = "EventVariablesDialog"
 const variablesDescriptor = ref()
+
+const showEventVariablesLoadingDialog = ref(false)
 const showRawVariables = ref(false)
 const showDescriptorWarning = ref(false)
 const showMDFDialog = ref(false)
@@ -151,15 +160,8 @@ watch(props.nodeNumber, () => {
 })
 */
 
-
-onBeforeMount(() => {
-//  console.log(name +': onBeforeMount')
-})
-
-onMounted(() => {
-//  console.log(name +': onMounted')
-})
-
+//
+//
 onUpdated(async () => {
 //  console.log(name + ': onUpdated:') 
 //  console.log(name + ': onUpdated: storedEventsNI for node ' + props.nodeNumber + ' ' + JSON.stringify(store.state.nodes[props.nodeNumber].storedEventsNI))
@@ -193,6 +195,8 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
+//
+//
 const clickClose = async () => {
   console.log(name +`: clickClose: node ` + props.nodeNumber + ' eventIdentifier ' + props.eventIdentifier)
   if (props.newEvent){
@@ -219,32 +223,44 @@ const clickClose = async () => {
   }
 }
 
-const clickRefresh = () => {
+//
+//
+const clickRefresh = async () => {
   console.log(name + `: clickRefresh`)
+  // make sure the indexes are up to date
+  await refreshEventIndexes(store, props.nodeNumber)
+  showEventVariablesLoadingDialog.value = true
 }
 
+//
+//
 const clickToggleVariablesDescriptor = () => {
   console.log(name + `: clickToggleVariablesDescriptor`)
   showVariablesDescriptor.value = showVariablesDescriptor.value ? false : true
 }
 
+//
+//
 const clickToggleRaw = () => {
   console.log(name + `: clickToggleRaw`)
   showRawVariables.value = showRawVariables.value ? false : true
 }
 
+//
+//
 const clickToggleStoredEvents = () => {
   console.log(name + `: clickToggleStoredEvents:`)
   showStoredEventJSON.value = showStoredEventJSON.value ? false : true
 }
 
+//
+//
 const clickUpdateModuleDescriptor = () => {
   console.log(name + `: clickUpdateModuleDescriptor`)
   store.methods.request_matching_mdf_list(props.nodeNumber, "USER")
   store.methods.request_matching_mdf_list(props.nodeNumber, "SYSTEM")
   showMDFDialog.value = true
 }
-
 
 </script>
 

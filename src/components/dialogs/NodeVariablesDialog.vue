@@ -72,7 +72,6 @@
 
   <NodeVariablesLoadingDialog v-model='showNodeVariablesLoadingDialog'
     :nodeNumber = nodeNumber
-    @NodeVariablesLoadingDialog="nodeVariablesLoadingReturn = $event"
   />
 
 
@@ -101,7 +100,6 @@ import { sleep } from "../functions/utils";
 const $q = useQuasar()
 const store = inject('store')
 const name = "NodevariablesDialog"
-const nodeVariablesLoadingReturn = ref('')
 
 const showDescriptorWarning = ref(false)
 const showMDFDialog = ref(false)
