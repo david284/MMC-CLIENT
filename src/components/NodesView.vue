@@ -312,14 +312,19 @@ const checkFileLoad = async (nodeNumber) => {
 
 const checkNodeVariables = async (nodeNumber) => {
   //console.log(name + ': checkNodeVariables: node ' + nodeNumber)
-  nodeVariablesLoadingReturn.value =''
-  showNodeVariablesLoadingDialog.value = true
-  // wait for variables to load
-  for (let i = 0; i < 10000; i++){
-     if (nodeVariablesLoadingReturn.value.length > 0) break
-     await sleep (10)
+  var maxNodeVariableIndex = store.state.nodes[nodeNumber].parameters[6]
+  if(store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex] != undefined){
+    //console.log(name + ": checkNodeVariables: already read")
+  } else {
+    nodeVariablesLoadingReturn.value =''
+    showNodeVariablesLoadingDialog.value = true
+    // wait for variables to load
+    for (let i = 0; i < 10000; i++){
+      if (nodeVariablesLoadingReturn.value.length > 0) break
+      await sleep (10)
+    }
+    showNodeVariablesLoadingDialog.value = false
   }
-  showNodeVariablesLoadingDialog.value = false
 }
 
 

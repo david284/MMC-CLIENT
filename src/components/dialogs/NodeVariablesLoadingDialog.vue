@@ -46,36 +46,32 @@ watch(model, async () => {
 //  console.log(name + `: WATCH model ` + model.value)
   if (model.value == true){
     console.log(name + ": ReadNodeVariables: " + props.nodeNumber)
-    await checkNodeVariables(props.nodeNumber)
+    await loadNodeVariables(props.nodeNumber)
   }
 })
 
 
-const checkNodeVariables = async (nodeNumber) => {
+const loadNodeVariables = async (nodeNumber) => {
   var maxNodeVariableIndex = store.state.nodes[nodeNumber].parameters[6]
-  //console.log(name + ": checkNodeParameters: start: maxNodeVariableIndex value  " + store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex])
-  if(store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex] != undefined){
-    //console.log(name + ": checkNodeParameters: already read")
-  } else {
-    store.methods.request_all_node_variables(
-      nodeNumber,
-      store.state.nodes[nodeNumber].parameters[6]
-    )
-    // set a count down based on number of node variables
-    // but add minimum offset
-    var countDown = (maxNodeVariableIndex * 20) + 20
-    try {
-      while (store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex] == undefined){
-        await sleep(1)
-        countDown--
-        // 
-        if (countDown <0 ) {throw "********** failed to read Node Variables"}
-      }
-      model.value = false
-    } catch (err){
-      console.log(name + ": checkNodeParameters: " + err)
-      model.value = false
+  store.methods.request_all_node_variables(
+    nodeNumber,
+    store.state.nodes[nodeNumber].parameters[6]
+  )
+  // set a count down based on number of node variables
+  // but add minimum offset
+  var countDown = (maxNodeVariableIndex * 2) + 200
+  store.state.cbusTrafficTimeStamp = Date.now()   // start from now
+  try {
+    while ((Date.now() - store.state.cbusTrafficTimeStamp) < 500) {
+      await sleep(10)
+      countDown--
+      // 
+      if (countDown <0 ) {throw "********** failed to read Node Variables"}
     }
+    model.value = false
+  } catch (err){
+    console.log(name + ": checkNodeParameters: " + err)
+    model.value = false
   }
   // signal it's complete
   emit('NodeVariablesLoadingDialog', 'finished normally')
