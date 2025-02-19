@@ -85,7 +85,7 @@
   />
 
   <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
-    message = "Teach: Loading Node Variables"
+    :message = WaitingOnBusTrafficMessage
     @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
   />
 
@@ -118,6 +118,7 @@ const isNewEvent = ref(false)
 const nodeParametersLoadingReturn = ref('')
 const showWaitingOnBusTrafficDialog = ref(false)
 const WaitingOnBusTrafficDialogReturn = ref('')
+const WaitingOnBusTrafficMessage = ref('')
 
 
 
@@ -272,6 +273,7 @@ const checkNodeVariables = async (nodeNumber) => {
     //console.log(name + ": checkNodeVariables: already read")
   } else {
     WaitingOnBusTrafficDialogReturn.value =''
+    WaitingOnBusTrafficMessage.value = "Teach: Loading Node Variables"
     store.methods.request_all_node_variables(nodeNumber)
     showWaitingOnBusTrafficDialog.value = true
     // wait for variables to load
@@ -326,14 +328,15 @@ const clickTeachEvent = async () => {
 
 
 const clickVariables = async (nodeNumber, eventIdentifier) => {
-  console.log(name + `: clickVariables ` + nodeNumber + ' ' + eventIdentifier)
-  selected_event_node.value = nodeNumber
+  let intNodeNumber = parseInt(nodeNumber)
+  console.log(name + `: clickVariables ` + intNodeNumber + ' ' + eventIdentifier)
+  selected_event_node.value = intNodeNumber
   selected_event_Identifier.value = eventIdentifier
   isNewEvent.value=false
-  await checkNodeParameters(nodeNumber)
-  await checkNodeVariables(nodeNumber)
-  await refreshEventIndexes(store, props.nodeNumber)
-  await store.methods.request_event_variables_by_identifier(nodeNumber, eventIdentifier)
+  await checkNodeParameters(intNodeNumber)
+  await checkNodeVariables(intNodeNumber)
+  await refreshEventIndexes(store, intNodeNumber)
+  await store.methods.request_event_variables_by_identifier(intNodeNumber, eventIdentifier)
   showEventVariablesDialog.value = true
 }
 
