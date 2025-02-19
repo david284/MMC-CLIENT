@@ -71,6 +71,7 @@
   />
 
   <WaitingOnBusTrafficDialog v-model='showWaitOnBusTrafficDialog'
+    callingModule = "Node Variables"
     message = "Waiting on Node Variables"
   />
 

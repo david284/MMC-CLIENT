@@ -98,6 +98,7 @@
   />
 
   <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
+    callingModule = "Event Variables"
     message = "Waiting for event variables loading"
   />
 

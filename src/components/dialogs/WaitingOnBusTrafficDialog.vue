@@ -3,6 +3,7 @@
     <q-dialog v-model='model' persistent>
       <q-card style="min-width: 350px">
         <q-card-section>
+          <div class="text-caption">{{ callingModule }}</div>
           <div class="text-h6">{{ message }}</div>
           <div class="text-h6">Please wait</div>
         </q-card-section>
@@ -30,7 +31,8 @@ const name = "WaitingOnBusTrafficDialog"
 //
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
-  message: {type: String, required: true }
+  message: {type: String, required: true },
+  callingModule: {type: String, default: "" }
 })
 
 //

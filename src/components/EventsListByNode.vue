@@ -87,6 +87,7 @@
       <EventsByNodeViewInfoDialog v-model='showEventsByNodeViewInfoDialog'/>
 
       <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
+        callingModule = "Events by Node"
         message = "Waiting for event variables loading"
       />
 

@@ -26,9 +26,10 @@
     </q-dialog>
 
     <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
+      callingModule = "Node Backup"
       :message = WaitingOnBusTrafficMessage
       @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
-      />
+    />
 
 
 </template>
@@ -134,7 +135,7 @@ const backupNode = async () => {
 const loadNodeVariables = async () => {
   var result = false
   store.methods.request_all_node_variables(props.nodeNumber)
-  WaitingOnBusTrafficMessage.value = "Backup: Loading Node Variables"
+  WaitingOnBusTrafficMessage.value = "Loading Node Variables"
   WaitingOnBusTrafficDialogReturn.value =''
   showWaitingOnBusTrafficDialog.value = true
   //
@@ -160,7 +161,7 @@ const loadEventVariables = async () => {
   var result = false
   try{
     // show waiting dialog first
-    WaitingOnBusTrafficMessage.value = "Backup: Loading Event Variables"
+    WaitingOnBusTrafficMessage.value = "Loading Event Variables"
     WaitingOnBusTrafficDialogReturn.value =''
     showWaitingOnBusTrafficDialog.value = true
     //

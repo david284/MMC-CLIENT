@@ -80,6 +80,7 @@
   />
 
   <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
+    callingModule = "Event Teach"
     :message = WaitingOnBusTrafficMessage
     @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
   />
@@ -251,7 +252,7 @@ const checkNodeParameters = async (nodeNumber) => {
     // parameters exist, so don't need to load
   } else {
     WaitingOnBusTrafficDialogReturn.value =''
-    WaitingOnBusTrafficMessage.value = "Teach: Loading Node Parameters"
+    WaitingOnBusTrafficMessage.value = "Loading Node Parameters"
     showWaitingOnBusTrafficDialog.value = true
     store.methods.request_all_node_parameters(nodeNumber, 20, 100)
     // allow up to 1 minute to finish loading
@@ -273,7 +274,7 @@ const checkNodeVariables = async (nodeNumber) => {
     //console.log(name + ": checkNodeVariables: already read")
   } else {
     WaitingOnBusTrafficDialogReturn.value =''
-    WaitingOnBusTrafficMessage.value = "Teach: Loading Node Variables"
+    WaitingOnBusTrafficMessage.value = "Loading Node Variables"
     store.methods.request_all_node_variables(nodeNumber)
     showWaitingOnBusTrafficDialog.value = true
     // wait for variables to load

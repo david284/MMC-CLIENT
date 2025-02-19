@@ -26,6 +26,7 @@
       />
 
       <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
+        callingModule = "NodesView Advanced"
         :message = WaitingOnBusTrafficMessage
         @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
       />
@@ -75,7 +76,7 @@ const checkNodeParameters = async (nodeNumber) => {
     // parameters exist, so don't need to load
   } else {
     WaitingOnBusTrafficDialogReturn.value =''
-    WaitingOnBusTrafficMessage.value = "NVAD: Loading Node Parameters"
+    WaitingOnBusTrafficMessage.value = "Loading Node Parameters"
     showWaitingOnBusTrafficDialog.value = true
     store.methods.request_all_node_parameters(nodeNumber, 20, 100)
     // allow up to 1 minute to finish loading
