@@ -263,7 +263,7 @@ const checkNodeParameters = async (nodeNumber) => {
     while ((Date.now() - startTime) < 60000){
       if (WaitingOnBusTrafficDialogReturn.value.length > 0) 
       {
-        result = true  // success if we exit early
+//        result = true  // success if we exit early
         break
       }
       await sleep (100)

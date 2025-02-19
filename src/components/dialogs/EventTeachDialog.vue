@@ -79,18 +79,10 @@
     :newEvent = isNewEvent
   />
 
-  <NodeParametersLoadingDialog v-model='showNodeParametersLoadingDialog'
-    :nodeNumber = selected_event_node
-    @NodeParametersLoadingDialog="nodeParametersLoadingReturn = $event"
-  />
-
   <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
     :message = WaitingOnBusTrafficMessage
     @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
   />
-
-
-
 
 </template>
 
@@ -103,7 +95,6 @@ import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import {createNewEvent} from "components/functions/EventFunctions.js"
 import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import {sleep} from "components/functions/utils.js"
-import NodeParametersLoadingDialog from "components/dialogs/NodeParametersLoadingDialog"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
 
 const $q = useQuasar()
@@ -113,9 +104,7 @@ const name = 'EventTeachDialog'
 const selected_event_Identifier = ref("") // Dialog will complain if null
 const selected_event_node = ref() // Dialog will complain if null
 const showEventVariablesDialog = ref(false)
-const showNodeParametersLoadingDialog = ref(false)
 const isNewEvent = ref(false)
-const nodeParametersLoadingReturn = ref('')
 const showWaitingOnBusTrafficDialog = ref(false)
 const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref('')
@@ -252,16 +241,27 @@ onUpdated(() => {
   }
 })
 
-
+//
+//
 const checkNodeParameters = async (nodeNumber) => {
-  nodeParametersLoadingReturn.value=''
-  showNodeParametersLoadingDialog.value = true
-  // wait for parameters to load
-  for (let i = 0; i < 1000; i++){
-     if (nodeParametersLoadingReturn.value.length > 0) break
-     await sleep (10)
+  //console.log(name + ': checkNodeParameters: node ' + nodeNumber)
+  //
+  // param9 - cpu type to check if parameters have been fully retrieved
+  if(store.state.nodes[nodeNumber].parameters[9]){
+    // parameters exist, so don't need to load
+  } else {
+    WaitingOnBusTrafficDialogReturn.value =''
+    WaitingOnBusTrafficMessage.value = "Teach: Loading Node Parameters"
+    showWaitingOnBusTrafficDialog.value = true
+    store.methods.request_all_node_parameters(nodeNumber, 20, 100)
+    // allow up to 1 minute to finish loading
+    let startTime = Date.now()
+    while ((Date.now() - startTime) < 60000){
+      if (WaitingOnBusTrafficDialogReturn.value.length > 0) { break }
+      await sleep (100)
+    }
+    showWaitingOnBusTrafficDialog.value = false
   }
-  showNodeParametersLoadingDialog.value = false
 }
 
 //
