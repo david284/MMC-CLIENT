@@ -1,7 +1,7 @@
 <template>
 
     <q-dialog v-model='model' persistent>
-      <q-card style="min-width: 450px; min-height: 500px;">
+      <q-card style="min-width: 450px; min-height: 400px;">
 
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
           <div class="text-h6">
@@ -25,11 +25,6 @@
       </q-card>
     </q-dialog>
 
-    <EventVariablesLoadingDialog v-model='showEventVariablesLoadingDialog'
-      :nodeNumber = nodeNumber
-      @EventVariablesLoadingDialog="eventVariablesLoadingReturn = $event"
-    />
-
     <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
       :message = WaitingOnBusTrafficMessage
       @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
@@ -45,15 +40,12 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import {refreshEventIndexes} from "components/functions/EventFunctions.js"
-import EventVariablesLoadingDialog from "components/dialogs/EventVariablesLoadingDialog"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
 
 
 const $q = useQuasar()
 const store = inject('store')
 const name = "NodeBackupDialog"
-const eventVariablesLoadingReturn = ref('')
-const showEventVariablesLoadingDialog = ref(false)
 const showWaitingOnBusTrafficDialog = ref(false)
 const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref(``)
@@ -90,6 +82,7 @@ const backupNode = async () => {
   console.log(name + `: backupNode ` + props.nodeNumber)
   var successState = false
   var result = ''
+  var notifyType = 'negative'
 
   // refresh event indexes in advance of needing it
   await refreshEventIndexes(store, props.nodeNumber)
@@ -104,7 +97,7 @@ const backupNode = async () => {
   }
 
   // wait until enough time elapsed for refresh indexes
-  while ((Date.now() - startTime) < 2000) {
+  while ((Date.now() - startTime) < 1000) {
     await sleep(100)
   }
 
@@ -121,12 +114,13 @@ const backupNode = async () => {
     // now store backup if it was successfull
     store.methods.save_node_backup(props.nodeNumber, store.state.nodes[props.nodeNumber])
     result = "Backup completed"
+    notifyType = 'info'
   }
 
   $q.notify({
     message: result,
     timeout: 0,
-    type: 'info',
+    type: notifyType,
     position: 'center',
     actions: [ { label: 'Dismiss', handler: () => { model.value = false }} ]
   })
@@ -134,6 +128,7 @@ const backupNode = async () => {
 }
 
 //
+// Load node variables for this node
 // return true if success
 //
 const loadNodeVariables = async () => {
@@ -142,35 +137,55 @@ const loadNodeVariables = async () => {
   WaitingOnBusTrafficMessage.value = "Backup: Loading Node Variables"
   WaitingOnBusTrafficDialogReturn.value =''
   showWaitingOnBusTrafficDialog.value = true
-  // wait for variables to load
-  for (let i = 0; i < 1000; i++){
-    if (WaitingOnBusTrafficDialogReturn.value.length > 0) 
+  //
+  // wait for variables to load - allow up to 1 minute
+  var startTime = Date.now()
+  while ((Date.now() - startTime) < 60000){
+      if (WaitingOnBusTrafficDialogReturn.value.length > 0) 
     {
       result = true  // success if we exit early
       break
     }
-    await sleep (10)
+    await sleep (100)
   }
   showWaitingOnBusTrafficDialog.value = false
   return result
 }
 
 //
+// load event variables from all events for this node
 // return true if success
 //
 const loadEventVariables = async () => {
   var result = false
-  eventVariablesLoadingReturn.value =''
-  showEventVariablesLoadingDialog.value = true
-  // wait for variables to load
-  for (let i = 0; i < 10000; i++){
-    if (eventVariablesLoadingReturn.value.length > 0) {
-      result = true  // success if we exit early
-      break
+  try{
+    // show waiting dialog first
+    WaitingOnBusTrafficMessage.value = "Backup: Loading Event Variables"
+    WaitingOnBusTrafficDialogReturn.value =''
+    showWaitingOnBusTrafficDialog.value = true
+    //
+    // now iterate through all the events
+    // don't use forEach, as couldn't get it to work with async/await
+    var storedEventsNI = store.state.nodes[props.nodeNumber].storedEventsNI
+    for(const eventIdentifier in storedEventsNI){
+      console.log(name + ": ReadAllEventVariables: event " + eventIdentifier)
+      store.methods.request_event_variables_by_identifier(props.nodeNumber, eventIdentifier)
+      await sleep(100)
     }
-    await sleep (10)
+    // wait for variables to load - allow up to 2 minutes
+    var startTime = Date.now()
+    while ((Date.now() - startTime) < 120000){
+      if (WaitingOnBusTrafficDialogReturn.value.length > 0) 
+      {
+        result = true  // success if we exit early
+        break
+      }
+      await sleep (100)
+    }
+    showWaitingOnBusTrafficDialog.value = false
+  } catch (err) {
+    console.log(name + ": loadEventVariables: " + err)
   }
-  showEventVariablesLoadingDialog.value = false
   return result
 }
 
