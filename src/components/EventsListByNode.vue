@@ -86,9 +86,8 @@
 
       <EventsByNodeViewInfoDialog v-model='showEventsByNodeViewInfoDialog'/>
 
-      <SingleEventVariablesLoadingDialog v-model='showEventVariablesLoadingDialog'
-        :nodeNumber = nodeNumber
-        :eventIdentifier = selected_event_Identifier
+      <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
+        message = "Waiting for event variables loading"
       />
 
   </div>
@@ -106,7 +105,7 @@ import eventTeachDialog from "components/dialogs/EventTeachDialog"
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import EventsByNodeViewInfoDialog from "components/dialogs/EventsByNodeViewInfoDialog"
 import {refreshEventIndexes} from "components/functions/EventFunctions.js"
-import SingleEventVariablesLoadingDialog from "components/dialogs/SingleEventVariablesLoadingDialog"
+import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
 
 
 const $q = useQuasar()
@@ -116,7 +115,7 @@ const rows = ref([])
 const filter = ref('')
 const showAddEventDialog = ref(false)
 const showAdvancedEventDialog = ref(false)
-const showEventVariablesLoadingDialog = ref(false)
+const showWaitingOnBusTrafficDialog = ref(false)
 const showEventTeachDialog = ref(false)
 const showEventVariablesDialog = ref(false)
 const showEventsByNodeViewInfoDialog = ref(false)
@@ -375,8 +374,8 @@ const clickVariables = async (eventIdentifier) => {
   selected_event_Identifier.value = eventIdentifier
   // make sure the indexes are up to date
   await refreshEventIndexes(store, props.nodeNumber)
-  showEventVariablesLoadingDialog.value = true
-//  await store.methods.request_event_variables_by_identifier(props.nodeNumber, eventIdentifier)
+  store.methods.request_event_variables_by_identifier(props.nodeNumber, eventIdentifier)
+  showWaitingOnBusTrafficDialog.value = true
   console.log(name + `: clickVariables: node ` + props.nodeNumber)
   showEventVariablesDialog.value = true
 }
