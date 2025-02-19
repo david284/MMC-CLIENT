@@ -25,11 +25,10 @@
         :nodeNumber = 0
       />
 
-      <NodeParametersLoadingDialog v-model='showNodeParametersLoadingDialog'
-        :nodeNumber = 0
-         @NodeParametersLoadingDialog="nodeParametersLoadingReturn = $event"
+      <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
+        :message = WaitingOnBusTrafficMessage
+        @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
       />
-
 
 </template>
 
@@ -40,16 +39,19 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import {sleep} from "components/functions/utils.js"
 import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
-import NodeParametersLoadingDialog from "components/dialogs/NodeParametersLoadingDialog"
 import { date, useQuasar, scroll } from 'quasar'
+import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
+
 
 const $q = useQuasar()
 
 const store = inject('store')
 const name = "NodesViewAdvancedDialog"
 const showNodeParametersDialog = ref(false)
-const showNodeParametersLoadingDialog = ref(false)
-const nodeParametersLoadingReturn = ref('')
+const showWaitingOnBusTrafficDialog = ref(false)
+const WaitingOnBusTrafficDialogReturn = ref('')
+const WaitingOnBusTrafficMessage = ref('')
+
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true }
@@ -62,18 +64,31 @@ const model = computed({
   set(newValue) { emit('update:modelValue', newValue) }
 })
 
+
+//
+//
 const checkNodeParameters = async (nodeNumber) => {
   //console.log(name + ': checkNodeParameters: node ' + nodeNumber)
-  nodeParametersLoadingReturn.value=''
-  showNodeParametersLoadingDialog.value = true
-  // wait for parameters to load
-  for (let i = 0; i < 1000; i++){
-     if (nodeParametersLoadingReturn.value.length > 0) break
-     await sleep (10)
+  //
+  // param9 - cpu type to check if parameters have been fully retrieved
+  if(store.state.nodes[nodeNumber].parameters[9]){
+    // parameters exist, so don't need to load
+  } else {
+    WaitingOnBusTrafficDialogReturn.value =''
+    WaitingOnBusTrafficMessage.value = "NVAD: Loading Node Parameters"
+    showWaitingOnBusTrafficDialog.value = true
+    store.methods.request_all_node_parameters(nodeNumber, 20, 100)
+    // allow up to 1 minute to finish loading
+    let startTime = Date.now()
+    while ((Date.now() - startTime) < 60000){
+      if (WaitingOnBusTrafficDialogReturn.value.length > 0) { break }
+      await sleep (100)
+    }
+    showWaitingOnBusTrafficDialog.value = false
   }
-  showNodeParametersLoadingDialog.value = false
   var result = (store.state.nodes[nodeNumber].parameters[9] != undefined)? true : false
   if (result == false){
+    console.log(name + `: checkNodeParameters: node ${nodeNumber} failed`)
     $q.notify({
       message: 'Reading Node Parameters has failed',
       caption: 'please check connections to node',
@@ -94,16 +109,14 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
-
+//
+//
 const clickNodeZeroParameters = async () => {
   console.log(name + `: clickNodeZeroParameters`)
   // clear out parameters to force them to be reloaded
   if (store.state.nodes[0] == undefined){ store.state.nodes[0] = {} }
   store.state.nodes[0].parameters = {}
   if (await checkNodeParameters(0)){
-    //console.log(name + `: clickParameters: checkNodeParameters true`)
-//    await select_node_row(0)
-    //console.log(name + `: clickParameters: node ` + nodeNumber)
     showNodeParametersDialog.value = true
   }
 }
