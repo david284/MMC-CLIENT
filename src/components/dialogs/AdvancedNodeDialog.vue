@@ -70,11 +70,6 @@
       :nodeNumber = nodeNumber
     />
 
-    <NodeVariablesLoadingDialog v-model='showNodeVariablesLoadingDialog'
-      :nodeNumber = nodeNumber
-      @NodeVariablesLoadingDialog="nodeVariablesLoadingReturn = $event"
-    />
-
 
 </template>
 
@@ -86,7 +81,6 @@ import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import MDFDialog from "components/dialogs/MDFDialog"
 import NodeBackupDialog from "components/dialogs/NodeBackupDialog"
-import NodeVariablesLoadingDialog from "components/dialogs/NodeVariablesLoadingDialog"
 import programNodeDialog from "components/dialogs/programNodeDialog"
 import RestoreNodeDialog from "components/dialogs/RestoreNodeDialog"
 import setCanIdDialog from "components/dialogs/setCanIdDialog"
@@ -94,10 +88,8 @@ import setCanIdDialog from "components/dialogs/setCanIdDialog"
 const $q = useQuasar()
 const store = inject('store')
 const name = "AdvancedNodeDialog"
-const nodeVariablesLoadingReturn = ref('')
 const showMDFDialog = ref(false)
 const showNodeBackupDialog = ref(false)
-const showNodeVariablesLoadingDialog = ref(false)
 const showProgramNodeDialog = ref(false)
 const showRestoreNodeDialog = ref(false)
 const showSetCanIdDialog = ref(false)
