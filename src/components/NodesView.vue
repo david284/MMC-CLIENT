@@ -92,17 +92,12 @@
         :nodeNumber = selected_nodeNumber
       />
 
-      <NodeParametersLoadingDialog v-model='showNodeParametersLoadingDialog'
-        :nodeNumber = selected_nodeNumber
-         @NodeParametersLoadingDialog="nodeParametersLoadingReturn = $event"
-      />
-
       <NodesViewAdvancedDialog v-model='showNodesViewAdvancedDialog'/>
 
       <NodesViewInfoDialog v-model='showNodesViewInfoDialog'/>
 
       <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
-      message = "Loading Node Variables"
+      :message = WaitingOnBusTrafficMessage
       @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
       />
 
@@ -126,7 +121,6 @@ import advancedNodeDialog from "components/dialogs/advancedNodeDialog"
 import nameNodeDialog from "components/dialogs/NameNodeDialog"
 import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
 import nodeVariablesDialog from "components/dialogs/NodeVariablesDialog"
-import NodeParametersLoadingDialog from "components/dialogs/NodeParametersLoadingDialog"
 import NodesViewAdvancedDialog from "components/dialogs/NodesViewAdvancedDialog"
 import NodesViewInfoDialog from "components/dialogs/NodesViewInfoDialog"
 import vlcbServicesDialog from "components/dialogs/VLCBServicesDialog"
@@ -158,7 +152,6 @@ const showAdvancedNodeDialog = ref(false)
 const showNodesViewAdvancedDialog = ref(false)
 const showNameNodeDialog = ref(false)
 const showNodeParametersDialog = ref(false)
-const showNodeParametersLoadingDialog = ref(false)
 const showNodesViewInfoDialog = ref(false)
 const showNodeVariablesDialog = ref(false)
 const selected_nodeNumber = ref()
@@ -166,7 +159,7 @@ const showVLCBServicesDialog = ref(false)
 const showWaitingOnBusTrafficDialog = ref(false)
 const showiFrameDialog = ref(false)
 const exampleURL = ref("dummyModule/index.html")
-const nodeParametersLoadingReturn = ref('')
+const WaitingOnBusTrafficMessage = ref('')
 const WaitingOnBusTrafficDialogReturn = ref('')
 
 const nodesUpdated = computed(() => {
@@ -253,7 +246,7 @@ store.eventBus.on('NODE_DELETED_EVENT', (nodeNumber) => {
   }
 })
 
-
+/*
 const checkNodeParameters = async (nodeNumber) => {
   //console.log(name + ': checkNodeParameters: node ' + nodeNumber)
   nodeParametersLoadingReturn.value=''
@@ -288,6 +281,47 @@ const checkNodeParameters = async (nodeNumber) => {
   await checkFileLoad(nodeNumber)
   return result
 }
+*/
+
+const checkNodeParameters2 = async (nodeNumber) => {
+  //console.log(name + ': checkNodeParameters: node ' + nodeNumber)
+  //
+  // param9 - cpu type to check if parameters have been fully retrieved
+  if(store.state.nodes[nodeNumber].parameters[9]){
+    // parameters exist, so don't need to load
+  } else {
+    WaitingOnBusTrafficDialogReturn.value =''
+    WaitingOnBusTrafficMessage.value = "NV: Loading Node Parameters"
+    showWaitingOnBusTrafficDialog.value = true
+    store.methods.request_all_node_parameters(nodeNumber, 20, 100)
+    // allow up to 1 minute to finish loading
+    let startTime = Date.now()
+    while ((Date.now() - startTime) < 60000){
+      if (WaitingOnBusTrafficDialogReturn.value.length > 0) 
+      {
+        result = true  // success if we exit early
+        break
+      }
+      await sleep (100)
+    }
+    showWaitingOnBusTrafficDialog.value = false
+  }
+  var result = (store.state.nodes[nodeNumber].parameters[9] != undefined)? true : false
+  if (result == false){
+    console.log(name + `: checkNodeParameters: node ${nodeNumber} failed`)
+    $q.notify({
+      message: 'Reading Node Parameters has failed',
+      caption: 'please check connections to node',
+      timeout: 5000,
+      type: 'warning',
+      position: 'center',
+      actions: [ { label: 'Dismiss' } ]
+    })
+  }
+  return result
+}
+
+
 
 // raise notification if nodeDescriptor file not present
 const checkFileLoad = async (nodeNumber) => {
@@ -316,6 +350,7 @@ const checkNodeVariables = async (nodeNumber) => {
     //console.log(name + ": checkNodeVariables: already read")
   } else {
     WaitingOnBusTrafficDialogReturn.value =''
+    WaitingOnBusTrafficMessage.value = "NV: Loading Node Variables"
     store.methods.request_all_node_variables(nodeNumber)
     showWaitingOnBusTrafficDialog.value = true
     // wait for variables to load
@@ -358,7 +393,7 @@ const clickDeleteNode = (nodeNumber) => {
 const clickEvents = async (nodeNumber) => {
   console.log(name + `: clickEvents: node ` + nodeNumber)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
-  await checkNodeParameters(nodeNumber)
+  await checkNodeParameters2(nodeNumber)
   await checkNodeVariables(nodeNumber)
   store.methods.request_all_node_events(nodeNumber)
   await select_node_row(nodeNumber)
@@ -376,7 +411,6 @@ const clickInfo = () => {
 const clickNameNode = async (nodeNumber) => {
   console.log(name + `: clickNameNode: node ` + nodeNumber)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
-//  await checkNodeParameters(nodeNumber)
   await select_node_row(nodeNumber)
   showNameNodeDialog.value = true;
 }
@@ -386,7 +420,7 @@ const clickNameNode = async (nodeNumber) => {
 const clickNodeAdvanced = async (nodeNumber) => {
   console.log(name + `: clickNodeAdvanced`)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
-  await checkNodeParameters(nodeNumber)
+  await checkNodeParameters2(nodeNumber)
   await select_node_row(nodeNumber)
   selectedNode.value = nodeNumber
   showAdvancedNodeDialog.value=true
@@ -407,7 +441,7 @@ const clickParameters = async (nodeNumber) => {
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   // clear out parameters to force them to be reloaded
   store.state.nodes[nodeNumber].parameters = {}
-  if (await checkNodeParameters(nodeNumber)){
+  if (await checkNodeParameters2(nodeNumber)){
     //console.log(name + `: clickParameters: checkNodeParameters true`)
     await select_node_row(nodeNumber)
     //console.log(name + `: clickParameters: node ` + nodeNumber)
@@ -427,7 +461,7 @@ const clickRefresh = () => {
 const clickVariables = async (nodeNumber) => {
   console.log(name + `: clickVariables: node ` + nodeNumber)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
-  await checkNodeParameters(nodeNumber)
+  await checkNodeParameters2(nodeNumber)
   await select_node_row(nodeNumber)
   if ((nodeNumber == 1000) && store.state.develop){
     showiFrameDialog.value = true
@@ -442,7 +476,7 @@ const clickVariables = async (nodeNumber) => {
 const clickVLCB = async (nodeNumber) => {
   console.log(name + ': clickVLCB')
   selected_nodeNumber.value = nodeNumber    // used to highlight row
-  await checkNodeParameters(nodeNumber)
+  await checkNodeParameters2(nodeNumber)
   await select_node_row(nodeNumber)
   await store.methods.request_service_discovery(store.state.selected_node)
   // give the module chance to report it's services before we request diagnostics
