@@ -199,12 +199,11 @@ const methods = {
     socket.emit('RQNPN', {"nodeNumber": nodeNumber, "parameter": parameter})
   },
   //
-  request_all_node_variables(nodeNumber, variables) {
+  request_all_node_variables(nodeNumber) {
     socket.emit('REQUEST_ALL_NODE_VARIABLES', {
-      "nodeNumber": nodeNumber,
-      "variables": variables
+      "nodeNumber": nodeNumber
     })
-    console.log(`REQUEST_ALL_NODE_VARIABLES: node ` + nodeNumber + ' variables ' + variables)
+    console.log(`REQUEST_ALL_NODE_VARIABLES: node ` + nodeNumber)
   },
   //
   refresh_bus_events() {

@@ -70,8 +70,8 @@
     :nodeNumber = nodeNumber
   />
 
-  <NodeVariablesLoadingDialog v-model='showNodeVariablesLoadingDialog'
-    :nodeNumber = nodeNumber
+  <WaitingOnBusTrafficDialog v-model='showWaitOnBusTrafficDialog'
+    message = "Waiting on Node Variables"
   />
 
 
@@ -92,7 +92,7 @@ and then only made visible when this dialog is selected for a specific node
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
 import { useQuasar } from 'quasar'
 import NodeVariables from "components/modules/common/NodeVariables"
-import NodeVariablesLoadingDialog from "components/dialogs/NodeVariablesLoadingDialog"
+import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
 import NodeVariableRaw from "components/modules/common/NodeVariableRaw"
 import MDFDialog from "components/dialogs/MDFDialog";
 import { sleep } from "../functions/utils";
@@ -103,7 +103,7 @@ const name = "NodevariablesDialog"
 
 const showDescriptorWarning = ref(false)
 const showMDFDialog = ref(false)
-const showNodeVariablesLoadingDialog = ref(false)
+const showWaitOnBusTrafficDialog = ref(false)
 const showNoVariablesMessage = ref(false)
 const showRawVariables = ref(false)
 const showVariableDescriptor = ref(false)
@@ -199,7 +199,8 @@ const clickManageModuleDescriptor = () => {
 
 const clickRefresh = () => {
   console.log(name + `: clickRefresh`)
-  showNodeVariablesLoadingDialog.value = true
+  store.methods.request_all_node_variables(props.nodeNumber)
+  showWaitOnBusTrafficDialog.value = true
 }
 
 const clickToggleRaw = () => {
