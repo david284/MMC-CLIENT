@@ -30,10 +30,10 @@
       @EventVariablesLoadingDialog="eventVariablesLoadingReturn = $event"
     />
 
-    <NodeVariablesLoadingDialog v-model='showNodeVariablesLoadingDialog'
-      :nodeNumber = nodeNumber
-      @NodeVariablesLoadingDialog="nodeVariablesLoadingReturn = $event"
-    />
+    <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
+      message = "Backup: Loading Node Variables"
+      @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
+      />
 
 
 </template>
@@ -46,15 +46,17 @@ import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import EventVariablesLoadingDialog from "components/dialogs/EventVariablesLoadingDialog"
-import NodeVariablesLoadingDialog from "components/dialogs/NodeVariablesLoadingDialog"
+import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
+
 
 const $q = useQuasar()
 const store = inject('store')
 const name = "NodeBackupDialog"
 const eventVariablesLoadingReturn = ref('')
-const nodeVariablesLoadingReturn = ref('')
 const showEventVariablesLoadingDialog = ref(false)
-const showNodeVariablesLoadingDialog = ref(false)
+const showWaitingOnBusTrafficDialog = ref(false)
+const WaitingOnBusTrafficDialogReturn = ref('')
+
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -77,6 +79,7 @@ watch(model, () => {
 })
 
 
+
 //
 // At this point we already have all the node parameters
 // So read all the node variables
@@ -93,11 +96,12 @@ const backupNode = async () => {
 
   //
   // load node variables
-  nodeVariablesLoadingReturn.value =''
-  showNodeVariablesLoadingDialog.value = true
+  store.methods.request_all_node_variables(props.nodeNumber)
+  WaitingOnBusTrafficDialogReturn.value =''
+  showWaitingOnBusTrafficDialog.value = true
   // wait for variables to load
   for (let i = 0; i < 1000; i++){
-    if (nodeVariablesLoadingReturn.value.length > 0) 
+    if (WaitingOnBusTrafficDialogReturn.value.length > 0) 
     {
       failure = false  // not failed it we exit early
       break
@@ -105,7 +109,7 @@ const backupNode = async () => {
     await sleep (10)
     var failure = true  // ensure it's marked as failure in case it times out
   }
-  showNodeVariablesLoadingDialog.value = false
+  showWaitingOnBusTrafficDialog.value = false
   if (failure) {
     console.log(name + `: backupNode ` + props.nodeNumber + ' failed to load Node variables')
     result = "Node variable load failed"
