@@ -84,9 +84,9 @@
     @NodeParametersLoadingDialog="nodeParametersLoadingReturn = $event"
   />
 
-  <NodeVariablesLoadingDialog v-model='showNodeVariablesLoadingDialog'
-    :nodeNumber = selected_event_node
-    @NodeVariablesLoadingDialog="nodeVariablesLoadingReturn = $event"
+  <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
+    message = "Teach: Loading Node Variables"
+    @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
   />
 
 
@@ -104,7 +104,7 @@ import {createNewEvent} from "components/functions/EventFunctions.js"
 import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import {sleep} from "components/functions/utils.js"
 import NodeParametersLoadingDialog from "components/dialogs/NodeParametersLoadingDialog"
-import NodeVariablesLoadingDialog from "components/dialogs/NodeVariablesLoadingDialog"
+import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
 
 const $q = useQuasar()
 const store = inject('store')
@@ -113,11 +113,12 @@ const name = 'EventTeachDialog'
 const selected_event_Identifier = ref("") // Dialog will complain if null
 const selected_event_node = ref() // Dialog will complain if null
 const showEventVariablesDialog = ref(false)
-const showNodeVariablesLoadingDialog = ref(false)
 const showNodeParametersLoadingDialog = ref(false)
 const isNewEvent = ref(false)
 const nodeParametersLoadingReturn = ref('')
-const nodeVariablesLoadingReturn = ref('')
+const showWaitingOnBusTrafficDialog = ref(false)
+const WaitingOnBusTrafficDialogReturn = ref('')
+
 
 
 const props = defineProps({
@@ -262,18 +263,26 @@ const checkNodeParameters = async (nodeNumber) => {
   showNodeParametersLoadingDialog.value = false
 }
 
-
+//
+//
 const checkNodeVariables = async (nodeNumber) => {
-  nodeVariablesLoadingReturn.value =''
-  showNodeVariablesLoadingDialog.value = true
-  // wait for variables to load
-  for (let i = 0; i < 10000; i++){
-     if (nodeVariablesLoadingReturn.value.length > 0) break
-     await sleep (10)
+  //console.log(name + ': checkNodeVariables: node ' + nodeNumber)
+  var maxNodeVariableIndex = store.state.nodes[nodeNumber].parameters[6]
+  if(store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex] != undefined){
+    //console.log(name + ": checkNodeVariables: already read")
+  } else {
+    WaitingOnBusTrafficDialogReturn.value =''
+    store.methods.request_all_node_variables(nodeNumber)
+    showWaitingOnBusTrafficDialog.value = true
+    // wait for variables to load
+    for (let i = 0; i < 10000; i++){
+      if (WaitingOnBusTrafficDialogReturn.value.length > 0) break
+      await sleep (10)
+    }
+    showWaitingOnBusTrafficDialog.value = false
   }
-  await sleep (500)
-  showNodeVariablesLoadingDialog.value = false
 }
+
 
 
 /*/////////////////////////////////////////////////////////////////////////////
