@@ -97,9 +97,8 @@
     :nodeNumber = nodeNumber
   />
 
-  <SingleEventVariablesLoadingDialog v-model='showEventVariablesLoadingDialog'
-    :nodeNumber = nodeNumber
-    :eventIdentifier = eventIdentifier
+  <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
+    message = "Waiting for event variables loading"
   />
 
 
@@ -114,7 +113,7 @@ import {sleep} from "components/functions/utils.js"
 import {createNewEvent} from "components/functions/EventFunctions.js"
 import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import EventVariables from "components/modules/common/EventVariables"
-import SingleEventVariablesLoadingDialog from "components/dialogs/SingleEventVariablesLoadingDialog"
+import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
 import EventVariableRaw from "components/modules/common/EventVariableRaw"
 import MDFDialog from "components/dialogs/MDFDialog";
 
@@ -123,7 +122,7 @@ const store = inject('store')
 const name = "EventVariablesDialog"
 const variablesDescriptor = ref()
 
-const showEventVariablesLoadingDialog = ref(false)
+const showWaitingOnBusTrafficDialog = ref(false)
 const showRawVariables = ref(false)
 const showDescriptorWarning = ref(false)
 const showMDFDialog = ref(false)
@@ -229,7 +228,8 @@ const clickRefresh = async () => {
   console.log(name + `: clickRefresh`)
   // make sure the indexes are up to date
   await refreshEventIndexes(store, props.nodeNumber)
-  showEventVariablesLoadingDialog.value = true
+  store.methods.request_event_variables_by_identifier(props.nodeNumber, props.eventIdentifier)
+  showWaitingOnBusTrafficDialog.value = true
 }
 
 //
