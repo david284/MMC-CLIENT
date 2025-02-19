@@ -246,44 +246,8 @@ store.eventBus.on('NODE_DELETED_EVENT', (nodeNumber) => {
   }
 })
 
-/*
+
 const checkNodeParameters = async (nodeNumber) => {
-  //console.log(name + ': checkNodeParameters: node ' + nodeNumber)
-  nodeParametersLoadingReturn.value=''
-  showNodeParametersLoadingDialog.value = true
-  // wait for parameters to load
-  let startTime = Date.now()
-  store.state.cbusTrafficTimeStamp = Date.now() // refresh timestamp, so we don't exit early
-  while ((Date.now() - store.state.cbusTrafficTimeStamp) < 1000) {
-     if (nodeParametersLoadingReturn.value.length > 0) break
-     // break out if more than 30 secs
-     if ((Date.now() - startTime) > 30000) {
-      console.log(name + `: checkNodeParameters: node ${nodeNumber} timeout`)
-      break
-     }
-    await sleep(100)
-  }
-
-  showNodeParametersLoadingDialog.value = false
-  var result = (store.state.nodes[nodeNumber].parameters[9] != undefined)? true : false
-  if (result == false){
-    console.log(name + `: checkNodeParameters: node ${nodeNumber} failed`)
-    $q.notify({
-      message: 'Reading Node Parameters has failed',
-      caption: 'please check connections to node',
-      timeout: 5000,
-      type: 'warning',
-      position: 'center',
-      actions: [ { label: 'Dismiss' } ]
-    })
-  }
-  //console.log(name + ': checkNodeParameters - result ' + result)
-  await checkFileLoad(nodeNumber)
-  return result
-}
-*/
-
-const checkNodeParameters2 = async (nodeNumber) => {
   //console.log(name + ': checkNodeParameters: node ' + nodeNumber)
   //
   // param9 - cpu type to check if parameters have been fully retrieved
@@ -393,7 +357,7 @@ const clickDeleteNode = (nodeNumber) => {
 const clickEvents = async (nodeNumber) => {
   console.log(name + `: clickEvents: node ` + nodeNumber)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
-  await checkNodeParameters2(nodeNumber)
+  await checkNodeParameters(nodeNumber)
   await checkNodeVariables(nodeNumber)
   store.methods.request_all_node_events(nodeNumber)
   await select_node_row(nodeNumber)
@@ -420,7 +384,7 @@ const clickNameNode = async (nodeNumber) => {
 const clickNodeAdvanced = async (nodeNumber) => {
   console.log(name + `: clickNodeAdvanced`)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
-  await checkNodeParameters2(nodeNumber)
+  await checkNodeParameters(nodeNumber)
   await select_node_row(nodeNumber)
   selectedNode.value = nodeNumber
   showAdvancedNodeDialog.value=true
@@ -441,7 +405,7 @@ const clickParameters = async (nodeNumber) => {
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   // clear out parameters to force them to be reloaded
   store.state.nodes[nodeNumber].parameters = {}
-  if (await checkNodeParameters2(nodeNumber)){
+  if (await checkNodeParameters(nodeNumber)){
     //console.log(name + `: clickParameters: checkNodeParameters true`)
     await select_node_row(nodeNumber)
     //console.log(name + `: clickParameters: node ` + nodeNumber)
@@ -461,7 +425,7 @@ const clickRefresh = () => {
 const clickVariables = async (nodeNumber) => {
   console.log(name + `: clickVariables: node ` + nodeNumber)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
-  await checkNodeParameters2(nodeNumber)
+  await checkNodeParameters(nodeNumber)
   await select_node_row(nodeNumber)
   if ((nodeNumber == 1000) && store.state.develop){
     showiFrameDialog.value = true
@@ -476,7 +440,7 @@ const clickVariables = async (nodeNumber) => {
 const clickVLCB = async (nodeNumber) => {
   console.log(name + ': clickVLCB')
   selected_nodeNumber.value = nodeNumber    // used to highlight row
-  await checkNodeParameters2(nodeNumber)
+  await checkNodeParameters(nodeNumber)
   await select_node_row(nodeNumber)
   await store.methods.request_service_discovery(store.state.selected_node)
   // give the module chance to report it's services before we request diagnostics
