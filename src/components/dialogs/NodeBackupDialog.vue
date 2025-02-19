@@ -88,7 +88,7 @@ watch(model, () => {
 //
 const backupNode = async () => {
   console.log(name + `: backupNode ` + props.nodeNumber)
-  var failure = false
+  var successState = false
   var result = ''
 
   // refresh event indexes in advance of needing it
@@ -97,26 +97,30 @@ const backupNode = async () => {
 
   //
   // load node variables
-  failure = await loadNodeVariables()
+  successState = await loadNodeVariables()
+  if (successState == false) {
+    console.log(name + `: backupNode ` + props.nodeNumber + ' failed to load Node variables')
+    result = "Node variable load failed"
+  }
 
   // wait until enough time elapsed for refresh indexes
   while ((Date.now() - startTime) < 2000) {
     await sleep(100)
   }
 
-  if (failure == false){
-    //
+  if (successState){
     // now load all event variables
-    failure = await loadEventVariables()
-    
-    if (failure) {
+    successState = await loadEventVariables()
+    if (successState == false) {
       console.log(name + `: backupNode ` + props.nodeNumber + ' failed to load Event variables')
       result = "Event variable load failed"
-    } else {
-      // now store backup if it was successfull
-      store.methods.save_node_backup(props.nodeNumber, store.state.nodes[props.nodeNumber])
-      result = "Backup completed"
     }
+  }
+
+  if (successState) {
+    // now store backup if it was successfull
+    store.methods.save_node_backup(props.nodeNumber, store.state.nodes[props.nodeNumber])
+    result = "Backup completed"
   }
 
   $q.notify({
@@ -130,10 +134,10 @@ const backupNode = async () => {
 }
 
 //
-// return true if failed
+// return true if success
 //
 const loadNodeVariables = async () => {
-  var failure = true
+  var result = false
   store.methods.request_all_node_variables(props.nodeNumber)
   WaitingOnBusTrafficMessage.value = "Backup: Loading Node Variables"
   WaitingOnBusTrafficDialogReturn.value =''
@@ -142,36 +146,32 @@ const loadNodeVariables = async () => {
   for (let i = 0; i < 1000; i++){
     if (WaitingOnBusTrafficDialogReturn.value.length > 0) 
     {
-      failure = false  // not failed it we exit early
+      result = true  // success if we exit early
       break
     }
     await sleep (10)
   }
   showWaitingOnBusTrafficDialog.value = false
-  if (failure) {
-    console.log(name + `: backupNode ` + props.nodeNumber + ' failed to load Node variables')
-    result = "Node variable load failed"
-  }
-  return failure
+  return result
 }
 
 //
-// return true if failed
+// return true if success
 //
 const loadEventVariables = async () => {
-  var failure = true
+  var result = false
   eventVariablesLoadingReturn.value =''
   showEventVariablesLoadingDialog.value = true
   // wait for variables to load
   for (let i = 0; i < 10000; i++){
     if (eventVariablesLoadingReturn.value.length > 0) {
-      failure = false  // not failed it we exit early
+      result = true  // success if we exit early
       break
     }
     await sleep (10)
   }
   showEventVariablesLoadingDialog.value = false
-  return failure
+  return result
 }
 
 onBeforeMount(() => {
