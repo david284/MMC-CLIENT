@@ -39,13 +39,8 @@
     :eventIdentifier = eventIdentifier
   />
 
-  <NodeParametersLoadingDialog v-model='showNodeParametersLoadingDialog'
-    :nodeNumber = selected_nodeNumber
-    @NodeParametersLoadingDialog="nodeParametersLoadingReturn = $event"
-  />
-
   <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
-    message = "GNL: Loading Node Variables"
+    :message = WaitingOnBusTrafficMessage
     @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
   />
 
@@ -57,7 +52,6 @@ import {inject, ref, onBeforeMount, onMounted, onUpdated, computed, watch} from 
 import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import {refreshEventIndexes} from "components/functions/EventFunctions.js"
-import NodeParametersLoadingDialog from "components/dialogs/NodeParametersLoadingDialog"
 import EventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
 
@@ -66,9 +60,8 @@ const store = inject('store')
 const name = "GenericNodeList"
 const showEventVariablesDialog = ref(false)
 const selected_nodeNumber = ref(0)
-const showNodeParametersLoadingDialog = ref(false)
-const nodeParametersLoadingReturn = ref('')
 const showWaitingOnBusTrafficDialog = ref(false)
+const WaitingOnBusTrafficMessage = ref('')
 const WaitingOnBusTrafficDialogReturn = ref('')
 
 const props = defineProps({
@@ -106,16 +99,29 @@ const update_nodes_table = async () => {
 }
 
 
+//
+//
 const checkNodeParameters = async (nodeNumber) => {
-  nodeParametersLoadingReturn.value=''
-  showNodeParametersLoadingDialog.value = true
-  // wait for parameters to load
-  for (let i = 0; i < 1000; i++){
-     if (nodeParametersLoadingReturn.value.length > 0) break
-     await sleep (10)
+  //console.log(name + ': checkNodeParameters: node ' + nodeNumber)
+  //
+  // param9 - cpu type to check if parameters have been fully retrieved
+  if(store.state.nodes[nodeNumber].parameters[9]){
+    // parameters exist, so don't need to load
+  } else {
+    WaitingOnBusTrafficDialogReturn.value =''
+    WaitingOnBusTrafficMessage.value = "GNL: Loading Node Parameters"
+    showWaitingOnBusTrafficDialog.value = true
+    store.methods.request_all_node_parameters(nodeNumber, 20, 100)
+    // allow up to 1 minute to finish loading
+    let startTime = Date.now()
+    while ((Date.now() - startTime) < 60000){
+      if (WaitingOnBusTrafficDialogReturn.value.length > 0) { break }
+      await sleep (100)
+    }
+    showWaitingOnBusTrafficDialog.value = false
   }
-  showNodeParametersLoadingDialog.value = false
 }
+
 
 //
 //
@@ -126,6 +132,7 @@ const checkNodeVariables = async (nodeNumber) => {
     //console.log(name + ": checkNodeVariables: already read")
   } else {
     WaitingOnBusTrafficDialogReturn.value =''
+    WaitingOnBusTrafficMessage.value = "GNL: Loading Node Variables"
     store.methods.request_all_node_variables(nodeNumber)
     showWaitingOnBusTrafficDialog.value = true
     // wait for variables to load

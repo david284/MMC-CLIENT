@@ -82,7 +82,7 @@ const update_nodes_table = async () => {
           let events = Object.values(node.storedEventsNI)
           events.forEach(async event => {
             if (event.eventIdentifier == props.eventIdentifier) {
-              linkedNodeNumbers.value.push(node.nodeNumber)
+              linkedNodeNumbers.value.push(parseInt(node.nodeNumber))
             }
           })
         }
