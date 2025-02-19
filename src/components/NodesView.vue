@@ -101,10 +101,10 @@
 
       <NodesViewInfoDialog v-model='showNodesViewInfoDialog'/>
 
-      <NodeVariablesLoadingDialog v-model='showNodeVariablesLoadingDialog'
-        :nodeNumber = selected_nodeNumber
-        @NodeVariablesLoadingDialog="nodeVariablesLoadingReturn = $event"
-        />
+      <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
+      message = "Loading Node Variables"
+      @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
+      />
 
       <vlcbServicesDialog  v-model='showVLCBServicesDialog' 
         :nodeNumber = store.state.selected_node
@@ -129,9 +129,9 @@ import nodeVariablesDialog from "components/dialogs/NodeVariablesDialog"
 import NodeParametersLoadingDialog from "components/dialogs/NodeParametersLoadingDialog"
 import NodesViewAdvancedDialog from "components/dialogs/NodesViewAdvancedDialog"
 import NodesViewInfoDialog from "components/dialogs/NodesViewInfoDialog"
-import NodeVariablesLoadingDialog from "components/dialogs/NodeVariablesLoadingDialog"
 import vlcbServicesDialog from "components/dialogs/VLCBServicesDialog"
 import iFrameDialog from "components/dialogs/iFrameDialog";
+import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
 
 const $q = useQuasar()
 
@@ -162,12 +162,12 @@ const showNodeParametersLoadingDialog = ref(false)
 const showNodesViewInfoDialog = ref(false)
 const showNodeVariablesDialog = ref(false)
 const selected_nodeNumber = ref()
-const showNodeVariablesLoadingDialog = ref(false)
 const showVLCBServicesDialog = ref(false)
+const showWaitingOnBusTrafficDialog = ref(false)
 const showiFrameDialog = ref(false)
 const exampleURL = ref("dummyModule/index.html")
 const nodeParametersLoadingReturn = ref('')
-const nodeVariablesLoadingReturn = ref('')
+const WaitingOnBusTrafficDialogReturn = ref('')
 
 const nodesUpdated = computed(() => {
   return store.state.nodes.updateTimestamp
@@ -309,21 +309,21 @@ const checkFileLoad = async (nodeNumber) => {
 }
   
 
-
 const checkNodeVariables = async (nodeNumber) => {
   //console.log(name + ': checkNodeVariables: node ' + nodeNumber)
   var maxNodeVariableIndex = store.state.nodes[nodeNumber].parameters[6]
   if(store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex] != undefined){
     //console.log(name + ": checkNodeVariables: already read")
   } else {
-    nodeVariablesLoadingReturn.value =''
-    showNodeVariablesLoadingDialog.value = true
+    WaitingOnBusTrafficDialogReturn.value =''
+    store.methods.request_all_node_variables(nodeNumber)
+    showWaitingOnBusTrafficDialog.value = true
     // wait for variables to load
     for (let i = 0; i < 10000; i++){
-      if (nodeVariablesLoadingReturn.value.length > 0) break
+      if (WaitingOnBusTrafficDialogReturn.value.length > 0) break
       await sleep (10)
     }
-    showNodeVariablesLoadingDialog.value = false
+    showWaitingOnBusTrafficDialog.value = false
   }
 }
 
