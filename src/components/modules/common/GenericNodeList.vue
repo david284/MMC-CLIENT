@@ -58,7 +58,6 @@ import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import NodeParametersLoadingDialog from "components/dialogs/NodeParametersLoadingDialog"
-import NodeVariablesLoadingDialog from "components/dialogs/NodeVariablesLoadingDialog"
 import EventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
 
