@@ -1,7 +1,7 @@
 <template>
 
     <q-dialog v-model='model' persistent>
-      <q-card style="min-width: 450px; min-height: 400px;">
+      <q-card style="min-width: 450px; min-height: 300px;">
 
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
           <div class="text-h6">
@@ -12,17 +12,13 @@
           </template>
         </q-banner>
         
-        <q-card-section>
-          <div></div>
-          <div></div>
-        </q-card-section>
-
-        <q-card-section>
-          <div class="text-h6">Node backup is starting...</div>
-          <div class="text-h6">Please wait</div>
-        </q-card-section>
+        <q-card style="height: 200px" class="q-pa-sm q-ma-sm">
+          <div class="text-primary">status</div>
+          <div class="text-h6">{{ backupStatus }}</div>
+        </q-card>
 
       </q-card>
+
     </q-dialog>
 
     <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
@@ -50,6 +46,7 @@ const name = "NodeBackupDialog"
 const showWaitingOnBusTrafficDialog = ref(false)
 const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref(``)
+const backupStatus = ref('starting')
 
 
 const props = defineProps({
@@ -86,11 +83,13 @@ const backupNode = async () => {
   var notifyType = 'negative'
 
   // refresh event indexes in advance of needing it
+  backupStatus.value = "refresh event variables"
   await refreshEventIndexes(store, props.nodeNumber)
   let startTime = Date.now()
 
   //
   // load node variables
+  backupStatus.value = "loading node variables"
   successState = await loadNodeVariables()
   if (successState == false) {
     console.log(name + `: backupNode ` + props.nodeNumber + ' failed to load Node variables')
@@ -98,12 +97,14 @@ const backupNode = async () => {
   }
 
   // wait until enough time elapsed for refresh indexes
+  backupStatus.value = "waiting for events"
   while ((Date.now() - startTime) < 1000) {
     await sleep(100)
   }
 
   if (successState){
     // now load all event variables
+    backupStatus.value = "loading event variables"
     successState = await loadEventVariables()
     if (successState == false) {
       console.log(name + `: backupNode ` + props.nodeNumber + ' failed to load Event variables')
@@ -114,17 +115,17 @@ const backupNode = async () => {
   if (successState) {
     // now store backup if it was successfull
     store.methods.save_node_backup(props.nodeNumber, store.state.nodes[props.nodeNumber])
-    result = "Backup completed"
-    notifyType = 'info'
+    backupStatus.value = "Backup completed"
+  } else {
+    // display popup for failure
+    $q.notify({
+      message: result,
+      timeout: 0,
+      type: notifyType,
+      position: 'center',
+      actions: [ { label: 'Dismiss', handler: () => { model.value = false }} ]
+    })
   }
-
-  $q.notify({
-    message: result,
-    timeout: 0,
-    type: notifyType,
-    position: 'center',
-    actions: [ { label: 'Dismiss', handler: () => { model.value = false }} ]
-  })
 
 }
 
