@@ -121,10 +121,10 @@ const backupNode = async () => {
     backupStatus.value = result
     $q.notify({
       message: result,
-      timeout: 0,
+      timeout: 1000,
       type: notifyType,
       position: 'center',
-      actions: [ { label: 'Dismiss', handler: () => { model.value = false }} ]
+      actions: [ { label: 'Dismiss', handler: () => { }} ]
     })
   }
 
