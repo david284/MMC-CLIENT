@@ -118,6 +118,7 @@ const backupNode = async () => {
     backupStatus.value = "Backup completed"
   } else {
     // display popup for failure
+    backupStatus.value = result
     $q.notify({
       message: result,
       timeout: 0,
