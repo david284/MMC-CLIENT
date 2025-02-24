@@ -279,8 +279,8 @@ const fastIntervalFunction = () => {
 
 }
 
-
-
+//
+//
 const scrollFunc = () => {
 //  console.log(name + ": scroll timeout " + Date.now())
 //  clearInterval(oneShotScroll)
@@ -319,31 +319,52 @@ store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber, moduleName) => {
 
 //
 //
-store.eventBus.on('SERVER_STATUS_EVENT', (serverStatus) => {
-//  console.log(name + ': SERVER_STATUS_EVENT ' + JSON.stringify(serverStatus))
-  if(store.state.busConnection_notify){
+store.eventBus.on('NETWORK_CONNECTION_FAILURE', (message, caption, type, timeout) => {
+  if(store.state.networkConnection_notify){
     try{
-      if (serverStatus.busConnection.state == false){
-        $q.notify({
-          message: 'Server has no connection to the CAN BUS',
-          caption: 'attempting to re-connect',
-          timeout: 2000,
-          type: 'warning',
-          position: 'center',
-          actions: [ 
-            { label: `Don't remind me again`, 
-              handler: () => { store.state.busConnection_notify = false }  
-            }, 
-            { label: 'Dismiss' } 
-          ]
-        })
-      }
-      
+      $q.notify({
+        message: message,
+        caption: caption,
+        timeout: timeout,
+        type: type,
+        position: 'center',
+        actions: [ 
+          { label: `Don't remind me again`, 
+            handler: () => { store.state.networkConnection_notify = false }  
+          }, 
+          { label: 'Dismiss' } 
+        ]
+      })
     } catch(err){
-      console.log(name + ': SERVER_STATUS_EVENT: ' + err)    
+      console.log(name + ': NETWORK_CONNECTION_FAILURE: ' + err)    
     }
   }
 })
+
+//
+//
+store.eventBus.on('SERIAL_CONNECTION_FAILURE', (message, caption, type, timeout) => {
+  if(store.state.serialConnection_notify){
+    try{
+      $q.notify({
+        message: message,
+        caption: caption,
+        timeout: timeout,
+        type: type,
+        position: 'center',
+        actions: [ 
+          { label: `Don't remind me again`, 
+            handler: () => { store.state.serialConnection_notify = false }  
+          }, 
+          { label: 'Dismiss' } 
+        ]
+      })
+    } catch(err){
+      console.log(name + ': SERIAL_CONNECTION_FAILURE: ' + err)    
+    }
+  }
+})
+
 
 //
 //

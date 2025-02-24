@@ -12,7 +12,6 @@ const name = "store"
 
 const state = reactive({
   backups_list: [],
-  busConnection_notify: true,
   busEvents: {},
   cbus_errors: {},
   colours: ["black", "red", "pink", "purple", "deep-purple", "indigo", "blue", "light-blue", "cyan", "teal", "green", "light-green", "lime", "yellow", "amber", "orange", "deep-orange", "brown", "blue-grey", "grey"],
@@ -28,6 +27,7 @@ const state = reactive({
   layouts_list: [],
   loadFile_notification_raised: {},
   MDFupdateTimestamp: Date.now(),
+  networkConnection_notify: true,
   nodeDescriptors: {},
   nodeDescriptorList: {},
   nodes: {},
@@ -35,6 +35,7 @@ const state = reactive({
   restoredData: {},
   server: { "nodes":{} },
   selected_node: 0,
+  serialConnection_notify: true,
   serverStatus: {},
   title: "MMC",
   update_layout_needed: false,
@@ -686,6 +687,13 @@ socket.on("MATCHING_MDF_LIST", (location, nodeNumber, list) => {
   state.MDFupdateTimestamp = Date.now()
 })
 
+//
+//
+socket.on("NETWORK_CONNECTION_FAILURE", (data) => {
+  console.log(secondsNow() + ': ' + name + `: RECEIVED NETWORK_CONNECTION_FAILURE : ${JSON.stringify(data)}`)
+  eventBus.emit('NETWORK_CONNECTION_FAILURE', data.message, data.caption, data.type, data.timeout)
+})
+
 socket.on("NODE", (data) => {
   state.nodes["updateTimestamp"] = Date.now()
   console.log(secondsNow() + ': ' + name + `: RECEIVED NODE: ${data.nodeNumber}`)
@@ -759,8 +767,16 @@ socket.on("REQUEST_NODE_NUMBER", (nodeNumber, moduleName) => {
   eventBus.emit('REQUEST_NODE_NUMBER_EVENT', nodeNumber, moduleName)
 })
 
+//
+//
+socket.on("SERIAL_CONNECTION_FAILURE", (data) => {
+  console.log(secondsNow() + ': ' + name + `: RECEIVED SERIAL_CONNECTION_FAILURE : ${JSON.stringify(data)}`)
+  eventBus.emit('SERIAL_CONNECTION_FAILURE', data.message, data.caption, data.type, data.timeout)
+})
+
+
 socket.on("SERVER_NOTIFICATION", (data) => {
-  console.log(name + `: RECEIVED SERVER_NOTIFICATION : ${JSON.stringify(data)}`)
+  console.log(secondsNow() + ': ' + name + `: RECEIVED SERVER_NOTIFICATION : ${JSON.stringify(data)}`)
   eventBus.emit('GENERAL_MESSAGE_EVENT', data.message, data.caption, data.type, data.timeout)
 })
 
