@@ -292,13 +292,13 @@ const scrollFunc = () => {
 // general notfication method
 // types are 'positive', 'negative', 'warning', 'info', 'ongoing'
 //
-store.eventBus.on('GENERAL_MESSAGE_EVENT', (message, caption, type) => {
+store.eventBus.on('GENERAL_MESSAGE_EVENT', (message, caption, type, timeout) => {
   console.log(name + ': GENERAL_MESSAGE_EVENT ' + JSON.stringify(message))
   try{
     $q.notify({
       message: message,
       caption: caption,
-      timeout: 0,
+      timeout: timeout,
       type: type,
       position: 'center',
       actions: [ { label: 'Dismiss' } ]

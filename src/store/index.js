@@ -759,6 +759,11 @@ socket.on("REQUEST_NODE_NUMBER", (nodeNumber, moduleName) => {
   eventBus.emit('REQUEST_NODE_NUMBER_EVENT', nodeNumber, moduleName)
 })
 
+socket.on("SERVER_NOTIFICATION", (data) => {
+  console.log(name + `: RECEIVED SERVER_NOTIFICATION : ${JSON.stringify(data)}`)
+  eventBus.emit('GENERAL_MESSAGE_EVENT', data.message, data.caption, data.type, data.timeout)
+})
+
 socket.on("SERVER_STATUS", (data) => {
   if (data.mode == "RUNNING"){
     state.inStartup = false

@@ -227,19 +227,19 @@ const clickImport = () => {
       reader.readAsText(importFile.value)
       reader.onload = function() {
         importFCU(reader.result, store, mode.value)
-        store.eventBus.emit('GENERAL_MESSAGE_EVENT', "import " + importFile.value.name, "successful", 'info')
+        store.eventBus.emit('GENERAL_MESSAGE_EVENT', "import " + importFile.value.name, "successful", 'info', 0)
       }
     }
     else if (importType.value == "SPREADSHEET"){
       reader.readAsArrayBuffer(importFile.value)
       reader.onload = function() {
         importSPREADSHEET(reader.result, store, mode.value)
-        store.eventBus.emit('GENERAL_MESSAGE_EVENT', "import " + importFile.value.name, "successful", 'info')
+        store.eventBus.emit('GENERAL_MESSAGE_EVENT', "import " + importFile.value.name, "successful", 'info', 0)
       }
     }
   } catch(err){
     console.log(name + `: clickImport: ` + err)
-    store.eventBus.emit('GENERAL_MESSAGE_EVENT', "import " + importFile.value.name + " failed", err, 'warning')
+    store.eventBus.emit('GENERAL_MESSAGE_EVENT', "import " + importFile.value.name + " failed", err, 'warning', 0)
 
   }
 }
