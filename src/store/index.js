@@ -631,6 +631,7 @@ socket.on("CBUS_TRAFFIC", (data) => {
 
 socket.on("connect", () => {
   console.log(`Socket Connect`)
+  eventBus.emit('SERVER_CONNECT')
   socket.emit('REQUEST_VERSION')
   socket.emit('REQUEST_LAYOUTS_LIST')
 })

@@ -200,6 +200,7 @@ const showiFrameDialog = ref(false)
 const exampleURL = ref("dummyModule/index.html")
 const scrollAreaRef = ref(null)
 const selectedView = ref('NodesView')
+var serverDisconnectNotification = null
 var oneShotScroll
 
 //
@@ -368,10 +369,25 @@ store.eventBus.on('SERIAL_CONNECTION_FAILURE', (message, caption, type, timeout)
 
 //
 //
-store.eventBus.on('SERVER_DISCONNECT', () => {
+store.eventBus.on('SERVER_CONNECT', () => {
+  if (serverDisconnectNotification){
+    // dismiss the other notification
+    serverDisconnectNotification()
+  }
   $q.notify({
+    message: 'MMC-server has connected',
+    timeout: 1000,
+    type: 'info',
+    position: 'center'
+  })
+})
+
+
+//
+//
+store.eventBus.on('SERVER_DISCONNECT', () => {
+  serverDisconnectNotification = $q.notify({
     message: 'MMC-server has disconnected',
-    caption: 'please restart application',
     timeout: 0,
     type: 'warning',
     position: 'center',
