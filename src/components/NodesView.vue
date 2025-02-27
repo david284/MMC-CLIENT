@@ -259,9 +259,9 @@ const checkNodeParameters = async (nodeNumber) => {
     WaitingOnBusTrafficMessage.value = "Loading Node Parameters"
     showWaitingOnBusTrafficDialog.value = true
     store.methods.request_all_node_parameters(nodeNumber, 20, 100)
-    // allow up to 1 minute to finish loading
+    // allow up to 2 minutes to finish loading
     let startTime = Date.now()
-    while ((Date.now() - startTime) < 60000){
+    while ((Date.now() - startTime) < 120000){
       if (WaitingOnBusTrafficDialogReturn.value.length > 0) 
       {
 //        result = true  // success if we exit early
