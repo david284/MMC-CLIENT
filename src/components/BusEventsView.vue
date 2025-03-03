@@ -207,6 +207,7 @@ const event_colour = (eventIdentifier) => {
 onBeforeMount(() => {
 //  store.methods.query_all_nodes()
   store.methods.refresh_bus_events()
+  viewModeIndex.value = store.state.events_type_select
   update_bus_events()
 })
 
@@ -292,6 +293,7 @@ const clickToggleViewMode = () => {
   console.log(name + `: clickToggleViewMode`)
   viewModeIndex.value++
   if (viewModeIndex.value > 1){viewModeIndex.value = 0}
+  store.state.events_type_select = viewModeIndex.value
   update_bus_events()
 }
 

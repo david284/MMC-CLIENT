@@ -5,6 +5,9 @@
         Events for node :  {{ store.getters.node_name(props.nodeNumber) }}
       </div>
       <template v-slot:action>
+        <q-btn class="q-mx-xs  q-my-none" size="sm" color="blue" label="Toggle"  no-caps
+          @click="clickToggleViewMode()" />
+        <div class="text-h6" style="min-width: 250px">{{ viewModes[viewModeIndex] }}</div>
         <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
             @click="clickInfo()" />
         <q-space/>
@@ -128,6 +131,14 @@ const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
 var eventType = ref()
 
+const viewModeIndex = ref(0)
+
+const viewModes = ref({
+  0:"view all events",
+  1: "view short events only"
+})
+
+
 const props = defineProps({
   nodeNumber: {type: Number, required: true }
 })
@@ -203,16 +214,20 @@ const update_rows = () => {
     storedEventsNI.forEach(event => {
       var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
       var eventNumber = parseInt(event.eventIdentifier.substr(4, 4), 16)
-      let output = {}
-      output['eventIdentifier'] = event.eventIdentifier
-      output['eventName'] = store.getters.event_name(event.eventIdentifier)
-      output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
-      output['nodeNumber'] = eventNodeNumber
-      output['eventNumber'] = eventNumber
-      output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
-      output['storedEvent'] = true
-      output['source'] = "stored event"
-      rows.value.push(output)
+      if ((viewModeIndex.value == 1) && (eventNodeNumber > 0)){
+        // don't add this node as we've selected short events only
+      } else {
+        let output = {}
+        output['eventIdentifier'] = event.eventIdentifier
+        output['eventName'] = store.getters.event_name(event.eventIdentifier)
+        output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
+        output['nodeNumber'] = eventNodeNumber
+        output['eventNumber'] = eventNumber
+        output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
+        output['storedEvent'] = true
+        output['source'] = "stored event"
+        rows.value.push(output)
+      }
     })
 
     // now add bus events... but not if already in the list
@@ -260,17 +275,22 @@ const update_rows = () => {
 
 
 onBeforeMount(() => {
-  //console.log(name + ": onBeforeMount")
+  console.log(name + ": onBeforeMount")
+  viewModeIndex.value = store.state.events_type_select
   if (props.nodeNumber){
     update_rows()
   }
 })
 
+/*
 onMounted(() => {
+  console.log(name + ": onMounted")
 })
 
 onUpdated(() => {
+  console.log(name + ": onUpdated")
 })
+*/
 
 
 /*/////////////////////////////////////////////////////////////////////////////
@@ -370,6 +390,14 @@ const clickTeach = (eventIndentifier) => {
   showEventTeachDialog.value = true
 }
 
+
+const clickToggleViewMode = () => {
+  console.log(name + `: clickToggleViewMode`)
+  viewModeIndex.value++
+  if (viewModeIndex.value > 1){viewModeIndex.value = 0}
+  store.state.events_type_select = viewModeIndex.value
+  update_rows()
+}
 
 const clickVariables = async (eventIdentifier) => {
   selected_event_Identifier.value = eventIdentifier

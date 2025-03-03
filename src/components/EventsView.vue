@@ -125,7 +125,7 @@
 
 <script setup>
 
-import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
+import {inject, onBeforeMount, onMounted, computed, watch, ref, onUpdated} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import AddEventDialog from "components/dialogs/AddEventDialog"
 import sendEventDialog from "components/dialogs/SendEventDialog"
@@ -300,13 +300,21 @@ store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
 
 
 onBeforeMount(() => {
-//  store.methods.query_all_nodes()
+//  console.log(name + `: onBeforeMount`)
+  viewModeIndex.value = store.state.events_type_select
   update_events_table()
 })
 
+/*
 onMounted(() => {
-  update_events_table()
+    console.log(name + `: onMounted`)
+    update_events_table()
 })
+
+onUpdated(() => {
+    console.log(name + `: onUpdated`)
+})
+    */
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -415,6 +423,7 @@ const clickToggleViewMode = () => {
   console.log(name + `: clickToggleViewMode`)
   viewModeIndex.value++
   if (viewModeIndex.value > 1){viewModeIndex.value = 0}
+  store.state.events_type_select = viewModeIndex.value
   update_events_table()
 }
 
