@@ -18,6 +18,9 @@
               <q-item clickable @click="clickCbusErrors()">
                 <q-item-section>CBUS errors</q-item-section>
               </q-item>
+              <q-item clickable @click="clickSendCBUS()">
+                <q-item-section>Send CBUS message</q-item-section>
+              </q-item>
               <q-item clickable @click="clickSystem()">
                 <q-item-section>System</q-item-section>
               </q-item>
@@ -137,6 +140,7 @@
   <newNodeDialog v-model='showNewNodeDialog'
     :previousNodeNumber="previousNodeNumber"
     :moduleName="nodeModuleName" />
+  <SendCbusDialog v-model='showSendCbusDialog' />
   <startupDialog v-model='store.state.inStartup' />
   <systemDialog v-model='showSystemDialog' />
   <dialogExampleCompositionAPI v-model='showDialogExampleCompositionAPI' />
@@ -176,6 +180,8 @@ import dialogExampleCompositionAPI from "components/dialogs/DialogExampleComposi
 import iFrameDialog from "components/dialogs/iFrameDialog";
 import EventsView from "components/EventsView";
 import BusEventsView from "components/BusEventsView";
+import SendCbusDialog from "components/dialogs/SendCbusDialog";
+
 
 const { getVerticalScrollPosition, setVerticalScrollPosition } = scroll
 const $q = useQuasar()
@@ -202,6 +208,8 @@ const scrollAreaRef = ref(null)
 const selectedView = ref('NodesView')
 var serverDisconnectNotification = null
 var oneShotScroll
+const showSendCbusDialog = ref(false)
+
 
 //
 //
@@ -504,6 +512,13 @@ const clickSingleBusEvent = (message) => {
   showModifiedGridConnectDialog.value = true
 
 //  showBusTrafficDialog.value = true
+}
+
+//
+//
+const clickSendCBUS = () => {
+  console.log(name + ': clickSendCBUS')
+  showSendCbusDialog.value = true
 }
 
 //
