@@ -12,7 +12,7 @@
       </q-badge>
       <q-input
         :mask="displayMask"
-        debounce="1000"
+        debounce="100"
         v-model="displayValue"
         outlined
         :error-message="error_message"
@@ -30,6 +30,7 @@ import {setByteVariable} from "components/modules/common/commonFunctions.js"
 import {getDisplayValue} from "components/modules/common/commonFunctions.js"
 import {getLinkedNodeVariables} from "components/modules/common/commonFunctions.js"
 
+const name = "NodeVariableNumber"
 
 const props = defineProps({
   "nodeNumber": {
@@ -121,7 +122,7 @@ const variableValue = computed(() =>{
 
 
 watch(variableValue, () => {
-  displayValue.value =   displayValue.value = getDisplayValue(variableValue.value, 
+  displayValue.value = getDisplayValue(variableValue.value, 
     props.displayScale, 
     props.displayOffset, 
     props.startBit, 
@@ -156,6 +157,16 @@ const update_variable = (newValue) => {
       getLinkedNodeVariables(props.configuration)
     )
   }
+  //console.log(name + `: update_variable ${variableValue.value}`)
+  // update display value
+  displayValue.value = getDisplayValue(
+    variableValue.value, 
+    props.displayScale, 
+    props.displayOffset, 
+    props.startBit, 
+    props.endBit
+  )
+  //console.log(name + `: displayValue ${displayValue.value}`)
 }
 
 

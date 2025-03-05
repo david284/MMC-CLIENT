@@ -187,7 +187,9 @@ const clickSend = () => {
     }
     commandString.value = commandString.value + decToHex(value, 2)
   }
+  commandString.value = ':SB780N' + commandString.value + ';'
   console.log(name + ': clickSend: commandString ' + commandString.value)
+  store.methods.send_cbus_message(commandString.value)
 }
 
 

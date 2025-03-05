@@ -300,6 +300,11 @@ const methods = {
     socket.emit('SAVE_NODE_BACKUP', data)
   },
   //
+  send_cbus_message(message){
+    socket.emit('SEND_CBUS_MESSAGE', message)
+    console.log(name + `: SEND_CBUS_MESSAGE: ${message}` )
+  },
+  //
   set_can_id(nodeNumber, CAN_ID){
     var data = {}
     data['nodeNumber'] = nodeNumber
