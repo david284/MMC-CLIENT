@@ -12,7 +12,7 @@
       </q-badge>
       <q-input
         :mask="displayMask"
-        debounce="100"
+        debounce="10"
         v-model="displayValue"
         outlined
         :error-message="error_message"
