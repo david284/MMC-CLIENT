@@ -131,7 +131,8 @@ const showBusEventsJSON = ref(false)
 const viewModeIndex = ref(0)
 const viewModes = ref({
   0:"view all bus events",
-  1: "view short bus events only"
+  1: "view short events only",
+  2: "view long events only"
 })
 
 
@@ -176,8 +177,9 @@ const update_bus_events = () => {
     if (busEvents){
       for (let key of Object.keys(busEvents).sort(function(a, b){return (busEvents[a].eventIdentifier < busEvents[b].eventIdentifier)? -1 : 1;})) {
         var eventNodeNumber = parseInt(busEvents[key].eventIdentifier.slice(0,4), 16)
-        if ((viewModeIndex.value == 1) && (eventNodeNumber > 0)){
-          // don't add this node as we've selected short events only
+        if (((viewModeIndex.value == 1) && (eventNodeNumber > 0)) ||
+          ((viewModeIndex.value == 2) && (eventNodeNumber == 0))) {
+          // don't add this node as we've selected either short or long events only
         } else {
           let output = {}
           output['eventIdentifier'] = busEvents[key].eventIdentifier
@@ -292,7 +294,7 @@ const clickToggleShowBusEventsJSON = () => {
 const clickToggleViewMode = () => {
   console.log(name + `: clickToggleViewMode`)
   viewModeIndex.value++
-  if (viewModeIndex.value > 1){viewModeIndex.value = 0}
+  if (viewModeIndex.value > 2){viewModeIndex.value = 0}
   store.state.events_type_select = viewModeIndex.value
   update_bus_events()
 }

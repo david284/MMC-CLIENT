@@ -135,7 +135,8 @@ const viewModeIndex = ref(0)
 
 const viewModes = ref({
   0:"view all events",
-  1: "view short events only"
+  1: "view short events only",
+  2: "view long events only"
 })
 
 
@@ -214,8 +215,9 @@ const update_rows = () => {
     storedEventsNI.forEach(event => {
       var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
       var eventNumber = parseInt(event.eventIdentifier.substr(4, 4), 16)
-      if ((viewModeIndex.value == 1) && (eventNodeNumber > 0)){
-        // don't add this node as we've selected short events only
+      if (((viewModeIndex.value == 1) && (eventNodeNumber > 0)) ||
+        ((viewModeIndex.value == 2) && (eventNodeNumber == 0))) {
+        // don't add this node as we've selected either short or long events only
       } else {
         let output = {}
         output['eventIdentifier'] = event.eventIdentifier
@@ -394,7 +396,7 @@ const clickTeach = (eventIndentifier) => {
 const clickToggleViewMode = () => {
   console.log(name + `: clickToggleViewMode`)
   viewModeIndex.value++
-  if (viewModeIndex.value > 1){viewModeIndex.value = 0}
+  if (viewModeIndex.value > 2){viewModeIndex.value = 0}
   store.state.events_type_select = viewModeIndex.value
   update_rows()
 }

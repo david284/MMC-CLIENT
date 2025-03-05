@@ -156,7 +156,8 @@ const viewModeIndex = ref(0)
 
 const viewModes = ref({
   0:"view all events",
-  1: "view short events only"
+  1: "view short events only",
+  2: "view long events only"
 })
 
 
@@ -210,8 +211,9 @@ const update_events_table = () => {
     if (store.state.event_view_status[eventIdentifier] == undefined){
       store.state.event_view_status[eventIdentifier] = 'unknown'
     }
-    if ((viewModeIndex.value == 1) && (nodeNumber > 0)){
-      // don't add this node as we've selected short events only
+    if (((viewModeIndex.value == 1) && (nodeNumber > 0)) ||
+      ((viewModeIndex.value == 2) && (nodeNumber == 0))) {
+      // don't add this node as we've selected either short or long events only
     } else {
       let output = {}
       output['eventIdentifier'] = eventIdentifier
@@ -423,7 +425,7 @@ const clickToggleShowEventsJSON = () => {
 const clickToggleViewMode = () => {
   console.log(name + `: clickToggleViewMode`)
   viewModeIndex.value++
-  if (viewModeIndex.value > 1){viewModeIndex.value = 0}
+  if (viewModeIndex.value > 2){viewModeIndex.value = 0}
   store.state.events_type_select = viewModeIndex.value
   update_events_table()
 }
