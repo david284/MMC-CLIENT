@@ -130,32 +130,36 @@ watch (model, () => {
 //
 watch (opCode, () => {
   console.log(name + `: Watch opCode`)
-  let processArray = opCode.value.toUpperCase().split('X')
-  if (processArray.length > 1){
-    opCodeDecimal = parseInt(processArray[1], 16)
-  } else {
-    opCodeDecimal = parseInt(processArray[0])
+  try{
+    let processArray = opCode.value.toUpperCase().split('X')
+    if (processArray.length > 1){
+      opCodeDecimal = parseInt(processArray[1], 16)
+    } else {
+      opCodeDecimal = parseInt(processArray[0])
+    }
+    console.log(name + `: opcode ${opCodeDecimal}`)
+    if (opCodeDecimal < 0x20){
+      dataLength.value = 0
+    } else if (opCodeDecimal < 0x40 ) {
+      dataLength.value = 1
+    } else if (opCodeDecimal < 0x60) {
+        dataLength.value = 2
+    } else if (opCodeDecimal < 0x80 ) {
+        dataLength.value = 3
+    } else if (opCodeDecimal < 0xA0 ) {
+        dataLength.value = 4
+    } else if (opCodeDecimal < 0xC0 ) {
+        dataLength.value = 5
+    } else if (opCodeDecimal < 0xE0) {
+        dataLength.value = 6
+    } else if (opCodeDecimal <= 0xFF ) {
+        dataLength.value = 7
+    }
+    if (opCodeDecimal > 0 ) { sendEnabled.value = true}
+    console.log(name + `: data length ${dataLength.value}`)
+  } catch(err){
+    console.log(name + `: Watch opCode ${err}`)    
   }
-  console.log(name + `: opcode ${opCodeDecimal}`)
-  if (opCodeDecimal < 0x20){
-    dataLength.value = 0
-  } else if (opCodeDecimal < 0x40 ) {
-    dataLength.value = 1
-  } else if (opCodeDecimal < 0x60) {
-      dataLength.value = 2
-  } else if (opCodeDecimal < 0x80 ) {
-      dataLength.value = 3
-  } else if (opCodeDecimal < 0xA0 ) {
-      dataLength.value = 4
-  } else if (opCodeDecimal < 0xC0 ) {
-      dataLength.value = 5
-  } else if (opCodeDecimal < 0xE0) {
-      dataLength.value = 6
-  } else if (opCodeDecimal <= 0xFF ) {
-      dataLength.value = 7
-  }
-  if (opCodeDecimal > 0 ) { sendEnabled.value = true}
-  console.log(name + `: data length ${dataLength.value}`)
 })
 
 

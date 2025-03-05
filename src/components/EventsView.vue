@@ -258,32 +258,33 @@ const getLinkedNodesCount = (eventIdentifier) => {
 
 store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
 //  console.log(name + ': BUS_TRAFFIC_EVENT : ' + JSON.stringify(data.json.eventIdentifier))
+  console.log(name + ': BUS_TRAFFIC_EVENT : opcode ' + data.json.opCode)
   var eventIdentifier = data.json.eventIdentifier
   var opCode = data.json.opCode
   var status = 'unknown'
   // check for ON event
-  if ((opCode == 90)
-    || (opCode == 98)
-  //  || (opCode == B0)
-  //  || (opCode == B8)
-  //  || (opCode == D0)
-  //  || (opCode == D8)
-  //  || (opCode == F0)
-  //  || (opCode == F8)
+  if ((opCode == '90')
+    || (opCode == '98')
+    || (opCode == 'B0')
+    || (opCode == 'B8')
+    || (opCode == 'D0')
+    || (opCode == 'D8')
+    || (opCode == 'F0')
+    || (opCode == 'F8')
     ){
       console.log(name + ': BUS_TRAFFIC_EVENT : ON event ' + eventIdentifier)
       status = 'on'
     }
 
   // check for OFF event
-  if ((opCode == 91)
-    || (opCode == 99)
-//    || (opCode == B1)
-//    || (opCode == B9)
-//    || (opCode == D1)
-//    || (opCode == D9)
-//    || (opCode == F1)
-//    || (opCode == F9)
+  if ((opCode == '91')
+    || (opCode == '99')
+    || (opCode == 'B1')
+    || (opCode == 'B9')
+    || (opCode == 'D1')
+    || (opCode == 'D9')
+    || (opCode == 'F1')
+    || (opCode == 'F9')
     ){
       console.log(name + ': BUS_TRAFFIC_EVENT : OFF event ' + eventIdentifier)
       status = 'off'
