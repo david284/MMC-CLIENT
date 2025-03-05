@@ -159,6 +159,12 @@ const update_event = (newValue) => {
       getLinkedEventVariables(props.configuration)
     )
   }
+  // update display value
+  eventValue.value = getDisplayValue(eventVariableValue.value, 
+    props.displayScale, 
+    props.displayOffset, 
+    props.startBit, 
+    props.endBit)
 }
 
 
