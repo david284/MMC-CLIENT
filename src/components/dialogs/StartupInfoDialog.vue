@@ -72,6 +72,13 @@
 
         <q-card class="q-pa-sm">
           <div class="text_body1">
+            In VLCB nodes, 'FCU compatibility mode' disables some enhancements for FCU compatibility. 
+            Leave off unless FCU also being used at the same time as MMC
+          </div>
+        </q-card>
+
+        <q-card class="q-pa-sm">
+          <div class="text_body1">
             With all connection options, 'modified Grid Connect' is the data format used to transfer messages to and from the modules
           </div>
           <div class="text_body1">

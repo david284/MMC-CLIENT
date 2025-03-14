@@ -186,6 +186,7 @@ const updateLayout = () => {
       store.state.layout.connectionDetails["serialPort"] = ""
       store.state.layout.connectionDetails["host"] = ""
       store.state.layout.connectionDetails["hostPort"] = ""
+      store.state.layout.connectionDetails["FCU_compatibilty"] = false
       store.methods.update_layout()
     }
   } catch(error) {}
@@ -198,6 +199,8 @@ const updateLayout = () => {
     connectionDetails.value.push("Host: " + store.state.layout.connectionDetails.host)
     connectionDetails.value.push("Host Port: " + store.state.layout.connectionDetails.hostPort)
   }
+  let FCU_compatibility_text = store.state.layout.connectionDetails.FCU_Compatibility ? 'On': 'Off'
+  connectionDetails.value.push("VLCB 'FCU compatibility mode': " + FCU_compatibility_text)
   layoutValid.value = true
 }
 
