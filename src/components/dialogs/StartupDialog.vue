@@ -199,7 +199,7 @@ const updateLayout = () => {
     connectionDetails.value.push("Host: " + store.state.layout.connectionDetails.host)
     connectionDetails.value.push("Host Port: " + store.state.layout.connectionDetails.hostPort)
   }
-  let FCU_compatibility_text = store.state.layout.connectionDetails.FCU_Compatibility ? 'On': 'Off'
+  let FCU_compatibility_text = store.state.layout.connectionDetails.FCU_Compatibility ? 'ON': 'OFF'
   connectionDetails.value.push("VLCB 'FCU compatibility mode': " + FCU_compatibility_text)
   layoutValid.value = true
 }

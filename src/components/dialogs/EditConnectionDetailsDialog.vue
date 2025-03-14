@@ -1,7 +1,7 @@
 <template>
 
     <q-dialog v-model='model' persistent>
-      <q-card style="min-width: 800px; height: 600px">
+      <q-card style="min-width: 800px; min-height: 500px">
 
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
           <div class="text-h6">
