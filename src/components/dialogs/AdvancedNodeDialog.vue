@@ -1,7 +1,7 @@
 <template>
 
     <q-dialog v-model='model' persistent>
-      <q-card style="min-width: 450px">
+      <q-card style="min-width: 600px">
 
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
           <div class="text-h6">
@@ -11,6 +11,12 @@
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
           </template>
         </q-banner>
+
+        <q-card-section v-if="(store.state.nodes[nodeNumber].status != true)">
+            <div class="text-h6">
+              Node is offline, so standard function are unavailable
+            </div>
+        </q-card-section>
         
         <q-card-section v-if="(store.state.nodes[nodeNumber].status)">
           <q-card-actions align="left">
@@ -49,15 +55,19 @@
           </q-card-actions>
         </q-card-section>
 
-        <q-card-section v-if="(store.state.nodes[nodeNumber].status != true)">
-          <div class="text-h6">
-            Node is offline, so standard function are unavailable
-          </div>
-          <q-card-actions align="left">
-            <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="program in boot mode"
-            @click="clickProgramInBootMode()"/>
-          </q-card-actions>
-        </q-card-section>
+        <q-card class="q-py-none q-ma-none row"  v-if="(store.state.nodes[nodeNumber].status != true)">
+          <q-card-section style="min-width: 250px;">
+            <q-card-actions align="left">
+              <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="program in boot mode"
+              @click="clickProgramInBootMode()"/>
+            </q-card-actions>
+          </q-card-section>
+          <q-card-section style="width: 300px;">
+            <div class="text-body1">
+              A node in boot mode (both green & yellow led on) will show as offline, but can be programmed
+            </div>
+          </q-card-section>
+        </q-card>
 
       </q-card>
     </q-dialog>
