@@ -38,6 +38,9 @@
         <node-parameter Name="Consume own Events"
                         :Value=store.state.nodes[props.nodeNumber].coe>
         </node-parameter>
+        <node-parameter Name="Supports Bootloading"
+                        :Value=store.state.nodes[props.nodeNumber].bootloader>
+        </node-parameter>
         <node-parameter Name="FLiM"
                         :Value=store.state.nodes[props.nodeNumber].flim>
         </node-parameter>

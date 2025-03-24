@@ -12,40 +12,52 @@
           </template>
         </q-banner>
         
-        <q-card-actions align="left">
-          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Backup Node"
-          @click="clickBackupNode()"/>
-        </q-card-actions>
+        <q-card-section v-if="(store.state.nodes[nodeNumber].status)">
+          <q-card-actions align="left">
+            <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Backup Node"
+            @click="clickBackupNode()"/>
+          </q-card-actions>
 
-        <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
-          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="CAN ID Enumeration"
-          @click="clickCanIdEnumeration()"/>
-        </q-card-actions>
+          <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
+            <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="CAN ID Enumeration"
+            @click="clickCanIdEnumeration()"/>
+          </q-card-actions>
 
-        <q-card-actions align="left">
-          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Manage Module Descriptor"
-          @click="clickMDF()"/>
-        </q-card-actions>
+          <q-card-actions align="left">
+            <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Manage Module Descriptor"
+            @click="clickMDF()"/>
+          </q-card-actions>
 
-        <q-card-actions align="left">
-          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="program Node"
-          @click="clickProgramNode()"/>
-        </q-card-actions>
+          <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].bootloader)">
+            <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="program Node"
+            @click="clickProgramNode()"/>
+          </q-card-actions>
 
-        <q-card-actions align="left">
-          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="reset Node"
-          @click="clickResetNode()"/>
-        </q-card-actions>
+          <q-card-actions align="left">
+            <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="reset Node"
+            @click="clickResetNode()"/>
+          </q-card-actions>
 
-        <q-card-actions align="left">
-          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Restore Node"
-          @click="clickRestoreNode()"/>
-        </q-card-actions>
+          <q-card-actions align="left">
+            <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Restore Node"
+            @click="clickRestoreNode()"/>
+          </q-card-actions>
 
-        <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
-          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Set CANID"
-          @click="clickSetCAN_ID()"/>
-        </q-card-actions>
+          <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
+            <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Set CANID"
+            @click="clickSetCAN_ID()"/>
+          </q-card-actions>
+        </q-card-section>
+
+        <q-card-section v-if="(store.state.nodes[nodeNumber].status != true)">
+          <div class="text-h6">
+            Node is offline, so standard function are unavailable
+          </div>
+          <q-card-actions align="left">
+            <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="program in boot mode"
+            @click="clickProgramInBootMode()"/>
+          </q-card-actions>
+        </q-card-section>
 
       </q-card>
     </q-dialog>
@@ -60,6 +72,7 @@
 
     <programNodeDialog v-model='showProgramNodeDialog'
       :nodeNumber = nodeNumber
+      :mode = programNodeMode
     />
 
     <RestoreNodeDialog  v-model='showRestoreNodeDialog'
@@ -88,6 +101,7 @@ import setCanIdDialog from "components/dialogs/setCanIdDialog"
 const $q = useQuasar()
 const store = inject('store')
 const name = "AdvancedNodeDialog"
+const programNodeMode = ref("NORMAL")
 const showMDFDialog = ref(false)
 const showNodeBackupDialog = ref(false)
 const showProgramNodeDialog = ref(false)
@@ -146,6 +160,13 @@ const clickMDF = () => {
 
 const clickProgramNode = () => {
   console.log(name + `: clickProgramNode ` + props.nodeNumber)
+  programNodeMode.value = "NORMAL"
+  showProgramNodeDialog.value = true
+}
+
+const clickProgramInBootMode = () => {
+  console.log(name + `: clickProgramInBootMode ` + props.nodeNumber)
+  programNodeMode.value = "BOOT"
   showProgramNodeDialog.value = true
 }
 

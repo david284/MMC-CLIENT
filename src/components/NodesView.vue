@@ -63,7 +63,7 @@
             <q-btn dense class="q-mx-xs q-my-none" outline v-if="(props.row.vlcb)" color="primary" size="md" label="VLCB"
               :disabled="!props.row.status" @click="clickVLCB(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" color="blue-grey-1" text-color="blue-grey-14" size="md" label="Advanced"
-              :disabled="!store.state.nodes[props.row.nodeNumber].status" @click="clickNodeAdvanced(props.row.nodeNumber)" no-caps/>
+              @click="clickNodeAdvanced(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline color="negative" size="md" label="Delete"
               @click="clickDeleteNode(props.row.nodeNumber)" no-caps/>
 
@@ -385,7 +385,9 @@ const clickNameNode = async (nodeNumber) => {
 const clickNodeAdvanced = async (nodeNumber) => {
   console.log(name + `: clickNodeAdvanced`)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
-  await checkNodeParameters(nodeNumber)
+  if (store.state.nodes[nodeNumber].status) {
+    await checkNodeParameters(nodeNumber)
+  }
   await select_node_row(nodeNumber)
   selectedNode.value = nodeNumber
   showAdvancedNodeDialog.value=true
