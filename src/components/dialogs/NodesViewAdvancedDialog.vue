@@ -1,7 +1,7 @@
 <template>
 
     <q-dialog v-model='model' persistent>
-      <q-card style="min-width: 450px">
+      <q-card style="min-width: 800px">
 
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
           <div class="text-h6">
@@ -12,18 +12,48 @@
           </template>
         </q-banner>
 
-        <q-card-actions align="left">
-          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Node 0 parameters"
-          @click="clickNodeZeroParameters()"  v-close-popup/>
-        </q-card-actions>
+        <q-card class="q-py-none q-ma-none row">
 
+          <q-card-section style="width: 250px; min-height: 80px;">
+            <q-card-actions align="left">
+              <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Node 0 parameters"
+              @click="clickNodeZeroParameters()"  v-close-popup/>
+            </q-card-actions>
+          </q-card-section>
+
+          <q-card-section style="width: 500px; min-height: 80px;">
+            A node with an ID of 0 won't show in the main node view, but it's parameters can be viewed from here. 
+            An uninitialised node will have an ID of 0, as will a SLiM consumer node, so if there is more than one node with ID 0, then the last one to respond will be displayed
+          </q-card-section>
+
+        </q-card>
+
+        <q-card class="q-py-none q-ma-none row">
+
+          <q-card-section style="min-width: 250px; min-height: 80px;">
+            <q-card-actions align="left">
+              <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="program Node in boot mode"
+              @click="clickProgramNode()"/>
+            </q-card-actions>
+          </q-card-section>
+
+          <q-card-section style="width: 500px; min-height: 80px;">
+            A node in boot mode (both green & yellow led on) won't respond to CBUS commands, but can be programmed from here
+          </q-card-section>
+
+        </q-card>
 
       </q-card>
     </q-dialog>
 
     <nodeParametersDialog v-model='showNodeParametersDialog'
-        :nodeNumber = 0
-      />
+      :nodeNumber = 0
+    />
+
+    <programNodeDialog v-model='showProgramNodeDialog'
+      :nodeNumber = "0"
+      mode = "BOOT"
+    />
 
       <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
         callingModule = "NodesView Advanced"
@@ -41,6 +71,7 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import {sleep} from "components/functions/utils.js"
 import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
 import { date, useQuasar, scroll } from 'quasar'
+import programNodeDialog from "components/dialogs/programNodeDialog"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
 
 
@@ -49,6 +80,7 @@ const $q = useQuasar()
 const store = inject('store')
 const name = "NodesViewAdvancedDialog"
 const showNodeParametersDialog = ref(false)
+const showProgramNodeDialog = ref(false)
 const showWaitingOnBusTrafficDialog = ref(false)
 const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref('')
@@ -121,6 +153,12 @@ const clickNodeZeroParameters = async () => {
     showNodeParametersDialog.value = true
   }
 }
+
+const clickProgramNode = () => {
+  console.log(name + `: clickProgramNode: BOOT mode `)
+  showProgramNodeDialog.value = true
+}
+
 
 </script>
 

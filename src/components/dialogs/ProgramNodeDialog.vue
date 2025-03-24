@@ -4,7 +4,7 @@
 
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
-          &nbsp; program Node {{ store.getters.node_name(nodeNumber) }}
+          &nbsp; {{ Title }}
         </div>
         <template v-slot:action>
           <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
@@ -44,15 +44,22 @@
             <q-checkbox v-model="checked4" label="Ignore CPU type" />
           </q-card-section>
           <q-card-section class="no-margin q-py-none">
-            <q-checkbox v-model="checked8" label="Program in Boot Mode" />
+            <q-checkbox :disable="bootModeCheckBoxDisabled" v-model="bootModeFlag" label="Program in Boot Mode" />
           </q-card-section>
 
         </q-card>
 
         <q-card flat class="q-pa-sm" style="width: 370px">
-          <q-card-section>
+          <q-card-section v-if="(mode=='NORMAL')">
             <div class="text-h6">
               Node CPU type: {{ store.state.nodes[nodeNumber].cpuName }} ({{ store.state.nodes[nodeNumber].parameters[9] }})
+            </div>
+            <br/>
+          </q-card-section>
+
+          <q-card-section v-if="(mode=='BOOT')">
+            <div class="text-h6">
+              Program in boot mode
             </div>
             <br/>
           </q-card-section>
@@ -118,16 +125,19 @@ const uploadFile = ref(null)
 const checked1 = ref(false)
 const checked2 = ref(false)
 const checked4 = ref(false)
-const checked8 = ref(false)
+const bootModeFlag = ref(false)
+const bootModeCheckBoxDisabled = ref(false)
 const FIRMWARE_STATUS = ref()
 const progressText = ref('')
 const showInfoDialog = ref(false)
+const Title = ref()
 var flags = 0
 var cpuType = undefined
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
-  nodeNumber: { type:Number }
+  nodeNumber: { type: Number },
+  mode: {type: String, default: "NORMAL" }
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -138,8 +148,14 @@ const model = computed({
 })
 
 watch(model, () => {
-//  console.log(name + `: WATCH model`)
+  //console.log(name + `: WATCH model: mode ` + props.mode)
   uploadFile.value = null
+  Title.value = "program node " + store.getters.node_name(props.nodeNumber)
+  if (props.mode == "BOOT"){
+    bootModeFlag.value = true
+    bootModeCheckBoxDisabled.value = true
+    Title.value = "program node in boot mode"
+  }
 })
 
 
@@ -198,7 +214,7 @@ const clickProgram = async () => {
   flags = checked1.value ? flags | 1 : flags & ~1   // program CONFIG
   flags = checked2.value ? flags | 2 : flags & ~2   // program EEPROM
   flags = checked4.value ? flags | 4 : flags & ~4   // igoner CPUTYPE
-  flags = checked8.value ? flags | 8 : flags & ~8   // program in BOOTMODE
+  flags = bootModeFlag.value ? flags | 8 : flags & ~8   // program in BOOTMODE
   cpuType = store.state.nodes[props.nodeNumber].parameters[9]
   console.log(name + ": clickProgram: node: " + props.nodeNumber + ' cpuType: '+ cpuType +' flags: ' + flags)
   FIRMWARE_STATUS.value = ''
