@@ -56,8 +56,9 @@ export function createTimeStamp(){
 //               012345678901
 //
 export function TimeStampToText(timestamp){
+  //console.log("TimeStampToText: length " + timestamp.length)
   var text = ''
-  if (timestamp.lenght == 12){
+  if (timestamp.length == 12){
     text = timestamp.substring(0,4)     // get year
     text += '/' + timestamp.substring(4,6)  // get month
     text += '/' + timestamp.substring(6,8)  // get day

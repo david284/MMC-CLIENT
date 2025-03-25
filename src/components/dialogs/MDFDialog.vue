@@ -16,9 +16,9 @@
       <q-card-section style="max-height: 85vh" class="scroll no-margin q-py-none">
 
           <!-- 1st element -->
-          <q-card flat class="row no-margin q-pa-none">
+          <q-card flat style="min-width: 950px;" class="row no-margin q-pa-none">
 
-            <q-card-section style="width: 500px;" class="no-margin q-py-none">
+            <q-card-section style="width: 400px;" class="no-margin q-py-none">
               <div class="text-h6">Current node:</div>
               <div class="text-subtitle2">
                 Module name: {{ store.state.nodes[nodeNumber].moduleName }}<br/>
@@ -31,12 +31,13 @@
               </div>
             </q-card-section>
 
-            <q-card-section  style="width: 400px;" class="no-margin q-py-none">
+            <q-card-section  style="width: 500px;" class="no-margin q-py-none">
               <div class="text-subtitle2">
                 The file is matched using the module identifier, version number and processor code, the name portion is not used<br/>
                 If no match is found, then it will fall back to using just the module identifier and the version number<br/>
                 Modules that need files using the processor code are the exception, most won't use it<br/>
                 User files take precedence if same filename exists in System<br/>
+                User file timestamp in red if newer system file exists - suggested that the user file be deleted<br/>
               </div>
               <q-card-actions class="text-primary">
                 <q-btn color="positive" size="sm" label="Upload new file" @click="clickUpload()" />
@@ -47,7 +48,7 @@
 
           
           <!-- 2nd element -->
-            <q-card flat style="max-height: 70vh" class="no-margin q-pa-none">
+            <q-card flat style="max-height: 70vh; min-width: 950px;" class="no-margin q-pa-none">
 
               <q-card-section flat class="no-margin q-pa-none row">
 
@@ -95,7 +96,10 @@
                     <template v-slot:body="props">
                       <q-tr :props="props" class="q-my-none q-py-none">
                         <q-td key="file" :props="props">{{ props.row.file }}</q-td>
-                        <q-td key="timestamp" :props="props">{{ props.row.timestamp }}</q-td>
+                        <q-td key="timestamp" :props="props">
+                          <q-chip dense color="white" text-color="red" v-if="(props.row.obsolete)">{{ props.row.timestamp }}</q-chip>
+                          <q-chip dense color="white" text-color="black" v-else>{{ props.row.timestamp }}</q-chip>
+                        </q-td>
                         <q-td key="actions" :props="props">
                           <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Download" @click="clickUserDownload(props.row.file)" no-caps/>
                           <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Delete" @click="clickDelete(props.row.file)" no-caps/>
@@ -145,6 +149,7 @@ import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import MDFDownloadDialog from "components/dialogs/MDFDownloadDialog"
 import MDFUploadDialog from "components/dialogs/MDFUploadDialog"
+import * as utils from "components/functions/utils.js"
 
 const $q = useQuasar()
 const store = inject('store')
@@ -237,7 +242,7 @@ const update_SYSTEM_rows = async () => {
     systemRows.value = []
     if (server_node.value.SYSTEM_MDF_List != undefined){
       server_node.value.SYSTEM_MDF_List.forEach(item => {
-        systemRows.value.push({"file" : item[0], "timestamp" : item[1]})
+        systemRows.value.push({"file" : item[0], "timestamp" : utils.TimeStampToText(item[1])})
       })
     }
     // sort rows by file
@@ -252,8 +257,20 @@ const update_USER_rows = async () => {
   if (server_node.value != undefined){
     userRows.value = []
     if (server_node.value.USER_MDF_List != undefined){
-      server_node.value.USER_MDF_List.forEach(item => {
-        userRows.value.push({"file" : item[0], "timestamp" : item[1]})
+      server_node.value.USER_MDF_List.forEach(userItem => {
+        let obsolete = false
+        if (server_node.value.SYSTEM_MDF_List != undefined){
+          server_node.value.SYSTEM_MDF_List.forEach(systemItem => {
+            if (systemItem[0] == userItem[0]){
+              // matching file name
+              if (systemItem[1] > userItem[1]){
+                // system timestamp newer than user timestamp
+                obsolete = true
+              }
+            }
+          })
+        }
+        userRows.value.push({"file" : userItem[0], "timestamp" : utils.TimeStampToText(userItem[1]), "obsolete": obsolete})
       })
     }
     // sort rows by file
