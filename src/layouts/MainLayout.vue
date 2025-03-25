@@ -304,7 +304,7 @@ const scrollFunc = () => {
 store.eventBus.on('GENERAL_MESSAGE_EVENT', (message, caption, type, timeout) => {
   console.log(name + ': GENERAL_MESSAGE_EVENT ' + JSON.stringify(message))
   try{
-    if (timeout <= 2000){
+    if ((timeout > 0) && (timeout <= 2000)){
       $q.notify({   // don't add a dismiss button
         message: message,
         caption: caption,
