@@ -259,9 +259,10 @@ const update_USER_rows = async () => {
     if (server_node.value.USER_MDF_List != undefined){
       server_node.value.USER_MDF_List.forEach(userItem => {
         let obsolete = false
+        // now lets see if there's a newer version of each user MDF in the system folder
         if (server_node.value.SYSTEM_MDF_List != undefined){
           server_node.value.SYSTEM_MDF_List.forEach(systemItem => {
-            if (systemItem[0] == userItem[0]){
+            if (systemItem[0].toUpperCase() == userItem[0].toUpperCase()){
               // matching file name
               if (systemItem[1] > userItem[1]){
                 // system timestamp newer than user timestamp
