@@ -61,6 +61,9 @@
             <div class="text-h6">
               Program in boot mode
             </div>
+            <div class="text-body1">
+              Note that in this mode the cpu type can't be checked
+            </div>
             <br/>
           </q-card-section>
 
