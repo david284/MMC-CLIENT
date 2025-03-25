@@ -35,13 +35,13 @@
             FLASH memory is always programmed
           </q-card-section>
           <q-card-section class="no-margin q-py-none">
-            <q-checkbox v-model="checked1" label="Program configuration" />
+            <q-checkbox v-model="programCONFIG" label="Program configuration" />
           </q-card-section>
           <q-card-section class="no-margin q-py-none">
-            <q-checkbox v-model="checked2" label="Program EEPROM" />
+            <q-checkbox v-model="programEEPROM" label="Program EEPROM" />
           </q-card-section>
           <q-card-section class="no-margin q-py-none">
-            <q-checkbox v-model="checked4" label="Ignore CPU type" />
+            <q-checkbox :disable="cpuTypeCheckBoxDisabled" v-model="cpuTypeCheckIgnore" label="Ignore CPU type" />
           </q-card-section>
           <q-card-section class="no-margin q-py-none">
             <q-checkbox :disable="bootModeCheckBoxDisabled" v-model="bootModeFlag" label="Program in Boot Mode" />
@@ -122,11 +122,12 @@ import ProgramNodeInfoDialog from "components/dialogs/ProgramNodeInfoDialog"
 const store = inject('store')
 const name = "ProgramNodeDialog"
 const uploadFile = ref(null)
-const checked1 = ref(false)
-const checked2 = ref(false)
-const checked4 = ref(false)
+const programCONFIG = ref(false)
+const programEEPROM = ref(false)
+const cpuTypeCheckIgnore = ref(false)
 const bootModeFlag = ref(false)
 const bootModeCheckBoxDisabled = ref(false)
+const cpuTypeCheckBoxDisabled = ref(false)
 const FIRMWARE_STATUS = ref()
 const progressText = ref('')
 const showInfoDialog = ref(false)
@@ -153,7 +154,9 @@ watch(model, () => {
   Title.value = "program node " + store.getters.node_name(props.nodeNumber)
   if (props.mode == "BOOT"){
     bootModeFlag.value = true
+    cpuTypeCheckIgnore.value = true
     bootModeCheckBoxDisabled.value = true
+    cpuTypeCheckBoxDisabled.value = true
     Title.value = "program node in boot mode"
   }
 })
@@ -211,9 +214,9 @@ const clickInfo = () => {
 
 
 const clickProgram = async () => {
-  flags = checked1.value ? flags | 1 : flags & ~1   // program CONFIG
-  flags = checked2.value ? flags | 2 : flags & ~2   // program EEPROM
-  flags = checked4.value ? flags | 4 : flags & ~4   // igoner CPUTYPE
+  flags = programCONFIG.value ? flags | 1 : flags & ~1   // program CONFIG
+  flags = programEEPROM.value ? flags | 2 : flags & ~2   // program EEPROM
+  flags = cpuTypeCheckIgnore.value ? flags | 4 : flags & ~4   // ignore CPUTYPE
   flags = bootModeFlag.value ? flags | 8 : flags & ~8   // program in BOOTMODE
   cpuType = store.state.nodes[props.nodeNumber].parameters[9]
   console.log(name + ": clickProgram: node: " + props.nodeNumber + ' cpuType: '+ cpuType +' flags: ' + flags)
