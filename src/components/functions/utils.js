@@ -50,5 +50,21 @@ export function createTimeStamp(){
   return timestamp
 }
 
+//
+// MDF timestamp is of the form..
+// "timestamp": "202411092105",
+//               012345678901
+//
+export function TimeStampToText(timestamp){
+  var text = ''
+  if (timestamp.lenght == 12){
+    text = timestamp.substring(0,4)     // get year
+    text += '/' + timestamp.substring(4,6)  // get month
+    text += '/' + timestamp.substring(6,8)  // get day
+    text += ' ' + timestamp.substring(8,10)  // get hour
+    text += ':' + timestamp.substring(10,12)  // get minutes
+  }
+  return text
+}
 
 
