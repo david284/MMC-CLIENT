@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model='model' persistent>
-    <q-card class="q-pa-none q-ma-none" style="min-width: 950px; min-height: 600px;">
+    <q-card class="q-pa-none q-ma-none" style="min-width: 1000px; min-height: 600px;">
 
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin g-py-none">
@@ -36,8 +36,8 @@
                 The file is matched using the module identifier, version number and processor code, the name portion is not used<br/>
                 If no match is found, then it will fall back to using just the module identifier and the version number<br/>
                 Modules that need files using the processor code are the exception, most won't use it<br/>
-                User files take precedence if same filename exists in System<br/>
-                User file timestamp in red if newer system file exists - suggested that the user file be deleted<br/>
+                User files always take precedence if same filename exists in System, allowing permanent override of System files<br/>
+                User file timestamp is in red if a newer System file exists - to use the newer System file, delete the User file<br/>
               </div>
               <q-card-actions class="text-primary">
                 <q-btn color="positive" size="sm" label="Upload new file" @click="clickUpload()" />
