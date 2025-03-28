@@ -186,7 +186,7 @@ const updateLayout = () => {
       store.state.layout.connectionDetails["serialPort"] = ""
       store.state.layout.connectionDetails["host"] = ""
       store.state.layout.connectionDetails["hostPort"] = ""
-      store.state.layout.connectionDetails["FCU_compatibilty"] = false
+      store.state.layout.connectionDetails["FCU_Compatibility"] = false
       store.methods.update_layout()
     }
   } catch(error) {}

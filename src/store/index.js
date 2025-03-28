@@ -346,7 +346,8 @@ const methods = {
   },
   //
   update_layout() {
-      console.log(`Update Layout Data : ` + state.title)
+      console.log(`Update Layout Data : ` + state.layout.layoutDetails.title)
+      //console.log(`Update Layout Data : ` + JSON.stringify(state.layout))
       socket.emit('UPDATE_LAYOUT_DATA', state.layout)
   },
   //
