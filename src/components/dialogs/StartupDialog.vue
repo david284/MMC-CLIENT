@@ -180,6 +180,9 @@ watch(layoutList, () => {
 const updateLayout = () => {
 //    console.log(name + `: updateLayout: ` + JSON.stringify(teRows))
   try{
+      layoutName.value = store.state.layout.layoutDetails.title
+    } catch {}
+  try{
     if (store.state.layout.connectionDetails == undefined){
       store.state.layout.connectionDetails={}
       store.state.layout.connectionDetails["mode"] = "Auto"
@@ -293,8 +296,7 @@ const clickProceed = async () => {
 
 const clickSelectLayout = async (row) => {
   console.log(name + ': clickLayouts on ', row)
-  layoutName.value = row
-  store.methods.change_layout(layoutName.value)
+  store.methods.change_layout(row)
   readyToProceed.value = ref(true)
 }
 
