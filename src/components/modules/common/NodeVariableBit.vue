@@ -2,8 +2,8 @@
     <q-checkbox min-width="100"
                 v-model = "checked"
                 :label = label
-                @click = "update_checked"
                 right-label
+                @update:model-value="updated"
     ></q-checkbox>
 </template>
 
@@ -59,6 +59,11 @@ watch(variableValue, (newValue, oldValue) => {
   //console.log(newValue, oldValue)
   checked.value = store.state.nodes[props.nodeNumber].nodeVariables[props.variableIndex] & bitArray[props.bit] ? true : false
 })
+
+const updated = (v, e) => {
+  //console.log(name + ": updated " + checked.value)
+  update_checked()
+}
 
 const update_checked = () => {
 //  console.log('NodeVariableBit update_checked')
