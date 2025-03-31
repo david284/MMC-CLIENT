@@ -1,8 +1,8 @@
 <template>
   <q-checkbox min-width="100"
               v-model="checked"
-              :label="name"
-              @click = "update_checked"
+              :label=label
+              @update:model-value="updated"
               left-label
   ></q-checkbox>
 </template>
@@ -11,7 +11,7 @@
 import {inject, ref, onMounted, computed, watch} from "vue";
 import {getLinkedEventVariables} from "components/modules/common/commonFunctions.js"
 
-//name: "EventVariable"
+const name = "EventVariableBit"
 const props = defineProps({
   "nodeNumber": {
     type: Number,
@@ -29,7 +29,7 @@ const props = defineProps({
     type: Number,
     required: true
   },
-  "name": {
+  "label": {
     type: String,
     required: false
   },
@@ -39,7 +39,6 @@ const props = defineProps({
   }
 })
 
-const label = props.name ? props.name : "Event Variable " + props.eventVariableIndex
 const store = inject('store')
 
 const bitArray = {0: 1, 1: 2, 2: 4, 3: 8, 4: 16, 5: 32, 6: 64, 7: 128}
@@ -53,6 +52,13 @@ const eventVariableValue = computed(() => {
 watch(eventVariableValue, () => {
   checked.value = eventVariableValue.value & bitArray[props.bit] ? true : false
 })
+
+const updated = (v, e) => {
+  //console.log(name + ": updated " + checked.value)
+  update_checked()
+}
+
+
 
 const update_checked = () => {
 

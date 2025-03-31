@@ -14,7 +14,7 @@
           :eventVariableIndex=eventVariableIndex
           :eventIdentifier=eventIdentifier
           :bit=item.bitPosition
-          :name=item.label
+          :label=item.label
           :configuration=configuration
         ></event-variable-bit>
       </div>
