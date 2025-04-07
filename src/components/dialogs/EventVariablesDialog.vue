@@ -48,15 +48,12 @@
           </div>
           <q-separator />
 
-          <q-card-section class="q-pa-xs row" v-if="showRawVariables">
-            <EventVariableRaw
-              :eventVariableIndex="n"
-              :nodeNumber="props.nodeNumber"
+          <q-card-section class="q-pa-none" v-if="showRawVariables">
+            <EventRawVariables
+              :nodeNumber = nodeNumber
               :eventIdentifier = props.eventIdentifier
-              v-for="n in store.state.nodes[props.nodeNumber].parameters[5]"
-              :key="n">
-            </EventVariableRaw>
-          <q-separator />
+            />
+            <q-separator />
           </q-card-section>
 
           <q-card-section class="q-pa-xs" v-if="showVariablesDescriptor">
@@ -114,8 +111,8 @@ import {sleep} from "components/functions/utils.js"
 import {createNewEvent} from "components/functions/EventFunctions.js"
 import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import EventVariables from "components/modules/common/EventVariables"
+import EventRawVariables from "components/modules/common/EventRawVariables"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
-import EventVariableRaw from "components/modules/common/EventVariableRaw"
 import MDFDialog from "components/dialogs/MDFDialog";
 
 const $q = useQuasar()

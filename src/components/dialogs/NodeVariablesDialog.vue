@@ -27,24 +27,21 @@
               this node has no variables to display
             </div>
           </q-card-section>
-
  
-          <q-card-section class="text-h6" v-if="nodeVariableInformation">
+          <q-card-section class="q-pa-none q-ma-none text-h6" v-if="nodeVariableInformation">
             {{ nodeVariableInformation }}
           </q-card-section>
-
 
           <NodeVariables v-if="store.state.nodeDescriptors[props.nodeNumber]"
             :configuration = store.state.nodeDescriptors[props.nodeNumber].nodeVariables
           />
 
-          <div class="q-pa-none row" v-if="showRawVariables">
-            <NodeVariableRaw :node-variable-index="n"
-                          :node-number=props.nodeNumber
-                          v-for="n in store.state.nodes[props.nodeNumber].parameters[6]"
-                          :key="n">
-            </NodeVariableRaw>
-          </div>
+          <q-card-section class="q-pa-none" v-if="showRawVariables">
+            <NodeRawVariables
+              :nodeNumber = nodeNumber
+            />
+            <q-separator />
+          </q-card-section>
 
           <q-card-section class="q-pa-sm" v-if="showVariableDescriptor">
             <div class="q-pa-xs row">
@@ -53,6 +50,7 @@
                 <pre>{{ variablesDescriptor }}</pre>
               </div>
             </div>
+            <q-separator />
           </q-card-section>
 
         </q-card-section>
@@ -64,6 +62,7 @@
       </q-card-actions>
 
     </q-card>
+
   </q-dialog>
 
   <MDFDialog v-model='showMDFDialog'
@@ -94,7 +93,7 @@ import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from 
 import { useQuasar } from 'quasar'
 import NodeVariables from "components/modules/common/NodeVariables"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
-import NodeVariableRaw from "components/modules/common/NodeVariableRaw"
+import NodeRawVariables from "components/modules/common/NodeRawVariables"
 import MDFDialog from "components/dialogs/MDFDialog";
 import { sleep } from "../functions/utils";
 
