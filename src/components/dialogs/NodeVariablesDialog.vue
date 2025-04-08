@@ -45,7 +45,7 @@
 
           <q-card-section class="q-pa-sm" v-if="showVariableDescriptor">
             <div class="q-pa-xs row">
-              <div class="text-body1">Variables descriptor<br></div>
+              <div class="text-primary text-h6">Variables descriptor<br></div>
               <div class="text-body2">
                 <pre>{{ variablesDescriptor }}</pre>
               </div>
@@ -57,8 +57,8 @@
       </q-card>
 
       <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Toggle variables descriptor view" @click="clickToggleVariablesDescriptor()"/>
         <q-btn flat label="Toggle raw view" @click="clickToggleRaw()"/>
+        <q-btn flat label="Toggle variables descriptor view" @click="clickToggleVariablesDescriptor()"/>
       </q-card-actions>
 
     </q-card>

@@ -56,17 +56,6 @@
             <q-separator />
           </q-card-section>
 
-          <q-card-section class="q-pa-xs" v-if="showVariablesDescriptor">
-            <div class="q-pa-xs row">
-              <div class="text-body1">Variables descriptor<br></div>
-              <div class="text-body2">
-                <pre>{{ variablesDescriptor }}</pre>
-              </div>
-            </div>
-            <q-separator />
-          </q-card-section>
-
-
           <q-card-section class="q-pa-xs" v-if="showStoredEventJSON">
             <div class="q-pa-xs row">
               <div class="text-primary text-h6">Stored event<br></div>
@@ -77,14 +66,23 @@
             <q-separator />
           </q-card-section>
 
+          <q-card-section class="q-pa-xs" v-if="showVariablesDescriptor">
+            <div class="q-pa-xs row">
+              <div class="text-primary text-h6">Variables descriptor<br></div>
+              <div class="text-body2">
+                <pre>{{ variablesDescriptor }}</pre>
+              </div>
+            </div>
+            <q-separator />
+          </q-card-section>
 
         </q-card-section>
       </q-card>
 
       <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Toggle stored event view" @click="clickToggleStoredEvent()"/>
-        <q-btn flat label="Toggle variable descriptor view" @click="clickToggleVariablesDescriptor()"/>
         <q-btn flat label="Toggle raw view" @click="clickToggleRaw()"/>
+        <q-btn flat label="Toggle stored event view" @click="clickToggleStoredEvent()"/>
+        <q-btn flat label="Toggle variables descriptor view" @click="clickToggleVariablesDescriptor()"/>
       </q-card-actions>
 
     </q-card>
