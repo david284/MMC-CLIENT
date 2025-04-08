@@ -1,12 +1,17 @@
 <template>
-  <q-card-section q-pa-none q-ma-none>
+  <q-card flat class = "q-pa-none q-ma-none row justify-between">
+    <q-card-section class="text-primary">
+      <div class="text-h6">Raw view</div>     
+    </q-card-section>
     <q-card-actions class="text-primary">
       <q-btn size="sm" color="blue" label="Toggle" @click="clickToggle()"/>
       &nbsp;&nbsp;
       <div class="text-h6"> display in {{ numberBase }} </div>
     </q-card-actions>
-    <div class="text-h6">Enter value in decimal, or hexadecimal preceeded by '0x' (e.g. 0x55), irrespective of display format </div>
-  </q-card-section>
+    <q-card-section>
+      <div class="text-body">Enter value in decimal, or hexadecimal preceeded by '0x' (e.g. 0x55), irrespective of display format </div>
+    </q-card-section>
+  </q-card>
 
   <div class="q-pa-none row">
     <NodeRawVariableSingle :node-variable-index="n"
