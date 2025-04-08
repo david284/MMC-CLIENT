@@ -69,9 +69,9 @@
 
           <q-card-section class="q-pa-xs" v-if="showStoredEventJSON">
             <div class="q-pa-xs row">
-              <div class="text-body1">Stored events<br></div>
+              <div class="text-body1">Stored event<br></div>
               <div class="text-body2">
-                <pre>{{ store.state.nodes[props.nodeNumber].storedEventsNI }}</pre>
+                <pre>{{ store.state.nodes[nodeNumber].storedEventsNI[eventIdentifier] }}</pre>
               </div>
             </div>
             <q-separator />
@@ -82,7 +82,7 @@
       </q-card>
 
       <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Toggle stored events view" @click="clickToggleStoredEvents()"/>
+        <q-btn flat label="Toggle stored event view" @click="clickToggleStoredEvent()"/>
         <q-btn flat label="Toggle variable descriptor view" @click="clickToggleVariablesDescriptor()"/>
         <q-btn flat label="Toggle raw view" @click="clickToggleRaw()"/>
       </q-card-actions>
@@ -246,7 +246,7 @@ const clickToggleRaw = () => {
 
 //
 //
-const clickToggleStoredEvents = () => {
+const clickToggleStoredEvent = () => {
   console.log(name + `: clickToggleStoredEvents:`)
   showStoredEventJSON.value = showStoredEventJSON.value ? false : true
 }
