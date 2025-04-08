@@ -69,7 +69,7 @@
 
           <q-card-section class="q-pa-xs" v-if="showStoredEventJSON">
             <div class="q-pa-xs row">
-              <div class="text-body1">Stored event<br></div>
+              <div class="text-primary text-h6">Stored event<br></div>
               <div class="text-body2">
                 <pre>{{ store.state.nodes[nodeNumber].storedEventsNI[eventIdentifier] }}</pre>
               </div>
