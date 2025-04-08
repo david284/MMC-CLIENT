@@ -173,7 +173,7 @@ const loadEventVariables = async () => {
     for(const eventIdentifier in storedEventsNI){
       console.log(name + ": ReadAllEventVariables: event " + eventIdentifier)
       store.methods.request_event_variables_by_identifier(props.nodeNumber, eventIdentifier)
-      await sleep(100)
+      await sleep(200)
     }
     // wait for variables to load - allow up to 2 minutes
     var startTime = Date.now()
