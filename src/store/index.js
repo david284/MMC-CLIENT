@@ -176,6 +176,13 @@ const methods = {
     console.log(name + ': sent RENAME_NODE_BACKUP ' + JSON.stringify(data))
   },
   //
+  requestAllEventVariablesForNode(nodeNumber) {
+    socket.emit('REQUEST_ALL_EVENT_VARIABLES_FOR_NODE', {
+      "nodeNumber": nodeNumber
+    })
+    console.log(`REQUEST_ALL_EVENT_VARIABLES_FOR_NODE: node ` + nodeNumber)
+  },
+  //
   request_backup(layoutName, filename) {
     console.log(`REQUEST_BACKUP : ` + layoutName + ' ' + filename)
     socket.emit('REQUEST_BACKUP', {"layoutName":layoutName, "fileName":filename})

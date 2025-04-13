@@ -166,15 +166,8 @@ const loadEventVariables = async () => {
     WaitingOnBusTrafficMessage.value = "Loading Event Variables"
     WaitingOnBusTrafficDialogReturn.value =''
     showWaitingOnBusTrafficDialog.value = true
-    //
-    // now iterate through all the events
-    // don't use forEach, as couldn't get it to work with async/await
-    var storedEventsNI = store.state.nodes[props.nodeNumber].storedEventsNI
-    for(const eventIdentifier in storedEventsNI){
-      console.log(name + ": ReadAllEventVariables: event " + eventIdentifier)
-      store.methods.request_event_variables_by_identifier(props.nodeNumber, eventIdentifier)
-      await sleep(300)
-    }
+    // now request all the event variables for all events for this node
+    store.methods.requestAllEventVariablesForNode(props.nodeNumber)
     // wait for variables to load - allow up to 2 minutes
     var startTime = Date.now()
     while ((Date.now() - startTime) < 120000){
