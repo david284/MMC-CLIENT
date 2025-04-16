@@ -1,6 +1,5 @@
-style="min-width: 350px; min-height: 200px;"
 <template>
-  <q-card class="q-ma-xs no-padding" style ="min-width: 200px;">
+  <q-card class="q-ma-xs no-padding" style ="min-width: 220px;">
     <q-card-section :style="cardHeight" class="no-margin q-py-none">
       <div class="text-h6">{{ displayTitle }} &nbsp;
 <!--
@@ -37,13 +36,19 @@ style="min-width: 350px; min-height: 200px;"
         <q-space />
         <q-card-section flat class = "row no-margin q-pa-none">
           <div v-if="(outputOnWrite)">
-            <q-btn dense size="sm" label="Center" @click="clickCenter()" no-caps/>
+            <q-btn dense size="sm" label="Test" @click="clickTest()" no-caps/>
           </div>
         </q-card-section>
         <q-space />
         <q-card-section flat class = "row no-margin q-pa-none">
           <div v-if="(outputOnWrite)">
-            <q-btn dense size="sm" label="Test" @click="clickTest()" no-caps/>
+            <q-btn dense size="sm" label="Center" @click="clickCenter()" no-caps/>
+          </div>
+        </q-card-section>
+        <q-space />
+        <q-card-section flat class = "row no-margin q-pa-none">
+          <div v-if="(swapVariablePairs)">
+            <q-btn dense size="sm" label="Swap" @click="clickSwap()" no-caps/>
           </div>
         </q-card-section>
         <q-space />
@@ -155,6 +160,15 @@ watch(outputOnWrite, () => {
 //  console.log(name + `: WATCH outputOnWrite: ` + outputOnWrite.value)
 })
 
+const swapVariablePairs = computed(() =>{
+  var result = false
+  if (props.configuration.swapVariablePairs != undefined){
+    result =  true
+  }
+  return result
+})
+
+
 const displayValue = computed(() =>{
   var value = (sliderValue.value * props.displayScale) + props.displayOffset
   if (props.displayScale >= 1){
@@ -225,11 +239,15 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
+//
+//
 const clickCenter = () => {
   console.log(name + `: clickCenter`)
   sliderValue.value = 127
 }
 
+//
+//
 const clickNegative = () => {
   console.log(name + `: clickNegative`)
   if (sliderValue.value > props.min){
@@ -237,6 +255,8 @@ const clickNegative = () => {
   }
 }
 
+//
+//
 const clickNegative5 = () => {
   console.log(name + `: clickNegative`)
   if (sliderValue.value > props.min + 5){
@@ -246,6 +266,8 @@ const clickNegative5 = () => {
   }
 }
 
+//
+//
 const clickPositive = () => {
   console.log(name + `: clickPositive`)
   if (sliderValue.value < props.max){
@@ -253,6 +275,8 @@ const clickPositive = () => {
   }
 }
 
+//
+//
 const clickPositive5 = () => {
   console.log(name + `: clickPositive`)
   if (sliderValue.value < props.max - 5){
@@ -262,15 +286,42 @@ const clickPositive5 = () => {
   }
 }
 
+//
+//
+const clickSwap = () => {
+  console.log(name + `: clickSwap`)
+  if (props.configuration.swapVariablePairs != undefined){
+    try{
+      for (const pair of props.configuration.swapVariablePairs){
+        let temp0 = store.state.nodes[props.nodeNumber].nodeVariables[pair[0]]
+        let temp1 = store.state.nodes[props.nodeNumber].nodeVariables[pair[1]]
+        store.methods.update_node_variable(
+          props.nodeNumber, 
+          pair[0], 
+          temp1,      // swapped value 
+          false       // don't reload
+        )
+        store.methods.update_node_variable(
+          props.nodeNumber, 
+          pair[1], 
+          temp0,      // swapped value 
+          false       // don't reload
+        )
+      }
+    } catch (err) {
+      console.log(name + ':clickSwap ' + err)
+    }
+  }
+}
+
+//
+//
 const clickTest = () => {
   console.log(name + `: clickTest`)
   store.methods.update_node_variable(props.nodeNumber, props.nodeVariableIndex, newByteValue)
 }
 
-
-
 </script>
 
 <style scoped>
-
 </style>
