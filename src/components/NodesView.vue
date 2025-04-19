@@ -3,6 +3,9 @@
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none" >
       <div class="text-h6">Nodes View</div>
       <template v-slot:action>
+        <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="Events"  no-caps
+            @click="clickEventsDialog()" />
+        <q-space/>
         <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
             @click="clickInfo()" />
         <q-space/>
@@ -84,7 +87,11 @@
         :nodeNumber = store.state.selected_node
       />
 
-       <nodeParametersDialog v-model='showNodeParametersDialog'
+      <nodeEventsDialog v-model='showNodeEventsDialog'
+        nodeNumber = 1
+      />
+
+      <nodeParametersDialog v-model='showNodeParametersDialog'
         :nodeNumber = store.state.selected_node
       />
 
@@ -120,6 +127,7 @@ import {sleep} from "components/functions/utils.js"
 import EventsListByNode from "components/EventsListByNode"
 import advancedNodeDialog from "components/dialogs/advancedNodeDialog"
 import nameNodeDialog from "components/dialogs/NameNodeDialog"
+import nodeEventsDialog from "components/dialogs/nodeEventsDialog"
 import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
 import nodeVariablesDialog from "components/dialogs/NodeVariablesDialog"
 import NodesViewAdvancedDialog from "components/dialogs/NodesViewAdvancedDialog"
@@ -152,6 +160,7 @@ const selected_node_valid = ref(false)
 const showAdvancedNodeDialog = ref(false)
 const showNodesViewAdvancedDialog = ref(false)
 const showNameNodeDialog = ref(false)
+const showNodeEventsDialog = ref(false)
 const showNodeParametersDialog = ref(false)
 const showNodesViewInfoDialog = ref(false)
 const showNodeVariablesDialog = ref(false)
@@ -362,6 +371,13 @@ const clickEvents = async (nodeNumber) => {
   await checkNodeVariables(nodeNumber)
   store.methods.request_all_node_events(nodeNumber)
   await select_node_row(nodeNumber)
+}
+
+//
+//
+const clickEventsDialog = () => {
+  console.log(name + `: clickEventsDialog`)
+  showNodeEventsDialog.value = true
 }
 
 //
