@@ -166,7 +166,7 @@
 
 import {computed, inject, onBeforeMount, onMounted, onUpdated, ref, watch} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
-import nodesView from "components/NodesView"
+import nodesView from "components/views/NodesView"
 import busTrafficDialog from "components/dialogs/BusTrafficDialog";
 import cbusErrorsDialog from "components/dialogs/CbusErrorsDialog";
 import ExportDialog from "components/dialogs/ExportDialog";
@@ -178,8 +178,8 @@ import startupDialog from "components/dialogs/StartupDialog";
 import systemDialog from "components/dialogs/SystemDialog";
 import dialogExampleCompositionAPI from "components/dialogs/DialogExampleCompositionAPI";
 import iFrameDialog from "components/dialogs/iFrameDialog";
-import EventsView from "components/EventsView";
-import BusEventsView from "components/BusEventsView";
+import EventsView from "components/views/EventsView";
+import BusEventsView from "components/views/BusEventsView";
 import SendCbusDialog from "components/dialogs/SendCbusDialog";
 
 

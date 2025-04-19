@@ -79,10 +79,11 @@
         :nodeNumber = selectedNode
       />
      
+<!--
       <EventsListByNode v-if="(selected_node_valid == true)"
         :nodeNumber = store.state.selected_node
       />
-
+ -->
       <nameNodeDialog v-model='showNameNodeDialog'
         :nodeNumber = store.state.selected_node
       />
@@ -124,7 +125,7 @@
 import {inject, ref, onBeforeMount, onMounted, computed, watch} from "vue"
 import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
-import EventsListByNode from "components/EventsListByNode"
+import EventsListByNode from "components/views/EventsListByNode"
 import advancedNodeDialog from "components/dialogs/advancedNodeDialog"
 import nameNodeDialog from "components/dialogs/NameNodeDialog"
 import nodeEventsDialog from "components/dialogs/nodeEventsDialog"
