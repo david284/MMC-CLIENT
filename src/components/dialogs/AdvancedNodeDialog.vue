@@ -207,7 +207,8 @@ const click_MODE_Event_Acknowledge = () => {
       { label: 'OFF', color: 'white', handler: () => {
         let commandString = cbusLib.encodeMODE(props.nodeNumber, 0x0B)
         store.methods.send_cbus_message(commandString) 
-      } }
+      } },
+      { label: 'CANCEL', color: 'white', handler: () => {} }
     ]
   })
 }  
@@ -232,7 +233,8 @@ const click_MODE_FCU_Compatibility = () => {
       { label: 'OFF', color: 'white', handler: () => {
         let commandString = cbusLib.encodeMODE(props.nodeNumber, 0x11)
         store.methods.send_cbus_message(commandString) 
-      } }
+      } },
+      { label: 'CANCEL', color: 'white', handler: () => {} }
     ]
   })
 }  
@@ -257,7 +259,8 @@ const click_Mode_Heartbeat = () => {
       { label: 'OFF', color: 'white', handler: () => {
         let commandString = cbusLib.encodeMODE(props.nodeNumber, 0x0D)
         store.methods.send_cbus_message(commandString) 
-      } }
+      } },
+      { label: 'CANCEL', color: 'white', handler: () => {} }
     ]
   })
 }  

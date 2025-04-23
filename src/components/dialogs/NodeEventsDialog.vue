@@ -1,70 +1,66 @@
 <template>
 
-<q-dialog v-model='model' persistent full-width full-height> 
-    <q-card class="q-pa-none q-ma-none">
+<q-dialog v-model='model' persistent> 
+    <q-card class="q-pa-none q-ma-none" style="min-width: 1200px;">
 
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
+        <div class="text-h6">
+          Events for node :  {{ store.getters.node_name(props.nodeNumber) }}
+        </div>
+        <template v-slot:action>
+          <q-btn class="q-mx-xs  q-my-none" size="sm" color="blue" label="Toggle"  no-caps
+            @click="clickToggleViewMode()" />
+          <div class="text-h6" style="min-width: 200px">{{ viewModes[viewModeIndex] }}</div>
+          <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
+              @click="clickInfo()" />
+          <q-input class="input-box" bg-color="grey-3" style="width: 150px;" filled dense borderless debounce="300" v-model="filter" placeholder="Search">
+              <q-icon size="sm" name="search"/>
+          </q-input>
+          <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
+          <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Advanced" @click="clickAdvanced()"/>
+          <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
+          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+        </template>
+      </q-banner>
 
-    <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
-      <div class="text-h6">
-        Events for node :  {{ store.getters.node_name(props.nodeNumber) }}
+      <div class="full-width">
+        <q-table
+          class="nodeEventsDialog-table"
+          bordered
+          dense
+          :rows=rows
+          :columns="columns"
+          :filter="filter"
+          row-key="eventIdentifier"
+          virtual-scroll
+          :rows-per-page-options="[0]"
+          :virtual-scroll-sticky-size-start="0"
+          hide-bottom
+        >
+          <template v-slot:body="props">
+            <q-tr :props="props" :class="selected_event_Identifier==props.row.eventIdentifier?'bg-blue-1':'bg-white'" class="q-my-none q-py-none">
+              <q-td key="eventIdentifier" :props="props">{{ props.row.eventIdentifier }}</q-td>
+              <q-td key="eventName" :props="props">{{ props.row.eventName}}</q-td>
+              <q-td key="eventGroup" :props="props">{{ props.row.eventGroup }}</q-td>
+              <q-td key="nodeNumber" :props="props">{{ props.row.nodeNumber }}</q-td>
+              <q-td key="eventNumber" :props="props">{{ props.row.eventNumber }}</q-td>
+              <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td>
+              <q-td key="source" :props="props">{{ props.row.source }}</q-td>
+              <q-td key="actions" :props="props">
+                <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
+                <q-btn dense class="q-mx-xs" outline :disabled="!props.row.storedEvent" color="primary" size="md" label="Variables"
+                @click="clickVariables(props.row.eventIdentifier)" no-caps/>
+                <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
+                <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.eventIdentifier)" no-caps>send ON</q-btn>
+                <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.eventIdentifier)" no-caps>send OFF</q-btn>
+                <q-btn dense class="q-mx-xs" outline size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier)" no-caps/>
+              </q-td>
+            </q-tr>
+          </template>
+        </q-table>
       </div>
-      <template v-slot:action>
-        <q-btn class="q-mx-xs  q-my-none" size="sm" color="blue" label="Toggle"  no-caps
-          @click="clickToggleViewMode()" />
-        <div class="text-h6" style="min-width: 250px">{{ viewModes[viewModeIndex] }}</div>
-        <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
-            @click="clickInfo()" />
-        <q-space/>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <q-input class="input-box" bg-color="grey-3" style="width: 200px;" filled dense borderless debounce="300" v-model="filter" placeholder="Search">
-            <q-icon size="sm" name="search"/>
-        </q-input>
-        &nbsp;&nbsp;
-        <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
-        <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Advanced" @click="clickAdvanced()"/>
-        <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
-        <q-btn flat color="white" size="md" label="Close" v-close-popup/>
-      </template>
-    </q-banner>
-
-    <div class="full-width" >
-    
-    <q-table
-      bordered
-      dense
-      :rows=rows
-      :columns="columns"
-      :filter="filter"
-      row-key="eventIdentifier"
-      virtual-scroll
-      :rows-per-page-options="[0]"
-      :virtual-scroll-sticky-size-start="0"
-      hide-bottom
-    >
-      <template v-slot:body="props">
-        <q-tr :props="props" :class="selected_event_Identifier==props.row.eventIdentifier?'bg-blue-1':'bg-white'" class="q-my-none q-py-none">
-          <q-td key="eventIdentifier" :props="props">{{ props.row.eventIdentifier }}</q-td>
-          <q-td key="eventName" :props="props">{{ props.row.eventName}}</q-td>
-          <q-td key="eventGroup" :props="props">{{ props.row.eventGroup }}</q-td>
-          <q-td key="nodeNumber" :props="props">{{ props.row.nodeNumber }}</q-td>
-          <q-td key="eventNumber" :props="props">{{ props.row.eventNumber }}</q-td>
-          <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td>
-          <q-td key="source" :props="props">{{ props.row.source }}</q-td>
-          <q-td key="actions" :props="props">
-            <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
-            <q-btn dense class="q-mx-xs" outline :disabled="!props.row.storedEvent" color="primary" size="md" label="Variables"
-            @click="clickVariables(props.row.eventIdentifier)" no-caps/>
-            <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
-            <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.eventIdentifier)" no-caps>send ON</q-btn>
-            <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.eventIdentifier)" no-caps>send OFF</q-btn>
-            <q-btn dense class="q-mx-xs" outline size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier)" no-caps/>
-          </q-td>
-        </q-tr>
-      </template>
-    </q-table>
   
-    </div>
-  </q-card>
+    </q-card>
   
     <AddEventDialog v-model='showAddEventDialog'
       :nodeNumber = nodeNumber
@@ -99,9 +95,6 @@
         callingModule = "Events by Node"
         message = "Waiting for event variables loading"
       />
-
-
-
 
     </q-dialog>
 
@@ -436,7 +429,8 @@ const clickVariables = async (eventIdentifier) => {
 <style lang="sass">
 .nodeEventsDialog-table
   /* height or max-height is important */
-  height: 43vh
+  max-height: 600px
+  min-height: 100px
 
   .q-table__top,
   .q-table__bottom,
