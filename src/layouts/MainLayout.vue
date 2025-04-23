@@ -1,5 +1,6 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh lpR fFf" container style="height: 780px" >
+
     <q-header class="row bg-primary text-white no-margin no-padding" style="height: 7vh;">
       <q-toolbar class="col no-margin no-padding">
 
@@ -36,7 +37,6 @@
 
         <q-toolbar-title style="min-height: 0;" class="no-margin no-padding">
           <div class="text-h6 no-margin no-padding">
-            <!-- <span style="min-height: 0;" class="page-title no-margin no-padding text-h6"> -->
             MMC
             </div>
           </q-toolbar-title>
@@ -91,8 +91,8 @@
       </div>
       </q-banner>
 
-      <q-card class="no-margin no-padding" style="height: 83vh;">
-        <q-scroll-area id="demo" ref="scrollAreaRef" style="height: 82vh;">
+      <q-card class="no-margin no-padding" style="height: 75vh;">
+        <q-scroll-area id="demo" ref="scrollAreaRef" style="height: 70vh;">
           <q-list>
             <q-item 
               v-for="message in store.state.nodeTraffic" 
@@ -113,8 +113,9 @@
       Click message to show encoding
     </q-drawer>
 
+
     <q-page-container v-if="(store.state.inStartup == false)" class="main-page no-shadow no-margin q-pa-none">
-       
+
       <q-page v-if="(selectedView == 'BusEventsView')">
         <BusEventsView />
       </q-page>
@@ -126,6 +127,7 @@
       </q-page>
       
     </q-page-container>
+
   </q-layout>
 
 

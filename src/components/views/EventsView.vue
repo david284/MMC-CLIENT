@@ -1,6 +1,5 @@
 <template>
-
-<div style="height: 45vh;">
+  <div>
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none" >
       <div class="text-h6">Events View</div>
       <template v-slot:action>
@@ -23,22 +22,21 @@
       </template>
     </q-banner>
 
-    <q-card>
-      <q-card-section class="no-margin no-padding">
-
-        <q-table
-            class = "events-table"
-            dense
-            :rows = displayEventTable
-            :columns = "columns"
-            :filter = "filter"
-            row-key = "eventIdentifier"
-            virtual-scroll
-            v-model:pagnation = "pagnation"
-            :rows-per-page-options = "[0]"
-            :virtual-scroll-sticky-size-start = "0"
-            hide-bottom
-          >
+    <div>
+      <q-table
+        class = "events-table"
+        bordered
+        dense
+        :rows = displayEventTable
+        :columns = "columns"
+        :filter = "filter"
+        row-key = "eventIdentifier"
+        virtual-scroll
+        v-model:pagnation = "pagnation"
+        :rows-per-page-options = "[0]"
+        :virtual-scroll-sticky-size-start = "0"
+        hide-bottom
+      >
 
           <template v-slot:body="props">
             <q-tr :props="props">
@@ -79,6 +77,9 @@
 
           </template>
         </q-table>
+
+
+<!--         
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Toggle event details json" @click="clickToggleShowEventsJSON()"/>
         </q-card-actions>
@@ -91,10 +92,9 @@
             </div>
           </div>
         </q-card-section>
-
-      </q-card-section>
-    </q-card>
-
+ -->
+        
+      </div>
   </div>
 
   <AddEventDialog v-model='showAddEventDialog' />

@@ -1,10 +1,10 @@
 <template>
-  <div style="height: 45vh;">
+  <div>
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none" >
       <div class="text-h6">Nodes View</div>
       <template v-slot:action>
-        <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="Events"  no-caps
-            @click="clickEventsDialog()" />
+        <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="Mode"  no-caps
+            @click="clickViewMode()" />
         <q-space/>
         <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
             @click="clickInfo()" />
@@ -23,7 +23,7 @@
 
     <div>
         <q-table
-        class="nodes-view-table"
+        :class=tableStyle
         bordered
         dense
         :rows=rows
@@ -70,26 +70,27 @@
             <q-btn dense class="q-mx-xs q-my-none" outline color="negative" size="md" label="Delete"
               @click="clickDeleteNode(props.row.nodeNumber)" no-caps/>
 
-          </q-td>
-        </q-tr>
-      </template>
-      </q-table>
-      
+              </q-td>
+            </q-tr>
+          </template>
+        </q-table>
+      </div>
+
       <advancedNodeDialog v-model='showAdvancedNodeDialog'
         :nodeNumber = selectedNode
       />
      
-<!--
-      <EventsListByNode v-if="(selected_node_valid == true)"
+
+      <EventsListByNode v-if="((selected_node_valid == true) && (viewMode=='split'))"
         :nodeNumber = store.state.selected_node
       />
- -->
+
       <nameNodeDialog v-model='showNameNodeDialog'
         :nodeNumber = store.state.selected_node
       />
 
       <nodeEventsDialog v-model='showNodeEventsDialog'
-        nodeNumber = 1
+        :nodeNumber = store.state.selected_node
       />
 
       <nodeParametersDialog v-model='showNodeParametersDialog'
@@ -117,7 +118,6 @@
       <iFrameDialog v-model='showiFrameDialog'
         :URL=exampleURL />
      
-    </div>
   </div>
 </template>
 
@@ -172,6 +172,10 @@ const showiFrameDialog = ref(false)
 const exampleURL = ref("dummyModule/index.html")
 const WaitingOnBusTrafficMessage = ref('')
 const WaitingOnBusTrafficDialogReturn = ref('')
+const tableStyle = ref("nodes-view-split-table")
+
+const viewMode = ref("split")
+
 
 const nodesUpdated = computed(() => {
   return store.state.nodes.updateTimestamp
@@ -372,13 +376,21 @@ const clickEvents = async (nodeNumber) => {
   await checkNodeVariables(nodeNumber)
   store.methods.request_all_node_events(nodeNumber)
   await select_node_row(nodeNumber)
+  if (viewMode.value == 'full'){
+    showNodeEventsDialog.value = true
+  }
 }
 
 //
 //
-const clickEventsDialog = () => {
-  console.log(name + `: clickEventsDialog`)
-  showNodeEventsDialog.value = true
+const clickViewMode = () => {
+  console.log(name + `: clickViewMode ${viewMode.value}`)
+  viewMode.value = (viewMode.value == 'full') ? 'split' : 'full'
+  if (viewMode.value == 'split'){
+    tableStyle.value = "nodes-view-split-table"
+  } else {
+    tableStyle.value = "nodes-view-full-table"
+  }
 }
 
 //
@@ -472,9 +484,9 @@ const clickVLCB = async (nodeNumber) => {
 </script>
 
 <style lang="sass">
-.nodes-view-table
+.nodes-view-full-table
   /* height or max-height is important */
-  height: 42vh
+  height: 85vh
 
   .q-table__top,
   .q-table__bottom,
@@ -499,7 +511,34 @@ const clickVLCB = async (nodeNumber) => {
     /* height of all previous header rows */
     scroll-margin-top: 48px
     
-</style>
+.nodes-view-split-table
+  /* height or max-height is important */
+  height: 45vh
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    /* otherwise you see the table scrolling underneath the header */
+    background-color: $blue-grey-1
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
+      
+  </style>
 
 <style scoped>
 :deep(.input-box .q-field__control),
