@@ -24,7 +24,7 @@
 
     <div>
       <q-table
-        class = "events-table"
+        class = "eventsView-table"
         bordered
         dense
         :rows = displayEventTable
@@ -434,7 +434,7 @@ const clickToggleViewMode = () => {
 </script>
 
 <style lang="sass">
-.events-table
+.eventsView-table
   /* height or max-height is important */
   height: 82vh
 

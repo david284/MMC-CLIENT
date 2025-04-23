@@ -434,7 +434,7 @@ const clickVariables = async (eventIdentifier) => {
 </script>
 
 <style lang="sass">
-.events-list-by-node-table
+.nodeEventsDialog-table
   /* height or max-height is important */
   height: 43vh
 

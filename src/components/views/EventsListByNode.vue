@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 45vh;">
+  <div style="height: 35vh;">
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
       <div class="text-h6">
         Events for node :  {{ store.getters.node_name(props.nodeNumber) }}
@@ -416,7 +416,7 @@ const clickVariables = async (eventIdentifier) => {
 <style lang="sass">
 .events-list-by-node-table
   /* height or max-height is important */
-  height: 43vh
+  height: 41vh
 
   .q-table__top,
   .q-table__bottom,

@@ -513,7 +513,7 @@ const clickVLCB = async (nodeNumber) => {
     
 .nodes-view-split-table
   /* height or max-height is important */
-  height: 45vh
+  height: 41vh
 
   .q-table__top,
   .q-table__bottom,

@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh lpR fFf" container style="height: 780px" >
 
-    <q-header class="row bg-primary text-white no-margin no-padding" style="height: 7vh;">
+    <q-header class="row bg-primary text-white no-margin no-padding" style="height: 6vh;">
       <q-toolbar class="col no-margin no-padding">
 
         <q-btn flat dense icon="menu">
@@ -91,8 +91,8 @@
       </div>
       </q-banner>
 
-      <q-card class="no-margin no-padding" style="height: 75vh;">
-        <q-scroll-area id="demo" ref="scrollAreaRef" style="height: 70vh;">
+      <q-card class="no-margin no-padding" style="height: 83vh;">
+        <q-scroll-area id="demo" ref="scrollAreaRef" style="height: 82vh;">
           <q-list>
             <q-item 
               v-for="message in store.state.nodeTraffic" 
