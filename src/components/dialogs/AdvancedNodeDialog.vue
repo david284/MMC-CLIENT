@@ -34,6 +34,21 @@
             @click="clickMDF()"/>
           </q-card-actions>
 
+          <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == true)">
+            <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="MODE: set Event Acknowledge"
+            @click="click_MODE_Event_Acknowledge()"/>
+          </q-card-actions>
+
+          <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == true)">
+            <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="MODE: set FCU Compatibility"
+            @click="click_MODE_FCU_Compatibility()"/>
+          </q-card-actions>
+
+          <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == true)">
+            <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="MODE: set heartbeat"
+            @click="click_Mode_Heartbeat()"/>
+          </q-card-actions>
+
           <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].bootloader)">
             <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="program Node"
             @click="clickProgramNode()"/>
@@ -107,6 +122,7 @@ import NodeBackupDialog from "components/dialogs/NodeBackupDialog"
 import programNodeDialog from "components/dialogs/programNodeDialog"
 import RestoreNodeDialog from "components/dialogs/RestoreNodeDialog"
 import setCanIdDialog from "components/dialogs/setCanIdDialog"
+import cbusLib from "cbuslibrary"
 
 const $q = useQuasar()
 const store = inject('store')
@@ -161,6 +177,8 @@ const clickCanIdEnumeration = () => {
   store.methods.node_can_id_enum(props.nodeNumber)
 }
 
+//
+//
 const clickMDF = () => {
   console.log(name + `: clickMDF`)
   store.methods.request_matching_mdf_list(props.nodeNumber, "USER")
@@ -168,28 +186,114 @@ const clickMDF = () => {
   showMDFDialog.value = true
 }
 
+
+//
+// Mode values for Event_Acknowledge
+// Event_Acknowledge 0ff = 0x0B
+// Event_Acknowledge 0n = 0x0A
+// 
+const click_MODE_Event_Acknowledge = () => {
+  console.log(name + `: click_MODE_Event_Acknowledge`)
+  const result = $q.notify({
+    message: 'Set Event Acknowledge for node: '+ store.getters.node_name(props.nodeNumber),
+    timeout: 0,
+    position: 'center',
+    color: 'primary',
+    actions: [
+      { label: 'ON', color: 'white', handler: async () => { 
+        let commandString = cbusLib.encodeMODE(props.nodeNumber, 0x0A)
+        store.methods.send_cbus_message(commandString)
+      } },
+      { label: 'OFF', color: 'white', handler: () => {
+        let commandString = cbusLib.encodeMODE(props.nodeNumber, 0x0B)
+        store.methods.send_cbus_message(commandString) 
+      } }
+    ]
+  })
+}  
+
+//
+// Mode values for FCU_Compatibility
+// FCU_Compatibility 0ff = 0x11
+// FCU_Compatibility 0n = 0x10
+//
+const click_MODE_FCU_Compatibility = () => {
+  console.log(name + `: click_MODE_FCU_Compatibility`)
+  const result = $q.notify({
+    message: 'Set FCU Compatibility for node: '+ store.getters.node_name(props.nodeNumber),
+    timeout: 0,
+    position: 'center',
+    color: 'primary',
+    actions: [
+      { label: 'ON', color: 'white', handler: async () => { 
+        let commandString = cbusLib.encodeMODE(props.nodeNumber, 0x10)
+        store.methods.send_cbus_message(commandString)
+      } },
+      { label: 'OFF', color: 'white', handler: () => {
+        let commandString = cbusLib.encodeMODE(props.nodeNumber, 0x11)
+        store.methods.send_cbus_message(commandString) 
+      } }
+    ]
+  })
+}  
+
+//
+// Mode values for Heartbeat
+// Heartbeat 0ff = 0x0D
+// Heartbeat 0n = 0x0C
+//
+const click_Mode_Heartbeat = () => {
+  console.log(name + `: click_Mode_Heartbeat`)
+  const result = $q.notify({
+    message: 'Set Heartbeat for node: '+ store.getters.node_name(props.nodeNumber),
+    timeout: 0,
+    position: 'center',
+    color: 'primary',
+    actions: [
+      { label: 'ON', color: 'white', handler: async () => { 
+        let commandString = cbusLib.encodeMODE(props.nodeNumber, 0x0C)
+        store.methods.send_cbus_message(commandString)
+      } },
+      { label: 'OFF', color: 'white', handler: () => {
+        let commandString = cbusLib.encodeMODE(props.nodeNumber, 0x0D)
+        store.methods.send_cbus_message(commandString) 
+      } }
+    ]
+  })
+}  
+
+//
+//
 const clickProgramNode = () => {
   console.log(name + `: clickProgramNode ` + props.nodeNumber)
   programNodeMode.value = "NORMAL"
   showProgramNodeDialog.value = true
 }
 
+//
+//
 const clickProgramInBootMode = () => {
   console.log(name + `: clickProgramInBootMode ` + props.nodeNumber)
   programNodeMode.value = "BOOT"
   showProgramNodeDialog.value = true
 }
 
+//
+//
 const clickResetNode = () => {
   console.log(name + `: clickResetNode ` + props.nodeNumber)
   store.methods.reset_node(props.nodeNumber)
 }
 
+//
+//
 const clickRestoreNode = () => {
   console.log(name + `: clickRestoreNode ` + props.nodeNumber)
   showRestoreNodeDialog.value = true
 }
 
+//
+//
 const clickSetCAN_ID = () => {
   console.log(name + `: clickSetCAN_ID ` + props.nodeNumber)
   showSetCanIdDialog.value = true
