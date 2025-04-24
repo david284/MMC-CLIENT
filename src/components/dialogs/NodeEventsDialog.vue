@@ -1,7 +1,7 @@
 <template>
 
-<q-dialog v-model='model' persistent> 
-    <q-card class="q-pa-none q-ma-none" style="min-width: 1200px;">
+<q-dialog v-model='model' persistent full-width position="right"> 
+    <q-card class="q-pa-none q-ml-xl">
 
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
         <div class="text-h6">

@@ -1,6 +1,6 @@
 <template>
-  <q-dialog v-model='model' persistent full-width full-height> 
-    <q-card class="q-pa-none q-ma-none">
+  <q-dialog v-model='model' persistent full-width full-height position="right"> 
+    <q-card class="q-pa-none q-ml-xl">
 
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin g-py-none">
