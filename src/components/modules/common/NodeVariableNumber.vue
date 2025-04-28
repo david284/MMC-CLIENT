@@ -1,6 +1,6 @@
 <template>
   <q-card class="q-ma-xs no-padding">
-    <q-card-section style="height: 150px" class="no-margin q-py-none">
+    <q-card-section style="height: 120px" class="no-margin q-py-none">
       <div class="text-h6">{{ displayTitle }}
         <q-card-section style ="min-width: 10px; height: 10px" class="no-margin no-padding float-right text-caption text-weight-thin">
           &nbsp; {{ nodeVariableIndex }}
@@ -11,8 +11,10 @@
         range {{ minValue }} to {{ maxValue }} {{ displayUnits }}
       </q-badge>
       <q-input
+        class="nv_input_box"
         :mask="displayMask"
         debounce="10"
+        dense
         v-model="displayValue"
         outlined
         :error-message="error_message"
@@ -183,5 +185,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
+:deep(.nv_input_box .q-field__control),
+:deep(.nv_input_box .q-field__marginal) {
+  height: 32px;
+  width: 80px;
+  font-size: 16px;
+}
 </style>
