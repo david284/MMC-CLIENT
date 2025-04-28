@@ -3,7 +3,8 @@
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none" >
       <div class="text-h6">Nodes View</div>
       <template v-slot:action>
-        <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="Mode"  no-caps
+        view mode
+        <q-btn class="q-mx-xs q-my-none" size="sm" color="info" :label=viewMode  no-caps
             @click="clickViewMode()" />
         <q-space/>
         <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps

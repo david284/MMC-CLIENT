@@ -429,7 +429,7 @@ const clickVariables = async (eventIdentifier) => {
 <style lang="sass">
 .nodeEventsDialog-table
   /* height or max-height is important */
-  max-height: 600px
+  max-height: 700px
   min-height: 100px
 
   .q-table__top,
