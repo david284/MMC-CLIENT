@@ -6,7 +6,7 @@
       v-model="checked"
       :label=label
       @update:model-value="updated"
-      left-label
+      right-label
     ></q-checkbox>
   </q-card-section>
 </template>
