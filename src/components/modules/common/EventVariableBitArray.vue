@@ -1,6 +1,5 @@
 <template>
-  <q-card class="q-ma-xs no-padding">
-
+  <q-card class="q-ma-xs no-padding" style ="min-width: 100px;">
     <q-card-section class="no-margin q-py-none">
       <div class="text-h6">{{ displayTitle }}
         <q-card-section style ="min-width: 10px; height: 10px" class="no-margin no-padding float-right text-caption text-weight-thin">
@@ -8,16 +7,18 @@
         </q-card-section>
       </div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
-      <div v-for="item in bitCollection" :key="item">
-        <event-variable-bit
-          :nodeNumber=nodeNumber
-          :eventVariableIndex=eventVariableIndex
-          :eventIdentifier=eventIdentifier
-          :bit=item.bitPosition
-          :label=item.label
-          :configuration=configuration
-        ></event-variable-bit>
-      </div>
+      <q-card-section class="no-margin no-padding">
+        <div v-for="item in bitCollection" :key="item">
+          <event-variable-bit
+            :nodeNumber=nodeNumber
+            :eventVariableIndex=eventVariableIndex
+            :eventIdentifier=eventIdentifier
+            :bit=item.bitPosition
+            :label=item.label
+            :configuration=configuration
+          ></event-variable-bit>
+        </div>
+      </q-card-section>
      </q-card-section>
  
   </q-card>

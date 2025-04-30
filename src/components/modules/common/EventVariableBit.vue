@@ -1,10 +1,14 @@
 <template>
-  <q-checkbox min-width="100"
-              v-model="checked"
-              :label=label
-              @update:model-value="updated"
-              left-label
-  ></q-checkbox>
+  <q-card-section class="no-margin q-pa-xs">
+    <q-checkbox
+      dense
+      min-width="100"
+      v-model="checked"
+      :label=label
+      @update:model-value="updated"
+      left-label
+    ></q-checkbox>
+  </q-card-section>
 </template>
 
 <script setup>
