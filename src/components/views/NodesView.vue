@@ -15,7 +15,7 @@
             <q-icon size="sm" name="search"/>
         </q-input>
         &nbsp;&nbsp;
-        <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Advanced" 
+        <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Advanced"
           @click="clickNodesViewAdvanced()"/>
         &nbsp;&nbsp;
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
@@ -80,7 +80,7 @@
       <advancedNodeDialog v-model='showAdvancedNodeDialog'
         :nodeNumber = selectedNode
       />
-     
+
 
       <EventsListByNode v-if="((selected_node_valid == true) && (viewMode=='split'))"
         :nodeNumber = store.state.selected_node
@@ -112,13 +112,13 @@
       @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
       />
 
-      <vlcbServicesDialog  v-model='showVLCBServicesDialog' 
+      <vlcbServicesDialog  v-model='showVLCBServicesDialog'
         :nodeNumber = store.state.selected_node
       />
 
       <iFrameDialog v-model='showiFrameDialog'
         :URL=exampleURL />
-     
+
   </div>
 </template>
 
@@ -277,7 +277,7 @@ const checkNodeParameters = async (nodeNumber) => {
     // allow up to 2 minutes to finish loading
     let startTime = Date.now()
     while ((Date.now() - startTime) < 120000){
-      if (WaitingOnBusTrafficDialogReturn.value.length > 0) 
+      if (WaitingOnBusTrafficDialogReturn.value.length > 0)
       {
 //        result = true  // success if we exit early
         break
@@ -321,7 +321,7 @@ const checkFileLoad = async (nodeNumber) => {
     }
   }
 }
-  
+
 
 const checkNodeVariables = async (nodeNumber) => {
   //console.log(name + ': checkNodeVariables: node ' + nodeNumber)
@@ -359,7 +359,7 @@ const clickDeleteNode = (nodeNumber) => {
     position: 'center',
     color: 'primary',
     actions: [
-      { label: 'YES', color: 'white', handler: async () => { 
+      { label: 'YES', color: 'white', handler: async () => {
         store.methods.remove_node(nodeNumber)
         store.eventBus.emit('NODE_DELETED_EVENT', nodeNumber)
       } },
@@ -464,7 +464,7 @@ const clickVariables = async (nodeNumber) => {
     showiFrameDialog.value = true
   } else {
       await checkNodeVariables(nodeNumber)
-      showNodeVariablesDialog.value = true      
+      showNodeVariablesDialog.value = true
     }
 }
 
@@ -487,7 +487,7 @@ const clickVLCB = async (nodeNumber) => {
 <style lang="sass">
 .nodes-view-full-table
   /* height or max-height is important */
-  height: 85vh
+  height: 89vh
 
   .q-table__top,
   .q-table__bottom,
@@ -511,10 +511,10 @@ const clickVLCB = async (nodeNumber) => {
   tbody
     /* height of all previous header rows */
     scroll-margin-top: 48px
-    
+
 .nodes-view-split-table
   /* height or max-height is important */
-  height: 41vh
+  height: 43vh
 
   .q-table__top,
   .q-table__bottom,
@@ -538,7 +538,7 @@ const clickVLCB = async (nodeNumber) => {
   tbody
     /* height of all previous header rows */
     scroll-margin-top: 48px
-      
+
   </style>
 
 <style scoped>

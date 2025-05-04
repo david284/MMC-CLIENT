@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh lpR fFf" container style="height: 780px" >
+  <q-layout view="hHh lpR fFf">
 
     <q-header class="row bg-primary text-white no-margin no-padding" style="height: 6vh;">
       <q-toolbar class="col no-margin no-padding">
@@ -78,28 +78,28 @@
     </q-header>
 
     <q-drawer class="no-margin no-padding"
-      v-model="leftDrawerOpen" 
+      v-model="leftDrawerOpen"
       show-if-above
-      side="left" 
+      side="left"
       :width="250"
-      dense 
+      dense
       bordered
       >
-      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none q-px-xs">
-        <div class="text-h6">
+      <q-banner inline-actions style="min-height: 0px;" class="bg-primary text-white dense no-margin q-py-none q-px-xs">
+        <div class="text-h6 no-margin no-padding">
         Bus traffic
       </div>
       </q-banner>
 
-      <q-card class="no-margin no-padding" style="height: 83vh;">
-        <q-scroll-area id="demo" ref="scrollAreaRef" style="height: 82vh;">
+      <q-card class="no-margin no-padding">
+        <q-scroll-area id="demo" ref="scrollAreaRef" style="height: 89vh;">
           <q-list>
-            <q-item 
-              v-for="message in store.state.nodeTraffic" 
-              :key="message" 
-              clickable 
+            <q-item
+              v-for="message in store.state.nodeTraffic"
+              :key="message"
+              clickable
               dense
-              @click=clickSingleBusEvent(message) 
+              @click=clickSingleBusEvent(message)
               >
               <q-item-label dense caption class="q-pa-none q-my-none">
                 <span class="text-bold text-blue">{{ message.direction }}</span>
@@ -110,7 +110,6 @@
           </q-list>
         </q-scroll-area>
       </q-card>
-      Click message to show encoding
     </q-drawer>
 
 
@@ -125,7 +124,7 @@
       <q-page v-if="(selectedView == 'NodesView')">
         <nodesView />
       </q-page>
-      
+
     </q-page-container>
 
   </q-layout>
@@ -133,20 +132,24 @@
 
 
   <busTrafficDialog v-model='showBusTrafficDialog' />
+
+
   <cbusErrorsDialog v-model='showCbusErrorsDialog' />
   <ExportDialog v-model='showExportDialog' />
   <jsonDialog v-model='showJsonDialog' />
   <ImportDialog v-model='showImportDialog' />
   <modifiedGridConnectDialog v-model='showModifiedGridConnectDialog'
     :busMessage="busMessage"/>
-  <newNodeDialog v-model='showNewNodeDialog'
+
+
+    <newNodeDialog v-model='showNewNodeDialog'
     :previousNodeNumber="previousNodeNumber"
     :moduleName="nodeModuleName" />
   <SendCbusDialog v-model='showSendCbusDialog' />
   <startupDialog v-model='store.state.inStartup' />
   <systemDialog v-model='showSystemDialog' />
   <dialogExampleCompositionAPI v-model='showDialogExampleCompositionAPI' />
-  <iFrameDialog v-model='showiFrameDialog' 
+  <iFrameDialog v-model='showiFrameDialog'
     :URL=exampleURL />
 
 </template>
@@ -326,7 +329,7 @@ store.eventBus.on('GENERAL_MESSAGE_EVENT', (message, caption, type, timeout) => 
       })
     }
   } catch(err){
-    console.log(name + ': MESSAGE_EVENT: ' + err)    
+    console.log(name + ': MESSAGE_EVENT: ' + err)
   }
 })
 
@@ -350,15 +353,15 @@ store.eventBus.on('NETWORK_CONNECTION_FAILURE', (message, caption, type, timeout
         timeout: timeout,
         type: type,
         position: 'center',
-        actions: [ 
-          { label: `Don't remind me again`, 
-            handler: () => { store.state.networkConnection_notify = false }  
-          }, 
-          { label: 'Dismiss' } 
+        actions: [
+          { label: `Don't remind me again`,
+            handler: () => { store.state.networkConnection_notify = false }
+          },
+          { label: 'Dismiss' }
         ]
       })
     } catch(err){
-      console.log(name + ': NETWORK_CONNECTION_FAILURE: ' + err)    
+      console.log(name + ': NETWORK_CONNECTION_FAILURE: ' + err)
     }
   }
 })
@@ -374,15 +377,15 @@ store.eventBus.on('SERIAL_CONNECTION_FAILURE', (message, caption, type, timeout)
         timeout: timeout,
         type: type,
         position: 'center',
-        actions: [ 
-          { label: `Don't remind me again`, 
-            handler: () => { store.state.serialConnection_notify = false }  
-          }, 
-          { label: 'Dismiss' } 
+        actions: [
+          { label: `Don't remind me again`,
+            handler: () => { store.state.serialConnection_notify = false }
+          },
+          { label: 'Dismiss' }
         ]
       })
     } catch(err){
-      console.log(name + ': SERIAL_CONNECTION_FAILURE: ' + err)    
+      console.log(name + ': SERIAL_CONNECTION_FAILURE: ' + err)
     }
   }
 })
@@ -468,7 +471,7 @@ const clickExit = () => {
     position: 'center',
     color: 'primary',
     actions: [
-      { label: 'YES', color: 'white', handler: async () => { 
+      { label: 'YES', color: 'white', handler: async () => {
         store.methods.STOP_SERVER()
         await sleep(50)     // allow a bit of a delay for the change
       } },

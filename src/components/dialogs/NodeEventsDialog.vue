@@ -1,6 +1,6 @@
 <template>
 
-<q-dialog v-model='model' persistent full-width position="right"> 
+<q-dialog v-model='model' persistent full-width position="right">
     <q-card class="q-pa-none q-ml-xl">
 
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
@@ -59,9 +59,9 @@
           </template>
         </q-table>
       </div>
-  
+
     </q-card>
-  
+
     <AddEventDialog v-model='showAddEventDialog'
       :nodeNumber = nodeNumber
     />
@@ -346,7 +346,7 @@ const clickDelete = (eventIdentifier) => {
     position: 'center',
     color: 'primary',
     actions: [
-      { label: 'YES', color: 'white', handler: async () => { 
+      { label: 'YES', color: 'white', handler: async () => {
         console.log(`removeEvent ` + props.nodeNumber + ' ' + eventIdentifier)
         store.methods.remove_event(props.nodeNumber, eventIdentifier)
       } },
@@ -429,8 +429,8 @@ const clickVariables = async (eventIdentifier) => {
 <style lang="sass">
 .nodeEventsDialog-table
   /* height or max-height is important */
-  max-height: 700px
-  min-height: 100px
+  max-height: 88vh
+  min-height: 10vh
 
   .q-table__top,
   .q-table__bottom,

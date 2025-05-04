@@ -333,7 +333,7 @@ const clickDelete = (eventIdentifier) => {
     position: 'center',
     color: 'primary',
     actions: [
-      { label: 'YES', color: 'white', handler: async () => { 
+      { label: 'YES', color: 'white', handler: async () => {
         console.log(`removeEvent ` + props.nodeNumber + ' ' + eventIdentifier)
         store.methods.remove_event(props.nodeNumber, eventIdentifier)
       } },
@@ -416,7 +416,7 @@ const clickVariables = async (eventIdentifier) => {
 <style lang="sass">
 .events-list-by-node-table
   /* height or max-height is important */
-  height: 41vh
+  height: 42vh
 
   .q-table__top,
   .q-table__bottom,

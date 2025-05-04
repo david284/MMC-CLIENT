@@ -79,7 +79,7 @@
         </q-table>
 
 
-<!--         
+<!--
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Toggle event details json" @click="clickToggleShowEventsJSON()"/>
         </q-card-actions>
@@ -93,7 +93,7 @@
           </div>
         </q-card-section>
  -->
-        
+
       </div>
   </div>
 
@@ -340,7 +340,7 @@ const clickDelete = (eventIdentifier) => {
     position: 'center',
     color: 'primary',
     actions: [
-      { label: 'YES', color: 'white', handler: async () => { 
+      { label: 'YES', color: 'white', handler: async () => {
         delete store.state.layout.eventDetails[eventIdentifier]
         store.state.update_layout_needed = true
         update_events_table()
@@ -436,7 +436,7 @@ const clickToggleViewMode = () => {
 <style lang="sass">
 .eventsView-table
   /* height or max-height is important */
-  height: 82vh
+  height: 89vh
 
   .q-table__top,
   .q-table__bottom,

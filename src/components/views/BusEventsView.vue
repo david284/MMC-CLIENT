@@ -1,6 +1,5 @@
 <template>
-  <div style="height: 45vh;">
-
+  <div>
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
       <div class="text-h6">
         Bus Events
@@ -232,9 +231,9 @@ const clickClearAllBusEvents = () => {
     position: 'center',
     color: 'primary',
     actions: [
-      { label: 'YES', color: 'white', handler: async () => { 
+      { label: 'YES', color: 'white', handler: async () => {
           store.methods.clear_bus_events()
-        } 
+        }
       },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
     ]
@@ -307,7 +306,7 @@ const clickToggleViewMode = () => {
 <style lang="sass">
 .bus-events-table
   /* height or max-height is important */
-  max-height: 600px
+  max-height: 85vh
 
   .q-table__top,
   .q-table__bottom,

@@ -1,6 +1,4 @@
 <template>
-  <div class="q-pa-md q-gutter-sm">
-
   <q-dialog v-model="model" position="left">
     <!-- min-width: has no effect on q-dialog -->
     <q-card  style="width: 300px" class="q-pa-none q-ma-none">
@@ -19,10 +17,10 @@
       <q-card>
         <q-card-section style="max-height: 50vh" class="scroll q-py-none no-margin">
           <q-list bordered >
-            <q-item 
-              v-for="message in store.state.nodeTraffic" 
-              :key="message" 
-              clickable 
+            <q-item
+              v-for="message in store.state.nodeTraffic"
+              :key="message"
+              clickable
               dense
               v-ripple
               >
@@ -34,7 +32,6 @@
 
     </q-card>
   </q-dialog>
-</div>  
 </template>
 
 
