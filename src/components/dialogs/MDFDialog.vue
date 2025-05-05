@@ -1,11 +1,11 @@
 <template>
   <q-dialog v-model='model' persistent>
-    <q-card class="q-pa-none q-ma-none" style="min-width: 1200px; min-height: 60vh;">
+    <q-card class="no-margin no-padding" style="min-width: 1200px; min-height: 60vh;">
 
-      <q-card-section class="q-pa-none q-ma-none">
-        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin g-py-none">
+      <q-card-section class="no-margin no-padding">
+        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin no-padding">
           <div class="text-h6">
-            Module Descriptor File Management
+            &nbsp; Module Descriptor File Management
           </div>
           <template v-slot:action>
             <q-btn flat color="white" size="md" label="Close" v-close-popup="3"/>
@@ -13,10 +13,10 @@
         </q-banner>
       </q-card-section>
 
-      <q-card-section style="max-height: 85vh" class="scroll no-margin q-py-none">
+      <q-card-section style="max-height: 79vh" class="scroll no-margin q-py-none">
 
           <!-- 1st element -->
-          <q-card flat style="max-height: 30vh; min-width: 1100px;" class="scroll row no-margin q-pa-none">
+          <q-card flat style="max-height: 28vh; min-width: 1100px;" class="scroll row no-margin q-pa-none">
 
             <q-card-section style="width: 500px;" class="no-margin q-py-none">
               <div class="text-h6">Current node:</div>
@@ -39,10 +39,12 @@
                 User files always take precedence if same filename exists in System, allowing permanent override of System files<br/>
                 User file timestamp is in red if a newer System file exists - to use the newer System file, delete the User file<br/>
               </div>
+<!--
               <q-card-actions class="no-margin no-padding" >
                 <div class="text-subtitle2 text-weight-bold">Upload new or updated user file &nbsp; &nbsp; </div>
                 <q-btn color="positive" dense size="sm" label="Upload" @click="clickUpload()" />
               </q-card-actions>
+ -->
             </q-card-section>
 
           </q-card>
@@ -53,7 +55,7 @@
 
             <q-card-section flat class="no-margin q-pa-none row">
 
-              <q-card flat style="max-height: 48vh" class="scroll no-margin q-pa-none">
+              <q-card flat style="max-height: 47vh" class="scroll no-margin q-pa-none">
               <q-card-section class="no-margin q-pa-xs"  style="min-width: 500px;">
                 <div class="text-h6">System files for this module type</div>
                 <q-table
@@ -72,7 +74,7 @@
                       <q-td key="file" :props="props">{{ props.row.file }}</q-td>
                       <q-td key="timestamp" :props="props">{{ props.row.timestamp }}</q-td>
                       <q-td key="actions" :props="props">
-                        <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Download" @click="clickSystemDownload(props.row.file)" no-caps/>
+                        <q-btn dense class="q-mx-xs" outline color="primary" size="sm" label="Download" @click="clickSystemDownload(props.row.file)" no-caps/>
                       </q-td>
                     </q-tr>
                   </template>
@@ -80,7 +82,7 @@
               </q-card-section>
               </q-card>
 
-              <q-card flat style="max-height: 48vh" class="scroll no-margin q-pa-none">
+              <q-card flat style="max-height: 47vh" class="scroll no-margin q-pa-none">
               <q-card-section class="no-margin q-py-xs" style="min-width: 530px;">
                 <div class="text-h6">User files for this module type</div>
                 <q-table
@@ -102,8 +104,8 @@
                         <q-chip dense color="white" text-color="black" v-else>{{ props.row.timestamp }}</q-chip>
                       </q-td>
                       <q-td key="actions" :props="props">
-                        <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Download" @click="clickUserDownload(props.row.file)" no-caps/>
-                        <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Delete" @click="clickDelete(props.row.file)" no-caps/>
+                        <q-btn dense class="q-mx-xs" outline color="primary" size="sm" label="Download" @click="clickUserDownload(props.row.file)" no-caps/>
+                        <q-btn dense class="q-mx-xs" outline color="primary" size="sm" label="Delete" @click="clickDelete(props.row.file)" no-caps/>
                       </q-td>
                     </q-tr>
                   </template>
@@ -113,10 +115,6 @@
 
           </q-card-section>
         </q-card>
-
-        <q-card-actions align="right" class="text-primary no-margin no-padding">
-          <q-btn flat dense label="Toggle current module descriptor view" @click="clickToggleModuleDescriptor()"/>
-        </q-card-actions>
 
         <q-card-section class="q-pa-sm" v-if="showModuleDescriptor">
           <div class="q-pa-xs row">
@@ -128,6 +126,15 @@
         </q-card-section>
 
       </q-card-section>
+
+      <q-card-actions align="right" class="text-primary no-margin">
+          <q-space/>
+          <q-space/>
+          <div class="text-subtitle2 text-weight-bold">Upload new or updated user file &nbsp; &nbsp; </div>
+          <q-btn color="positive" dense size="sm" label="Upload" @click="clickUpload()" />
+          <q-space/>
+          <q-btn flat dense label="Toggle current module descriptor view" @click="clickToggleModuleDescriptor()"/>
+        </q-card-actions>
 
     </q-card>
 
