@@ -62,12 +62,13 @@ watch(numberBaseUpdated, () => {
 const update_variable = (displayValue) => {
   let newValue = displayValue
   let processArray = displayValue.toUpperCase().split('X')
-    if (processArray.length > 1){
-      newValue = parseInt(processArray[1], 16)
-    } else {
-      newValue = parseInt(processArray[0])
-    }
-  if (newValue < 0 || newValue > 255 ||newValue =='') {
+  if (processArray.length > 1){
+    newValue = parseInt(processArray[1], 16)
+  } else {
+    newValue = parseInt(processArray[0])
+  }
+  if ((newValue < 0) || (newValue > 255) || (Number.isNaN(newValue))) {
+    console.log(name + `: value error ${newValue}`)
     error.value = true
     error_message.value = 'Invalid Value'
   } else {
