@@ -10,7 +10,7 @@
         <template v-slot:action>
           <q-btn class="q-mx-xs  q-my-none" size="sm" color="blue" label="Toggle"  no-caps
             @click="clickToggleViewMode()" />
-          <div class="text-h6" style="min-width: 200px">{{ viewModes[viewModeIndex] }}</div>
+          <div class="text-h6" style="min-width: 200px">view {{ store.state.events_view_mode }} events</div>
           <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
               @click="clickInfo()" />
           <q-input class="input-box" bg-color="grey-3" style="width: 150px;" filled dense borderless debounce="300" v-model="filter" placeholder="Search">
@@ -135,14 +135,6 @@ const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
 var eventType = ref()
 
-const viewModeIndex = ref(0)
-
-const viewModes = ref({
-  0:"view all events",
-  1: "view short events only",
-  2: "view long events only"
-})
-
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -228,9 +220,12 @@ const update_rows = () => {
     storedEventsNI.forEach(event => {
       var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
       var eventNumber = parseInt(event.eventIdentifier.substr(4, 4), 16)
-      if (((viewModeIndex.value == 1) && (eventNodeNumber > 0)) ||
-        ((viewModeIndex.value == 2) && (eventNodeNumber == 0))) {
-        // don't add this node as we've selected either short or long events only
+      //
+      // we use events_view_mode to decide which events we want to exclude from being displayed
+      if (((store.state.events_view_mode == 'short') && (eventNodeNumber > 0)) ||
+        ((store.state.events_view_mode == 'long') && (eventNodeNumber == 0)) ||
+        ((store.state.events_view_mode == 'named') && (store.state.layout.eventDetails[event.eventIdentifier].name.length == ''))) {
+        // don't add this node as we've elected to not display it
       } else {
         let output = {}
         output['eventIdentifier'] = event.eventIdentifier
@@ -291,7 +286,6 @@ const update_rows = () => {
 
 onBeforeMount(() => {
   console.log(name + ": onBeforeMount")
-  viewModeIndex.value = store.state.events_type_select
   if (props.nodeNumber){
     update_rows()
   }
@@ -408,9 +402,22 @@ const clickTeach = (eventIndentifier) => {
 
 const clickToggleViewMode = () => {
   console.log(name + `: clickToggleViewMode`)
-  viewModeIndex.value++
-  if (viewModeIndex.value > 2){viewModeIndex.value = 0}
-  store.state.events_type_select = viewModeIndex.value
+  switch(store.state.events_view_mode){
+    case 'all':
+      store.state.events_view_mode = 'short'
+      break
+    case 'short':
+      store.state.events_view_mode = 'long'
+      break
+    case 'long':
+      store.state.events_view_mode = 'named'
+      break
+    case 'named':
+      store.state.events_view_mode = 'all'
+      break
+    default:
+      store.state.events_view_mode = 'all'
+  }
   update_rows()
 }
 
