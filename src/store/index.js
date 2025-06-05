@@ -19,7 +19,6 @@ const state = reactive({
   dcc_errors: {},
   develop: false,
   //develop: true,
-  events_type_select: 0,
   events_view_mode: 'all',
   event_view_status: [],
   exported_MDF: {},
