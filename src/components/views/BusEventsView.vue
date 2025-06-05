@@ -6,7 +6,7 @@
       </div>
       <template v-slot:action>
         <q-btn class="q-mx-xs q-my-none" size="sm" color="blue" label="Toggle"  no-caps @click="clickToggleViewMode()" />
-        <div class="text-h6" style="min-width: 250px">{{ viewModes[viewModeIndex] }}</div>
+        <div class="text-h6" style="min-width: 250px">view {{ store.state.events_view_mode }} events</div>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps @click="clickInfo()" />
         &nbsp;&nbsp;&nbsp;&nbsp;
@@ -127,13 +127,6 @@ const newEventName = ref()
 const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
 const showBusEventsJSON = ref(false)
-const viewModeIndex = ref(0)
-const viewModes = ref({
-  0:"view all bus events",
-  1: "view short events only",
-  2: "view long events only"
-})
-
 
 
 const columns = [
@@ -175,21 +168,25 @@ const update_bus_events = () => {
     // order keys
     if (busEvents){
       for (let key of Object.keys(busEvents).sort(function(a, b){return (busEvents[a].eventIdentifier < busEvents[b].eventIdentifier)? -1 : 1;})) {
+        var eventIdentifier = busEvents[key].eventIdentifier
         var eventNodeNumber = parseInt(busEvents[key].eventIdentifier.slice(0,4), 16)
-        if (((viewModeIndex.value == 1) && (eventNodeNumber > 0)) ||
-          ((viewModeIndex.value == 2) && (eventNodeNumber == 0))) {
-          // don't add this node as we've selected either short or long events only
+        //
+        // we use events_view_mode to decide which events we want to exclude from being displayed
+        if (((store.state.events_view_mode == 'short') && (eventNodeNumber > 0)) ||
+          ((store.state.events_view_mode == 'long') && (eventNodeNumber == 0)) ||
+          ((store.state.events_view_mode == 'named') && (store.state.layout.eventDetails[eventIdentifier].name.length == ''))) {
+          // don't add this node as we've elected to not display it
         } else {
           let output = {}
-          output['eventIdentifier'] = busEvents[key].eventIdentifier
+          output['eventIdentifier'] = eventIdentifier
           output['nodeNumber'] = busEvents[key].nodeNumber
           output['eventNumber'] = busEvents[key].eventNumber
           output['status'] = busEvents[key].status
           output['type'] = busEvents[key].type
           output['count'] = busEvents[key].count
-          output['name'] = store.getters.event_name(busEvents[key].eventIdentifier)
-          output['colour'] = store.getters.event_colour(busEvents[key].eventIdentifier)
-          output['group'] = store.getters.event_group(busEvents[key].eventIdentifier)
+          output['name'] = store.getters.event_name(eventIdentifier)
+          output['colour'] = store.getters.event_colour(eventIdentifier)
+          output['group'] = store.getters.event_group(eventIdentifier)
           displayEventListLocal.push(output)
         }
       }
@@ -208,7 +205,6 @@ const event_colour = (eventIdentifier) => {
 onBeforeMount(() => {
 //  store.methods.query_all_nodes()
   store.methods.refresh_bus_events()
-  viewModeIndex.value = store.state.events_type_select
   update_bus_events()
 })
 
@@ -292,9 +288,22 @@ const clickToggleShowBusEventsJSON = () => {
 
 const clickToggleViewMode = () => {
   console.log(name + `: clickToggleViewMode`)
-  viewModeIndex.value++
-  if (viewModeIndex.value > 2){viewModeIndex.value = 0}
-  store.state.events_type_select = viewModeIndex.value
+  switch(store.state.events_view_mode){
+    case 'all':
+      store.state.events_view_mode = 'short'
+      break
+    case 'short':
+      store.state.events_view_mode = 'long'
+      break
+    case 'long':
+      store.state.events_view_mode = 'named'
+      break
+    case 'named':
+      store.state.events_view_mode = 'all'
+      break
+    default:
+      store.state.events_view_mode = 'all'
+  }
   update_bus_events()
 }
 
