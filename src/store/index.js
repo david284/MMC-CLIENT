@@ -20,6 +20,7 @@ const state = reactive({
   develop: false,
   //develop: true,
   events_type_select: 0,
+  events_view_mode: 'all',
   event_view_status: [],
   exported_MDF: {},
   inStartup: true,
@@ -315,7 +316,7 @@ const methods = {
   set_can_id(nodeNumber, CAN_ID){
     var data = {}
     data['nodeNumber'] = nodeNumber
-    data['CAN_ID'] = CAN_ID    
+    data['CAN_ID'] = CAN_ID
     socket.emit('SET_CAN_ID', data)
     console.log(name + `: SET_CAN_ID: node ` + JSON.stringify(data))
   },
@@ -475,14 +476,14 @@ const getters = {
       }
     } catch (err) {
       console.log(name + `: getters.node_name: ${err}`)
-      return "error"      
+      return "error"
     }
   },
   node_group(nodeNumber){
     try{
       if (nodeNumber in state.layout.nodeDetails == false){
         state.layout.nodeDetails[nodeNumber] = {}
-        state.layout.nodeDetails[nodeNumber].name = 
+        state.layout.nodeDetails[nodeNumber].name =
         state.nodes[nodeNumber].moduleName + ' (' + nodeNumber.toString() + ')'
         state.layout.nodeDetails[nodeNumber].colour = "black"
         state.layout.nodeDetails[nodeNumber].group = ""
@@ -495,13 +496,13 @@ const getters = {
       return state.layout.nodeDetails[nodeNumber].group
     } catch (err) {
       console.log(name + `: getters.node_group: ${err}`)
-      return ""      
+      return ""
     }
   },
   node_parameter_name(nodeNumber, parameterIndex){
     var result = 'Index: ' + parameterIndex
     try{
-      result = parameterIndex + ': ' + NodeParameterNames[parameterIndex]   
+      result = parameterIndex + ': ' + NodeParameterNames[parameterIndex]
     } catch (err) {
       console.log(name + `: getters.node_parameter_name: ${err}`)
     }
@@ -510,7 +511,7 @@ const getters = {
   node_parameter_value(nodeNumber, parameterIndex){
     var result = undefined
     try{
-      result = state.nodes[nodeNumber].parameters[parameterIndex]   
+      result = state.nodes[nodeNumber].parameters[parameterIndex]
     } catch (err) {
       console.log(name + `: getters: node_parameter_value: ${err}`)
     }
@@ -755,7 +756,7 @@ socket.on("NODE_DESCRIPTOR", (data) => {
   var nodeNumber = Object.keys(data)[0]   // get first key
   var moduleDescriptor = Object.values(data)[0] // get first value
   console.log(secondsNow() + ': ' + name + `: RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber + ' ' + moduleDescriptor.moduleDescriptorFilename)
-  state.nodeDescriptors[nodeNumber] = moduleDescriptor    
+  state.nodeDescriptors[nodeNumber] = moduleDescriptor
   state.MDFupdateTimestamp = Date.now()
 })
 
