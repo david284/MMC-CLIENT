@@ -434,7 +434,7 @@ const clickToggleViewMode = () => {
     default:
       store.state.events_view_mode = 'all'
   }
-  console.log(name + `: clickToggleViewMode ${store.state.events_view_mode}`)
+  //console.log(name + `: clickToggleViewMode ${store.state.events_view_mode}`)
   update_events_table()
 }
 
