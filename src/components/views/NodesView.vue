@@ -4,7 +4,7 @@
       <div class="text-h6">Nodes View</div>
       <template v-slot:action>
         view mode
-        <q-btn class="q-mx-xs q-my-none" size="sm" color="info" :label=viewMode  no-caps
+        <q-btn class="q-mx-xs q-my-none" size="sm" color="info" :label=store.state.nodes_view_mode  no-caps
             @click="clickViewMode()" />
         <q-space/>
         <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
@@ -82,7 +82,7 @@
       />
 
 
-      <EventsListByNode v-if="((selected_node_valid == true) && (viewMode=='split'))"
+      <EventsListByNode v-if="((selected_node_valid == true) && (store.state.nodes_view_mode=='split'))"
         :nodeNumber = store.state.selected_node
       />
 
@@ -175,9 +175,6 @@ const WaitingOnBusTrafficMessage = ref('')
 const WaitingOnBusTrafficDialogReturn = ref('')
 const tableStyle = ref("nodes-view-split-table")
 
-const viewMode = ref("split")
-
-
 const nodesUpdated = computed(() => {
   return store.state.nodes.updateTimestamp
 })
@@ -240,6 +237,14 @@ const nodeColour = (nodeNumber) => {
 
 onBeforeMount(() => {
   //console.log(name + `: onBeforeMount`)
+  if (store.state.nodes_view_mode == undefined){
+    store.state.nodes_view_mode = "split"
+  }
+  if (store.state.nodes_view_mode == 'split'){
+    tableStyle.value = "nodes-view-split-table"
+  } else {
+    tableStyle.value = "nodes-view-full-table"
+  }
  update_rows()
 })
 
@@ -377,7 +382,7 @@ const clickEvents = async (nodeNumber) => {
   await checkNodeVariables(nodeNumber)
   store.methods.request_all_node_events(nodeNumber)
   await select_node_row(nodeNumber)
-  if (viewMode.value == 'full'){
+  if (store.state.nodes_view_mode == 'full'){
     showNodeEventsDialog.value = true
   }
 }
@@ -385,9 +390,9 @@ const clickEvents = async (nodeNumber) => {
 //
 //
 const clickViewMode = () => {
-  console.log(name + `: clickViewMode ${viewMode.value}`)
-  viewMode.value = (viewMode.value == 'full') ? 'split' : 'full'
-  if (viewMode.value == 'split'){
+  console.log(name + `: clickViewMode ${store.state.nodes_view_mode}`)
+  store.state.nodes_view_mode = (store.state.nodes_view_mode == 'full') ? 'split' : 'full'
+  if (store.state.nodes_view_mode == 'split'){
     tableStyle.value = "nodes-view-split-table"
   } else {
     tableStyle.value = "nodes-view-full-table"

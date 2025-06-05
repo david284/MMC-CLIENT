@@ -33,6 +33,7 @@ const state = reactive({
   nodeDescriptorList: {},
   nodes: {},
   nodeTraffic: [],
+  nodes_view_mode: 'split',
   restoredData: {},
   server: { "nodes":{} },
   selected_node: 0,
