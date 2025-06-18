@@ -7,7 +7,7 @@
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
           <div class="text-h6">
-            Restore Node: {{ store.getters.node_name(nodeNumber) }} 
+            Restore Node: {{ store.getters.node_name(nodeNumber) }}
           </div>
           <template v-slot:action>
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
@@ -51,7 +51,7 @@
                   @click="clickDelete(props.value)" no-caps />
                 </q-td>
               </template>
-            </q-table>          
+            </q-table>
           </q-card-section>
         </q-card>
 
@@ -350,10 +350,10 @@ const clickDelete = (fileName) => {
     position: 'center',
     color: 'primary',
     actions: [
-      { label: 'YES', color: 'white', handler: async () => { 
+      { label: 'YES', color: 'white', handler: async () => {
         store.methods.delete_node_backup(
-          store.state.layout.layoutDetails.title, 
-          props.nodeNumber, 
+          store.state.layout.layoutDetails.title,
+          props.nodeNumber,
           fileName)
         await sleep(50)     // allow a bit of a delay for the change
         store.methods.request_node_backups_list(store.state.layout.layoutDetails.title, props.nodeNumber)
@@ -373,13 +373,17 @@ const clickRestore = async (row) => {
     restoreStatus.value = "restore in progress"
     await restoreNodeVariables()
     await restoreEvents()
+    // now lets reset the node
+    restoreStatus.value = "node reset"
+    store.methods.reset_node(props.nodeNumber)
+    await sleep(300)
     // now lets refresh all node variables
     store.methods.request_all_node_variables(
       props.nodeNumber,
       store.state.nodes[props.nodeNumber].parameters[6]
     )
     await sleep(1000)
-    // now lets refresh all events 
+    // now lets refresh all events
     store.methods.request_all_node_events(props.nodeNumber)
     restoreStatus.value = "restore complete\n(select a backup to run again)"
   } else {
