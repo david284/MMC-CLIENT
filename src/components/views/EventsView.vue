@@ -16,6 +16,9 @@
         </q-input>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <q-space/>
+        <q-btn class="q-mx-xs q-my-none" size="sm" color="blue" label="Delete Unused"
+          @click="clickDeleteUnused()" />
+        <q-space/>
         <q-btn class="q-mx-xs q-my-none" size="sm" color="blue" label="SCAN NODES"  no-caps
           @click="clickScanNodes()" />
        <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
@@ -337,6 +340,38 @@ const clickDelete = (eventIdentifier) => {
       { label: 'YES', color: 'white', handler: async () => {
         delete store.state.layout.eventDetails[eventIdentifier]
         store.state.update_layout_needed = true
+        update_events_table()
+      } },
+      { label: 'NO', color: 'white', handler: () => { /* ... */ } }
+    ]
+  })
+}
+
+const clickDeleteUnused = (eventIdentifier) => {
+  console.log(name + `: clickDeleteUnused`)
+  const result = $q.notify({
+    message: 'Continue with delete?',
+    caption: 'To be deleted, events must have no linked nodes and also no user provided name',
+    timeout: 0,
+    position: 'center',
+    color: 'primary',
+    actions: [
+      { label: 'YES', color: 'white', handler: async () => {
+        let events = store.state.layout.eventDetails
+        let count = 0
+        // order by eventIdentifier
+        for (let eventIdentifier of Object.keys(events).sort()) {
+          var nodeNumber = parseInt(eventIdentifier.substring(0, 4), 16)
+          if (store.state.layout.eventDetails[eventIdentifier].name.length == 0) {
+            if (getLinkedNodesCount(eventIdentifier) == 0){
+              console.log(name + `: ${eventIdentifier} ${store.getters.event_name(eventIdentifier)}`)
+              count++
+              delete store.state.layout.eventDetails[eventIdentifier]
+              store.state.update_layout_needed = true
+            }
+          }
+        }
+        console.log(name + `: events deleted ${count}`)
         update_events_table()
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
