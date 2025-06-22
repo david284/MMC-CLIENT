@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model='model' persistent full-width full-height position="right"> 
+  <q-dialog v-model='model' persistent full-width full-height position="right">
     <q-card class="q-pa-none q-ml-xl">
 
       <q-card-section class="q-pa-none q-ma-none">
@@ -8,17 +8,18 @@
             Node Variables for node :  {{ store.getters.node_name(nodeNumber) }}
           </div>
           <template v-slot:action>
-            <q-btn color="cyan-1" size="sm" text-color="black" 
+            <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="channel names" @click="clickChannelNames()"/>
+            <q-btn color="cyan-1" size="sm" text-color="black"
               label="manage Module Descriptor" @click="clickManageModuleDescriptor()"/>
-              <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
-              <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+            <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
+            <q-btn flat color="white" size="md" label="Close" v-close-popup/>
           </template>
         </q-banner>
       </q-card-section>
 
       <q-card class="q-pa-none q-ma-none">
         <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
-  
+
           <q-card-section class="q-pa-none q-ma-none">
             <div class="text-h6" v-if="showDescriptorWarning">
               *** Descriptor not loaded for this node ***
@@ -27,7 +28,7 @@
               this node has no variables to display
             </div>
           </q-card-section>
- 
+
           <q-card-section class="q-pa-none q-ma-none text-h6" v-if="nodeVariableInformation">
             {{ nodeVariableInformation }}
           </q-card-section>
@@ -69,6 +70,10 @@
     :nodeNumber = nodeNumber
   />
 
+  <NodeChannelNamesDialog v-model="showNodeChannelNamesDialog"
+    :nodeNumber = nodeNumber
+  />
+
   <WaitingOnBusTrafficDialog v-model='showWaitOnBusTrafficDialog'
     callingModule = "Node Variables"
     message = "Waiting on Node Variables"
@@ -91,10 +96,11 @@ and then only made visible when this dialog is selected for a specific node
 
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
 import { useQuasar } from 'quasar'
-import NodeVariables from "components/modules/common/NodeVariables"
-import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
-import NodeRawVariables from "components/modules/common/NodeRawVariables"
 import MDFDialog from "components/dialogs/MDFDialog";
+import NodeChannelNamesDialog from "./NodeChannelNamesDialog.vue";
+import NodeVariables from "components/modules/common/NodeVariables"
+import NodeRawVariables from "components/modules/common/NodeRawVariables"
+import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
 import { sleep } from "../functions/utils";
 
 const $q = useQuasar()
@@ -103,6 +109,7 @@ const name = "NodevariablesDialog"
 
 const showDescriptorWarning = ref(false)
 const showMDFDialog = ref(false)
+const showNodeChannelNamesDialog = ref(false)
 const showWaitOnBusTrafficDialog = ref(false)
 const showNoVariablesMessage = ref(false)
 const showRawVariables = ref(false)
@@ -188,6 +195,11 @@ Click event handlers
 
 const clickClose = () => {
   console.log(name + `: clickClose`)
+}
+
+const clickChannelNames = () => {
+  console.log(name + `: clickChannelNames`)
+  showNodeChannelNamesDialog.value = true
 }
 
 const clickManageModuleDescriptor = () => {
