@@ -1,20 +1,46 @@
 <template>
 
   <q-dialog v-model="model" persistent>
-    <q-card style="min-width: 350px">
+    <q-card style="min-width: 500px">
 
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
-          Edit channel names for :  {{ nodeNumber }}
+          Edit channel names for :  {{ store.getters.node_name(nodeNumber) }}
         </div>
         <template v-slot:action>
           <q-btn flat color="white" size="md" label="Close" v-close-popup/>
         </template>
       </q-banner>
 
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Accept" v-close-popup @click="clickAccept()"/>
-      </q-card-actions>
+      <q-card-section class="no-margin q-py-none-xs">
+
+        <q-table
+          flat bordered
+          dense
+          :rows="teRows"
+          :columns="teColumns"
+          row-key="channelNumber"
+          hide-bottom
+          virtual-scroll
+          :rows-per-page-options="[0]"
+          :virtual-scroll-sticky-size-start="0"
+          >
+
+          <template v-slot:body="props">
+            <q-tr :props="props" class="q-my-none q-py-none">
+              <q-td key="channelNumber" :props="props">{{ props.row.channelNumber }}</q-td>
+              <q-td key="name" :props="props">
+                {{ props.row.name }}
+                <q-popup-edit v-model="props.row.name" v-slot="scope">
+                  <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
+                </q-popup-edit>
+              </q-td>
+
+            </q-tr>
+          </template>
+        </q-table>
+
+      </q-card-section>
 
     </q-card>
   </q-dialog>
@@ -31,7 +57,8 @@ const name = "NodeChannelNamesDialog"
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
-  nodeNumber: { type:Number, required: true }
+  nodeNumber: { type:Number, required: true },
+  numberOfChannels: { type:Number, required: true }
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -41,9 +68,26 @@ const model = computed({
       set(newValue) { emit('update:modelValue', newValue) }
     })
 
+const teRows = ref([])
+
+const teColumns = [
+  {name: 'channelNumber', field: 'channelNumber', required: true, label: 'Channel Number', align: 'left', sortable: true},
+  {name: 'name', field: 'name', required: true, label: 'Name (click to edit)', align: 'left', sortable: true}
+]
+
+const update_table = async () => {
+  teRows.value = []
+  for (let i=1; i <=props.numberOfChannels; i++){
+    teRows.value.push({
+      "channelNumber" : i,
+      "name" : "test"
+    })
+  }
+}
 
 onUpdated(() => {
 //  console.log("NameNodeDialog onUpdated")
+  update_table()
 })
 
 /*/////////////////////////////////////////////////////////////////////////////

@@ -8,7 +8,8 @@
             Node Variables for node :  {{ store.getters.node_name(nodeNumber) }}
           </div>
           <template v-slot:action>
-            <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="channel names" @click="clickChannelNames()"/>
+            <q-btn v-if="(!numberOfChannels==0)" class="q-mx-xs q-my-none" color="blue" size="sm"
+              label="channel names" @click="clickChannelNames()"/>
             <q-btn color="cyan-1" size="sm" text-color="black"
               label="manage Module Descriptor" @click="clickManageModuleDescriptor()"/>
             <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
@@ -71,7 +72,8 @@
   />
 
   <NodeChannelNamesDialog v-model="showNodeChannelNamesDialog"
-    :nodeNumber = nodeNumber
+    :nodeNumber=nodeNumber
+    :numberOfChannels=numberOfChannels
   />
 
   <WaitingOnBusTrafficDialog v-model='showWaitOnBusTrafficDialog'
@@ -115,6 +117,7 @@ const showNoVariablesMessage = ref(false)
 const showRawVariables = ref(false)
 const showVariableDescriptor = ref(false)
 const nodeVariableInformation = ref()
+const numberOfChannels=ref(0)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -161,6 +164,12 @@ watch(variablesDescriptor, () => {
   } else {
     showDescriptorWarning.value = false
     nodeVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation
+    if (store.state.nodeDescriptors[props.nodeNumber].numberOfChannels != undefined){
+      numberOfChannels.value = store.state.nodeDescriptors[props.nodeNumber].numberOfChannels
+      console.log(name + `: watch: ${JSON.stringify(store.state.nodeDescriptors[props.nodeNumber])}`)
+    } else{
+      numberOfChannels.value = 0
+    }
   }
 })
 
@@ -198,8 +207,10 @@ const clickClose = () => {
 }
 
 const clickChannelNames = () => {
-  console.log(name + `: clickChannelNames`)
-  showNodeChannelNamesDialog.value = true
+  console.log(name + `: clickChannelNames: number ${numberOfChannels.value}`)
+  if (numberOfChannels.value > 0){
+    showNodeChannelNamesDialog.value = true
+  }
 }
 
 const clickManageModuleDescriptor = () => {
