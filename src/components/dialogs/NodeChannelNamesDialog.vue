@@ -90,13 +90,14 @@ const update_table = async () => {
   for (let i=1; i <=props.numberOfChannels; i++){
     teRows.value.push({
       "channelNumber" : i,
-      "name" : "test"
+      "name" : store.getters.node_channel_name(props.nodeNumber, i)
     })
   }
 }
 
 const nameChanged = (channelName, channelNumber) => {
-  console.log(name + `: nameChanged: ${channelNumber} ${JSON.stringify(channelName)}`)
+  console.log(name + `: nameChanged: ${channelNumber} ${channelName}`)
+  store.setters.node_channel_name(props.nodeNumber, channelNumber, channelName)
 }
 
 

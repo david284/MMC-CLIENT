@@ -458,25 +458,16 @@ const getters = {
   },
   node_name(nodeNumber){
     try{
-      if (nodeNumber in state.layout.nodeDetails == false){
-        state.layout.nodeDetails[nodeNumber] = {}
-        state.layout.nodeDetails[nodeNumber].name = undefined
-        state.layout.nodeDetails[nodeNumber].colour = "black"
-        state.layout.nodeDetails[nodeNumber].group = ""
-        state.update_layout_needed = true
-      }
-      if (state.layout.nodeDetails[nodeNumber].name == undefined){
-        try{
-          return state.nodes[nodeNumber].moduleName + ' (' + nodeNumber.toString() + ')'
-        } catch {
-          return 'Unrecognised module (' + nodeNumber.toString() + ')'
-        }
-      } else {
-        return state.layout.nodeDetails[nodeNumber].name
-      }
     } catch (err) {
       console.log(name + `: getters.node_name: ${err}`)
       return "error"
+    }
+  },
+  node_channel_name(nodeNumber, channelNumber){
+    try{
+      return state.layout.nodeDetails[nodeNumber].channels[channelNumber].channelName
+    } catch (err) {
+      return "channel " + channelNumber
     }
   },
   node_group(nodeNumber){
@@ -581,6 +572,16 @@ const setters = {
         }
       }
     }
+  },
+  node_channel_name(nodeNumber, channelNumber, channelName){
+    if (nodeNumber in state.layout.nodeDetails === false){
+      setters.addNodeToLayout(nodeNumber)
+    }
+    if (state.layout.nodeDetails[nodeNumber].channels == undefined){
+      state.layout.nodeDetails[nodeNumber].channels = []
+    }
+    state.layout.nodeDetails[nodeNumber].channels[channelNumber] = {channelName: channelName}
+    state.update_layout_needed = true
   },
   node_group(nodeNumber, Group){
     if (nodeNumber in state.layout.nodeDetails === false){
