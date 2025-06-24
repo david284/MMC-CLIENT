@@ -81,6 +81,8 @@ Click event handlers
 const clickExport = async (filename) => {
   console.log(name + `: clickExport`)
 
+  // Events
+  //
   let eventDetails = store.state.layout.eventDetails
   let longEvents = []
   let shortEvents = []
@@ -101,33 +103,55 @@ const clickExport = async (filename) => {
     }
   }
 
+  // Nodes
+  //
   let nodeDetails = store.state.layout.nodeDetails
+  let channels = []
   let nodes = []
   for (let nodeNumber of Object.keys(nodeDetails).sort()) {
     let output = []
     output['nodeName'] = nodeDetails[nodeNumber].name ? nodeDetails[nodeNumber].name : ''
-    output['moduleName'] = nodeDetails[nodeNumber].moduleName    
+    output['moduleName'] = nodeDetails[nodeNumber].moduleName
     output['nodeNumber'] = parseInt(nodeNumber)
     output['nodeGroup'] = nodeDetails[nodeNumber].group
     nodes.push(output)
+    if (nodeDetails[nodeNumber].channels){
+      for (let i=1; i<nodeDetails[nodeNumber].channels.length; i++){
+        let channelOutput = []
+        channelOutput['channelName'] = nodeDetails[nodeNumber].channels[i].channelName
+        channelOutput['nodeName'] = nodeDetails[nodeNumber].name ? nodeDetails[nodeNumber].name : ''
+        channelOutput['nodeNumber'] = parseInt(nodeNumber)
+        channelOutput['channelNumber'] = i
+        channels.push(channelOutput)
+      }
+    }
   }
-  const longEventsWorksheet = xlsx.utils.json_to_sheet(longEvents);
-  const shortEventsWorksheet = xlsx.utils.json_to_sheet(shortEvents);
-  /* calculate column width */
-  const long_events_max_width = longEvents.reduce((w, r) => Math.max(w, r.eventName.length), 20);
-  longEventsWorksheet["!cols"] = [ { wch: long_events_max_width + 5 }, { wch: 20 }, { wch: 20 }, { wch: 20 } ];
-  const short_events_max_width = shortEvents.reduce((w, r) => Math.max(w, r.eventName.length), 20);
-  shortEventsWorksheet["!cols"] = [ { wch: short_events_max_width + 5 }, { wch: 20 }, { wch: 20 }, { wch: 20 } ];
-  
+
   const nodesWorksheet = xlsx.utils.json_to_sheet(nodes);
   /* calculate column width */
   const nodes_max_width = nodes.reduce((w, r) => Math.max(w, r.nodeName.length), 20);
   nodesWorksheet["!cols"] = [ { wch: nodes_max_width + 5 }, { wch: 20 }, { wch: 20 }, { wch: 20 } ];
-  
+
+  const longEventsWorksheet = xlsx.utils.json_to_sheet(longEvents);
+  /* calculate column width */
+  const long_events_max_width = longEvents.reduce((w, r) => Math.max(w, r.eventName.length), 20);
+  longEventsWorksheet["!cols"] = [ { wch: long_events_max_width + 5 }, { wch: 20 }, { wch: 20 }, { wch: 20 } ];
+
+  const shortEventsWorksheet = xlsx.utils.json_to_sheet(shortEvents);
+  /* calculate column width */
+  const short_events_max_width = shortEvents.reduce((w, r) => Math.max(w, r.eventName.length), 20);
+  shortEventsWorksheet["!cols"] = [ { wch: short_events_max_width + 5 }, { wch: 20 }, { wch: 20 }, { wch: 20 } ];
+
+  const channelsWorksheet = xlsx.utils.json_to_sheet(channels);
+  /* calculate column width */
+  const channels_max_width = channels.reduce((w, r) => Math.max(w, r.channelName.length), 20);
+  channelsWorksheet["!cols"] = [ { wch: channels_max_width + 5 }, { wch: 20 }, { wch: 20 }, { wch: 20 } ];
+
   const workbook = xlsx.utils.book_new();
   xlsx.utils.book_append_sheet(workbook, nodesWorksheet, "Nodes");
   xlsx.utils.book_append_sheet(workbook, longEventsWorksheet, "Long_Events");
   xlsx.utils.book_append_sheet(workbook, shortEventsWorksheet, "Short_Events");
+  xlsx.utils.book_append_sheet(workbook, channelsWorksheet, "Channels");
 
   const fileName = store.state.layout.layoutDetails.title + ' export '+createDateStamp() + '.ods'
   xlsx.writeFile(workbook, fileName, { bookType:'ods', compression: true, cellStyles: true });
