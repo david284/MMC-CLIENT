@@ -116,13 +116,15 @@ const clickExport = async (filename) => {
     output['nodeGroup'] = nodeDetails[nodeNumber].group
     nodes.push(output)
     if (nodeDetails[nodeNumber].channels){
-      for (let i=1; i<nodeDetails[nodeNumber].channels.length; i++){
-        let channelOutput = []
-        channelOutput['channelName'] = nodeDetails[nodeNumber].channels[i].channelName
-        channelOutput['nodeName'] = nodeDetails[nodeNumber].name ? nodeDetails[nodeNumber].name : ''
-        channelOutput['nodeNumber'] = parseInt(nodeNumber)
-        channelOutput['channelNumber'] = i
-        channels.push(channelOutput)
+      for (let channelNumber of Object.keys(nodeDetails[nodeNumber].channels).sort()) {
+        try{
+          let channelOutput = []
+          channelOutput['channelName'] = nodeDetails[nodeNumber].channels[channelNumber].channelName
+          channelOutput['nodeName'] = nodeDetails[nodeNumber].name ? nodeDetails[nodeNumber].name : ''
+          channelOutput['nodeNumber'] = parseInt(nodeNumber)
+          channelOutput['channelNumber'] = channelNumber
+          channels.push(channelOutput)
+        } catch(err){}
       }
     }
   }
