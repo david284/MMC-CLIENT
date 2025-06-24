@@ -14,14 +14,14 @@ export function importFCU(file, store, modeValue) {
   try{
     fcuConfig = convert.xml2js(file, { compact: true })
   } catch (err){
-    console.log(name + ': ImportFCU: convert.xml2js: ' + err )        
+    console.log(name + ': ImportFCU: convert.xml2js: ' + err )
     throw "convert.xml2js: " + err;
   }
-  //console.log(name + `: ImportFCU: ${JSON.stringify(fcuConfig)}` )    
+  //console.log(name + `: ImportFCU: ${JSON.stringify(fcuConfig)}` )
   //
   // import nodes
   try {
-    if (Array.isArray(fcuConfig.MergModuleDataSet.userNodes)) {    
+    if (Array.isArray(fcuConfig.MergModuleDataSet.userNodes)) {
       fcuConfig.MergModuleDataSet.userNodes.forEach( node => {
         addNodeName(store, parseInt(node.nodeNum._text), node.nodeName._text, modeValue)
         addNodeModulename(store, parseInt(node.nodeNum._text), node.moduleName._text, modeValue)
@@ -32,13 +32,13 @@ export function importFCU(file, store, modeValue) {
       addNodeModulename(store, parseInt(node.nodeNum._text), node.moduleName._text, modeValue)
     }
   } catch (err) {
-    console.log(name + ': ImportFCU: userNodes ' + err )    
+    console.log(name + ': ImportFCU: userNodes ' + err )
   }
   //
   // import events
   let eventRows = []
   try {
-    if (Array.isArray(fcuConfig.MergModuleDataSet.userEvents)) {    
+    if (Array.isArray(fcuConfig.MergModuleDataSet.userEvents)) {
       fcuConfig.MergModuleDataSet.userEvents.forEach( event => {
         if (event.eventValue._text !=0){
           addEventName(store, event.eventNode._text, event.eventValue._text, event.eventName._text, modeValue)
@@ -49,7 +49,7 @@ export function importFCU(file, store, modeValue) {
       addEventName(store, event.eventNode._text, event.eventValue._text, event.eventName._text, modeValue)
     }
   } catch (err){
-    console.log(name + ': ImportFCU: userEvents ' + err )        
+    console.log(name + ': ImportFCU: userEvents ' + err )
   }
 };
 
@@ -58,7 +58,8 @@ export function importFCU(file, store, modeValue) {
 export function importSPREADSHEET(file, store, modeValue) {
   console.log(name + ': importSPREADSHEET: file size ' + file.byteLength)
   let importedEvents = {}
-  let importedNodes = {}        
+  let importedNodes = {}
+  let importedChannels = {}
   try{
     const workbook = XLSX.read(file,{'type':'binary'});
     if (workbook.Workbook != undefined){
@@ -69,8 +70,8 @@ export function importSPREADSHEET(file, store, modeValue) {
           console.log (name + "importSPREADSHEET: workbook number of Short Events imported: " + importedEvents.length)
           for ( let j=0; j < importedEvents.length; j++) {
             if (importedEvents[j].eventNumber != undefined){
-              console.log (name + `importSPREADSHEET: workbook events: 
-                ${importedEvents[j].eventName}  
+              console.log (name + `importSPREADSHEET: workbook events:
+                ${importedEvents[j].eventName}
                 ${importedEvents[j].eventNumber}`)
             }
             addEventName(store, 0, importedEvents[j].eventNumber, importedEvents[j].eventName, modeValue)
@@ -82,8 +83,8 @@ export function importSPREADSHEET(file, store, modeValue) {
           console.log (name + "importSPREADSHEET: workbook number of Long Events imported: " + importedEvents.length)
           for ( let j=0; j < importedEvents.length; j++) {
             if (importedEvents[j].eventNumber != undefined){
-              console.log (name + `importSPREADSHEET: workbook events: 
-                ${importedEvents[j].eventName}  
+              console.log (name + `importSPREADSHEET: workbook events:
+                ${importedEvents[j].eventName}
                 ${importedEvents[j].eventNodeNumber}:${importedEvents[j].eventNumber}`)
             }
             addEventName(store, importedEvents[j].eventNodeNumber, importedEvents[j].eventNumber, importedEvents[j].eventName, modeValue)
@@ -91,7 +92,7 @@ export function importSPREADSHEET(file, store, modeValue) {
           }
         }
         if (workbook.SheetNames[i].toUpperCase() == "NODES"){
-          importedNodes = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])   
+          importedNodes = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
           console.log (name + "importSPREADSHEET: workbook number of Nodes imported: " + importedNodes.length)
           for ( let j=0; j < importedNodes.length; j++) {
             if(importedNodes[j].nodeNumber != undefined){
@@ -99,6 +100,16 @@ export function importSPREADSHEET(file, store, modeValue) {
               addNodeName(store, importedNodes[j].nodeNumber, importedNodes[j].nodeName, modeValue)
               addNodeGroup(store, importedNodes[j].nodeNumber, importedNodes[j].nodeGroup, modeValue)
               addNodeModulename(store, importedNodes[j].nodeNumber, importedNodes[j].moduleName, modeValue)
+            }
+          }
+        }
+        if (workbook.SheetNames[i].toUpperCase() == "CHANNELS"){
+          importedChannels = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
+          console.log (name + "importSPREADSHEET: workbook number of Channels imported: " + importedChannels.length)
+          for ( let j=0; j < importedChannels.length; j++) {
+            if(importedChannels[j].channelNumber != undefined){
+              console.log (name + `importSPREADSHEET: workbook Channels: channel ${importedChannels[j].channelNumber} ${importedChannels[j].channelName}`)
+              addNodeChannelName(store, importedChannels[j].nodeNumber, importedChannels[j].channelNumber, importedChannels[j].channelName, modeValue)
             }
           }
         }
@@ -249,3 +260,25 @@ function addNodeModulename(store, nodeNumber, moduleName, modeValue){
     }
   }
 }
+
+function addNodeChannelName(store, nodeNumber, channelNumber, channelName, modeValue){
+  let existingChannelName = null
+  try {
+    existingChannelName = store.state.layout.nodeDetails[nodeNumber].channels[channelNumber].channelName
+  } catch {}
+  if (existingChannelName == null){
+    console.log('node ' + nodeNumber + ": channelName: " + channelName + " ChannelName not found - updated")
+    store.setters.node_channel_name(nodeNumber, channelNumber, channelName)
+  } else if (existingChannelName == channelName){
+    console.log('node ' + nodeNumber + ": channelName: " + channelName + " ChannelName match - do nothing")
+  } else {
+    // stored channel name doesn't match import channel name
+    if (modeValue == "overwrite"){
+      console.log('node ' + nodeNumber + ": channelName: " + channelName + " no match - overwrite")
+      store.setters.node_channel_name(nodeNumber, channelNumber, channelName)
+    } else {
+      console.log('node ' + nodeNumber + ": channelName: " + channelName + " no match - retain")
+    }
+  }
+}
+
