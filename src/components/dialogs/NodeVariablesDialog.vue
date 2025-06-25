@@ -134,12 +134,12 @@ const model = computed({
 
 watch(model, async () => {
   //console.log(name + `: WATCH model`)
-  showRawVariables.value = false
   showVariableDescriptor.value = false
   if (variablesDescriptor.value == undefined){
     showRawVariables.value = true
     showDescriptorWarning.value = true
   } else {
+    showRawVariables.value = false
     showDescriptorWarning.value = false
   }
   try {
