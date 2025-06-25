@@ -591,6 +591,9 @@ const setters = {
     }
   },
   node_channel_name(nodeNumber, channelNumber, channelName){
+    if (typeof channelNumber === 'string'){
+      channelNumber = parseInt(channelNumber)
+    }
     if (nodeNumber in state.layout.nodeDetails === false){
       setters.addNodeToLayout(nodeNumber)
     }

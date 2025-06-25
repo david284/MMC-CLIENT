@@ -3,11 +3,29 @@ const name = "utils"
 
 
 //
+// usage: import {replaceChannelTokens} from "components/functions/utils.js"
+//
+// Method:
+//   find each instance of channel token and extract channel number
+//   Replace with channel name for that node & channel
+//
+export function replaceChannelTokens(jsonObj, nodeNumber) {
+  let jsonString = JSON.stringify(jsonObj)
+  var index = 0;
+  var token = ""
+  while(index = jsonString.indexOf(token, index) > 0) {
+    console.log("index ")
+  }
+	return jsonObj
+}
+
+
+//
 // usage: import {sleep} from "components/functions/utils.js"
 //
 export function sleep(timeout) {
 	return new Promise(function (resolve, reject) {
-		//here our function should be implemented 
+		//here our function should be implemented
 		setTimeout(()=>{
 			resolve();
 			;} , timeout
@@ -21,7 +39,7 @@ export function sleep(timeout) {
 //
 export function secondsNow() {
   var time = new Date()
-  var timeStamp = String( String(time.getSeconds()).padStart(2, '0') + '.' 
+  var timeStamp = String( String(time.getSeconds()).padStart(2, '0') + '.'
     + String(time.getMilliseconds()).padStart(3, '0'))
 	return timeStamp
 }

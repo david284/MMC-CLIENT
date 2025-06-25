@@ -108,7 +108,7 @@ const clickExport = async (filename) => {
   let nodeDetails = store.state.layout.nodeDetails
   let channels = []
   let nodes = []
-  for (let nodeNumber of Object.keys(nodeDetails).sort()) {
+  for (let nodeNumber of Object.keys(nodeDetails).sort(function(a, b){return a - b})) {
     let output = []
     output['nodeName'] = nodeDetails[nodeNumber].name ? nodeDetails[nodeNumber].name : ''
     output['moduleName'] = nodeDetails[nodeNumber].moduleName
@@ -116,13 +116,13 @@ const clickExport = async (filename) => {
     output['nodeGroup'] = nodeDetails[nodeNumber].group
     nodes.push(output)
     if (nodeDetails[nodeNumber].channels){
-      for (let channelNumber of Object.keys(nodeDetails[nodeNumber].channels).sort()) {
+      for (let channelNumber of Object.keys(nodeDetails[nodeNumber].channels).sort(function(a, b){return a - b})) {
         try{
           let channelOutput = []
           channelOutput['channelName'] = nodeDetails[nodeNumber].channels[channelNumber].channelName
           channelOutput['nodeName'] = nodeDetails[nodeNumber].name ? nodeDetails[nodeNumber].name : ''
           channelOutput['nodeNumber'] = parseInt(nodeNumber)
-          channelOutput['channelNumber'] = channelNumber
+          channelOutput['channelNumber'] = parseInt(channelNumber)
           channels.push(channelOutput)
         } catch(err){}
       }
