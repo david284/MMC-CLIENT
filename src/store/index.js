@@ -465,7 +465,8 @@ const getters = {
         state.layout.nodeDetails[nodeNumber].group = ""
         state.update_layout_needed = true
       }
-      if (state.layout.nodeDetails[nodeNumber].name == undefined){
+      if ((state.layout.nodeDetails[nodeNumber].name == undefined) ||
+        (state.layout.nodeDetails[nodeNumber].name.length == 0) ){
         try{
           return state.nodes[nodeNumber].moduleName + ' (' + nodeNumber.toString() + ')'
         } catch {
