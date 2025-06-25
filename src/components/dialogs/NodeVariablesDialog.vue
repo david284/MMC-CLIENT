@@ -133,7 +133,7 @@ const model = computed({
     })
 
 watch(model, async () => {
-//  console.log(name + `: WATCH model`)
+  //console.log(name + `: WATCH model`)
   showRawVariables.value = false
   showVariableDescriptor.value = false
   if (variablesDescriptor.value == undefined){
@@ -141,6 +141,11 @@ watch(model, async () => {
     showDescriptorWarning.value = true
   } else {
     showDescriptorWarning.value = false
+  }
+  try {
+    numberOfChannels.value = store.state.nodeDescriptors[props.nodeNumber].numberOfChannels
+  } catch {
+    numberOfChannels.value = 0
   }
 })
 
@@ -157,19 +162,18 @@ const variablesDescriptor = computed(() =>{
 })
 
 watch(variablesDescriptor, () => {
-//  console.log(name + `: WATCH variablesDescriptor`)
+  //console.log(name + `: WATCH variablesDescriptor`)
   if (variablesDescriptor.value == undefined){
     showRawVariables.value = true
     showDescriptorWarning.value = true
   } else {
     showDescriptorWarning.value = false
     nodeVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation
-    if (store.state.nodeDescriptors[props.nodeNumber].numberOfChannels != undefined){
-      numberOfChannels.value = store.state.nodeDescriptors[props.nodeNumber].numberOfChannels
-      console.log(name + `: watch: ${JSON.stringify(store.state.nodeDescriptors[props.nodeNumber])}`)
-    } else{
-      numberOfChannels.value = 0
-    }
+  }
+  try {
+    numberOfChannels.value = store.state.nodeDescriptors[props.nodeNumber].numberOfChannels
+  } catch {
+    numberOfChannels.value = 0
   }
 })
 
