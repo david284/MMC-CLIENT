@@ -1,4 +1,3 @@
-
 const name = "utils"
 
 
@@ -9,14 +8,47 @@ const name = "utils"
 //   find each instance of channel token and extract channel number
 //   Replace with channel name for that node & channel
 //
-export function replaceChannelTokens(jsonObj, nodeNumber) {
+export function replaceChannelTokens(store, jsonObj, nodeNumber) {
   let jsonString = JSON.stringify(jsonObj)
-  var index = 0;
-  var token = ""
-  while(index = jsonString.indexOf(token, index) > 0) {
-    console.log("index ")
+  let result = null
+  var searchIndex = 0
+  var indexTokenStart = 0;
+  var startToken = "${channel"
+  var endToken = "}"
+  while((indexTokenStart = jsonString.toLowerCase().indexOf(startToken, searchIndex)) > 0) {
+    searchIndex = indexTokenStart + 1
+    // look for next '}'
+    // it's not valid JSON if there isn't a final '}', so should always get a value for this
+    let indexTokenEnd = jsonString.indexOf(endToken, indexTokenStart)
+    //
+    // check that the next '}' is in the actual field, which should be contained within quote marks
+    // so look for next string quote mark, as that should be the end of the token value
+    let endOfField = jsonString.indexOf('"', searchIndex)
+    if (endOfField > 0){
+      // if quote mark is before this ending char, then ending char missing, so skip
+      // if endOfField == -1, then not found, so don't run this test (should never happen)
+      if (indexTokenEnd > endOfField) {
+        console.log(name + `: missing ending token - skipping ${indexTokenEnd} ${endOfField}` )
+        continue
+      }
+    }
+    // ok, if we get here, then we must have a valid token sequence
+    let channelToken = jsonString.substring(indexTokenStart, indexTokenEnd + 1)
+    // extract channel number
+    let channelNumber = channelToken.replace(/[^0-9]/g, "")
+    // get channel name
+    let channelName = store.getters.node_channel_name(nodeNumber, channelNumber)
+    //console.log(name + ":channelName " + channelName)
+    // now replace full token with channel Name
+    console.log(name + ":replace " + channelToken + ' with '+ channelName)
+    jsonString = jsonString.replace(channelToken, channelName)
   }
-	return jsonObj
+  try{
+    result = JSON.parse(jsonString)
+  } catch(err) {
+    console.log(name + ": replaceChannelTokens: " + err)
+  }
+	return result
 }
 
 

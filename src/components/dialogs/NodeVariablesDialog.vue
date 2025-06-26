@@ -35,7 +35,7 @@
           </q-card-section>
 
           <NodeVariables v-if="store.state.nodeDescriptors[props.nodeNumber]"
-            :configuration = store.state.nodeDescriptors[props.nodeNumber].nodeVariables
+            :configuration = processedNodeVariableDescriptor
           />
 
           <q-card-section class="q-pa-none" v-if="showRawVariables">
@@ -103,7 +103,8 @@ import NodeChannelNamesDialog from "./NodeChannelNamesDialog.vue";
 import NodeVariables from "components/modules/common/NodeVariables"
 import NodeRawVariables from "components/modules/common/NodeRawVariables"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
-import { sleep } from "../functions/utils";
+import { replaceChannelTokens } from "../functions/utils";
+
 
 const $q = useQuasar()
 const store = inject('store')
@@ -117,6 +118,7 @@ const showNoVariablesMessage = ref(false)
 const showRawVariables = ref(false)
 const showVariableDescriptor = ref(false)
 const nodeVariableInformation = ref()
+const processedNodeVariableDescriptor = ref()
 const numberOfChannels=ref(0)
 
 const props = defineProps({
@@ -141,12 +143,14 @@ watch(model, async () => {
   } else {
     showRawVariables.value = false
     showDescriptorWarning.value = false
+    processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
   }
   try {
     numberOfChannels.value = store.state.nodeDescriptors[props.nodeNumber].numberOfChannels
   } catch {
     numberOfChannels.value = 0
   }
+  console.log(name + `: WATCH model: ${JSON.stringify(processedNodeVariableDescriptor.value)}`)
 })
 
 
@@ -169,6 +173,7 @@ watch(variablesDescriptor, () => {
   } else {
     showDescriptorWarning.value = false
     nodeVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation
+    processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
   }
   try {
     numberOfChannels.value = store.state.nodeDescriptors[props.nodeNumber].numberOfChannels
