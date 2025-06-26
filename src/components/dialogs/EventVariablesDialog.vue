@@ -166,6 +166,13 @@ watch(model, () => {
   }
 })
 
+watch(showNodeChannelNamesDialog, () => {
+  try{
+    processedEventVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+  } catch {}
+})
+
+
 
 /*
 watch(props.nodeNumber, () => {

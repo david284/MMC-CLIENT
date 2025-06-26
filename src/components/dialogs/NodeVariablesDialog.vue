@@ -165,6 +165,12 @@ const variablesDescriptor = computed(() =>{
   return obj
 })
 
+watch(showNodeChannelNamesDialog, () => {
+  try{
+    processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+  } catch {}
+})
+
 watch(variablesDescriptor, () => {
   //console.log(name + `: WATCH variablesDescriptor`)
   if (variablesDescriptor.value == undefined){
