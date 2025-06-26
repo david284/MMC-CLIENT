@@ -12,6 +12,8 @@
             <!-- Event index: {{ storedEventsIndex }} -->
           </div>
           <template v-slot:action>
+            <q-btn v-if="(!numberOfChannels==0)" class="q-mx-xs q-my-none" color="blue" size="sm"
+              label="channel names" @click="clickChannelNames()"/>
             <q-btn color="cyan-1" size="sm" text-color="black"
               label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
             <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
@@ -34,13 +36,13 @@
           </q-card-section>
 
           <q-card-section class="text-h6" v-if="eventVariableInformation">
-            {{ eventVariableInformation }}
+            {{ processedEventVariableDescriptor }}
           </q-card-section>
 
           <div class="q-pa-xs row">
 
             <EventVariables v-if="store.state.nodeDescriptors[props.nodeNumber]"
-              :configuration = store.state.nodeDescriptors[props.nodeNumber].eventVariables
+              :configuration = processedEventVariableDescriptor
               :nodeNumber = props.nodeNumber
               :eventIdentifier = props.eventIdentifier>
             </EventVariables>
@@ -92,6 +94,11 @@
     :nodeNumber = nodeNumber
   />
 
+  <NodeChannelNamesDialog v-model="showNodeChannelNamesDialog"
+    :nodeNumber=nodeNumber
+    :numberOfChannels=numberOfChannels
+  />
+
   <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
     callingModule = "Event Variables"
     message = "Waiting for event variables loading"
@@ -110,8 +117,10 @@ import {createNewEvent} from "components/functions/EventFunctions.js"
 import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import EventVariables from "components/modules/common/EventVariables"
 import EventRawVariables from "components/modules/common/EventRawVariables"
+import NodeChannelNamesDialog from "./NodeChannelNamesDialog.vue";
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
 import MDFDialog from "components/dialogs/MDFDialog";
+import { replaceChannelTokens } from "../functions/utils";
 
 const $q = useQuasar()
 const store = inject('store')
@@ -120,11 +129,15 @@ const variablesDescriptor = ref()
 
 const showWaitingOnBusTrafficDialog = ref(false)
 const showRawVariables = ref(false)
+const showNodeChannelNamesDialog = ref(false)
 const showDescriptorWarning = ref(false)
 const showMDFDialog = ref(false)
 const showVariablesDescriptor = ref(false)
 const showStoredEventJSON = ref(false)
 const eventVariableInformation = ref()
+const processedEventVariableDescriptor = ref()
+const numberOfChannels=ref(0)
+
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -146,6 +159,11 @@ watch(model, () => {
   showRawVariables.value = false
   showVariablesDescriptor.value = false
 //  console.log(name + ': watch model: props: ' + JSON.stringify(props))
+  try {
+    numberOfChannels.value = store.state.nodeDescriptors[props.nodeNumber].numberOfChannels
+  } catch {
+    numberOfChannels.value = 0
+  }
 })
 
 
@@ -158,15 +176,16 @@ watch(props.nodeNumber, () => {
 //
 //
 onUpdated(async () => {
-//  console.log(name + ': onUpdated:') 
+//  console.log(name + ': onUpdated:')
 //  console.log(name + ': onUpdated: storedEventsNI for node ' + props.nodeNumber + ' ' + JSON.stringify(store.state.nodes[props.nodeNumber].storedEventsNI))
   try {
     if (props.nodeNumber){
-    
+
       if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
         variablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].eventVariables
         eventVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].eventVariableInformation
         showDescriptorWarning.value = false
+        processedEventVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
   //      console.log(name + ': onUpdated: variablesDescriptor valid')
       } else {
         variablesDescriptor.value = {}
@@ -174,12 +193,17 @@ onUpdated(async () => {
         showDescriptorWarning.value = true
   //      console.log(name + ': onUpdated: variablesDescriptor empty')
       }
-      
+
     } else {
       showRawVariables.value = true
     }
   } catch (err ) {
-    console.log(name + ': onUpdated: error: ' + err)    
+    console.log(name + ': onUpdated: error: ' + err)
+  }
+  try {
+    numberOfChannels.value = store.state.nodeDescriptors[props.nodeNumber].numberOfChannels
+  } catch {
+    numberOfChannels.value = 0
   }
 })
 
@@ -189,6 +213,15 @@ onUpdated(async () => {
 Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
+
+//
+//
+const clickChannelNames = () => {
+  console.log(name + `: clickChannelNames: number ${numberOfChannels.value}`)
+  if (numberOfChannels.value > 0){
+    showNodeChannelNamesDialog.value = true
+  }
+}
 
 //
 //
@@ -210,10 +243,10 @@ const clickClose = async () => {
         eventVariableValue = 0
       }
       store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, 1, eventVariableValue)
-      await sleep(250)  
+      await sleep(250)
       store.methods.request_all_node_events(props.nodeNumber)
     } catch (err){
-      console.log(name + ': clickClose ' + err)        
+      console.log(name + ': clickClose ' + err)
     }
   }
 }
