@@ -104,6 +104,7 @@ import NodeVariables from "components/modules/common/NodeVariables"
 import NodeRawVariables from "components/modules/common/NodeRawVariables"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
 import { replaceChannelTokens } from "../functions/utils";
+import { getNumberOfChannels } from "../functions/NodeFunctions";
 
 
 const $q = useQuasar()
@@ -145,12 +146,8 @@ watch(model, async () => {
     showDescriptorWarning.value = false
     processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
   }
-  try {
-    numberOfChannels.value = store.state.nodeDescriptors[props.nodeNumber].numberOfChannels
-  } catch {
-    numberOfChannels.value = 0
-  }
-  console.log(name + `: WATCH model: ${JSON.stringify(processedNodeVariableDescriptor.value)}`)
+  numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
+  //console.log(name + `: WATCH model: ${JSON.stringify(processedNodeVariableDescriptor.value)}`)
 })
 
 
@@ -181,11 +178,7 @@ watch(variablesDescriptor, () => {
     nodeVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation
     processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
   }
-  try {
-    numberOfChannels.value = store.state.nodeDescriptors[props.nodeNumber].numberOfChannels
-  } catch {
-    numberOfChannels.value = 0
-  }
+  numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
 })
 
 

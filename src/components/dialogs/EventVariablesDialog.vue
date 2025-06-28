@@ -121,6 +121,7 @@ import NodeChannelNamesDialog from "./NodeChannelNamesDialog.vue";
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
 import MDFDialog from "components/dialogs/MDFDialog";
 import { replaceChannelTokens } from "../functions/utils";
+import { getNumberOfChannels } from "../functions/NodeFunctions";
 
 const $q = useQuasar()
 const store = inject('store')
@@ -159,11 +160,7 @@ watch(model, () => {
   showRawVariables.value = false
   showVariablesDescriptor.value = false
 //  console.log(name + ': watch model: props: ' + JSON.stringify(props))
-  try {
-    numberOfChannels.value = store.state.nodeDescriptors[props.nodeNumber].numberOfChannels
-  } catch {
-    numberOfChannels.value = 0
-  }
+  numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
 })
 
 watch(showNodeChannelNamesDialog, () => {
@@ -207,11 +204,7 @@ onUpdated(async () => {
   } catch (err ) {
     console.log(name + ': onUpdated: error: ' + err)
   }
-  try {
-    numberOfChannels.value = store.state.nodeDescriptors[props.nodeNumber].numberOfChannels
-  } catch {
-    numberOfChannels.value = 0
-  }
+  numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
 })
 
 
