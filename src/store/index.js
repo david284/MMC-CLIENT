@@ -481,11 +481,22 @@ const getters = {
     }
   },
   node_channel_name(nodeNumber, channelNumber){
+    let name = ""
     try{
-      return state.layout.nodeDetails[nodeNumber].channels[channelNumber].channelName
-    } catch (err) {
-      return "channel " + channelNumber
+      // first look for a user supplied channel name, this will overr-ride any default
+      name = state.layout.nodeDetails[nodeNumber].channels[channelNumber].channelName
+      if (name.length == 0){ throw "no user channel name" }
+    } catch {
+      try {
+        // attempt to get supplied default name from the MDF, this will over-ride system default
+        name = state.nodeDescriptors[nodeNumber].channelNames[channelNumber]
+        if (name.length == 0){ throw "no MDF channel name" }
+      } catch {
+        // otherwise supply system default name
+        name = "channel " + channelNumber
+      }
     }
+    return name
   },
   node_group(nodeNumber){
     try{
