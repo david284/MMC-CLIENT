@@ -98,6 +98,7 @@ const update_table = async () => {
 const nameChanged = (channelName, channelNumber) => {
   console.log(name + `: nameChanged: ${channelNumber} ${channelName}`)
   store.setters.node_channel_name(props.nodeNumber, channelNumber, channelName)
+  update_table()
 }
 
 
