@@ -1,0 +1,4 @@
+Version 0.10.0
+  Added channel names
+  Added channel names to import and export
+  NodeVariableDual - fixed max value
