@@ -50,7 +50,7 @@ const props = defineProps({
   },
   "max": {
     type: Number,
-    default: 65025
+    default: 65535
   },
   "min": {
     type: Number,
@@ -86,15 +86,15 @@ const update_variable = (newValue) => {
     error.value = false
     error_message.value = ''
     store.methods.update_node_variable(
-      props.NodeNumber, 
-      props.NodeVariableIndexHigh, 
+      props.NodeNumber,
+      props.NodeVariableIndexHigh,
       newValue >> 8,
       true,
       getLinkedNodeVariables(props.configuration)
     )
     store.methods.update_node_variable(
-      props.NodeNumber, 
-      props.NodeVariableIndexLow, 
+      props.NodeNumber,
+      props.NodeVariableIndexLow,
       newValue & 0xFF,
       true,
       getLinkedNodeVariables(props.configuration)
