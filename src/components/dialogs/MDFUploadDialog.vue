@@ -53,8 +53,10 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
+import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 
+const $q = useQuasar()
 const store = inject('store')
 const name = "MDFUploadDialog"
 const uploadFile = ref()
@@ -106,7 +108,14 @@ const actionUpload = () => {
 //          console.log(name + `: actionUpload: result: ` + JSON.stringify(resultOBJ))
           store.methods.import_module_descriptor(props.nodeNumber, resultOBJ)
         } catch(e){
-          console.log(name + `: actionUpload: failed JSON parse`)
+          $q.notify({
+            message: 'Module Descriptor file upload has failed',
+            caption: 'please check the file is valid JSON, and try again',
+            timeout: 0,
+            type: 'warning',
+            position: 'center',
+            actions: [ { label: 'Dismiss' } ]
+          })
         }
       }
       uploadFile.value=null
