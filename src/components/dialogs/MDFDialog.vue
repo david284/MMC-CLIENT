@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model='model' persistent>
-    <q-card class="q-pa-none q-ma-none" style="min-width: 1000px; min-height: 600px;">
+    <q-card class="q-pa-none q-ma-none" style="min-width: 1000px; min-height: 60vh;">
 
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin g-py-none">
@@ -15,111 +15,109 @@
 
       <q-card-section style="max-height: 85vh" class="scroll no-margin q-py-none">
 
-          <!-- 1st element -->
-          <q-card flat style="min-width: 950px;" class="row no-margin q-pa-none">
+        <!-- 1st element -->
+        <q-card flat style="min-width: 950px;" class="row no-margin q-pa-none">
 
-            <q-card-section style="width: 400px;" class="no-margin q-py-none">
-              <div class="text-h6">Current node:</div>
-              <div class="text-subtitle2">
-                Module name: {{ store.state.nodes[nodeNumber].moduleName }}<br/>
-                Module identifier: {{ store.state.nodes[nodeNumber].moduleIdentifier }}<br/>
-                Module version: {{ store.state.nodes[nodeNumber].moduleVersion }}<br/>
-                Processor type: {{ store.state.nodes[nodeNumber].cpuName }}<br/>
-                Processor code: {{ store.state.nodes[nodeNumber].parameters[9] }}<br/>
-                Current module descriptor:  {{ moduleDescriptorFilename }}<br/>
-                Current descriptor location:  {{ moduleDescriptorLocation }}
-              </div>
-            </q-card-section>
+          <q-card-section style="width: 400px;" class="no-margin q-py-none">
+            <div class="text-h6">Current node:</div>
+            <div class="text-subtitle2">
+              Module name: {{ store.state.nodes[nodeNumber].moduleName }}<br/>
+              Module identifier: {{ store.state.nodes[nodeNumber].moduleIdentifier }}<br/>
+              Module version: {{ store.state.nodes[nodeNumber].moduleVersion }}<br/>
+              Processor type: {{ store.state.nodes[nodeNumber].cpuName }}<br/>
+              Processor code: {{ store.state.nodes[nodeNumber].parameters[9] }}<br/>
+              Current module descriptor:  {{ moduleDescriptorFilename }}<br/>
+              Current descriptor location:  {{ moduleDescriptorLocation }}
+            </div>
+          </q-card-section>
 
-            <q-card-section  style="width: 500px;" class="no-margin q-py-none">
-              <div class="text-subtitle2">
-                The file is matched using the module identifier, version number and processor code, the name portion is not used<br/>
-                If no match is found, then it will fall back to using just the module identifier and the version number<br/>
-                Modules that need files using the processor code are the exception, most won't use it<br/>
-                User files always take precedence if same filename exists in System, allowing permanent override of System files<br/>
-                User file timestamp is in red if a newer System file exists - to use the newer System file, delete the User file<br/>
-              </div>
-              <q-card-actions class="text-primary">
-                <q-btn color="positive" size="sm" label="Upload new file" @click="clickUpload()" />
-              </q-card-actions>
-            </q-card-section>
+          <q-card-section  style="width: 500px;" class="no-margin q-py-none">
+            <div class="text-subtitle2">
+              The file is matched using the module identifier, version number and processor code, the name portion is not used<br/>
+              If no match is found, then it will fall back to using just the module identifier and the version number<br/>
+              Modules that need files using the processor code are the exception, most won't use it<br/>
+              User files always take precedence if same filename exists in System, allowing permanent override of System files<br/>
+              User file timestamp is in red if a newer System file exists - to use the newer System file, delete the User file<br/>
+            </div>
+            <q-card-actions class="text-primary">
+              <q-btn color="positive" size="sm" label="Upload new file" @click="clickUpload()" />
+            </q-card-actions>
+          </q-card-section>
 
-          </q-card>
+        </q-card>
 
-          
-          <!-- 2nd element -->
-            <q-card flat style="max-height: 70vh; min-width: 950px;" class="no-margin q-pa-none">
 
-              <q-card-section flat class="no-margin q-pa-none row">
+        <!-- 2nd element -->
+        <q-card flat style="max-height: 70vh; min-width: 950px;" class="no-margin q-pa-none">
 
-                <q-card flat style="max-height: 50vh" class="scroll no-margin q-pa-none">
-                <q-card-section class="no-margin q-pa-xs"  style="min-width: 380px;">
-                  <div class="text-h6">System files for this module type</div>
-                  <q-table
-                    flat bordered
-                    dense
-                    :rows="systemRows"
-                    :columns="systemColumns"
-                    row-key="file"
-                    hide-bottom
-                    virtual-scroll
-                    :rows-per-page-options="[0]"
-                    :virtual-scroll-sticky-size-start="0"
-                    >
-                    <template v-slot:body="props">
-                      <q-tr :props="props" class="q-my-none q-py-none">
-                        <q-td key="file" :props="props">{{ props.row.file }}</q-td>
-                        <q-td key="timestamp" :props="props">{{ props.row.timestamp }}</q-td>
-                        <q-td key="actions" :props="props">
-                          <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Download" @click="clickSystemDownload(props.row.file)" no-caps/>
-                        </q-td>              
-                      </q-tr>
-                    </template>
-                  </q-table>
-                </q-card-section>
-                </q-card>
+          <q-card-section flat class="no-margin q-pa-none row">
 
-                <q-card flat style="max-height: 50vh" class="scroll no-margin q-pa-none">
-                <q-card-section class="no-margin q-py-xs" style="min-width: 450px;">
-                  <div class="text-h6">User files for this module type</div>
-                  <q-table
-                    flat bordered
-                    dense
-                    :rows="userRows"
-                    :columns="userColumns"
-                    row-key="file"
-                    hide-bottom
-                    virtual-scroll
-                    :rows-per-page-options="[0]"
-                    :virtual-scroll-sticky-size-start="0"
-                    >
-                    <template v-slot:body="props">
-                      <q-tr :props="props" class="q-my-none q-py-none">
-                        <q-td key="file" :props="props">{{ props.row.file }}</q-td>
-                        <q-td key="timestamp" :props="props">
-                          <q-chip dense color="white" text-color="red" v-if="(props.row.obsolete)">{{ props.row.timestamp }}</q-chip>
-                          <q-chip dense color="white" text-color="black" v-else>{{ props.row.timestamp }}</q-chip>
-                        </q-td>
-                        <q-td key="actions" :props="props">
-                          <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Download" @click="clickUserDownload(props.row.file)" no-caps/>
-                          <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Delete" @click="clickDelete(props.row.file)" no-caps/>
-                        </q-td>              
-                      </q-tr>
-                    </template>
-                  </q-table>
-                </q-card-section>
-              </q-card>
+            <q-card flat style="max-height: 50vh" class="scroll no-margin q-pa-none">
+              <q-card-section class="no-margin q-pa-xs"  style="min-width: 380px;">
+                <div class="text-h6">System files for this module type</div>
+                <q-table
+                  flat bordered
+                  dense
+                  :rows="systemRows"
+                  :columns="systemColumns"
+                  row-key="file"
+                  hide-bottom
+                  virtual-scroll
+                  :rows-per-page-options="[0]"
+                  :virtual-scroll-sticky-size-start="0"
+                  >
+                  <template v-slot:body="props">
+                    <q-tr :props="props" class="q-my-none q-py-none">
+                      <q-td key="file" :props="props">{{ props.row.file }}</q-td>
+                      <q-td key="timestamp" :props="props">{{ props.row.timestamp }}</q-td>
+                      <q-td key="actions" :props="props">
+                        <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Download" @click="clickSystemDownload(props.row.file)" no-caps/>
+                      </q-td>
+                    </q-tr>
+                  </template>
+                </q-table>
+              </q-card-section>
+            </q-card>
 
-            </q-card-section>
-          </q-card>
+            <q-card flat style="max-height: 50vh" class="scroll no-margin q-pa-none">
+              <q-card-section class="no-margin q-py-xs" style="min-width: 450px;">
+                <div class="text-h6">User files for this module type</div>
+                <q-table
+                  flat bordered
+                  dense
+                  :rows="userRows"
+                  :columns="userColumns"
+                  row-key="file"
+                  hide-bottom
+                  virtual-scroll
+                  :rows-per-page-options="[0]"
+                  :virtual-scroll-sticky-size-start="0"
+                  >
+                  <template v-slot:body="props">
+                    <q-tr :props="props" class="q-my-none q-py-none">
+                      <q-td key="file" :props="props">{{ props.row.file }}</q-td>
+                      <q-td key="timestamp" :props="props">
+                        <q-chip dense color="white" text-color="red" v-if="(props.row.obsolete)">{{ props.row.timestamp }}</q-chip>
+                        <q-chip dense color="white" text-color="black" v-else>{{ props.row.timestamp }}</q-chip>
+                      </q-td>
+                      <q-td key="actions" :props="props">
+                        <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Download" @click="clickUserDownload(props.row.file)" no-caps/>
+                        <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Delete" @click="clickDelete(props.row.file)" no-caps/>
+                      </q-td>
+                    </q-tr>
+                  </template>
+                </q-table>
+              </q-card-section>
+            </q-card>
 
-      </q-card-section>
+          </q-card-section>
+        </q-card>
 
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Toggle current module descriptor view" @click="clickToggleModuleDescriptor()"/>
-      </q-card-actions>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Toggle current module descriptor view" @click="clickToggleModuleDescriptor()"/>
+        </q-card-actions>
 
-      <q-card-section class="q-pa-sm" v-if="showModuleDescriptor">
+        <q-card-section class="q-pa-sm" v-if="showModuleDescriptor">
           <div class="q-pa-xs row">
             <div class="text-body1">Module descriptor<br></div>
             <div class="text-body2">
@@ -128,6 +126,8 @@
           </div>
         </q-card-section>
 
+      </q-card-section>
+
     </q-card>
   </q-dialog>
 
@@ -135,7 +135,7 @@
     :moduleDescriptorFilename = export_filename
   />
 
-  <MDFUploadDialog  v-model='showMDFUploadDialog' 
+  <MDFUploadDialog  v-model='showMDFUploadDialog'
     :nodeNumber = nodeNumber
   />
 
@@ -214,7 +214,7 @@ const getModuleDescriptorFilename = () => {
       // no point showing location if no filename
       moduleDescriptorLocation.value = store.state.nodeDescriptors[props.nodeNumber].moduleDescriptorLocation
     }
-  } catch { 
+  } catch {
     //console.log(name + `: getModuleDescriptorFilename: no filename for node ` + props.nodeNumber)
   }
 }
@@ -313,7 +313,7 @@ const clickDelete = (filename) => {
     position: 'center',
     color: 'primary',
     actions: [
-      { label: 'YES', color: 'white', handler: async () => { 
+      { label: 'YES', color: 'white', handler: async () => {
         store.methods.request_MDF_delete(filename)
         refresh_user_list()
       } },

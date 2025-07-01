@@ -1,3 +1,7 @@
+Version 0.10.1
+  Added error notification to MFD upload dialog
+  Amended scroll on MDF Dialog
+
 Version 0.10.0
   Added channel names
   Added channel names to import and export
