@@ -466,7 +466,7 @@ const clickExample = () => {
 const clickExit = () => {
   console.log(name + `: clickExit`)
   const result = $q.notify({
-    message: 'Are you sure you want to exit and stop the server?',
+    message: 'Are you sure you want to close the application?',
     timeout: 0,
     position: 'center',
     color: 'primary',

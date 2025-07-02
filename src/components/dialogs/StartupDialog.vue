@@ -42,7 +42,7 @@
                       @click="clickDeleteLayout(props.value)" no-caps />
                     </q-td>
                 </template>
-              </q-table>          
+              </q-table>
             </q-card-section>
 
             <q-card-section>
@@ -246,7 +246,7 @@ const clickDeleteLayout = async (row) => {
     position: 'center',
     color: 'primary',
     actions: [
-      { label: 'YES', color: 'white', handler: async () => { 
+      { label: 'YES', color: 'white', handler: async () => {
         store.methods.delete_layout(row)
         await sleep(50)     // allow a bit of a delay for the change
         store.methods.request_layout_list()
@@ -269,12 +269,12 @@ const clickInfo = async () => {
 const clickExit = () => {
   console.log(name + `: clickExit`)
   const result = $q.notify({
-    message: 'Are you sure you want to exit and stop the server?',
+    message: 'Are you sure you want to close the application?',
     timeout: 0,
     position: 'center',
     color: 'primary',
     actions: [
-      { label: 'YES', color: 'white', handler: async () => { 
+      { label: 'YES', color: 'white', handler: async () => {
         store.methods.STOP_SERVER()
         await sleep(50)     // allow a bit of a delay for the change
       } },
