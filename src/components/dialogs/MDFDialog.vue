@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model='model' persistent>
-    <q-card class="q-pa-none q-ma-none" style="min-width: 1000px; min-height: 60vh;">
+    <q-card class="q-pa-none q-ma-none" style="min-width: 1100px; min-height: 60vh;">
 
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin g-py-none">
@@ -18,7 +18,7 @@
         <!-- 1st element -->
         <q-card flat style="min-width: 950px;" class="row no-margin q-pa-none">
 
-          <q-card-section style="width: 400px;" class="no-margin q-py-none">
+          <q-card-section style="width: 450px;" class="no-margin q-py-none">
             <div class="text-h6">Current node:</div>
             <div class="text-subtitle2">
               Module name: {{ store.state.nodes[nodeNumber].moduleName }}<br/>
@@ -31,7 +31,7 @@
             </div>
           </q-card-section>
 
-          <q-card-section  style="width: 500px;" class="no-margin q-py-none">
+          <q-card-section  style="width: 600px;" class="no-margin q-py-none">
             <div class="text-subtitle2">
               The file is matched using the module identifier, version number and processor code, the name portion is not used<br/>
               If no match is found, then it will fall back to using just the module identifier and the version number<br/>
@@ -52,8 +52,8 @@
 
           <q-card-section flat class="no-margin q-pa-none row">
 
-            <q-card flat style="max-height: 50vh" class="scroll no-margin q-pa-none">
-              <q-card-section class="no-margin q-pa-xs"  style="min-width: 380px;">
+            <q-card flat style="max-height: 49vh" class="scroll no-margin q-pa-none">
+              <q-card-section class="no-margin q-pa-xs"  style="min-width: 430px;">
                 <div class="text-h6">System files for this module type</div>
                 <q-table
                   flat bordered
@@ -80,7 +80,7 @@
             </q-card>
 
             <q-card flat style="max-height: 50vh" class="scroll no-margin q-pa-none">
-              <q-card-section class="no-margin q-py-xs" style="min-width: 450px;">
+              <q-card-section class="no-margin q-py-xs" style="min-width: 500px;">
                 <div class="text-h6">User files for this module type</div>
                 <q-table
                   flat bordered
