@@ -36,7 +36,7 @@
           </q-card-section>
 
           <q-card-section class="text-h6" v-if="eventVariableInformation">
-            {{ processedEventVariableDescriptor }}
+            {{ eventVariableInformation }}
           </q-card-section>
 
           <div class="q-pa-xs row">
