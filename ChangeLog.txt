@@ -1,6 +1,8 @@
 Version 0.10.1
   Added error notification to MFD upload dialog
   Amended scroll on MDF Dialog
+  Changed text on exit button
+  fixed bug in eventVariableInformation
 
 Version 0.10.0
   Added channel names
