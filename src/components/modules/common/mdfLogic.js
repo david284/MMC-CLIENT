@@ -49,7 +49,7 @@ export class mdfLogic {
     }.bind(this);
     jsonLogic.add_operation("NV", NVoperator);
 
-    
+
     var NVbitOperator = function(a, b){
       let result = false
       if ((this.node.nodeVariables[a] & 2**b) > 0) { result = true}
@@ -74,14 +74,16 @@ export class mdfLogic {
 //    console.log("mdfLogic.parse " + eventIdentifier)
     try{
       let result = jsonLogic.apply(logicExpression)
-      console.log("mdfLogic.parse:" 
+      /*
+      console.log("mdfLogic.parse:"
         + ' logic: ' + JSON.stringify(logicExpression)
         + ' result: ' + result )
+      */
       return result
     } catch(err){
       console.log("mdfLogic.parse " + err)
-      return false 
-    } 
+      return false
+    }
   }
 
 }

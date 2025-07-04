@@ -179,16 +179,18 @@ watch(showNodeChannelNamesDialog, () => {
 //
 watch(variablesDescriptor, () => {
   console.log(name + `: WATCH variablesDescriptor`)
-  if (variablesDescriptor.value == undefined){
-    showRawVariables.value = true
-    showDescriptorWarning.value = true
-  } else {
-    showDescriptorWarning.value = false
-    nodeVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation
-    processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+  if (model.value == true){     // don't do if not visible
+    if (variablesDescriptor.value == undefined){
+      showRawVariables.value = true
+      showDescriptorWarning.value = true
+    } else {
+      showDescriptorWarning.value = false
+      nodeVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation
+      processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+    }
+    console.log(name + `: WATCH variablesDescriptor: getNumberOfChannels`)
+    numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
   }
-  console.log(name + `: WATCH variablesDescriptor: getNumberOfChannels`)
-  numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
 })
 
 //
