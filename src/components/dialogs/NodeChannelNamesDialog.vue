@@ -76,15 +76,8 @@ const teColumns = [
   {name: 'name', field: 'name', required: true, label: 'Name (click to edit)', align: 'left', sortable: true}
 ]
 
-watch(teRows, () => {
-  console.log(name + ": watch teRows")
-  /*
-  teRows.value.forEach (channel => {
-    console.log(name + ": " + channel.channelNumber + " : " + channel.name)
-  })
-    */
-})
-
+//
+//
 const update_table = async () => {
   teRows.value = []
   for (let i=1; i <=props.numberOfChannels; i++){

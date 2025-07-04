@@ -126,7 +126,6 @@ import { getNumberOfChannels } from "../functions/NodeFunctions";
 const $q = useQuasar()
 const store = inject('store')
 const name = "EventVariablesDialog"
-const variablesDescriptor = ref()
 
 const showWaitingOnBusTrafficDialog = ref(false)
 const showRawVariables = ref(false)
@@ -150,61 +149,73 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
+//
+//
 const model = computed({
-      get() { return props.modelValue },
-      set(newValue) { emit('update:modelValue', newValue) }
-    })
-
-watch(model, () => {
-//  console.log(name + `: WATCH model`)
-  showRawVariables.value = false
-  showVariablesDescriptor.value = false
-//  console.log(name + ': watch model: props: ' + JSON.stringify(props))
-  numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
+  get() { return props.modelValue },
+  set(newValue) { emit('update:modelValue', newValue) }
 })
 
+//
+//
+watch(model, () => {
+  //console.log(name + `: WATCH model`)
+  if (model.value == true){
+    showVariablesDescriptor.value = false
+    if (variablesDescriptor.value == undefined){
+      showRawVariables.value = true
+      showDescriptorWarning.value = true
+    } else {
+      showRawVariables.value = false
+      showDescriptorWarning.value = false
+      processedEventVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+    }
+    console.log(name + `: WATCH model: getNumberOfChannels`)
+    numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
+  }
+})
+
+//
+//
 watch(showNodeChannelNamesDialog, () => {
   try{
     processedEventVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
   } catch {}
 })
 
-
-
-/*
-watch(props.nodeNumber, () => {
-//  console.log(name +': watch nodeNumber')
+// need to know if descriptor changed, could be updated import
+//
+const variablesDescriptor = computed(() =>{
+  var obj = undefined
+  try{
+    obj = store.state.nodeDescriptors[props.nodeNumber].eventVariables
+  } catch{}
+  return obj
 })
-*/
+
+//
+//
+watch(variablesDescriptor, () => {
+  console.log(name + `: WATCH variablesDescriptor`)
+  if (model.value == true){     // don't bother if not displayed
+    if (variablesDescriptor.value == undefined){
+      showRawVariables.value = true
+      showDescriptorWarning.value = true
+    } else {
+      showDescriptorWarning.value = false
+      eventVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].eventsVariableInformation
+      processedEventVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+    }
+    console.log(name + `: WATCH variablesDescriptor: getNumberOfChannels`)
+    numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
+  }
+})
+
 
 //
 //
 onUpdated(async () => {
-//  console.log(name + ': onUpdated:')
-//  console.log(name + ': onUpdated: storedEventsNI for node ' + props.nodeNumber + ' ' + JSON.stringify(store.state.nodes[props.nodeNumber].storedEventsNI))
-  try {
-    if (props.nodeNumber){
-
-      if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
-        variablesDescriptor.value = store.state.nodeDescriptors[props.nodeNumber].eventVariables
-        eventVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].eventVariableInformation
-        showDescriptorWarning.value = false
-        processedEventVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
-  //      console.log(name + ': onUpdated: variablesDescriptor valid')
-      } else {
-        variablesDescriptor.value = {}
-        showRawVariables.value = true
-        showDescriptorWarning.value = true
-  //      console.log(name + ': onUpdated: variablesDescriptor empty')
-      }
-
-    } else {
-      showRawVariables.value = true
-    }
-  } catch (err ) {
-    console.log(name + ': onUpdated: error: ' + err)
-  }
-  numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
+  //console.log(name + ': onUpdated:')
 })
 
 

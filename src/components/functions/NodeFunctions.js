@@ -1,5 +1,6 @@
 
 import {inject} from "vue";
+import {secondsNow} from "components/functions/utils.js"
 
 const name = "NodeFunctions"
 
@@ -24,7 +25,7 @@ export function getNumberOfChannels(store, nodeNumber) {
     //console.log(name + `: ${err}`)
     //console.log(name + `: failed to get channelNames`)
   }
-  console.log(name + `: numberOfChannels: ${numberOfChannels}`)
+  console.log(secondsNow() + ': ' + name + `: numberOfChannels: ${numberOfChannels}`)
   return numberOfChannels
 }
 

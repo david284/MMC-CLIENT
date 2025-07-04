@@ -127,49 +127,58 @@ const props = defineProps({
   nodeNumber: {type: Number, default: 0 }
 })
 
-
 const emit = defineEmits(['update:modelValue'])
 
+//
+//
 const model = computed({
-      get() { return props.modelValue },
-      set(newValue) { emit('update:modelValue', newValue) }
-    })
+  get() { return props.modelValue },
+  set(newValue) { emit('update:modelValue', newValue) }
+})
 
+//
+//
 watch(model, async () => {
-  //console.log(name + `: WATCH model`)
-  showVariableDescriptor.value = false
-  if (variablesDescriptor.value == undefined){
-    showRawVariables.value = true
-    showDescriptorWarning.value = true
-  } else {
-    showRawVariables.value = false
-    showDescriptorWarning.value = false
-    processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+  if (model.value == true){
+    console.log(name + `: WATCH model`)
+    showVariableDescriptor.value = false
+    if (variablesDescriptor.value == undefined){
+      showRawVariables.value = true
+      showDescriptorWarning.value = true
+    } else {
+      showRawVariables.value = false
+      showDescriptorWarning.value = false
+      processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+    }
+    console.log(name + `: WATCH model: getNumberOfChannels`)
+    numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
+    //console.log(name + `: WATCH model: ${JSON.stringify(processedNodeVariableDescriptor.value)}`)
   }
-  numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
-  //console.log(name + `: WATCH model: ${JSON.stringify(processedNodeVariableDescriptor.value)}`)
 })
 
 
 // need to know if descriptor changed, could be updated import
+//
 const variablesDescriptor = computed(() =>{
   var obj = undefined
-  if (props.nodeNumber){
-    if (store.state.nodeDescriptors[props.nodeNumber] != undefined){
-        obj = store.state.nodeDescriptors[props.nodeNumber].nodeVariables
-      }
-  }
+  try{
+    obj = store.state.nodeDescriptors[props.nodeNumber].nodeVariables
+  } catch {}
   return obj
 })
 
+//
+//
 watch(showNodeChannelNamesDialog, () => {
   try{
     processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
   } catch {}
 })
 
+//
+//
 watch(variablesDescriptor, () => {
-  //console.log(name + `: WATCH variablesDescriptor`)
+  console.log(name + `: WATCH variablesDescriptor`)
   if (variablesDescriptor.value == undefined){
     showRawVariables.value = true
     showDescriptorWarning.value = true
@@ -178,18 +187,24 @@ watch(variablesDescriptor, () => {
     nodeVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation
     processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
   }
+  console.log(name + `: WATCH variablesDescriptor: getNumberOfChannels`)
   numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
 })
 
-
+//
+//
 onBeforeMount(() => {
 //  console.log(name + ': onBeforeMount')
 })
 
+//
+//
 onMounted(() => {
 //  console.log(name + ': onMounted')
 })
 
+//
+//
 onUpdated(async () => {
 //  console.log(name + ': onUpdated')
   if (props.nodeNumber){
@@ -202,18 +217,20 @@ onUpdated(async () => {
   }
 })
 
-
-
 /*/////////////////////////////////////////////////////////////////////////////
 
 Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
+//
+//
 const clickClose = () => {
   console.log(name + `: clickClose`)
 }
 
+//
+//
 const clickChannelNames = () => {
   console.log(name + `: clickChannelNames: number ${numberOfChannels.value}`)
   if (numberOfChannels.value > 0){
@@ -221,6 +238,8 @@ const clickChannelNames = () => {
   }
 }
 
+//
+//
 const clickManageModuleDescriptor = () => {
   console.log(name + `: clickUpdateModuleDescriptor`)
   store.methods.request_matching_mdf_list(props.nodeNumber, "USER")
@@ -228,12 +247,16 @@ const clickManageModuleDescriptor = () => {
   showMDFDialog.value = true
 }
 
+//
+//
 const clickRefresh = () => {
   console.log(name + `: clickRefresh`)
   store.methods.request_all_node_variables(props.nodeNumber)
   showWaitOnBusTrafficDialog.value = true
 }
 
+//
+//
 const clickToggleRaw = () => {
   console.log(name + `: clickToggleRaw`)
   if (showRawVariables.value){
@@ -243,6 +266,8 @@ const clickToggleRaw = () => {
   }
 }
 
+//
+//
 const clickToggleVariablesDescriptor = () => {
   console.log(name + `: clickToggleNodeDescriptor`)
   if (showVariableDescriptor.value){

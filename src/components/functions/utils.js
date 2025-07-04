@@ -15,6 +15,7 @@ export function replaceChannelTokens(store, jsonObj, nodeNumber) {
   var indexTokenStart = 0;
   var startToken = "${channel"
   var endToken = "}"
+  console.log(secondsNow() + ': ' + name + `: BEGIN_replaceChannelTokens: node ${nodeNumber}`)
   while((indexTokenStart = jsonString.toLowerCase().indexOf(startToken, searchIndex)) > 0) {
     searchIndex = indexTokenStart + 1
     // look for next '}'
@@ -40,7 +41,7 @@ export function replaceChannelTokens(store, jsonObj, nodeNumber) {
     let channelName = store.getters.node_channel_name(nodeNumber, channelNumber)
     //console.log(name + ":channelName " + channelName)
     // now replace full token with channel Name
-    console.log(name + ":replace " + channelToken + ' with '+ channelName)
+    //console.log(name + ":replace " + channelToken + ' with '+ channelName)
     jsonString = jsonString.replace(channelToken, channelName)
   }
   try{
@@ -48,6 +49,7 @@ export function replaceChannelTokens(store, jsonObj, nodeNumber) {
   } catch(err) {
     console.log(name + ": replaceChannelTokens: " + err)
   }
+  console.log(secondsNow() + ': ' + name + `: END_replaceChannelTokens: node ${nodeNumber}`)
 	return result
 }
 
