@@ -114,6 +114,7 @@ import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import EventsByNodeViewInfoDialog from "components/dialogs/EventsByNodeViewInfoDialog"
 import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
+import { sleep } from "../functions/utils"
 
 
 const $q = useQuasar()
@@ -423,10 +424,11 @@ const clickToggleViewMode = () => {
 
 const clickVariables = async (eventIdentifier) => {
   selected_event_Identifier.value = eventIdentifier
+  showWaitingOnBusTrafficDialog.value = true
+  await sleep(1)
   // make sure the indexes are up to date
   await refreshEventIndexes(store, props.nodeNumber)
   store.methods.request_event_variables_by_identifier(props.nodeNumber, eventIdentifier)
-  showWaitingOnBusTrafficDialog.value = true
   console.log(name + `: clickVariables: node ` + props.nodeNumber)
   showEventVariablesDialog.value = true
 }

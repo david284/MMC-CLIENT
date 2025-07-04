@@ -23,6 +23,7 @@
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import {sleep} from "components/functions/utils.js"
+import {secondsNow} from "components/functions/utils.js"
 
 const store = inject('store')
 const name = "WaitingOnBusTrafficDialog"
@@ -51,7 +52,7 @@ const model = computed({
 watch(model, async () => {
   //console.log(name + `: WATCH model ` + model.value)
   if (model.value == true){
-    //console.log(name + `: WATCH model ` + model.value)
+    console.log(secondsNow() + ': ' + name + `: WATCH model ` + model.value)
     await waitOnBusTraffic()
   }
 })
@@ -65,6 +66,7 @@ const waitOnBusTraffic = async () => {
     await sleep(100)
   }
 
+  console.log(secondsNow() + ': ' + name + `: END wait`)
   // signal it's complete
   emit('WaitingOnBusTrafficDialog', 'finished')
   model.value = false

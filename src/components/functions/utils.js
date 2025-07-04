@@ -43,6 +43,7 @@ export function replaceChannelTokens(store, jsonObj, nodeNumber) {
     // now replace full token with channel Name
     //console.log(name + ":replace " + channelToken + ' with '+ channelName)
     jsonString = jsonString.replace(channelToken, channelName)
+    //await sleep(1)
   }
   try{
     result = JSON.parse(jsonString)
