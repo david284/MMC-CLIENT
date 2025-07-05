@@ -1,3 +1,6 @@
+Version 0.10.2
+  Addressed dialog opening delays by adding extra watches & removing code in 'on-update'
+
 Version 0.10.1
   Added error notification to MFD upload dialog
   Amended scroll on MDF Dialog
