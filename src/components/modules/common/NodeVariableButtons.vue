@@ -97,11 +97,12 @@ Click event handlers
 //
 const clickButton = (newByteValue) => {
   console.log(name + `: clickButton : ` + newByteValue)
+  //  update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue, reLoad, linkedVariableList)
   store.methods.update_node_variable(
     props.nodeNumber,
     props.nodeVariableIndex,
     newByteValue,
-    false,
+    true,
     getLinkedNodeVariables(props.configuration)
   )
 }

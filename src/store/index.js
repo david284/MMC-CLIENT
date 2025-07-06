@@ -359,6 +359,9 @@ const methods = {
       socket.emit('UPDATE_LAYOUT_DATA', state.layout)
   },
   //
+  // reLoad is a flag to indicate if node variable(s) need to be read back
+  // we don't want to read any back if doing bulk programming (e.g. restoring a node)
+  //
   update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue, reLoad, linkedVariableList) {
     console.log(name + `: update_node_variable: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad} ${JSON.stringify(linkedVariableList)}`)
     state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue

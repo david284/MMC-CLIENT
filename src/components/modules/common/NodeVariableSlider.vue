@@ -157,7 +157,7 @@ const outputOnWrite = computed(() =>{
 //
 //
 watch(outputOnWrite, () => {
-//  console.log(name + `: WATCH outputOnWrite: ` + outputOnWrite.value)
+  //console.log(name + `: WATCH outputOnWrite: ` + outputOnWrite.value)
 })
 
 // Display value is the scaled numeric value
@@ -176,6 +176,7 @@ const displayValue = computed(() =>{
   }
   return value
 })
+
 
 // sliderValue is also the raw value of the node variable
 //
@@ -213,6 +214,13 @@ const sliderValue = computed({
     }
   }
 })
+
+//
+//
+watch(sliderValue, () => {
+  //console.log(name + `: WATCH sliderValue: ` + sliderValue.value)
+})
+
 
 //
 //
