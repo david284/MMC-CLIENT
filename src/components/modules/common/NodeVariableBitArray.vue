@@ -80,12 +80,12 @@ function refeshArray() {
   newBitCollection.value = []
   for (var i in props.bitCollection){
     if (props.bitCollection[i].overload){
-      var label = overloadedLabel(props.nodeNumber, props.bitCollection[i].overload, store) 
+      var label = overloadedLabel(props.nodeNumber, props.bitCollection[i].overload, store)
       if (label) {
         var entry = {"bitPosition": props.bitCollection[i].bitPosition, "label": label}
         newBitCollection.value.push(entry)
       }
-    } else 
+    } else
     if (props.bitCollection[i].label){
       newBitCollection.value.push(props.bitCollection[i])
     }

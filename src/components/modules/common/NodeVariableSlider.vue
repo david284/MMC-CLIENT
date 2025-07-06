@@ -9,7 +9,7 @@ style="min-width: 350px; min-height: 200px;"
             {{ configuration }}
           </q-tooltip>
         </q-icon>
--->        
+-->
         <q-card-section style ="min-width: 10px; height: 10px" class="no-margin no-padding float-right text-caption text-weight-thin">
           &nbsp; {{ nodeVariableIndex }}
         </q-card-section>
@@ -134,6 +134,8 @@ const bitMask = computed(() => {
 let newByteValue = store.state.nodes[props.nodeNumber].nodeVariables[props.nodeVariableIndex]
 // console.log(`NodeVariableSlider: bitMask : ${bitMask.value}`)
 
+//
+//
 const cardHeight = computed(() => {
   if(outputOnWrite.value) {
    return{ height: '150px' }
@@ -142,6 +144,8 @@ const cardHeight = computed(() => {
   }
  })
 
+//
+//
 const outputOnWrite = computed(() =>{
   var result = false
   if (props){
@@ -149,12 +153,15 @@ const outputOnWrite = computed(() =>{
   }
   return result
 })
-// console.log(name + `: computed outputOnWrite: ` + outputOnWrite.value)
 
+//
+//
 watch(outputOnWrite, () => {
 //  console.log(name + `: WATCH outputOnWrite: ` + outputOnWrite.value)
 })
 
+// Display value is the scaled numeric value
+//
 const displayValue = computed(() =>{
   var value = (sliderValue.value * props.displayScale) + props.displayOffset
   if (props.displayScale >= 1){
@@ -170,15 +177,17 @@ const displayValue = computed(() =>{
   return value
 })
 
+// sliderValue is also the raw value of the node variable
+//
 const sliderValue = computed({
   get() {
     return ((store.state.nodes[props.nodeNumber].nodeVariables[props.nodeVariableIndex] & bitMask.value) >> props.startBit)
   },
   set(newValue) {
-//    console.log(`OldByteValue : ${newByteValue}`)
+    //console.log(`OldByteValue : ${newByteValue}`)
     // not sure we need to do a range check as the slider control uses max & min anyway...
     if (newValue <= props.max && newValue >= props.min) {
-//      console.log(`update_variable : ${newValue}`)
+      //console.log(`update_variable : ${newValue}`)
       let processedValue = newValue                           // take a copy to change
       processedValue = processedValue << props.startBit       // shift to position in variable
       //set bits, but only if they match bits in the bitmask
@@ -190,13 +199,13 @@ const sliderValue = computed({
       error_message.value = ''
 
       store.methods.update_node_variable(
-        props.nodeNumber, 
-        props.nodeVariableIndex, 
-        newByteValue, 
+        props.nodeNumber,
+        props.nodeVariableIndex,
+        newByteValue,
         true,
         getLinkedNodeVariables(props.configuration)
       )
-//      console.log(`NewByteValue : ${newByteValue}`)
+      //console.log(`NewByteValue : ${newByteValue}`)
     } else {
       console.log(name + `: Invalid Value : ${newValue}`)
       error_message.value = 'Invalid Value'
@@ -205,11 +214,13 @@ const sliderValue = computed({
   }
 })
 
+//
+//
 const update_variable = (newValue) => {
   if (error.value) {
     console.log(name + `: Invalid Value : ${newValue}`)
   } else {
-//    console.log(`update_variable : ${newValue}`)
+    //console.log(`update_variable : ${newValue}`)
   }
 }
 
@@ -225,11 +236,15 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
+//
+//
 const clickCenter = () => {
   console.log(name + `: clickCenter`)
   sliderValue.value = 127
 }
 
+//
+//
 const clickNegative = () => {
   console.log(name + `: clickNegative`)
   if (sliderValue.value > props.min){
@@ -237,6 +252,8 @@ const clickNegative = () => {
   }
 }
 
+//
+//
 const clickNegative5 = () => {
   console.log(name + `: clickNegative`)
   if (sliderValue.value > props.min + 5){
@@ -246,6 +263,8 @@ const clickNegative5 = () => {
   }
 }
 
+//
+//
 const clickPositive = () => {
   console.log(name + `: clickPositive`)
   if (sliderValue.value < props.max){
@@ -253,6 +272,8 @@ const clickPositive = () => {
   }
 }
 
+//
+//
 const clickPositive5 = () => {
   console.log(name + `: clickPositive`)
   if (sliderValue.value < props.max - 5){
@@ -262,9 +283,11 @@ const clickPositive5 = () => {
   }
 }
 
+// re-sends the current value
+//
 const clickTest = () => {
   console.log(name + `: clickTest`)
-  store.methods.update_node_variable(props.nodeNumber, props.nodeVariableIndex, newByteValue)
+  store.methods.update_node_variable(props.nodeNumber, props.nodeVariableIndex, sliderValue.value)
 }
 
 

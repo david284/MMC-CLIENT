@@ -19,6 +19,15 @@
         :configuration = item
         >
       </NodeVariableBitSingle>
+      <NodeVariableButtons v-if="(item.type=='NodeVariableButtons') && (isVisible(item))"
+        :nodeNumber=store.state.selected_node
+        :nodeVariableIndex="item.nodeVariableIndex"
+        :buttonCollection = item.buttonCollection
+        :displayTitle="item.displayTitle"
+        :displaySubTitle="item.displaySubTitle"
+        :configuration = item
+        >
+      </NodeVariableButtons>
       <NodeVariableDual v-if="(item.type=='NodeVariableDual') && (isVisible(item))"
         :NodeVariableIndexLow="item.nodeVariableIndexLow"
         :NodeVariableIndexHigh="item.nodeVariableIndexHigh"
@@ -83,6 +92,7 @@
 import {computed, inject, onBeforeMount, onMounted, onUpdated, watch} from "vue";
 import NodeVariableBitArray from "components/modules/common/NodeVariableBitArray"
 import NodeVariableBitSingle from "components/modules/common/NodeVariableBitSingle"
+import NodeVariableButtons from "components/modules/common/NodeVariableButtons"
 import NodeVariableDual from "components/modules/common/NodeVariableDual"
 import NodeVariableGroup from "components/modules/common/NodeVariableGroup"
 import NodeVariableNumber from "components/modules/common/NodeVariableNumber"

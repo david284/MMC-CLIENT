@@ -1,5 +1,5 @@
 <template>
-  <q-card-section class="no-margin q-pa-xs">
+  <q-card-section class="no-margin no-padding">
     <q-checkbox
       dense
       min-width="100"
@@ -81,8 +81,8 @@ const update_checked = () => {
   }
   //store.methods.update_node_variable(props.NodeNumber, props.VariableIndex, byteValue)
   store.methods.update_node_variable(
-    props.nodeNumber, 
-    props.variableIndex, 
+    props.nodeNumber,
+    props.variableIndex,
     byteValue,
     true,
     getLinkedNodeVariables(props.configuration)
