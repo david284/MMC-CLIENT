@@ -8,7 +8,7 @@ function getBitMask(startBit, endBit){
   for (var i=startBit; i<=endBit; i++){
     bitMask += 1<<i;
   }
-  console.log (name + `: getBitMask: ${bitMask}`)
+  //console.log (name + `: getBitMask: ${startBit} ${endBit} ${bitMask}`)
   return bitMask
 }
 

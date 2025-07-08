@@ -108,35 +108,47 @@ watch(variableValue, () => {
     props.endBit)
 })
 
-//
-//
-const minValue = computed(() => {
-  return (props.min * props.displayScale) + props.displayOffset
+ //
+ //
+ const minValue = computed(() => {
+  let fixed = 0
+  if (props.displayScale < 1){ fixed = 1 }
+  if (props.displayScale < 0.1){ fixed = 2 }
+  if (props.displayScale < 0.01){ fixed = 3 }
+  return ((props.min * props.displayScale) + props.displayOffset).toFixed(fixed)
  })
 
  //
  //
  const maxValue = computed(() => {
-  return (props.max * props.displayScale) + props.displayOffset
+  let value = 0
+  try {
+    // work out how many decimal points the result should be
+    let fixed = 0
+    if (props.displayScale < 1){ fixed = 1 }
+    if (props.displayScale < 0.1){ fixed = 2 }
+    if (props.displayScale < 0.01){ fixed = 3 }
+    // work out max value from number of bits
+    let maxFromBits = (2 ** (props.endBit - props.startBit + 1) - 1)
+    // work out which max value to use
+    let maxRawvalue = ( props.max < maxFromBits) ? props.max : maxFromBits
+    // work out scaled max value with any offset, to required decimal places
+    value = ((maxRawvalue * props.displayScale) + props.displayOffset).toFixed(fixed)
+    console.log (name + `: maxValue ${value} ${props.max} ${maxFromBits}`)
+  } catch {}
+  return value
  })
 
+ //
+ //
  const displayMask = computed(() => {
   let MaxValue = 65535* props.displayScale + props.displayOffset
-  if(MaxValue > 1000000) {
-    return '#######'
-  }
-  else if(MaxValue > 100000) {
-    return '######'
-  }
-  else if(MaxValue > 10000) {
-    return '#####'
-  }
-  else if (MaxValue > 1000) {
-    return '####.#'
-  }
-  else {
-    return '###.##'
-  }
+  if (MaxValue > 1000000) { return '#######' }
+  if (MaxValue > 100000) { return '######' }
+  if (MaxValue > 10000) { return '#####' }
+  if (MaxValue > 1000) { return '####.#' }
+  if (MaxValue > 100) { return '###.##' }
+  return '##.###'
  })
 
 //

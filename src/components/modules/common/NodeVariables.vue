@@ -39,6 +39,8 @@
         :displayUnits="item.displayUnits"
         :min = "item.min"
         :max = "item.max"
+        :startBit = "item.startBit"
+        :endBit = "item.endBit"
         :configuration = item
         >
       </NodeVariableDual>
