@@ -13,12 +13,11 @@
       <q-input
         class="nv_input_box"
         :mask="displayMask"
+        reverse-fill-mask
         debounce="10"
         dense
         v-model="displayValue"
         outlined
-        :error-message="error_message"
-        :error="error"
         @change="update_variable"
       >
       </q-input>
@@ -88,96 +87,114 @@ const props = defineProps({
 })
 
 const store = inject('store')
-const error = ref(false)
-const error_message = ref('')
 const displayValue = ref()
 
+//
+//
 const displayMask = computed(() => {
   let MaxValue = 255* props.displayScale + props.displayOffset
   if(MaxValue > 100000) {
     return '######'
-  } 
-  if(MaxValue > 10000) {
+  }
+  else if(MaxValue > 10000) {
     return '#####'
-  } 
+  }
   else if (MaxValue > 1000) {
     return '####'
   }
-  else {
+  else if (MaxValue > 100) {
     return '###'
+  }
+  else if (MaxValue > 10) {
+    return '##.#'
+  }
+  else {
+    return '#.##'
   }
  })
 
+ //
+ //
  const minValue = computed(() => {
-  return (props.min * props.displayScale) + props.displayOffset
+  let fixed = 0
+  if (props.displayScale < 1){ fixed = 1 }
+  if (props.displayScale < 0.1){ fixed = 2 }
+  if (props.displayScale < 0.01){ fixed = 3 }
+  return ((props.min * props.displayScale) + props.displayOffset).toFixed(fixed)
  })
 
+ //
+ //
  const maxValue = computed(() => {
-  return (props.max * props.displayScale) + props.displayOffset
+  let fixed = 0
+  if (props.displayScale < 1){ fixed = 1 }
+  if (props.displayScale < 0.1){ fixed = 2 }
+  if (props.displayScale < 0.01){ fixed = 3 }
+  return ((props.max * props.displayScale) + props.displayOffset).toFixed(fixed)
  })
 
-
-
+//
+//
 const variableValue = computed(() =>{
     return store.state.nodes[props.nodeNumber].nodeVariables[props.nodeVariableIndex]
 })
 
-
+//
+//
 watch(variableValue, () => {
-  displayValue.value = getDisplayValue(variableValue.value, 
-    props.displayScale, 
-    props.displayOffset, 
-    props.startBit, 
+  displayValue.value = getDisplayValue(variableValue.value,
+    props.displayScale,
+    props.displayOffset,
+    props.startBit,
     props.endBit)
 })
 
-
+//
+//
 const update_variable = (newValue) => {
-  // get previous value, as starting point for updated byte value
-  let byteValue = variableValue.value
   let processedValue = Number(newValue)            // take a copy to change
-
+  //
   // max & min are the max & min of the values in the byte variable value
   // so need to scale up to check the display value actually used
   if (processedValue < minValue.value){
-    error.value = true
-    error_message.value = 'Value less than ' + minValue.value
+    processedValue = minValue.value
   }
   else if (processedValue > maxValue.value) {
-    error.value = true
-    error_message.value = 'Value more than ' + maxValue.value
-  } 
-  else {
-    byteValue = setByteVariable(byteValue, processedValue, props.displayScale, props.displayOffset, props.startBit, props.endBit)
-    error.value = false
-    error_message.value = ''
-    store.methods.update_node_variable(
-      props.nodeNumber, 
-      props.nodeVariableIndex, 
-      byteValue,
-      true,
-      getLinkedNodeVariables(props.configuration)
-    )
+    processedValue = maxValue.value
   }
+  let byteValue = setByteVariable(variableValue.value,
+                    processedValue,
+                    props.displayScale,
+                    props.displayOffset,
+                    props.startBit,
+                    props.endBit)
+  store.methods.update_node_variable(
+    props.nodeNumber,
+    props.nodeVariableIndex,
+    byteValue,
+    true,
+    getLinkedNodeVariables(props.configuration)
+  )
   //console.log(name + `: update_variable ${variableValue.value}`)
   // update display value
   displayValue.value = getDisplayValue(
-    variableValue.value, 
-    props.displayScale, 
-    props.displayOffset, 
-    props.startBit, 
+    variableValue.value,
+    props.displayScale,
+    props.displayOffset,
+    props.startBit,
     props.endBit
   )
   //console.log(name + `: displayValue ${displayValue.value}`)
 }
 
-
+//
+//
 onMounted(() => {
   //console.log(name + `: onMounted`)
-  displayValue.value = getDisplayValue(variableValue.value, 
-    props.displayScale, 
-    props.displayOffset, 
-    props.startBit, 
+  displayValue.value = getDisplayValue(variableValue.value,
+    props.displayScale,
+    props.displayOffset,
+    props.startBit,
     props.endBit)
 })
 

@@ -7,13 +7,16 @@
         </q-card-section>
       </div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
+      <q-badge color="secondary">
+        range {{ minValue }} to {{ maxValue }} {{ displayUnits }}
+      </q-badge>
       <q-input
-        mask="#####"
+        class="dual_input_box"
+        :mask="displayMask"
+        reverse-fill-mask
         debounce="1000"
-        v-model="variable"
+        v-model="displayValue"
         outlined
-        :error-message="error_message"
-        :error="error"
         @change="update_variable"
       >
       </q-input>
@@ -23,7 +26,10 @@
 
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
+import {setByteVariable} from "components/modules/common/commonFunctions.js"
 import {getLinkedNodeVariables} from "components/modules/common/commonFunctions.js"
+import {getDisplayValue} from "components/modules/common/commonFunctions.js"
+
 
 const name = 'NodeVariableDual'
 
@@ -48,6 +54,20 @@ const props = defineProps({
     type: String,
     required: false
   },
+    "displayOffset": {
+    type: Number,
+    required: false,
+    default: 0
+  },
+  "displayScale": {
+    type: Number,
+    required: false,
+    default: 1
+  },
+  "displayUnits": {
+    type: String,
+    default: ""
+  },
   "max": {
     type: Number,
     default: 65535
@@ -56,6 +76,14 @@ const props = defineProps({
     type: Number,
     default: 0
   },
+  "startBit":{
+    type: Number,
+    default: 0
+  },
+  "endBit":{
+    type: Number,
+    default: 15
+  },
   "configuration": {
     type: Object,
     required: true
@@ -63,55 +91,117 @@ const props = defineProps({
 })
 
 const store = inject('store')
-const error = ref(false)
-const error_message = ref('')
-const variable = ref()
+const displayValue = ref()
 
 const variableValue = computed(() =>{
     return (store.state.nodes[props.NodeNumber].nodeVariables[props.NodeVariableIndexHigh] << 8)
       + store.state.nodes[props.NodeNumber].nodeVariables[props.NodeVariableIndexLow]
 })
 
+//
+//
 watch(variableValue, () => {
-  variable.value = variableValue.value
+  displayValue.value = getDisplayValue(variableValue.value,
+    props.displayScale,
+    props.displayOffset,
+    props.startBit,
+    props.endBit)
 })
 
-const update_variable = (newValue) => {
-  if (newValue < props.min || newValue > props.max) {
-    console.log(`Invalid Value : ${newValue}`)
-    error.value = true
-    error_message.value = 'Invalid Value'
-  } else {
-    //console.log(`Value Ok : ${newValue}`)
-    error.value = false
-    error_message.value = ''
-    store.methods.update_node_variable(
-      props.NodeNumber,
-      props.NodeVariableIndexHigh,
-      newValue >> 8,
-      true,
-      getLinkedNodeVariables(props.configuration)
-    )
-    store.methods.update_node_variable(
-      props.NodeNumber,
-      props.NodeVariableIndexLow,
-      newValue & 0xFF,
-      true,
-      getLinkedNodeVariables(props.configuration)
-    )
+//
+//
+const minValue = computed(() => {
+  return (props.min * props.displayScale) + props.displayOffset
+ })
+
+ //
+ //
+ const maxValue = computed(() => {
+  return (props.max * props.displayScale) + props.displayOffset
+ })
+
+ const displayMask = computed(() => {
+  let MaxValue = 65535* props.displayScale + props.displayOffset
+  if(MaxValue > 1000000) {
+    return '#######'
   }
+  else if(MaxValue > 100000) {
+    return '######'
+  }
+  else if(MaxValue > 10000) {
+    return '#####'
+  }
+  else if (MaxValue > 1000) {
+    return '####.#'
+  }
+  else {
+    return '###.##'
+  }
+ })
+
+//
+//
+const update_variable = (newValue) => {
+  let processedValue = Number(newValue)            // take a copy to change
+  //
+  // max & min are the max & min of the values in the byte variable value
+  // so need to scale up to check the display value actually used
+  if (processedValue < minValue.value){
+    processedValue = minValue.value
+  }
+  else if (processedValue > maxValue.value) {
+    processedValue = maxValue.value
+  }
+  //
+  let dualValue = setByteVariable(variableValue.value,
+    processedValue,
+    props.displayScale,
+    props.displayOffset,
+    props.startBit,
+    props.endBit)
+  //
+  store.methods.update_node_variable(
+    props.NodeNumber,
+    props.NodeVariableIndexHigh,
+    dualValue >> 8,
+    true,
+    getLinkedNodeVariables(props.configuration)
+  )
+  //
+  store.methods.update_node_variable(
+    props.NodeNumber,
+    props.NodeVariableIndexLow,
+    dualValue & 0xFF,
+    true,
+    getLinkedNodeVariables(props.configuration)
+  )
+  //
+  displayValue.value = getDisplayValue(
+    variableValue.value,
+    props.displayScale,
+    props.displayOffset,
+    props.startBit,
+    props.endBit
+  )
 }
 
 onMounted(() => {
-
-  variable.value = (store.state.nodes[props.NodeNumber].nodeVariables[props.NodeVariableIndexHigh] << 8)
-    + store.state.nodes[props.NodeNumber].nodeVariables[props.NodeVariableIndexLow]
   //console.log(`NodeVariableDual ${variable.value}`)
+  displayValue.value = getDisplayValue(variableValue.value,
+    props.displayScale,
+    props.displayOffset,
+    props.startBit,
+    props.endBit)
 })
 
 
 </script>
 
 <style scoped>
-
+:deep(.dual_input_box .q-field__control),
+:deep(.dual_input_box .q-field__marginal) {
+  height: 32px;
+  width: 80px;
+  font-size: 16px;
+}
 </style>

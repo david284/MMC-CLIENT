@@ -8,6 +8,7 @@ function getBitMask(startBit, endBit){
   for (var i=startBit; i<=endBit; i++){
     bitMask += 1<<i;
   }
+  console.log (name + `: getBitMask: ${bitMask}`)
   return bitMask
 }
 
@@ -24,7 +25,7 @@ export function getDisplayValue (byteVariable, scaling, offset, startBit, endBit
   // work out a bit mask from start and end bits if both present
   if ((startBit != undefined) && (endBit != undefined)){
     var bitMask = getBitMask(startBit, endBit)
-  } else { 
+  } else {
     startBit = 0
     bitMask = 0xFF
   }
@@ -47,8 +48,8 @@ export function getDisplayValue (byteVariable, scaling, offset, startBit, endBit
 
 
 export function  setByteVariable (byteVariable, newValue, scaling, offset, startBit, endBit) {
-  /*
-  console.log (name + ": setByteVariable: " 
+
+  console.log (name + ": setByteVariable: "
     + byteVariable + ' '
     + newValue + ' '
     + scaling + ' '
@@ -56,12 +57,12 @@ export function  setByteVariable (byteVariable, newValue, scaling, offset, start
     + startBit + ' '
     + endBit
   )
-  */
+
 
   // work out a bit mask from start and end bits if both present
   if ((startBit != undefined) && (endBit != undefined)){
     var bitMask = getBitMask(startBit, endBit)
-  } else { 
+  } else {
     bitMask = 0xFF
     startBit = 0
   }
@@ -75,7 +76,7 @@ export function  setByteVariable (byteVariable, newValue, scaling, offset, start
   let processedValue = newValue - offset
   //
   // now remove scaling, but ensure the result is an integer
-  processedValue = processedValue/scaling & 0xFF
+  processedValue = (processedValue/scaling).toFixed(0)
   //
   // ok, offset & scaling removed, now adjust position according to startBit
   processedValue = processedValue << startBit       // shift to position in variable
@@ -84,7 +85,7 @@ export function  setByteVariable (byteVariable, newValue, scaling, offset, start
   newByteVariable = newByteVariable | (processedValue & bitMask)							// set bit by 'or-ing' bit value
   newByteVariable = newByteVariable & (processedValue | ~bitMask)							// clear bit by 'and-ing' inverse bit value
 
-  //console.log (name + ": setByteVariable: result " +  newByteVariable)
+  console.log (name + ": setByteVariable: result " +  newByteVariable)
 
   return newByteVariable
 }
@@ -92,7 +93,7 @@ export function  setByteVariable (byteVariable, newValue, scaling, offset, start
 export function getLinkedEventVariables(configuration){
   let linkedVariables = undefined
   if (configuration.linkedVariables != undefined){
-    linkedVariables = (configuration.linkedVariables.EV != undefined) ? configuration.linkedVariables.EV : undefined 
+    linkedVariables = (configuration.linkedVariables.EV != undefined) ? configuration.linkedVariables.EV : undefined
   }
   return linkedVariables
 }
@@ -100,7 +101,7 @@ export function getLinkedEventVariables(configuration){
 export function getLinkedNodeVariables(configuration){
   let linkedVariables = undefined
   if (configuration.linkedVariables != undefined){
-    linkedVariables = (configuration.linkedVariables.NV != undefined) ? configuration.linkedVariables.NV : undefined 
+    linkedVariables = (configuration.linkedVariables.NV != undefined) ? configuration.linkedVariables.NV : undefined
   }
   return linkedVariables
 }

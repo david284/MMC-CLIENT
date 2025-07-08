@@ -34,6 +34,11 @@
         :NodeNumber=store.state.selected_node
         :displayTitle="item.displayTitle"
         :displaySubTitle="item.displaySubTitle"
+        :displayScale = "item.displayScale"
+        :displayOffset = "item.displayOffset"
+        :displayUnits="item.displayUnits"
+        :min = "item.min"
+        :max = "item.max"
         :configuration = item
         >
       </NodeVariableDual>
