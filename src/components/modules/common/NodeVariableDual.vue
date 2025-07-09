@@ -134,7 +134,7 @@ watch(variableValue, () => {
     let maxRawvalue = ( props.max < maxFromBits) ? props.max : maxFromBits
     // work out scaled max value with any offset, to required decimal places
     value = ((maxRawvalue * props.displayScale) + props.displayOffset).toFixed(fixed)
-    console.log (name + `: maxValue ${value} ${props.max} ${maxFromBits}`)
+    //console.log (name + `: maxValue ${value} ${props.max} ${maxFromBits}`)
   } catch {}
   return value
  })

@@ -55,7 +55,7 @@ export function getDisplayValue (byteVariable, scaling, offset, startBit, endBit
 
 
 export function  setByteVariable (byteVariable, newValue, scaling, offset, startBit, endBit) {
-
+/*
   console.log (name + ": setByteVariable: "
     + byteVariable + ' '
     + newValue + ' '
@@ -64,7 +64,7 @@ export function  setByteVariable (byteVariable, newValue, scaling, offset, start
     + startBit + ' '
     + endBit
   )
-
+*/
 
   // work out a bit mask from start and end bits if both present
   if ((startBit != undefined) && (endBit != undefined)){
@@ -92,7 +92,7 @@ export function  setByteVariable (byteVariable, newValue, scaling, offset, start
   newByteVariable = newByteVariable | (processedValue & bitMask)							// set bit by 'or-ing' bit value
   newByteVariable = newByteVariable & (processedValue | ~bitMask)							// clear bit by 'and-ing' inverse bit value
 
-  console.log (name + ": setByteVariable: result " +  newByteVariable)
+  //console.log (name + ": setByteVariable: result " +  newByteVariable)
 
   return newByteVariable
 }

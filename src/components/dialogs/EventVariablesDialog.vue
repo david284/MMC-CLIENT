@@ -170,7 +170,7 @@ watch(model, () => {
       showDescriptorWarning.value = false
       processedEventVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
     }
-    console.log(name + `: WATCH model: getNumberOfChannels`)
+    //console.log(name + `: WATCH model: getNumberOfChannels`)
     numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
   }
 })
@@ -196,7 +196,7 @@ const variablesDescriptor = computed(() =>{
 //
 //
 watch(variablesDescriptor, () => {
-  console.log(name + `: WATCH variablesDescriptor`)
+  //console.log(name + `: WATCH variablesDescriptor`)
   if (model.value == true){     // don't bother if not displayed
     if (variablesDescriptor.value == undefined){
       showRawVariables.value = true
@@ -206,7 +206,7 @@ watch(variablesDescriptor, () => {
       eventVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].eventsVariableInformation
       processedEventVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
     }
-    console.log(name + `: WATCH variablesDescriptor: getNumberOfChannels`)
+    //console.log(name + `: WATCH variablesDescriptor: getNumberOfChannels`)
     numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
   }
 })

@@ -250,12 +250,12 @@ const methods = {
   //
   request_all_node_events(nodeNumber) {
     socket.emit('REQUEST_ALL_NODE_EVENTS', {"nodeNumber": nodeNumber})
-    console.log(`REQUEST_ALL_NODE_EVENTS ${nodeNumber}`)
+    console.log(secondsNow() + ': ' + name + `: REQUEST_ALL_NODE_EVENTS ${nodeNumber}`)
   },
   //
   request_event_variables_by_identifier(nodeNumber, eventIdentifier) {
     console.log(name + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER: nodeNumber: ` + nodeNumber + ` eventIdentifier: ` + eventIdentifier)
-    socket.emit('REQUEST_EVENT_VARIABLES_BY_IDENTIFIER', {
+    socket.emit(secondsNow() + ': ' + name + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER`, {
       "nodeNumber": nodeNumber,
       "eventIdentifier": eventIdentifier
     })
@@ -363,7 +363,7 @@ const methods = {
   // we don't want to read any back if doing bulk programming (e.g. restoring a node)
   //
   update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue, reLoad, linkedVariableList) {
-    console.log(name + `: update_node_variable: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad} ${JSON.stringify(linkedVariableList)}`)
+    console.log(secondsNow() + ': ' + name + `: update_node_variable: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad} ${JSON.stringify(linkedVariableList)}`)
     state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
     if (reLoad != false){reLoad = true}
     let data = {

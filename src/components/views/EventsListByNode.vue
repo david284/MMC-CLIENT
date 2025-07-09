@@ -272,7 +272,7 @@ const update_rows = () => {
 
 
 onBeforeMount(() => {
-  console.log(name + ": onBeforeMount")
+  //console.log(name + ": onBeforeMount")
   if (props.nodeNumber){
     update_rows()
   }
