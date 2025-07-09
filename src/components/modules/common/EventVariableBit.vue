@@ -1,12 +1,12 @@
 <template>
-  <q-card-section class="no-margin q-pa-xs">
+  <q-card-section class="no-margin no-padding">
     <q-checkbox
       dense
       min-width="100"
       v-model="checked"
       :label=label
-      @update:model-value="updated"
       right-label
+      @update:model-value="updated"
     ></q-checkbox>
   </q-card-section>
 </template>
@@ -75,9 +75,9 @@ const update_checked = () => {
   }
   //console.log(`EventVariableBit update_checked-2 ${checked.value} ${byteValue}`)
   store.methods.event_teach_by_identifier(
-    props.nodeNumber, 
-    props.eventIdentifier, 
-    props.eventVariableIndex, 
+    props.nodeNumber,
+    props.eventIdentifier,
+    props.eventVariableIndex,
     byteValue,
     true,
     getLinkedEventVariables(props.configuration)

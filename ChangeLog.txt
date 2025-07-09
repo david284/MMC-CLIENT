@@ -1,6 +1,8 @@
 Version 0.10.3
-  Added scaling & units to NodeVariableDual as per NodeVariableNumber
+  Added NodeVariableButtons
   Amended NodeVariableNumber to support scaling down to 0.01 (2 decimal places)
+  Added scaling & units to NodeVariableDual to match NodeVariableNumber
+  Amended EventVariableNumber to match NodeVariableNumber
 
 Version 0.10.2
   Addressed dialog opening delays by adding extra watches & removing code in 'on-update'

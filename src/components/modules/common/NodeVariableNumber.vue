@@ -98,7 +98,8 @@ const displayMask = computed(() => {
   if (MaxValue > 1000) { return '####' }
   if (MaxValue > 100) { return '###' }
   if (MaxValue > 10) { return '##.#' }
-  return '#.##'
+  if (MaxValue > 1) { return '#.##' }
+  return '.###'
  })
 
  //
@@ -153,20 +154,18 @@ watch(variableValue, () => {
 const update_variable = (newValue) => {
   let processedValue = Number(newValue)            // take a copy to change
   //
-  // max & min are the max & min of the values in the byte variable value
-  // so need to scale up to check the display value actually used
-  if (processedValue < minValue.value){
-    processedValue = minValue.value
-  }
-  else if (processedValue > maxValue.value) {
-    processedValue = maxValue.value
-  }
+  // check newValue against max & min display limits
+  if (processedValue < minValue.value){ processedValue = minValue.value }
+  if (processedValue > maxValue.value) { processedValue = maxValue.value }
+  //
   let byteValue = setByteVariable(variableValue.value,
-                    processedValue,
-                    props.displayScale,
-                    props.displayOffset,
-                    props.startBit,
-                    props.endBit)
+    processedValue,
+    props.displayScale,
+    props.displayOffset,
+    props.startBit,
+    props.endBit
+  )
+  //
   store.methods.update_node_variable(
     props.nodeNumber,
     props.nodeVariableIndex,

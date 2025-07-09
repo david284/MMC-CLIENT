@@ -14,7 +14,8 @@
         class="dual_input_box"
         :mask="displayMask"
         reverse-fill-mask
-        debounce="1000"
+        debounce="10"
+        dense
         v-model="displayValue"
         outlined
         @change="update_variable"
@@ -155,22 +156,18 @@ watch(variableValue, () => {
 //
 const update_variable = (newValue) => {
   let processedValue = Number(newValue)            // take a copy to change
+//
+  // check newValue against max & min display limits
+  if (processedValue < minValue.value){ processedValue = minValue.value }
+  if (processedValue > maxValue.value) { processedValue = maxValue.value }
   //
-  // max & min are the max & min of the values in the byte variable value
-  // so need to scale up to check the display value actually used
-  if (processedValue < minValue.value){
-    processedValue = minValue.value
-  }
-  else if (processedValue > maxValue.value) {
-    processedValue = maxValue.value
-  }
-  //
-  let dualValue = setByteVariable(variableValue.value,
+    let dualValue = setByteVariable(variableValue.value,
     processedValue,
     props.displayScale,
     props.displayOffset,
     props.startBit,
-    props.endBit)
+    props.endBit
+  )
   //
   store.methods.update_node_variable(
     props.NodeNumber,
