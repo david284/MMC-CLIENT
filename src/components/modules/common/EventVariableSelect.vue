@@ -9,8 +9,9 @@
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
     <q-select
       v-model="selectVariable"
+      dense
       :options=items
-      popup-content-class="q-pm-none"
+      popup-content-class="no-margin no-padding"
       map-options
       @update:model-value="update_variable"
     >
@@ -78,7 +79,7 @@ watch(variableValue, () => {
 
 const update_variable = (newValue) => {
 //  console.log(name +`: newValue ${newValue.value}`);
-  
+
   // get previous value
   let byteValue = variableValue.value
   //set bits, but only if they match bits in the bitmask
@@ -87,11 +88,11 @@ const update_variable = (newValue) => {
   byteValue = byteValue & (newValue.value | ~props.bitMask)							// clear bit by 'and-ing' inverse bit value
 
   //console.log(`EventVariableSelect: byteValue ${byteValue}`);
-  
+
   store.methods.event_teach_by_identifier(
-    props.nodeNumber, 
-    props.eventIdentifier, 
-    props.eventVariableIndex, 
+    props.nodeNumber,
+    props.eventIdentifier,
+    props.eventVariableIndex,
     byteValue,
     true,
     getLinkedEventVariables(props.configuration)
@@ -106,8 +107,8 @@ onMounted(() => {
   items.value = []
   for (var i in props.options){
     //console.log(name + `: ComplexSelect: item: ${i}`)
-    if (props.options[i].overload != undefined) {   
-      var label = overloadedLabel(props.nodeNumber, props.options[i].overload, store) 
+    if (props.options[i].overload != undefined) {
+      var label = overloadedLabel(props.nodeNumber, props.options[i].overload, store)
       if (label) {
         var entry = {"value": props.options[i].value, "label": label}
         items.value.push(entry)
