@@ -42,6 +42,13 @@ export function getDisplayValue (byteVariable, scaling, offset, startBit, endBit
   processedValue = processedValue * scaling
   processedValue = processedValue + offset
 
+  // now fix number of decimal places
+  let fixed = 0
+  if (scaling < 1){ fixed = 1 }
+  if (scaling < 0.1){ fixed = 2 }
+  if (scaling < 0.01){ fixed = 3 }
+  processedValue = processedValue.toFixed(fixed)
+
   return processedValue
 }
 
