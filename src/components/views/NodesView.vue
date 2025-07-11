@@ -109,7 +109,7 @@
       <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
       callingModule = "Nodes View"
       :message = WaitingOnBusTrafficMessage
-      @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
+      @WaitingOnBusTrafficDialogEvent="WaitingOnBusTrafficDialogReturn = $event"
       />
 
       <vlcbServicesDialog  v-model='showVLCBServicesDialog'
@@ -126,6 +126,7 @@
 import {inject, ref, onBeforeMount, onMounted, computed, watch} from "vue"
 import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
+import {timeStampedLog} from "components/functions/utils.js"
 import EventsListByNode from "components/views/EventsListByNode"
 import advancedNodeDialog from "components/dialogs/advancedNodeDialog"
 import nameNodeDialog from "components/dialogs/NameNodeDialog"
@@ -180,7 +181,7 @@ const nodesUpdated = computed(() => {
 })
 
 watch(nodesUpdated, () => {
-  //console.log(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
+  //timeStampedLog(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
   update_rows()
 })
 
@@ -190,13 +191,13 @@ const layoutUpdated = computed(() => {
 })
 
 watch(layoutUpdated, () => {
-  //console.log(name + `: WATCH: layoutUpdated`)
+  //timeStampedLog(name + `: WATCH: layoutUpdated`)
   update_rows()
 })
 
 
 const update_rows = () => {
-//  console.log(name + ': update_rows')
+//  timeStampedLog(name + ': update_rows')
   rows.value = []
   let nodeList = Object.values(store.state.nodes)
   nodeList.forEach(node => {
@@ -236,7 +237,7 @@ const nodeColour = (nodeNumber) => {
 
 
 onBeforeMount(() => {
-  //console.log(name + `: onBeforeMount`)
+  //timeStampedLog(name + `: onBeforeMount`)
   if (store.state.nodes_view_mode == undefined){
     store.state.nodes_view_mode = "split"
   }
@@ -250,18 +251,18 @@ onBeforeMount(() => {
 
 
 const select_node_row = async (nodeNumber) => {
-  //console.log(name + ': select_node_row: node ' + nodeNumber)
+  //timeStampedLog(name + ': select_node_row: node ' + nodeNumber)
   store.state.selected_node = nodeNumber
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   selected_node_valid.value = true
   // give the module chance to report it's events
   await sleep(300)
-//    console.log(name + ': node row ', store.state.selected_node + " selected")
+//    timeStampedLog(name + ': node row ', store.state.selected_node + " selected")
 }
 
 
 store.eventBus.on('NODE_DELETED_EVENT', (nodeNumber) => {
-//  console.log(name + ': NODE_DELETED_EVENT - node number ' + nodeNumber)
+//  timeStampedLog(name + ': NODE_DELETED_EVENT - node number ' + nodeNumber)
   if (store.state.selected_node == nodeNumber){
     selected_node_valid.value = false
   }
@@ -269,7 +270,7 @@ store.eventBus.on('NODE_DELETED_EVENT', (nodeNumber) => {
 
 
 const checkNodeParameters = async (nodeNumber) => {
-  //console.log(name + ': checkNodeParameters: node ' + nodeNumber)
+  //timeStampedLog(name + ': checkNodeParameters: node ' + nodeNumber)
   //
   // param9 - cpu type to check if parameters have been fully retrieved
   if(store.state.nodes[nodeNumber].parameters[9]){
@@ -284,7 +285,8 @@ const checkNodeParameters = async (nodeNumber) => {
     while ((Date.now() - startTime) < 120000){
       if (WaitingOnBusTrafficDialogReturn.value.length > 0)
       {
-//        result = true  // success if we exit early
+        // success if we exit early
+        //timeStampedLog(name + ': checkNodeParameters: return ' + WaitingOnBusTrafficDialogReturn.value)
         break
       }
       await sleep (100)
@@ -293,7 +295,7 @@ const checkNodeParameters = async (nodeNumber) => {
   }
   var result = (store.state.nodes[nodeNumber].parameters[9] != undefined)? true : false
   if (result == false){
-    console.log(name + `: checkNodeParameters: node ${nodeNumber} failed`)
+    timeStampedLog(name + `: checkNodeParameters: node ${nodeNumber} failed`)
     $q.notify({
       message: 'Reading Node Parameters has failed',
       caption: 'please check connections to node',
@@ -311,7 +313,7 @@ const checkNodeParameters = async (nodeNumber) => {
 // raise notification if nodeDescriptor file not present
 const checkFileLoad = async (nodeNumber) => {
 //  await sleep(500)
-  //console.log(name + `: checkFileLoad`)
+  //timeStampedLog(name + `: checkFileLoad`)
   if (store.state.loadFile_notification_raised[nodeNumber] == undefined) {
     if (store.state.nodeDescriptors[nodeNumber] == undefined)
     {
@@ -329,10 +331,10 @@ const checkFileLoad = async (nodeNumber) => {
 
 
 const checkNodeVariables = async (nodeNumber) => {
-  //console.log(name + ': checkNodeVariables: node ' + nodeNumber)
+  //timeStampedLog(name + ': checkNodeVariables: node ' + nodeNumber)
   var maxNodeVariableIndex = store.state.nodes[nodeNumber].parameters[6]
   if(store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex] != undefined){
-    //console.log(name + ": checkNodeVariables: already read")
+    //timeStampedLog(name + ": checkNodeVariables: already read")
   } else {
     WaitingOnBusTrafficDialogReturn.value =''
     WaitingOnBusTrafficMessage.value = "Loading Node Variables"
@@ -357,7 +359,7 @@ Click event handlers
 //
 //
 const clickDeleteNode = (nodeNumber) => {
-  console.log(name + `: clickDeleteNode ` + nodeNumber)
+  timeStampedLog(name + `: clickDeleteNode ` + nodeNumber)
   const result = $q.notify({
     message: 'Are you sure you want to delete node '+ store.getters.node_name(nodeNumber),
     timeout: 0,
@@ -376,7 +378,7 @@ const clickDeleteNode = (nodeNumber) => {
 //
 //
 const clickEvents = async (nodeNumber) => {
-  console.log(name + `: clickEvents: node ` + nodeNumber)
+  timeStampedLog(name + `: clickEvents: node ` + nodeNumber)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   await checkNodeParameters(nodeNumber)
   await checkNodeVariables(nodeNumber)
@@ -390,7 +392,7 @@ const clickEvents = async (nodeNumber) => {
 //
 //
 const clickViewMode = () => {
-  console.log(name + `: clickViewMode ${store.state.nodes_view_mode}`)
+  timeStampedLog(name + `: clickViewMode ${store.state.nodes_view_mode}`)
   store.state.nodes_view_mode = (store.state.nodes_view_mode == 'full') ? 'split' : 'full'
   if (store.state.nodes_view_mode == 'split'){
     tableStyle.value = "nodes-view-split-table"
@@ -402,14 +404,14 @@ const clickViewMode = () => {
 //
 //
 const clickInfo = () => {
-  console.log(name + `: clickInfo`)
+  timeStampedLog(name + `: clickInfo`)
   showNodesViewInfoDialog.value = true
 }
 
 //
 //
 const clickNameNode = async (nodeNumber) => {
-  console.log(name + `: clickNameNode: node ` + nodeNumber)
+  timeStampedLog(name + `: clickNameNode: node ` + nodeNumber)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   await select_node_row(nodeNumber)
   showNameNodeDialog.value = true;
@@ -418,7 +420,7 @@ const clickNameNode = async (nodeNumber) => {
 //
 //
 const clickNodeAdvanced = async (nodeNumber) => {
-  console.log(name + `: clickNodeAdvanced`)
+  timeStampedLog(name + `: clickNodeAdvanced`)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   if (store.state.nodes[nodeNumber].status) {
     await checkNodeParameters(nodeNumber)
@@ -426,27 +428,27 @@ const clickNodeAdvanced = async (nodeNumber) => {
   await select_node_row(nodeNumber)
   selectedNode.value = nodeNumber
   showAdvancedNodeDialog.value=true
-  console.log(name + ': clickAdvanced: node' + store.state.selected_node)
+  timeStampedLog(name + ': clickAdvanced: node' + store.state.selected_node)
 }
 
 //
 //
 const clickNodesViewAdvanced = async () => {
-  console.log(name + `: clickNodesViewAdvanced:`)
+  timeStampedLog(name + `: clickNodesViewAdvanced:`)
   showNodesViewAdvancedDialog.value = true
 }
 
 //
 //
 const clickParameters = async (nodeNumber) => {
-  console.log(name + `: clickParameters`)
+  timeStampedLog(name + `: clickParameters`)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   // clear out parameters to force them to be reloaded
   store.state.nodes[nodeNumber].parameters = {}
   if (await checkNodeParameters(nodeNumber)){
-    //console.log(name + `: clickParameters: checkNodeParameters true`)
+    //timeStampedLog(name + `: clickParameters: checkNodeParameters true`)
     await select_node_row(nodeNumber)
-    //console.log(name + `: clickParameters: node ` + nodeNumber)
+    //timeStampedLog(name + `: clickParameters: node ` + nodeNumber)
     showNodeParametersDialog.value = true
   }
 }
@@ -454,14 +456,14 @@ const clickParameters = async (nodeNumber) => {
 //
 //
 const clickRefresh = () => {
-  console.log(name + ': clickRefresh')
+  timeStampedLog(name + ': clickRefresh')
   store.methods.query_all_nodes()
 }
 
 //
 //
 const clickVariables = async (nodeNumber) => {
-  console.log(name + `: clickVariables: node ` + nodeNumber)
+  timeStampedLog(name + `: clickVariables: node ` + nodeNumber)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   await checkNodeParameters(nodeNumber)
   await select_node_row(nodeNumber)
@@ -476,7 +478,7 @@ const clickVariables = async (nodeNumber) => {
 //
 //
 const clickVLCB = async (nodeNumber) => {
-  console.log(name + ': clickVLCB')
+  timeStampedLog(name + ': clickVLCB')
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   await checkNodeParameters(nodeNumber)
   await select_node_row(nodeNumber)

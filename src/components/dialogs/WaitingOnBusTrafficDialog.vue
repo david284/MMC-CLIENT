@@ -23,7 +23,7 @@
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import {sleep} from "components/functions/utils.js"
-import {secondsNow} from "components/functions/utils.js"
+import {timeStampedLog} from "components/functions/utils.js"
 
 const store = inject('store')
 const name = "WaitingOnBusTrafficDialog"
@@ -38,7 +38,7 @@ const props = defineProps({
 
 //
 //
-const emit = defineEmits(['update:modelValue', 'WaitingOnBusTrafficDialog'])
+const emit = defineEmits(['update:modelValue', 'WaitingOnBusTrafficDialogEvent'])
 
 //
 //
@@ -50,9 +50,9 @@ const model = computed({
 //
 // model changes when Dialog opened & closed
 watch(model, async () => {
-  //console.log(name + `: WATCH model ` + model.value)
+  //timeStampedLog(name + `: WATCH model ` + model.value)
   if (model.value == true){
-    console.log(secondsNow() + ': ' + name + `: WATCH model ` + model.value)
+    timeStampedLog(name + `: WATCH model ` + model.value)
     await waitOnBusTraffic()
   }
 })
@@ -62,13 +62,13 @@ watch(model, async () => {
 const waitOnBusTraffic = async () => {
 
   store.state.cbusTrafficTimeStamp = Date.now()
-  while ((Date.now() - store.state.cbusTrafficTimeStamp) < 1000) {
-    await sleep(100)
+  while ((Date.now() - store.state.cbusTrafficTimeStamp) < 400) {
+    await sleep(10)
   }
 
-  console.log(secondsNow() + ': ' + name + `: END wait`)
+  timeStampedLog(name + `: END wait`)
   // signal it's complete
-  emit('WaitingOnBusTrafficDialog', 'finished')
+  emit('WaitingOnBusTrafficDialogEvent', 'finished')
   model.value = false
 }
 

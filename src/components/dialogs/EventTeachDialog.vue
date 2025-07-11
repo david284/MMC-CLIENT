@@ -59,7 +59,7 @@
                   <q-td key="actions" :props="props">
                     <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Variables"
                     @click="clickVariables(props.row.number, props.row.eventIdentifier)" no-caps/>
-                  </q-td>              
+                  </q-td>
 
                 </q-tr>
               </template>
@@ -82,7 +82,7 @@
   <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
     callingModule = "Event Teach"
     :message = WaitingOnBusTrafficMessage
-    @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
+    @WaitingOnBusTrafficDialogEvent="WaitingOnBusTrafficDialogReturn = $event"
   />
 
 </template>
@@ -195,7 +195,7 @@ const update_available_nodes = () =>{
     // loop through json object properties with a for-in loop
     // returns top level property even if a nested object (not an index like an array)
     for (var nodeNumber in nodes) {
-      // loop through each node, but check if it's valid to be added first  
+      // loop through each node, but check if it's valid to be added first
       let addNode = true  // assume we'll add it unless we find otherwise
       //    console.log(name + `: update_available_nodes: node ` + nodeNumber)
       //    console.log(name + `: update_available_nodes: taughtNodes ` + JSON.stringify(taughtNodes.value))
@@ -223,7 +223,7 @@ const update_available_nodes = () =>{
           }
         }
       }
-    }  
+    }
   } catch (err){
     console.log(name + `: update_available_nodes: ` + err)
   }
@@ -306,7 +306,7 @@ const clickTeachEvent = async () => {
     if(store.state.nodes[nodeNumberToBeTaught].eventSpaceLeft > 0){
       await checkNodeParameters(nodeNumberToBeTaught)
       await checkNodeVariables(nodeNumberToBeTaught)
-      createNewEvent(store, nodeNumberToBeTaught, props.eventIdentifier)             
+      createNewEvent(store, nodeNumberToBeTaught, props.eventIdentifier)
 
       selected_event_Identifier.value = props.eventIdentifier
       isNewEvent.value=true

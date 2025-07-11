@@ -15,7 +15,7 @@ export function replaceChannelTokens(store, jsonObj, nodeNumber) {
   var indexTokenStart = 0;
   var startToken = "${channel"
   var endToken = "}"
-  console.log(secondsNow() + ': ' + name + `: BEGIN_replaceChannelTokens: node ${nodeNumber}`)
+  timeStampedLog(name + `: BEGIN_replaceChannelTokens: node ${nodeNumber}`)
   while((indexTokenStart = jsonString.toLowerCase().indexOf(startToken, searchIndex)) > 0) {
     searchIndex = indexTokenStart + 1
     // look for next '}'
@@ -29,7 +29,7 @@ export function replaceChannelTokens(store, jsonObj, nodeNumber) {
       // if quote mark is before this ending char, then ending char missing, so skip
       // if endOfField == -1, then not found, so don't run this test (should never happen)
       if (indexTokenEnd > endOfField) {
-        console.log(name + `: missing ending token - skipping ${indexTokenEnd} ${endOfField}` )
+        timeStampedLog(name + `: missing ending token - skipping ${indexTokenEnd} ${endOfField}` )
         continue
       }
     }
@@ -39,18 +39,18 @@ export function replaceChannelTokens(store, jsonObj, nodeNumber) {
     let channelNumber = channelToken.replace(/[^0-9]/g, "")
     // get channel name
     let channelName = store.getters.node_channel_name(nodeNumber, channelNumber)
-    //console.log(name + ":channelName " + channelName)
+    //timeStampedLog(name + ":channelName " + channelName)
     // now replace full token with channel Name
-    //console.log(name + ":replace " + channelToken + ' with '+ channelName)
+    //timeStampedLog(name + ":replace " + channelToken + ' with '+ channelName)
     jsonString = jsonString.replace(channelToken, channelName)
     //await sleep(1)
   }
   try{
     result = JSON.parse(jsonString)
   } catch(err) {
-    console.log(name + ": replaceChannelTokens: " + err)
+    timeStampedLog(name + ": replaceChannelTokens: " + err)
   }
-  console.log(secondsNow() + ': ' + name + `: END_replaceChannelTokens: node ${nodeNumber}`)
+  timeStampedLog(name + `: END_replaceChannelTokens: node ${nodeNumber}`)
 	return result
 }
 
@@ -109,7 +109,7 @@ export function createTimeStamp(){
 //               012345678901
 //
 export function TimeStampToText(timestamp){
-  //console.log("TimeStampToText: length " + timestamp.length)
+  //timeStampedLog("TimeStampToText: length " + timestamp.length)
   var text = ''
   if (timestamp.length == 12){
     text = timestamp.substring(0,4)     // get year
@@ -121,4 +121,7 @@ export function TimeStampToText(timestamp){
   return text
 }
 
+export function timeStampedLog(text){
+  console.log('TS ' + secondsNow() + ': ' + text)
+}
 

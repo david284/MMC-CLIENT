@@ -11,7 +11,7 @@
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
           </template>
         </q-banner>
-        
+
         <q-card style="height: 200px" class="q-pa-sm q-ma-sm">
           <div class="text-primary">status</div>
           <div class="text-h6">{{ backupStatus }}</div>
@@ -24,7 +24,7 @@
     <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
       callingModule = "Node Backup"
       :message = WaitingOnBusTrafficMessage
-      @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
+      @WaitingOnBusTrafficDialogEvent="WaitingOnBusTrafficDialogReturn = $event"
     />
 
 
@@ -144,7 +144,7 @@ const loadNodeVariables = async () => {
   // wait for variables to load - allow up to 1 minute
   var startTime = Date.now()
   while ((Date.now() - startTime) < 60000){
-      if (WaitingOnBusTrafficDialogReturn.value.length > 0) 
+      if (WaitingOnBusTrafficDialogReturn.value.length > 0)
     {
       result = true  // success if we exit early
       break
@@ -171,7 +171,7 @@ const loadEventVariables = async () => {
     // wait for variables to load - allow up to 2 minutes
     var startTime = Date.now()
     while ((Date.now() - startTime) < 120000){
-      if (WaitingOnBusTrafficDialogReturn.value.length > 0) 
+      if (WaitingOnBusTrafficDialogReturn.value.length > 0)
       {
         result = true  // success if we exit early
         break

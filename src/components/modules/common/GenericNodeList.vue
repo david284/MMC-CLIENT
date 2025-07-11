@@ -42,7 +42,7 @@
   <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
     callingModule = "Node List"
     :message = WaitingOnBusTrafficMessage
-    @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
+    @WaitingOnBusTrafficDialogEvent="WaitingOnBusTrafficDialogReturn = $event"
   />
 
 
@@ -92,7 +92,7 @@ const update_nodes_table = async () => {
   props.nodeNumberList.forEach(nodeNumber => {
     var nodeName = store.getters.node_name(nodeNumber)
     teRows.value.push({
-      "nodeNumber" : nodeNumber, 
+      "nodeNumber" : nodeNumber,
       "name" : nodeName,
       "group" : store.getters.node_group(nodeNumber)
     })
@@ -177,7 +177,7 @@ const clickDelete = (nodeNumber) => {
     position: 'center',
     color: 'primary',
     actions: [
-      { label: 'YES', color: 'white', handler: async () => { 
+      { label: 'YES', color: 'white', handler: async () => {
         console.log(`removeEvent ` + nodeNumber + ' ' + props.eventIdentifier)
         store.methods.remove_event(nodeNumber, props.eventIdentifier)
       } },

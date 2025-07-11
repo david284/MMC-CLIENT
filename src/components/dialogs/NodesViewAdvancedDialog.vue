@@ -22,7 +22,7 @@
           </q-card-section>
 
           <q-card-section style="width: 500px; min-height: 80px;">
-            A node with an ID of 0 won't show in the main node view, but it's parameters can be viewed from here. 
+            A node with an ID of 0 won't show in the main node view, but it's parameters can be viewed from here.
             An uninitialised node will have an ID of 0, as will a SLiM consumer node, so if there is more than one node with ID 0, then the last one to respond will be displayed
           </q-card-section>
 
@@ -58,7 +58,7 @@
       <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
         callingModule = "NodesView Advanced"
         :message = WaitingOnBusTrafficMessage
-        @WaitingOnBusTrafficDialog="WaitingOnBusTrafficDialogReturn = $event"
+        @WaitingOnBusTrafficDialogEvent="WaitingOnBusTrafficDialogReturn = $event"
       />
 
 </template>
