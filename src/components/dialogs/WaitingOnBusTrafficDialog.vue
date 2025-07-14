@@ -52,7 +52,7 @@ const model = computed({
 watch(model, async () => {
   //timeStampedLog(name + `: WATCH model ` + model.value)
   if (model.value == true){
-    timeStampedLog(name + `: WATCH model ` + model.value)
+    //timeStampedLog(name + `: WATCH model ` + model.value)
     await waitOnBusTraffic()
   }
 })
@@ -66,7 +66,7 @@ const waitOnBusTraffic = async () => {
     await sleep(10)
   }
 
-  timeStampedLog(name + `: END wait`)
+  //timeStampedLog(name + `: END wait`)
   // signal it's complete
   emit('WaitingOnBusTrafficDialogEvent', 'finished')
   model.value = false

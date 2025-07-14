@@ -111,8 +111,9 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
-import { useQuasar } from 'quasar'
+import { useQuasar, useTimeout } from 'quasar'
 import {sleep} from "components/functions/utils.js"
+import {timeStampedLog} from "components/functions/utils.js"
 import {createNewEvent} from "components/functions/EventFunctions.js"
 import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import EventVariables from "components/modules/common/EventVariables"
@@ -124,6 +125,7 @@ import { replaceChannelTokens } from "../functions/utils";
 import { getNumberOfChannels } from "../functions/NodeFunctions";
 
 const $q = useQuasar()
+const { registerTimeout } = useTimeout()
 const store = inject('store')
 const name = "EventVariablesDialog"
 
@@ -137,6 +139,7 @@ const showStoredEventJSON = ref(false)
 const eventVariableInformation = ref()
 const processedEventVariableDescriptor = ref()
 const numberOfChannels=ref(0)
+let channelNamesNotfication = null
 
 
 const props = defineProps({
@@ -159,7 +162,7 @@ const model = computed({
 //
 //
 watch(model, () => {
-  //console.log(name + `: WATCH model`)
+  //timeStampedLog(name + `: WATCH model`)
   if (model.value == true){
     showVariablesDescriptor.value = false
     if (variablesDescriptor.value == undefined){
@@ -168,18 +171,45 @@ watch(model, () => {
     } else {
       showRawVariables.value = false
       showDescriptorWarning.value = false
-      processedEventVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+      processedEventVariableDescriptor.value = variablesDescriptor.value
+      updateChannelNames()
     }
-    //console.log(name + `: WATCH model: getNumberOfChannels`)
+
+    //timeStampedLog(name + `: WATCH model: getNumberOfChannels`)
     numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
   }
 })
 
+// update the channel names in the variables descriptor object
+// as it's a blocking call, need to allow this dialog to be displayed first
+// so show a notification, then set a timeout before calling function
+//
+const updateChannelNames = () => {
+  // create notification to alert that channel names function is going to be called
+  channelNamesNotfication = $q.notify({
+    message: 'updating channel names',
+    caption: 'please wait....',
+    timeout: 0,
+    position: 'center',
+    color: 'primary'
+  })
+  // set a timed callback
+  registerTimeout(() => {
+    //timeStampedLog(name + `: registerTimeout`)
+    processedEventVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+    channelNamesNotfication()
+  }, 300) // arbitrary timeout of 300mS seems to allow dialog to be displayed
+}
+
+
 //
 //
 watch(showNodeChannelNamesDialog, () => {
+  //timeStampedLog(name + `: WATCH showNodeChannelNamesDialog: ${showNodeChannelNamesDialog.value}`)
   try{
-    processedEventVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+    if (showNodeChannelNamesDialog.value == false) {
+      updateChannelNames()
+    }
   } catch {}
 })
 
@@ -196,7 +226,7 @@ const variablesDescriptor = computed(() =>{
 //
 //
 watch(variablesDescriptor, () => {
-  //console.log(name + `: WATCH variablesDescriptor`)
+  //timeStampedLog(name + `: WATCH variablesDescriptor`)
   if (model.value == true){     // don't bother if not displayed
     if (variablesDescriptor.value == undefined){
       showRawVariables.value = true
@@ -204,9 +234,9 @@ watch(variablesDescriptor, () => {
     } else {
       showDescriptorWarning.value = false
       eventVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].eventsVariableInformation
-      processedEventVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+      updateChannelNames()
     }
-    //console.log(name + `: WATCH variablesDescriptor: getNumberOfChannels`)
+    //timeStampedLog(name + `: WATCH variablesDescriptor: getNumberOfChannels`)
     numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
   }
 })
@@ -215,7 +245,7 @@ watch(variablesDescriptor, () => {
 //
 //
 onUpdated(async () => {
-  //console.log(name + ': onUpdated:')
+  //timeStampedLog(name + ': onUpdated:')
 })
 
 
@@ -228,7 +258,7 @@ Click event handlers
 //
 //
 const clickChannelNames = () => {
-  console.log(name + `: clickChannelNames: number ${numberOfChannels.value}`)
+  timeStampedLog(name + `: clickChannelNames: number ${numberOfChannels.value}`)
   if (numberOfChannels.value > 0){
     showNodeChannelNamesDialog.value = true
   }
@@ -237,13 +267,13 @@ const clickChannelNames = () => {
 //
 //
 const clickClose = async () => {
-  console.log(name +`: clickClose: node ` + props.nodeNumber + ' eventIdentifier ' + props.eventIdentifier)
+  timeStampedLog(name +`: clickClose: node ` + props.nodeNumber + ' eventIdentifier ' + props.eventIdentifier)
   if (props.newEvent){
     // An event will be created, if it doesn't exist, when any variable is changed (EVLRN)
     // if it's a new event, in the case no variable was changed, ensure an event was created
     // by setting EV1
     // and then refresh all events as index may have changed
-    console.log(name +`: clickClose: new event`)
+    timeStampedLog(name +`: clickClose: new event`)
     try {
       var nodeEntry = store.state.nodes[props.nodeNumber]
       try{
@@ -257,7 +287,7 @@ const clickClose = async () => {
       await sleep(250)
       store.methods.request_all_node_events(props.nodeNumber)
     } catch (err){
-      console.log(name + ': clickClose ' + err)
+      timeStampedLog(name + ': clickClose ' + err)
     }
   }
 }
@@ -265,7 +295,7 @@ const clickClose = async () => {
 //
 //
 const clickRefresh = async () => {
-  console.log(name + `: clickRefresh`)
+  timeStampedLog(name + `: clickRefresh`)
   // make sure the indexes are up to date
   await refreshEventIndexes(store, props.nodeNumber)
   store.methods.request_event_variables_by_identifier(props.nodeNumber, props.eventIdentifier)
@@ -275,28 +305,28 @@ const clickRefresh = async () => {
 //
 //
 const clickToggleVariablesDescriptor = () => {
-  console.log(name + `: clickToggleVariablesDescriptor`)
+  timeStampedLog(name + `: clickToggleVariablesDescriptor`)
   showVariablesDescriptor.value = showVariablesDescriptor.value ? false : true
 }
 
 //
 //
 const clickToggleRaw = () => {
-  console.log(name + `: clickToggleRaw`)
+  timeStampedLog(name + `: clickToggleRaw`)
   showRawVariables.value = showRawVariables.value ? false : true
 }
 
 //
 //
 const clickToggleStoredEvent = () => {
-  console.log(name + `: clickToggleStoredEvents:`)
+  timeStampedLog(name + `: clickToggleStoredEvents:`)
   showStoredEventJSON.value = showStoredEventJSON.value ? false : true
 }
 
 //
 //
 const clickUpdateModuleDescriptor = () => {
-  console.log(name + `: clickUpdateModuleDescriptor`)
+  timeStampedLog(name + `: clickUpdateModuleDescriptor`)
   store.methods.request_matching_mdf_list(props.nodeNumber, "USER")
   store.methods.request_matching_mdf_list(props.nodeNumber, "SYSTEM")
   showMDFDialog.value = true

@@ -439,13 +439,6 @@ const clickVariables = async (eventIdentifier) => {
   timeStampedLog(name + `: clickVariables: node ${props.nodeNumber} event ${eventIdentifier}`)
   selected_event_Identifier.value = eventIdentifier
   await getEventVariables(eventIdentifier)
-  /*
-  showWaitingOnBusTrafficDialog.value = true
-  //await sleep(1)
-  // make sure the indexes are up to date
-  await refreshEventIndexes(store, props.nodeNumber)
-  store.methods.request_event_variables_by_identifier(props.nodeNumber, eventIdentifier)
-  */
   showEventVariablesDialog.value = true
 }
 
