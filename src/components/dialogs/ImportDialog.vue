@@ -2,14 +2,15 @@
   <q-dialog v-model='model' persistent>
     <q-card style="min-width: 800px">
 
-        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
-          <div class="text-h6">
-            Import
-          </div>
-          <template v-slot:action>
-            <q-btn flat color="white" size="md" label="Close" v-close-popup/>
-          </template>
-        </q-banner>
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+        <div class="text-h6">
+          Import
+        </div>
+        <template v-slot:action>
+          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+        </template>
+      </q-banner>
+
 
         <q-card-section>
           <div class="text-h6">
@@ -20,11 +21,11 @@
         </q-card-section>
 
         <q-card-section class="dense no-padding no-margin">
-            <q-radio v-model="importType" val="SPREADSHEET" label="Spreadsheet import" /> &nbsp; &nbsp; 
+            <q-radio v-model="importType" val="SPREADSHEET" label="Spreadsheet import" /> &nbsp; &nbsp;
             <q-btn dense color="primary" size="sm" label="info" @click="clickSheetInfo()" no-caps/>
         </q-card-section>
         <q-card-section class="dense no-padding no-margin">
-          <q-radio v-model="importType" val="FCU" label="FCU configuration file import" /> &nbsp; &nbsp; 
+          <q-radio v-model="importType" val="FCU" label="FCU configuration file import" /> &nbsp; &nbsp;
           <q-btn dense color="primary" size="sm" label="info" @click="clickFCUInfo()" no-caps/>
         </q-card-section>
 
@@ -73,59 +74,71 @@
           <q-btn flat color="white" size="md" label="Close" v-close-popup/>
         </template>
       </q-banner>
-      <q-card-section>
-        <div class="text-subtitle2">
-          The import will accept most spreadsheet types, such as xls, xlsx & ods, but NOT csv 
-          (which strictly isn't a spreadsheet format)
-        </div>
-      </q-card-section>
-      <q-card-section>
-        <div class="text-subtitle2">
-          The information for long events is expected to be on a sheet named 'Long_Events'
-        </div>
-        <div>
-          <q-img
-            src="~/assets/Long_Events_Sheet.png"
-            spinner-color="white"
-            style="width: 500px"
-          />
-        </div>
-      </q-card-section>
-      <q-card-section>
-        <div class="text-subtitle2">
-          The information for short events is expected to be on a sheet named 'Short_Events', and doesn't need the 'EventNodeNumber' column
-        </div>
-        <div>
-          <q-img
-            src="~/assets/Short_Events_Sheet.png"
-            spinner-color="white"
-            style="width: 500px"
-          />
-        </div>
-      </q-card-section>
-      <q-card-section>
-        <div class="text-subtitle2">
-          The node information is expected to be on a sheet named 'Nodes'
-        </div>
-        <div class="text-subtitle2">
-          'moduleName' is optional, and will be updated when the node connects anyway, but useful if the node isn't connected
-        </div>
-        <div>
-          <q-img
-            src="~/assets/Nodes_sheet.png"
-            spinner-color="white"
-            style="width: 500px"
-          />
-        </div>
-      </q-card-section>
-      <q-card-section>
-        <div class="text-subtitle2">
-          NOTE: the column names are case sensitive and have no spaces, but the order of the columns doesn't matter, as it looks for columns by name, not position
-        </div>
-        <div class="text-subtitle2">
-          Additional columns with different headers are ignored, as are other sheets with different names
-        </div>
-      </q-card-section>
+
+      <q-card style="max-height: 85vh" class="scroll no-margin q-py-none">
+        <q-card-section>
+          <div class="text-subtitle2">
+            The import will accept most spreadsheet types, such as xls, xlsx & ods, but NOT csv
+            (which strictly isn't a spreadsheet format anyway)
+          </div>
+          <div class="text-subtitle2">
+            The information for long events is expected to be on a sheet named 'Long_Events'
+          </div>
+          <div>
+            <q-img
+              src="~/assets/Long_Events_Sheet.png"
+              spinner-color="white"
+              style="width: 500px"
+            />
+          </div>
+          <br>
+          <div class="text-subtitle2">
+            The information for short events is expected to be on a sheet named 'Short_Events', and doesn't need the 'EventNodeNumber' column
+          </div>
+          <div>
+            <q-img
+              src="~/assets/Short_Events_Sheet.png"
+              spinner-color="white"
+              style="width: 500px"
+            />
+          </div>
+          <br>
+          <div class="text-subtitle2">
+            The node information is expected to be on a sheet named 'Nodes'
+          </div>
+          <div class="text-subtitle2">
+            'moduleName' is optional, and will be updated when the node connects anyway, but useful if the node isn't connected
+          </div>
+          <div>
+            <q-img
+              src="~/assets/Nodes_sheet.png"
+              spinner-color="white"
+              style="width: 500px"
+            />
+          </div>
+          <br>
+          <div class="text-subtitle2">
+            The channel information is expected to be on a sheet named 'Channels'
+          </div>
+          <div class="text-subtitle2">
+            'nodeName' is optional, and will be updated when the node connects anyway, but useful if the node isn't connected
+          </div>
+          <div>
+            <q-img
+              src="~/assets/Channels_sheet.png"
+              spinner-color="white"
+              style="width: 500px"
+            />
+          </div>
+          <br>
+          <div class="text-subtitle2">
+            NOTE: the column names are case sensitive and have no spaces, but the order of the columns doesn't matter, as it looks for columns by name, not position
+          </div>
+          <div class="text-subtitle2">
+            Additional columns with different headers are ignored, as are other sheets with different names
+          </div>
+        </q-card-section>
+      </q-card>
     </q-card>
   </q-dialog>
 
