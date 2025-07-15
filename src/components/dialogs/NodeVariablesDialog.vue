@@ -97,7 +97,7 @@ and then only made visible when this dialog is selected for a specific node
 <script setup>
 
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
-import { useQuasar } from 'quasar'
+import { useQuasar, useTimeout } from 'quasar'
 import MDFDialog from "components/dialogs/MDFDialog";
 import NodeChannelNamesDialog from "./NodeChannelNamesDialog.vue";
 import NodeVariables from "components/modules/common/NodeVariables"
@@ -108,6 +108,7 @@ import { getNumberOfChannels } from "../functions/NodeFunctions";
 
 
 const $q = useQuasar()
+const { registerTimeout } = useTimeout()
 const store = inject('store')
 const name = "NodevariablesDialog"
 
@@ -148,13 +149,37 @@ watch(model, async () => {
     } else {
       showRawVariables.value = false
       showDescriptorWarning.value = false
-      processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+      updateChannelNames()
+      //processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
     }
     //console.log(name + `: WATCH model: getNumberOfChannels`)
     numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
     //console.log(name + `: WATCH model: ${JSON.stringify(processedNodeVariableDescriptor.value)}`)
   }
 })
+
+// update the channel names in the variables descriptor object
+// as it's a blocking call, need to allow this dialog to be displayed first
+// so show a notification, then set a timeout before calling function
+//
+const updateChannelNames = () => {
+  // create notification to alert that channel names function is going to be called
+  let channelNamesNotfication = $q.notify({
+    message: 'updating channel names',
+    caption: 'please wait....',
+    timeout: 0,
+    position: 'center',
+    color: 'primary'
+  })
+  // set a timed callback
+  registerTimeout(() => {
+    //timeStampedLog(name + `: registerTimeout`)
+    processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+    channelNamesNotfication()
+  }, 300) // arbitrary timeout of 300mS seems to allow dialog to be displayed
+}
+
+
 
 
 // need to know if descriptor changed, could be updated import
@@ -171,7 +196,10 @@ const variablesDescriptor = computed(() =>{
 //
 watch(showNodeChannelNamesDialog, () => {
   try{
-    processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+    if (showNodeChannelNamesDialog.value == false) {
+      updateChannelNames()
+    }
+    //processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
   } catch {}
 })
 
@@ -186,7 +214,8 @@ watch(variablesDescriptor, () => {
     } else {
       showDescriptorWarning.value = false
       nodeVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation
-      processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+      updateChannelNames()
+      //processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
     }
     //console.log(name + `: WATCH variablesDescriptor: getNumberOfChannels`)
     numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)

@@ -139,7 +139,6 @@ const showStoredEventJSON = ref(false)
 const eventVariableInformation = ref()
 const processedEventVariableDescriptor = ref()
 const numberOfChannels=ref(0)
-let channelNamesNotfication = null
 
 
 const props = defineProps({
@@ -186,7 +185,7 @@ watch(model, () => {
 //
 const updateChannelNames = () => {
   // create notification to alert that channel names function is going to be called
-  channelNamesNotfication = $q.notify({
+  let channelNamesNotfication = $q.notify({
     message: 'updating channel names',
     caption: 'please wait....',
     timeout: 0,
