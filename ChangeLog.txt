@@ -3,6 +3,7 @@ Version 0.10.3
   Amended NodeVariableNumber to support scaling down to 0.01 (2 decimal places)
   Added scaling & units to NodeVariableDual to match NodeVariableNumber
   Amended EventVariableNumber to match NodeVariableNumber
+  Added 'updating channel names' popup to Event & Node Variable dialogs
 
 Version 0.10.2
   Addressed dialog opening delays by adding extra watches & removing code in 'on-update'

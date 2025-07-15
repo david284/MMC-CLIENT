@@ -4,6 +4,7 @@ import io from 'socket.io-client'
 import { EventBus } from 'quasar'
 import {NodeParameterNames} from "src/definitions/Text_NodeParameterNames"
 import {secondsNow} from "components/functions/utils.js"
+import {timeStampedLog} from "components/functions/utils.js"
 
 const eventBus = new EventBus()
 const host = window.location.hostname
@@ -51,7 +52,7 @@ const methods = {
 
   //
   change_layout(layoutName){
-    console.log(name + `: CHANGE_LAYOUT: ` + JSON.stringify(layoutName))
+    timeStampedLog(name + `: CHANGE_LAYOUT: ` + JSON.stringify(layoutName))
     socket.emit('CHANGE_LAYOUT', {
       "layoutName": layoutName
     })
@@ -59,16 +60,16 @@ const methods = {
   //
   clear_bus_events() {
     socket.emit('CLEAR_BUS_EVENTS')
-    console.log(name + `: CLEAR_BUS_EVENTS`)
+    timeStampedLog(name + `: CLEAR_BUS_EVENTS`)
   },
   //
   clear_cbus_errors() {
     socket.emit('CLEAR_CBUS_ERRORS')
-    console.log(`CLEAR_CBUS_ERRORS`)
+    timeStampedLog(`CLEAR_CBUS_ERRORS`)
   },
   //
   clear_node_events(nodeNumber) {
-    console.log(`CLEAR_NODE_EVENTS ${nodeNumber}`)
+    timeStampedLog(`CLEAR_NODE_EVENTS ${nodeNumber}`)
     socket.emit('CLEAR_NODE_EVENTS',{
       "nodeNumber": nodeNumber
     })
@@ -78,18 +79,18 @@ const methods = {
     socket.emit('DELETE_ALL_EVENTS', {
         "nodeNumber": nodeNumber
     })
-    console.log(name + `: DELETE_ALL_EVENTS ${nodeNumber}`)
+    timeStampedLog(name + `: DELETE_ALL_EVENTS ${nodeNumber}`)
   },
   //
   delete_layout(layoutName) {
     socket.emit('DELETE_LAYOUT', {
         "layoutName": layoutName
     })
-    console.log(name + `: DELETE_LAYOUT ${layoutName}`)
+    timeStampedLog(name + `: DELETE_LAYOUT ${layoutName}`)
   },
   //
   delete_node_backup(layoutName, nodeNumber, fileName) {
-    console.log(name + `: DELETE_NODE_BACKUP ${layoutName} ${nodeNumber} ${fileName}`)
+    timeStampedLog(name + `: DELETE_NODE_BACKUP ${layoutName} ${nodeNumber} ${fileName}`)
     socket.emit('DELETE_NODE_BACKUP', {
         "layoutName": layoutName,
         "nodeNumber":nodeNumber,
@@ -99,7 +100,7 @@ const methods = {
   //
   // reLoad false to surpress reLoading of variables after writing - like when restoring node
   event_teach_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex, eventVariableValue, reLoad, linkedVariableList){
-    console.log(name + `: event_teach_by_identifier : ${nodeNumber} ${eventIdentifier} ${eventVariableIndex} ${eventVariableValue} ${JSON.stringify(linkedVariableList)} `)
+    timeStampedLog(name + `: event_teach_by_identifier : ${nodeNumber} ${eventIdentifier} ${eventVariableIndex} ${eventVariableValue} ${JSON.stringify(linkedVariableList)} `)
     socket.emit('EVENT_TEACH_BY_IDENTIFIER',{
       "nodeNumber": nodeNumber,
       "eventIdentifier": eventIdentifier,
@@ -111,12 +112,12 @@ const methods = {
   },
   //
   import_module_descriptor(nodeNumber, moduleDescriptor) {
-    console.log(`import_module_descriptor : ` + moduleDescriptor.moduleDescriptorFilename)
+    timeStampedLog(`import_module_descriptor : ` + moduleDescriptor.moduleDescriptorFilename)
     socket.emit('IMPORT_MODULE_DESCRIPTOR', {"nodeNumber":nodeNumber, "moduleDescriptor":moduleDescriptor})
   },
   //
   long_on_event(nodeNumber, eventNumber){
-    console.log(`ACON ${nodeNumber} : ${eventNumber}`)
+    timeStampedLog(`ACON ${nodeNumber} : ${eventNumber}`)
     socket.emit('ACCESSORY_LONG_ON', {
       "nodeNumber": nodeNumber,
       "eventNumber": eventNumber
@@ -124,7 +125,7 @@ const methods = {
   },
   //
   long_off_event(nodeNumber, eventNumber){
-    console.log(`ACOF ${nodeNumber} : ${eventNumber}`)
+    timeStampedLog(`ACOF ${nodeNumber} : ${eventNumber}`)
     socket.emit('ACCESSORY_LONG_OFF', {
       "nodeNumber": nodeNumber,
       "eventNumber": eventNumber
@@ -132,12 +133,12 @@ const methods = {
   },
   //
   node_can_id_enum(nodeNumber){
-    console.log(name + `: CANID_ENUM : ` + nodeNumber)
+    timeStampedLog(name + `: CANID_ENUM : ` + nodeNumber)
     socket.emit('CANID_ENUM', nodeNumber)
   },
   //
   program_node(nodeNumber, cpuType, flags, hexFile) {
-    console.log(name + `: PROGRAM_NODE : ` + nodeNumber)
+    timeStampedLog(name + `: PROGRAM_NODE : ` + nodeNumber)
     socket.emit('PROGRAM_NODE', {
       "nodeNumber": nodeNumber,
       "cpuType": cpuType,
@@ -147,7 +148,7 @@ const methods = {
   },
   //
   query_all_nodes() {
-    console.log(`QUERY_ALL_NODES`)
+    timeStampedLog(`QUERY_ALL_NODES`)
     socket.emit('QUERY_ALL_NODES')
   },
   //
@@ -163,7 +164,7 @@ const methods = {
     delete state.layout.nodeDetails[nodeNumber]
     state.update_layout_needed = true
     socket.emit('REMOVE_NODE', nodeNumber)
-    console.log(name + ': sent REMOVE_NODE ' + nodeNumber)
+    timeStampedLog(name + ': sent REMOVE_NODE ' + nodeNumber)
   },
   //
   rename_node_backup(layoutName, nodeNumber, fileName, newFileName) {
@@ -174,35 +175,35 @@ const methods = {
       "newFileName": newFileName
     }
     socket.emit('RENAME_NODE_BACKUP', data)
-    console.log(name + ': sent RENAME_NODE_BACKUP ' + JSON.stringify(data))
+    timeStampedLog(name + ': sent RENAME_NODE_BACKUP ' + JSON.stringify(data))
   },
   //
   requestAllEventVariablesForNode(nodeNumber) {
     socket.emit('REQUEST_ALL_EVENT_VARIABLES_FOR_NODE', {
       "nodeNumber": nodeNumber
     })
-    console.log(`REQUEST_ALL_EVENT_VARIABLES_FOR_NODE: node ` + nodeNumber)
+    timeStampedLog(`REQUEST_ALL_EVENT_VARIABLES_FOR_NODE: node ` + nodeNumber)
   },
   //
   request_backup(layoutName, filename) {
-    console.log(`REQUEST_BACKUP : ` + layoutName + ' ' + filename)
+    timeStampedLog(`REQUEST_BACKUP : ` + layoutName + ' ' + filename)
     socket.emit('REQUEST_BACKUP', {"layoutName":layoutName, "fileName":filename})
   },
   //
   request_backups_list(layoutName) {
-    console.log(`REQUEST_BACKUPS_LIST : ` + layoutName)
+    timeStampedLog(`REQUEST_BACKUPS_LIST : ` + layoutName)
     socket.emit('REQUEST_BACKUPS_LIST', {"layoutName":layoutName})
   },
   //
   request_diagnostics(nodeNumber, serviceIndex) {
     if (serviceIndex == undefined){serviceIndex = 0;}
-    console.log(`Request Service Diagnostics : node ` + nodeNumber + ' Service Index ' + serviceIndex )
+    timeStampedLog(`Request Service Diagnostics : node ` + nodeNumber + ' Service Index ' + serviceIndex )
     socket.emit('REQUEST_DIAGNOSTICS', {"nodeNumber":nodeNumber, "serviceIndex":serviceIndex})
   },
   //
   request_all_node_parameters(nodeNumber, parameters, delay) {
     socket.emit('REQUEST_ALL_NODE_PARAMETERS', {"nodeNumber": nodeNumber, "parameters": parameters, "delay": delay})
-    console.log(`REQUEST_ALL_NODE_PARAMETERS`)
+    timeStampedLog(`REQUEST_ALL_NODE_PARAMETERS`)
   },
   //
   request_node_parameter(nodeNumber, parameter) {
@@ -213,31 +214,31 @@ const methods = {
     socket.emit('REQUEST_ALL_NODE_VARIABLES', {
       "nodeNumber": nodeNumber
     })
-    console.log(`REQUEST_ALL_NODE_VARIABLES: node ` + nodeNumber)
+    timeStampedLog(`REQUEST_ALL_NODE_VARIABLES: node ` + nodeNumber)
   },
   //
   refresh_bus_events() {
     socket.emit('REQUEST_BUS_EVENTS')
-    console.log(name + `: REQUEST_BUS_EVENTS`)
+    timeStampedLog(name + `: REQUEST_BUS_EVENTS`)
   },
   //
   request_MDF_delete(filename) {
-    console.log(`REQUEST_MDF_DELETE : ` + filename)
+    timeStampedLog(`REQUEST_MDF_DELETE : ` + filename)
     socket.emit('REQUEST_MDF_DELETE', {"filename":filename})
   },
   //
   request_MDF_export(location, filename) {
-    console.log(`REQUEST_MDF_EXPORT : ` + location + ' ' + filename)
+    timeStampedLog(`REQUEST_MDF_EXPORT : ` + location + ' ' + filename)
     socket.emit('REQUEST_MDF_EXPORT', {"location":location, "filename":filename})
   },
   //
   request_node_backup(layoutName, nodeNumber, filename) {
-    console.log(`REQUEST_NODE_BACKUP : ` + layoutName + ' ' + nodeNumber + ' ' + filename)
+    timeStampedLog(`REQUEST_NODE_BACKUP : ` + layoutName + ' ' + nodeNumber + ' ' + filename)
     socket.emit('REQUEST_NODE_BACKUP', {"layoutName":layoutName, "nodeNumber":nodeNumber, "fileName":filename})
   },
   //
   request_node_backups_list(layoutName, nodeNumber) {
-    console.log(`REQUEST_NODE_BACKUPS_LIST : ` + layoutName)
+    timeStampedLog(`REQUEST_NODE_BACKUPS_LIST : ` + layoutName)
     socket.emit('REQUEST_NODE_BACKUPS_LIST', {"layoutName":layoutName, 'nodeNumber':nodeNumber})
   },
   //
@@ -250,19 +251,19 @@ const methods = {
   //
   request_all_node_events(nodeNumber) {
     socket.emit('REQUEST_ALL_NODE_EVENTS', {"nodeNumber": nodeNumber})
-    console.log(secondsNow() + ': ' + name + `: REQUEST_ALL_NODE_EVENTS ${nodeNumber}`)
+    timeStampedLog(name + `: REQUEST_ALL_NODE_EVENTS ${nodeNumber}`)
   },
   //
   request_event_variables_by_identifier(nodeNumber, eventIdentifier) {
-    console.log(name + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER: nodeNumber: ` + nodeNumber + ` eventIdentifier: ` + eventIdentifier)
-    socket.emit(secondsNow() + ': ' + name + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER`, {
+    timeStampedLog(name + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER: nodeNumber: ` + nodeNumber + ` eventIdentifier: ` + eventIdentifier)
+    socket.emit(name + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER`, {
       "nodeNumber": nodeNumber,
       "eventIdentifier": eventIdentifier
     })
   },
   //
   request_service_discovery(nodeNumber) {
-    console.log(`Request Service Discovery : ` + nodeNumber)
+    timeStampedLog(`Request Service Discovery : ` + nodeNumber)
     socket.emit('REQUEST_SERVICE_DISCOVERY', {"nodeNumber":nodeNumber})
   },
   //
@@ -275,12 +276,12 @@ const methods = {
   },
   //
   request_layout_list(){
-    console.log(name + `: request_layout_list:`)
+    timeStampedLog(name + `: request_layout_list:`)
     socket.emit('REQUEST_LAYOUTS_LIST')
   },
   //
   request_matching_mdf_list(nodeNumber, location) {
-    console.log(name + ': REQUEST_MATCHING_MDF_LIST: ' + location)
+    timeStampedLog(name + ': REQUEST_MATCHING_MDF_LIST: ' + location)
     if (state.server.nodes[nodeNumber] == undefined){state.server.nodes[nodeNumber] = {} }
     state.server.nodes[nodeNumber][location + '_MDF_List'] = []
     socket.emit('REQUEST_MATCHING_MDF_LIST', {"nodeNumber":nodeNumber, "location":location})
@@ -288,17 +289,17 @@ const methods = {
   //
   reset_node(nodeNumber) {
     socket.emit('RESET_NODE', nodeNumber)
-    console.log(name + ': RESET_NODE ' + nodeNumber)
+    timeStampedLog(name + ': RESET_NODE ' + nodeNumber)
   },
   //
   save_backup(data){
-    console.log(`SAVE_BACKUP`)
+    timeStampedLog(`SAVE_BACKUP`)
     data['layoutName'] = state.layout.layoutDetails.title
     socket.emit('SAVE_BACKUP', data)
   },
   //
   save_node_backup(nodeNumber, backupNode){
-    console.log(`SAVE_NODE_BACKUP`)
+    timeStampedLog(`SAVE_NODE_BACKUP`)
     let data = {
       'layoutName': state.layout.layoutDetails.title,
       'nodeNumber': nodeNumber,
@@ -310,7 +311,7 @@ const methods = {
   //
   send_cbus_message(message){
     socket.emit('SEND_CBUS_MESSAGE', message)
-    console.log(name + `: SEND_CBUS_MESSAGE: ${message}` )
+    timeStampedLog(name + `: SEND_CBUS_MESSAGE: ${message}` )
   },
   //
   set_can_id(nodeNumber, CAN_ID){
@@ -318,22 +319,22 @@ const methods = {
     data['nodeNumber'] = nodeNumber
     data['CAN_ID'] = CAN_ID
     socket.emit('SET_CAN_ID', data)
-    console.log(name + `: SET_CAN_ID: node ` + JSON.stringify(data))
+    timeStampedLog(name + `: SET_CAN_ID: node ` + JSON.stringify(data))
   },
   //
   STOP_SERVER(nodeNumber) {
     socket.emit('STOP_SERVER')
-    console.log(`STOP SERVER`)
+    timeStampedLog(`STOP SERVER`)
     window.close()
   },
   //
   set_node_number(nodeNumber){
-    console.log(name + `: emit SET_NODE_NUMBER ${nodeNumber}`)
+    timeStampedLog(name + `: emit SET_NODE_NUMBER ${nodeNumber}`)
     socket.emit('SET_NODE_NUMBER', nodeNumber)
   },
   //
   short_on_event(nodeNumber, eventNumber){
-    console.log(`ASON ${nodeNumber} : ${eventNumber}`)
+    timeStampedLog(`ASON ${nodeNumber} : ${eventNumber}`)
     socket.emit('ACCESSORY_SHORT_ON', {
       "nodeNumber": nodeNumber,
       "deviceNumber": eventNumber
@@ -341,7 +342,7 @@ const methods = {
   },
   //
   short_off_event(nodeNumber, eventNumber){
-    console.log(`ASOF ${nodeNumber} : ${eventNumber}`)
+    timeStampedLog(`ASOF ${nodeNumber} : ${eventNumber}`)
     socket.emit('ACCESSORY_SHORT_OFF', {
       "nodeNumber": nodeNumber,
       "deviceNumber": eventNumber
@@ -349,13 +350,13 @@ const methods = {
   },
   //
   start_connection(data) {
-    console.log(name + `: start_connection : ` + JSON.stringify(data))
+    timeStampedLog(name + `: start_connection : ` + JSON.stringify(data))
     socket.emit('START_CONNECTION', data)
   },
   //
   update_layout() {
-      console.log(`Update Layout Data : ` + state.layout.layoutDetails.title)
-      //console.log(`Update Layout Data : ` + JSON.stringify(state.layout))
+      timeStampedLog(`Update Layout Data : ` + state.layout.layoutDetails.title)
+      //timeStampedLog(`Update Layout Data : ` + JSON.stringify(state.layout))
       socket.emit('UPDATE_LAYOUT_DATA', state.layout)
   },
   //
@@ -363,7 +364,7 @@ const methods = {
   // we don't want to read any back if doing bulk programming (e.g. restoring a node)
   //
   update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue, reLoad, linkedVariableList) {
-    console.log(secondsNow() + ': ' + name + `: update_node_variable: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad} ${JSON.stringify(linkedVariableList)}`)
+    timeStampedLog(name + `: update_node_variable: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad} ${JSON.stringify(linkedVariableList)}`)
     state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
     if (reLoad != false){reLoad = true}
     let data = {
@@ -373,13 +374,13 @@ const methods = {
       "reLoad":reLoad,
       "linkedVariableList": linkedVariableList
     }
-    //console.log(`NVsetNeedsLearnMode : ` + JSON.stringify(state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode))
+    //timeStampedLog(`NVsetNeedsLearnMode : ` + JSON.stringify(state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode))
     if((state.nodeDescriptors[nodeNumber])
         && (state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode)){
-          //console.log(name + `: Update Node Variable in learn mode: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad}`)
+          //timeStampedLog(name + `: Update Node Variable in learn mode: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad}`)
           socket.emit('UPDATE_NODE_VARIABLE_IN_LEARN_MODE', data)
     } else {
-      //console.log(name + `: Update Node Variable: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad}`)
+      //timeStampedLog(name + `: Update Node Variable: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad}`)
       socket.emit('UPDATE_NODE_VARIABLE', data)
     }
     // let capture the last timestamp
@@ -412,26 +413,26 @@ const getters = {
   },
   event_colour(eventIdentifier) {
     if (eventIdentifier in state.layout.eventDetails) {
-      //console.log(`Event Name`)
+      //timeStampedLog(`Event Name`)
       return state.layout.eventDetails[eventIdentifier].colour
     } else {
       setters.event_colour(eventIdentifier, "black")
-      //console.log(`Event No Name ${JSON.stringify(eventIdentifier)}`)
+      //timeStampedLog(`Event No Name ${JSON.stringify(eventIdentifier)}`)
       return "black"
     }
   },
   event_group(eventIdentifier) {
     if (eventIdentifier in state.layout.eventDetails) {
-      //console.log(`Event Name`)
+      //timeStampedLog(`Event Name`)
       return state.layout.eventDetails[eventIdentifier].group
     } else {
       setters.event_group(eventIdentifier, "")
-      //console.log(`Event No Name ${JSON.stringify(eventIdentifier)}`)
+      //timeStampedLog(`Event No Name ${JSON.stringify(eventIdentifier)}`)
       return ""
     }
   },
   event_variable_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex){
-    //console.log(name + `: event_variable_by_identifier: ${nodeNumber} ${eventIdentifier} ${eventVariableIndex}`)
+    //timeStampedLog(name + `: event_variable_by_identifier: ${nodeNumber} ${eventIdentifier} ${eventVariableIndex}`)
     try{
       return state.nodes[nodeNumber].storedEventsNI[eventIdentifier].variables[eventVariableIndex]
     } catch (err){
@@ -455,7 +456,7 @@ const getters = {
     try{
       CAN_ID = state.nodes[nodeNumber].CANID
     } catch (err){
-      console.log(name + `: getters.node_can_id: ${err}`)
+      timeStampedLog(name + `: getters.node_can_id: ${err}`)
     }
     return CAN_ID
   },
@@ -479,7 +480,7 @@ const getters = {
         return state.layout.nodeDetails[nodeNumber].name
       }
     } catch (err) {
-      console.log(name + `: getters.node_name: ${err}`)
+      timeStampedLog(name + `: getters.node_name: ${err}`)
       return "error"
     }
   },
@@ -517,7 +518,7 @@ const getters = {
       }
       return state.layout.nodeDetails[nodeNumber].group
     } catch (err) {
-      console.log(name + `: getters.node_group: ${err}`)
+      timeStampedLog(name + `: getters.node_group: ${err}`)
       return ""
     }
   },
@@ -526,7 +527,7 @@ const getters = {
     try{
       result = parameterIndex + ': ' + NodeParameterNames[parameterIndex]
     } catch (err) {
-      console.log(name + `: getters.node_parameter_name: ${err}`)
+      timeStampedLog(name + `: getters.node_parameter_name: ${err}`)
     }
     return result
   },
@@ -535,7 +536,7 @@ const getters = {
     try{
       result = state.nodes[nodeNumber].parameters[parameterIndex]
     } catch (err) {
-      console.log(name + `: getters: node_parameter_value: ${err}`)
+      timeStampedLog(name + `: getters: node_parameter_value: ${err}`)
     }
     return result
   }
@@ -579,10 +580,10 @@ const setters = {
   //
   // Nodes
   addNodeToLayout(nodeNumber, moduleIdentifer, moduleName){
-    //console.log(secondsNow() + ': ' + name + `: addNodeToLayout: ${nodeNumber} ${moduleIdentifer} ${moduleName}`)
+    //timeStampedLog(name + `: addNodeToLayout: ${nodeNumber} ${moduleIdentifer} ${moduleName}`)
     if (nodeNumber != undefined){
       if (nodeNumber in state.layout.nodeDetails === false){
-        console.log(secondsNow() + ': ' + name + `: addNodeToLayout: nodeNumber: ${nodeNumber}`)
+        timeStampedLog(name + `: addNodeToLayout: nodeNumber: ${nodeNumber}`)
         state.layout.nodeDetails[nodeNumber] = {}
         state.layout.nodeDetails[nodeNumber].colour = "black"
         state.layout.nodeDetails[nodeNumber].group = ""
@@ -590,14 +591,14 @@ const setters = {
       }
       if (moduleIdentifer != undefined){
         if (state.layout.nodeDetails[nodeNumber].moduleIdentifer != moduleIdentifer){
-          console.log(secondsNow() + ': ' + name + `: addNodeToLayout: moduleIdentifier: ${moduleIdentifer}`)
+          timeStampedLog(name + `: addNodeToLayout: moduleIdentifier: ${moduleIdentifer}`)
           state.layout.nodeDetails[nodeNumber].moduleIdentifer = moduleIdentifer
           state.update_layout_needed = true
         }
       }
       if (moduleName != undefined){
         if (state.layout.nodeDetails[nodeNumber].moduleName != moduleName){
-          console.log(secondsNow() + ': ' + name + `: addNodeToLayout: moduleName: ${moduleName}`)
+          timeStampedLog(name + `: addNodeToLayout: moduleName: ${moduleName}`)
           state.layout.nodeDetails[nodeNumber].moduleName = moduleName
           state.update_layout_needed = true
         }
@@ -646,31 +647,31 @@ const setters = {
 const socket = io(`http://${host}:${port}`)
 
 socket.on('BACKUPS_LIST', (data) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED BACKUPS_LIST`)
+  timeStampedLog(name + `: RECEIVED BACKUPS_LIST`)
   state.backups_list = data;
 })
 
 socket.on('NODE_BACKUPS_LIST', (data) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED NODE_BACKUPS_LIST`)
+  timeStampedLog(name + `: RECEIVED NODE_BACKUPS_LIST`)
   state.backups_list = data;
 })
 
 socket.on("BUS_EVENTS", (data) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED BUS_EVENTS Data`)
+  timeStampedLog(name + `: RECEIVED BUS_EVENTS Data`)
   state.busEvents = data
 })
 
 socket.on("CBUS_ERRORS", (data) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED CBUS_ERRORS `)
+  timeStampedLog(name + `: RECEIVED CBUS_ERRORS `)
   state.cbus_errors = data
 })
 
 socket.on("CBUS_NO_SUPPORT", (data) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED CBUS_NO_SUPPORT `)
+  timeStampedLog(name + `: RECEIVED CBUS_NO_SUPPORT `)
 })
 
 socket.on("CBUS_TRAFFIC", (data) => {
-//  console.log(`RECEIVED CBUS_TRAFFIC`)
+//  timeStampedLog(`RECEIVED CBUS_TRAFFIC`)
   state.cbusTrafficTimeStamp = Date.now()
   state.nodeTraffic.push(data)
   if (state.nodeTraffic.length > 32) {
@@ -680,59 +681,59 @@ socket.on("CBUS_TRAFFIC", (data) => {
 })
 
 socket.on("connect", () => {
-  console.log(`Socket Connect`)
+  timeStampedLog(`Socket Connect`)
   eventBus.emit('SERVER_CONNECT')
   socket.emit('REQUEST_VERSION')
   socket.emit('REQUEST_LAYOUTS_LIST')
 })
 
 socket.on("DCC_ERROR", (data) => {
-  console.log(`RECEIVED DCC_ERROR`)
+  timeStampedLog(`RECEIVED DCC_ERROR`)
   state.dcc_errors = data
 })
 
 socket.on('DCC_SESSIONS', function (data) {
-  console.log(`RECEIVED DCC_SESSIONS`)
-  // console.log(`CBUS Errors Received:${JSON.stringify(data)}`)
+  timeStampedLog(`RECEIVED DCC_SESSIONS`)
+  // timeStampedLog(`CBUS Errors Received:${JSON.stringify(data)}`)
   state.dcc_sessions = data;
 })
 
 socket.on('dccSessions', function (data) {
-  console.log(`RECEIVED DCC Sessions`)
-  // console.log(`CBUS Errors Received:${JSON.stringify(data)}`)
+  timeStampedLog(`RECEIVED DCC Sessions`)
+  // timeStampedLog(`CBUS Errors Received:${JSON.stringify(data)}`)
   state.dcc_sessions = data;
 })
 
 socket.on("disconnect", (data) => {
-  console.log(name + `: disconnect`)
+  timeStampedLog(name + `: disconnect`)
   eventBus.emit('SERVER_DISCONNECT')
 })
 
 socket.on("error", (data) => {
-  console.log(name + `: connection error`)
+  timeStampedLog(name + `: connection error`)
 })
 
 socket.on('LAYOUT_DATA', (data) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED Layout Data`)
+  timeStampedLog(name + `: RECEIVED Layout Data`)
   state.layout = data;
   // put a fresh timestamp on it
   state.layout['updateTimestamp'] = Date.now()
 })
 
 socket.on('LAYOUTS_LIST', (data) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED LAYOUTS_LIST`)
+  timeStampedLog(name + `: RECEIVED LAYOUTS_LIST`)
   state.layouts_list = data;
 })
 
 
 socket.on("MDF_EXPORT", (location, filename, MDF) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED MDF_EXPORT ` + location + ' ' + filename)
+  timeStampedLog(name + `: RECEIVED MDF_EXPORT ` + location + ' ' + filename)
   state.exported_MDF = MDF
   state.MDFupdateTimestamp = Date.now()
 })
 
 socket.on("MATCHING_MDF_LIST", (location, nodeNumber, list) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED MATCHING_MDF_LIST ` + nodeNumber + ' ' + location + ' ' + list.length)
+  timeStampedLog(name + `: RECEIVED MATCHING_MDF_LIST ` + nodeNumber + ' ' + location + ' ' + list.length)
   if (state.server.nodes[nodeNumber] == undefined){state.server.nodes[nodeNumber] = {} }
   state.server.nodes[nodeNumber][location + '_MDF_List'] = list
   state.MDFupdateTimestamp = Date.now()
@@ -741,13 +742,13 @@ socket.on("MATCHING_MDF_LIST", (location, nodeNumber, list) => {
 //
 //
 socket.on("NETWORK_CONNECTION_FAILURE", (data) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED NETWORK_CONNECTION_FAILURE : ${JSON.stringify(data)}`)
+  timeStampedLog(name + `: RECEIVED NETWORK_CONNECTION_FAILURE : ${JSON.stringify(data)}`)
   eventBus.emit('NETWORK_CONNECTION_FAILURE', data.message, data.caption, data.type, data.timeout)
 })
 
 socket.on("NODE", (data) => {
   state.nodes["updateTimestamp"] = Date.now()
-  console.log(secondsNow() + ': ' + name + `: RECEIVED NODE: ${data.nodeNumber}`)
+  timeStampedLog(name + `: RECEIVED NODE: ${data.nodeNumber}`)
   // remove original stored events by Index
   delete data.storedEvents
   state.nodes[data.nodeNumber] = data
@@ -759,13 +760,13 @@ socket.on("NODE", (data) => {
       getters.event_name(event.eventIdentifier)
     })
   } catch(err){
-    console.log(name + `: socket.on NODE: ` + err)
+    timeStampedLog(name + `: socket.on NODE: ` + err)
   }
 })
 
 socket.on("NODES", (data) => {
   state.nodes["updateTimestamp"] = Date.now()
-  console.log(secondsNow() + ': ' + name + ': RECEIVED NODES')
+  timeStampedLog(name + ': RECEIVED NODES')
   var nodes = Object.values(data)
   // remove original stored events by Index
   nodes.forEach(node =>{
@@ -783,51 +784,51 @@ socket.on("NODES", (data) => {
       })
     })
   } catch(err){
-    console.log(name + `: socket.on NODES: ` + err)
+    timeStampedLog(name + `: socket.on NODES: ` + err)
   }
 })
 
 socket.on("NODE_DESCRIPTOR", (data) => {
   var nodeNumber = Object.keys(data)[0]   // get first key
   var moduleDescriptor = Object.values(data)[0] // get first value
-  console.log(secondsNow() + ': ' + name + `: RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber + ' ' + moduleDescriptor.moduleDescriptorFilename)
+  timeStampedLog(name + `: RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber + ' ' + moduleDescriptor.moduleDescriptorFilename)
   state.nodeDescriptors[nodeNumber] = moduleDescriptor
   state.MDFupdateTimestamp = Date.now()
 })
 
 socket.on("NODE_DESCRIPTOR_FILE_LIST", (nodeNumber, list) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED NODE_DESCRIPTOR_FILE_LIST : node ` + nodeNumber)
-//  console.log(`RECEIVED NODE_DESCRIPTOR_FILE_LIST : list ` + list)
+  timeStampedLog(name + `: RECEIVED NODE_DESCRIPTOR_FILE_LIST : node ` + nodeNumber)
+//  timeStampedLog(`RECEIVED NODE_DESCRIPTOR_FILE_LIST : list ` + list)
   state.nodeDescriptorList[nodeNumber] = list
 })
 
 socket.on("PROGRAM_NODE_PROGRESS", (text) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED PROGRAM_NODE_PROGRESS : ` + text)
+  timeStampedLog(name + `: RECEIVED PROGRAM_NODE_PROGRESS : ` + text)
   eventBus.emit('PROGRAM_NODE_PROGRESS', text)
 })
 
 socket.on('RESTORED_DATA', (data) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED RESTORED_DATA`)
+  timeStampedLog(name + `: RECEIVED RESTORED_DATA`)
   state.restoredData = data;
   // put a fresh timestamp on it
   state.restoredData['updateTimestamp'] = Date.now()
 })
 
 socket.on("REQUEST_NODE_NUMBER", (nodeNumber, moduleName) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED REQUEST_NODE_NUMBER : ` + JSON.stringify(nodeNumber) + ' moduleName ' + moduleName)
+  timeStampedLog(name + `: RECEIVED REQUEST_NODE_NUMBER : ` + JSON.stringify(nodeNumber) + ' moduleName ' + moduleName)
   eventBus.emit('REQUEST_NODE_NUMBER_EVENT', nodeNumber, moduleName)
 })
 
 //
 //
 socket.on("SERIAL_CONNECTION_FAILURE", (data) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED SERIAL_CONNECTION_FAILURE : ${JSON.stringify(data)}`)
+  timeStampedLog(name + `: RECEIVED SERIAL_CONNECTION_FAILURE : ${JSON.stringify(data)}`)
   eventBus.emit('SERIAL_CONNECTION_FAILURE', data.message, data.caption, data.type, data.timeout)
 })
 
 
 socket.on("SERVER_NOTIFICATION", (data) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED SERVER_NOTIFICATION : ${JSON.stringify(data)}`)
+  timeStampedLog(name + `: RECEIVED SERVER_NOTIFICATION : ${JSON.stringify(data)}`)
   eventBus.emit('GENERAL_MESSAGE_EVENT', data.message, data.caption, data.type, data.timeout)
 })
 
@@ -840,7 +841,7 @@ socket.on("SERVER_STATUS", (data) => {
 })
 
 socket.on("VERSION", (data) => {
-  console.log(secondsNow() + ': ' + name + `: RECEIVED VERSION ` + JSON.stringify(data))
+  timeStampedLog(name + `: RECEIVED VERSION ` + JSON.stringify(data))
   state.version = data
 })
 

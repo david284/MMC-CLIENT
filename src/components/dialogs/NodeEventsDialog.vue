@@ -115,11 +115,12 @@ import EventsByNodeViewInfoDialog from "components/dialogs/EventsByNodeViewInfoD
 import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
 import { sleep } from "../functions/utils"
+import {timeStampedLog} from "components/functions/utils.js"
 
 
 const $q = useQuasar()
 const store = inject('store')
-const name = "EventsListByNode"
+const name = "NodeEventsDialog"
 const rows = ref([])
 const filter = ref('')
 const showAddEventDialog = ref(false)
@@ -167,7 +168,7 @@ const selected_node = computed(() =>{
   return props.nodeNumber
 })
 watch(selected_node, () => {
-  //console.log(name + `: WATCH selected_node`)
+  //timeStampedLog(name + `: WATCH selected_node`)
   if (props.nodeNumber){
     update_rows()
   }
@@ -179,7 +180,7 @@ const busEvents = computed(() =>{
   return Object.values(store.state.busEvents)
 })
 watch(busEvents, () => {
-  //console.log(name + `: WATCH busEvents`)
+  //timeStampedLog(name + `: WATCH busEvents`)
   if (props.nodeNumber){
     update_rows()
   }
@@ -192,7 +193,7 @@ const layoutUpdated = computed(() => {
 })
 
 watch(layoutUpdated, () => {
-  //console.log(name + `: WATCH: layoutUpdated`)
+  //timeStampedLog(name + `: WATCH: layoutUpdated`)
   if (props.nodeNumber){
     update_rows()
   }
@@ -205,7 +206,7 @@ const nodesUpdated = computed(() => {
 })
 
 watch(nodesUpdated, () => {
-  //console.log(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
+  //timeStampedLog(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
   if (props.nodeNumber){
     update_rows()
   }
@@ -213,7 +214,7 @@ watch(nodesUpdated, () => {
 
 
 const update_rows = () => {
-//  console.log(name + ': update_rows ' + props.nodeNumber)
+//  timeStampedLog(name + ': update_rows ' + props.nodeNumber)
   rows.value = []
   try{
     // do stored events for this node first.....
@@ -286,21 +287,11 @@ const update_rows = () => {
 
 
 onBeforeMount(() => {
-  console.log(name + ": onBeforeMount")
+  //timeStampedLog(name + ": onBeforeMount")
   if (props.nodeNumber){
     update_rows()
   }
 })
-
-/*
-onMounted(() => {
-  console.log(name + ": onMounted")
-})
-
-onUpdated(() => {
-  console.log(name + ": onUpdated")
-})
-*/
 
 
 /*/////////////////////////////////////////////////////////////////////////////
@@ -310,7 +301,7 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 const clickAddEvent = () => {
-  console.log(name + `: clickAddEvent`)
+  timeStampedLog(name + `: clickAddEvent`)
   if(store.state.nodes[props.nodeNumber].eventSpaceLeft > 0 ) {
     showAddEventDialog.value = true
   } else {
@@ -328,13 +319,13 @@ const clickAddEvent = () => {
 
 
 const clickAdvanced = () => {
-  console.log(name + `: clickAdvanced`)
+  timeStampedLog(name + `: clickAdvanced`)
   showAdvancedEventDialog.value = true
 }
 
 
 const clickDelete = (eventIdentifier) => {
-  console.log(name + `: clickDelete`)
+  timeStampedLog(name + `: clickDelete`)
   const result = $q.notify({
     message: 'Are you sure you want to delete event ' + store.getters.event_name(eventIdentifier),
     timeout: 0,
@@ -342,7 +333,7 @@ const clickDelete = (eventIdentifier) => {
     color: 'primary',
     actions: [
       { label: 'YES', color: 'white', handler: async () => {
-        console.log(`removeEvent ` + props.nodeNumber + ' ' + eventIdentifier)
+        timeStampedLog(`removeEvent ` + props.nodeNumber + ' ' + eventIdentifier)
         store.methods.remove_event(props.nodeNumber, eventIdentifier)
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
@@ -352,7 +343,7 @@ const clickDelete = (eventIdentifier) => {
 
 
 const clickEventName = (eventIdentifier) => {
-  console.log(name + `: clickEventName ` + eventIdentifier)
+  timeStampedLog(name + `: clickEventName ` + eventIdentifier)
   selected_event_Identifier.value = eventIdentifier
   newEventName.value = store.getters.event_name(eventIdentifier)
   showNameEventDialog.value = true;
@@ -360,18 +351,18 @@ const clickEventName = (eventIdentifier) => {
 
 
 const clickInfo = () => {
-  console.log(name + `: clickInfo`)
+  timeStampedLog(name + `: clickInfo`)
   showEventsByNodeViewInfoDialog.value = true
 }
 
 const clickRefresh = () => {
-  console.log(name + `: clickRefresh`)
+  timeStampedLog(name + `: clickRefresh`)
   store.methods.request_all_node_events(props.nodeNumber)
 update_rows()
 }
 
 const clickSendOff = (eventIdentifier) => {
-  console.log (name + ": send OFF " + eventIdentifier)
+  timeStampedLog (name + ": send OFF " + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
   var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
   if (eventNodeNumber == 0) {
@@ -383,7 +374,7 @@ const clickSendOff = (eventIdentifier) => {
 
 
 const clickSendOn = (eventIdentifier) => {
-  console.log (name + ": send ON " + eventIdentifier)
+  timeStampedLog (name + ": send ON " + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
   var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
   if (eventNodeNumber == 0) {
@@ -395,14 +386,14 @@ const clickSendOn = (eventIdentifier) => {
 
 
 const clickTeach = (eventIndentifier) => {
-  console.log(name + `: clickTeach`)
+  timeStampedLog(name + `: clickTeach`)
   selected_event_Identifier.value = eventIndentifier
   showEventTeachDialog.value = true
 }
 
 
 const clickToggleViewMode = () => {
-  console.log(name + `: clickToggleViewMode`)
+  timeStampedLog(name + `: clickToggleViewMode`)
   switch(store.state.events_view_mode){
     case 'all':
       store.state.events_view_mode = 'short'
@@ -429,7 +420,7 @@ const clickVariables = async (eventIdentifier) => {
   // make sure the indexes are up to date
   await refreshEventIndexes(store, props.nodeNumber)
   store.methods.request_event_variables_by_identifier(props.nodeNumber, eventIdentifier)
-  console.log(name + `: clickVariables: node ` + props.nodeNumber)
+  timeStampedLog(name + `: clickVariables: node ` + props.nodeNumber)
   showEventVariablesDialog.value = true
 }
 
