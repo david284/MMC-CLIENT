@@ -15,12 +15,12 @@
         <div class="q-pa-xs row">
 
           <q-card flat class="q-pa-xs" style="width: 250px">
-            <q-select 
+            <q-select
               autofocus
               outlined
-              v-model="mode" 
-              :options="mode_options" 
-              label="Mode" 
+              v-model="mode"
+              :options="mode_options"
+              label="Mode"
             />
           </q-card>
 
@@ -92,7 +92,8 @@
 
           <q-card flat class="q-pa-xs" style="width: 500px">
             Port number of machine for CAN connection<br/>
-            Leave blank if 'Network' not selected
+            5550 is the default assigned port number<br/>
+            unused if 'Network' not selected
           </q-card>
 
         </div>
@@ -135,7 +136,7 @@ const name = "EditConnectionDetailsDialog"
 const mode = ref('')
 const serialPort = ref('')
 const Host = ref('')
-const HostPort = ref('')
+const HostPort = ref(5550)
 const FCU_Compatibility = ref(false)
 
 const mode_options =  ref([ 'Auto', 'SerialPort', 'Network' ])
@@ -167,7 +168,23 @@ watch(model, () => {
 })
 
 
-
+watch(mode,() => {
+  if (mode.value == 'Auto' ){
+    serialPort.value = ''
+    Host.value = ''
+    HostPort.value = ''
+  }
+  if (mode.value == 'Network' ){
+    serialPort.value = ''
+    if (store.state.layout.connectionDetails.hostPort == ''){
+      HostPort.value = '5550'
+    }
+  }
+  if (mode.value == 'SerialPort' ){
+    Host.value = ''
+    HostPort.value = ''
+  }
+})
 
 onBeforeMount(() => {
 })
