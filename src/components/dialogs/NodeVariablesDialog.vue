@@ -149,6 +149,7 @@ watch(model, async () => {
     } else {
       showRawVariables.value = false
       showDescriptorWarning.value = false
+      nodeVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation
       updateChannelNames()
       //processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
     }

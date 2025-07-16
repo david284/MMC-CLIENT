@@ -35,7 +35,7 @@
             </template>
           </q-card-section>
 
-          <q-card-section class="text-h6" v-if="eventVariableInformation">
+          <q-card-section class="q-pa-none q-ma-none text-h6" v-if="eventVariableInformation">
             {{ eventVariableInformation }}
           </q-card-section>
 
@@ -171,6 +171,7 @@ watch(model, () => {
       showRawVariables.value = false
       showDescriptorWarning.value = false
       processedEventVariableDescriptor.value = variablesDescriptor.value
+      eventVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].eventVariableInformation
       updateChannelNames()
     }
 
@@ -232,7 +233,7 @@ watch(variablesDescriptor, () => {
       showDescriptorWarning.value = true
     } else {
       showDescriptorWarning.value = false
-      eventVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].eventsVariableInformation
+      eventVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].eventVariableInformation
       updateChannelNames()
     }
     //timeStampedLog(name + `: WATCH variablesDescriptor: getNumberOfChannels`)
