@@ -256,7 +256,7 @@ const methods = {
   //
   request_event_variables_by_identifier(nodeNumber, eventIdentifier) {
     timeStampedLog(name + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER: nodeNumber: ` + nodeNumber + ` eventIdentifier: ` + eventIdentifier)
-    socket.emit(name + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER`, {
+    socket.emit(`REQUEST_EVENT_VARIABLES_BY_IDENTIFIER`, {
       "nodeNumber": nodeNumber,
       "eventIdentifier": eventIdentifier
     })
