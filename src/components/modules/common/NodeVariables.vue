@@ -1,8 +1,12 @@
 <template>
   <div class="q-pa-xs row">
     <div v-for="item in configuration" :key="item">
+      <NodeChannelList v-if="(item.type=='NodeChannelList') && (isVisible(item))"
+        :nodeNumber=nodeNumber
+        :configuration=item>
+      </NodeChannelList>
       <NodeVariableBitArray v-if="(item.type=='NodeVariableBitArray') && (isVisible(item))"
-        :nodeNumber=store.state.selected_node
+        :nodeNumber=nodeNumber
         :variableIndex=item.nodeVariableIndex
         :bitCollection = item.bitCollection
         :displayTitle="item.displayTitle"
@@ -11,7 +15,7 @@
         >
       </NodeVariableBitArray>
       <NodeVariableBitSingle v-if="(item.type=='NodeVariableBitSingle') && (isVisible(item))"
-        :nodeNumber=store.state.selected_node
+        :nodeNumber=nodeNumber
         :variableIndex=item.nodeVariableIndex
         :displayTitle="item.displayTitle"
         :displaySubTitle="item.displaySubTitle"
@@ -20,7 +24,7 @@
         >
       </NodeVariableBitSingle>
       <NodeVariableButtons v-if="(item.type=='NodeVariableButtons') && (isVisible(item))"
-        :nodeNumber=store.state.selected_node
+        :nodeNumber=nodeNumber
         :nodeVariableIndex="item.nodeVariableIndex"
         :buttonCollection = item.buttonCollection
         :displayTitle="item.displayTitle"
@@ -31,7 +35,7 @@
       <NodeVariableDual v-if="(item.type=='NodeVariableDual') && (isVisible(item))"
         :NodeVariableIndexLow="item.nodeVariableIndexLow"
         :NodeVariableIndexHigh="item.nodeVariableIndexHigh"
-        :NodeNumber=store.state.selected_node
+        :NodeNumber=nodeNumber
         :displayTitle="item.displayTitle"
         :displaySubTitle="item.displaySubTitle"
         :displayScale = "item.displayScale"
@@ -45,10 +49,11 @@
         >
       </NodeVariableDual>
       <NodeVariableGroup v-if="(item.type=='NodeVariableGroup') && (isVisible(item))"
+        :nodeNumber=nodeNumber
         :configuration = item>
       </NodeVariableGroup>
       <NodeVariableNumber v-if="(item.type=='NodeVariableNumber') && (isVisible(item))"
-        :node-number=store.state.selected_node
+        :node-number=nodeNumber
         :displayTitle="item.displayTitle"
         :displaySubTitle="item.displaySubTitle"
         :node-variable-index=item.nodeVariableIndex
@@ -64,7 +69,7 @@
       </NodeVariableNumber>
       <NodeVariableSelect v-if="(item.type=='NodeVariableSelect') && (isVisible(item))"
         :nodeVariableIndex="item.nodeVariableIndex"
-        :nodeNumber=store.state.selected_node
+        :nodeNumber=nodeNumber
         :bitMask = "item.bitMask"
         :displayTitle="item.displayTitle"
         :displaySubTitle="item.displaySubTitle"
@@ -73,7 +78,7 @@
         >
       </NodeVariableSelect>
       <node-variable-slider v-if="(item.type=='NodeVariableSlider') && (isVisible(item))"
-        :node-number=store.state.selected_node
+        :node-number=nodeNumber
         :nodeVariableIndex="item.nodeVariableIndex"
         :displayTitle="item.displayTitle"
         :displaySubTitle = "item.displaySubTitle"
@@ -88,6 +93,7 @@
         >
       </node-variable-slider>
       <NodeVariableTabs v-if="(item.type=='NodeVariableTabs') && (isVisible(item))"
+        :nodeNumber=nodeNumber
         :configuration=item>
       </NodeVariableTabs>
     </div>
@@ -97,6 +103,7 @@
 
 <script setup>
 import {computed, inject, onBeforeMount, onMounted, onUpdated, watch} from "vue";
+import NodeChannelList from "components/modules/common/NodeChannelList"
 import NodeVariableBitArray from "components/modules/common/NodeVariableBitArray"
 import NodeVariableBitSingle from "components/modules/common/NodeVariableBitSingle"
 import NodeVariableButtons from "components/modules/common/NodeVariableButtons"
@@ -109,6 +116,7 @@ import NodeVariableTabs from "components/modules/common/NodeVariableTabs"
 import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
 
 const props = defineProps({
+  nodeNumber: Number,
   configuration: Object,
 })
 
@@ -118,7 +126,7 @@ const name = "NodeVariables"
 function isVisible(item){
   var result = true
   if (item.visibilityLogic) {
-    result = parseLogicElement(store.state.selected_node, item.visibilityLogic, store)
+    result = parseLogicElement(nodeNumber, item.visibilityLogic, store)
   }
 //  console.log(name + `: isVisible: ` + result + ' ' + item.type)
   return result

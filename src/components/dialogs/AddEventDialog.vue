@@ -106,9 +106,9 @@
     </q-card>
   </q-dialog>
 
- 
+
   <eventVariablesDialog v-model='showEventVariablesDialog'
-        :nodeNumber = store.state.selected_node
+        :nodeNumber = nodeNumber
         :eventIdentifier = new_event_Identifier
         :newEvent = true
   />
@@ -243,7 +243,7 @@ const clickAddEvent = () => {
   // adding an event to an actual node, create a new event & open variables dialog
   new_event_Identifier.value = entered_event_identifier
   if (props.nodeNumber != undefined){
-    if (createNewEvent(store, props.nodeNumber, new_event_Identifier.value)){             
+    if (createNewEvent(store, props.nodeNumber, new_event_Identifier.value)){
       showEventVariablesDialog.value = true
     }
   }
@@ -271,7 +271,7 @@ const clickCheckEvent = () => {
   checkLayoutData(entered_event_identifier)
   console.log(name + `: eventAlreadyExistsInLayoutData: ` + eventAlreadyExistsInLayoutData.value)
 
-  // if event already exists, 
+  // if event already exists,
   var displayAlreadyExistsWarning = false
 
   if (props.nodeNumber){

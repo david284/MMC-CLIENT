@@ -35,6 +35,7 @@
           </q-card-section>
 
           <NodeVariables v-if="store.state.nodeDescriptors[props.nodeNumber]"
+            :nodeNumber = nodeNumber
             :configuration = processedNodeVariableDescriptor
           />
 

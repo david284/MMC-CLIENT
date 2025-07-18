@@ -7,7 +7,9 @@
         <b>{{ configuration.displaySubTitle }}</b>
       </q-card-section>
       <q-card-section class="q-py-none no-margin row">
-        <NodeVariables :configuration = configuration.groupItems />
+        <NodeVariables
+          :nodeNumber = nodeNumber
+          :configuration = configuration.groupItems />
       </q-card-section>
     </div>
 
@@ -20,6 +22,7 @@
   import NodeVariables from "components/modules/common/NodeVariables"
 
   const props = defineProps({
+    nodeNumber: { type: Number, required: true },
     configuration: Object
   })
 

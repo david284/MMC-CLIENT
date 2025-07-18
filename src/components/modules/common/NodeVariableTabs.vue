@@ -17,7 +17,9 @@
               <b>{{ tab.displaySubTitle }}</b>
             </q-card-section>
             <q-card-section class="no-padding no-margin row">
-              <NodeVariables :configuration = tab.items />
+              <NodeVariables
+                :nodeNumber = nodeNumber
+                :configuration = tab.items />
             </q-card-section>
         </div>
 
@@ -26,7 +28,7 @@
 
   </div>
 </template>
-  
+
 
 <script setup>
 
@@ -38,12 +40,13 @@
 
 
   const props = defineProps({
+    nodeNumber: { type: Number, required: true },
     configuration: Object
   })
 
   const name = 'NodeVariableTabsA'
   const tabPanels = ref()
-  const selectedTab = ref()  
+  const selectedTab = ref()
   const store = inject('store')
   const sourceName=ref("nvTabs")
   const tabWidth = ref("92vw")
