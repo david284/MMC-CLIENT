@@ -43,7 +43,19 @@
 
 </template>
 
+
 <script setup>
+
+// Expecting MDF element as per example below
+//
+//  "nodeVariables": [
+//    {
+//      "type": "NodeChannelList",
+//      "channels":{
+//        "1": {"channelType": "output", "edit": []},
+//        "2": {"channelType": "output", "edit": []},
+//
+
 import {inject, ref, onBeforeMount, onMounted, onUpdated, computed, watch} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
@@ -51,7 +63,7 @@ import {timeStampedLog} from "components/functions/utils.js"
 
 const $q = useQuasar()
 const store = inject('store')
-const name = "ChannelList"
+const name = "NodeChannelList"
 const showEventVariablesDialog = ref(false)
 const selected_nodeNumber = ref(0)
 const showWaitingOnBusTrafficDialog = ref(false)
