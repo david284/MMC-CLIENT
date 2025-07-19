@@ -192,7 +192,7 @@ const clickEdit = async (channelNumber) => {
   // JSON keys are strings, so convert to number
   selected_channelNumber.value = parseInt(channelNumber)
   selected_configuration.value = props.configuration.channels[channelNumber].edit
-  //timeStampedLog(name + `: clickEdit: config ${JSON.stringify(selected_configuration.value)}`)
+  timeStampedLog(name + `: clickEdit: config ${JSON.stringify(selected_configuration.value)}`)
   showNodeChannelVariablesDialog.value=true
 }
 

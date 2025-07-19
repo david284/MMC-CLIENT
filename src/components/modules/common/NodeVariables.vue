@@ -53,7 +53,7 @@
         :configuration = item>
       </NodeVariableGroup>
       <NodeVariableNumber v-if="(item.type=='NodeVariableNumber') && (isVisible(item))"
-        :node-number=nodeNumber
+        :nodeNumber=nodeNumber
         :displayTitle="item.displayTitle"
         :displaySubTitle="item.displaySubTitle"
         :node-variable-index=item.nodeVariableIndex
@@ -78,7 +78,7 @@
         >
       </NodeVariableSelect>
       <node-variable-slider v-if="(item.type=='NodeVariableSlider') && (isVisible(item))"
-        :node-number=nodeNumber
+        :nodeNumber=nodeNumber
         :nodeVariableIndex="item.nodeVariableIndex"
         :displayTitle="item.displayTitle"
         :displaySubTitle = "item.displaySubTitle"
@@ -126,7 +126,7 @@ const name = "NodeVariables"
 function isVisible(item){
   var result = true
   if (item.visibilityLogic) {
-    result = parseLogicElement(nodeNumber, item.visibilityLogic, store)
+    result = parseLogicElement(props.nodeNumber, item.visibilityLogic, store)
   }
 //  console.log(name + `: isVisible: ` + result + ' ' + item.type)
   return result
