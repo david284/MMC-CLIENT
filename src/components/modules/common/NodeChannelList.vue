@@ -68,6 +68,8 @@ import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import {timeStampedLog} from "components/functions/utils.js"
 import NodeChannelVariablesDialog from "components/dialogs/NodeChannelVariablesDialog"
+import {overloadedLabel} from "components/modules/common/CommonLogicParsers.js";
+
 
 const $q = useQuasar()
 const store = inject('store')
@@ -91,6 +93,7 @@ const teColumns = [
   {name: 'actions', field: 'actions', required: true, label: '', align: 'left', sortable: true}
 ]
 
+
 const update_node_channels = async () => {
   try{
     timeStampedLog(name + `: update_node_channels`)
@@ -102,13 +105,53 @@ const update_node_channels = async () => {
       teRows.value.push({
         "channelNumber" : channelNumber,
         "name" : store.getters.node_channel_name(props.nodeNumber, channelNumber),
-        "channelType": props.configuration.channels[channelNumber].channelType,
-        "information": "just some random text",
+        "channelType": getChannelTypeText(props.configuration.channels[channelNumber]),
+        "information": getInformationText(props.configuration.channels[channelNumber]),
         "edit": props.configuration.channels[channelNumber].edit ? true : false
       })
     })
   } catch (err){
     timeStampedLog(name + `: update_node_channels ${err}`)
+  }
+}
+
+//
+//
+const getChannelTypeText = (channelDescriptor) => {
+  try{
+    let result = ""
+    //timeStampedLog(name + `: getChannelTypeText ${JSON.stringify(channelDescriptor.channelType)}`)
+    let channelType = channelDescriptor.channelType
+    //timeStampedLog(name + `: getChannelTypeText: item ${JSON.stringify(channelType)}`)
+    if (channelType.overload != undefined) {
+      result = overloadedLabel(props.nodeNumber, channelType.overload, store)
+    } else{
+      result = channelType
+    }
+    return result
+  } catch(err){
+    timeStampedLog(name + `: getChannelTypeText ${err}`)
+  }
+}
+
+//
+//
+const getInformationText = (channelDescriptor) => {
+  try{
+    let result = ""
+    timeStampedLog(name + `: getInformationText ${JSON.stringify(channelDescriptor.information)}`)
+    let information = channelDescriptor.information
+    for (var item in information){
+      timeStampedLog(name + `: getInformationText: item ${JSON.stringify(information[item])}`)
+
+      if (information[item].overload != undefined) {
+        result += overloadedLabel(props.nodeNumber, information[item].overload, store)
+        result += " "
+      }
+    }
+    return result
+  } catch(err){
+    timeStampedLog(name + `: getInformationText ${err}`)
   }
 }
 
