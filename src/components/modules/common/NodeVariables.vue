@@ -117,7 +117,7 @@ import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js
 
 const props = defineProps({
   nodeNumber: Number,
-  configuration: Object,
+  configuration: Object
 })
 
 const store = inject('store')

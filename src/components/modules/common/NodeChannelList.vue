@@ -8,7 +8,7 @@
             dense
             :rows="teRows"
             :columns="teColumns"
-            row-key="channel"
+            row-key="channelNumber"
             hide-bottom
             virtual-scroll
             :rows-per-page-options="[0]"
@@ -17,19 +17,20 @@
 
             <template v-slot:body="props">
               <q-tr :props="props" class="q-my-none q-py-none">
-                <q-td key="channel" :props="props">{{ props.row.channel }}</q-td>
+                <q-td key="channelNumber" :props="props">{{ props.row.channelNumber }}</q-td>
                 <q-td key="name" :props="props">
                   {{ props.row.name }}
                   <q-popup-edit v-model="props.row.name" v-slot="scope" buttons
-                    @save="(newName) => nameChanged(newName, props.row.channel)">
+                    @save="(newName) => nameChanged(newName, props.row.channelNumber)">
                     <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
                   </q-popup-edit>
                 </q-td>
                 <q-td key="channelType" :props="props">{{ props.row.channelType }}</q-td>
+                <q-td key="information" :props="props">{{ props.row.information }}</q-td>
                 <q-td key="actions" :props="props">
                   <!-- <q-btn dense class="q-mx-xs" outline :disabled="!props.row.edit" color="primary" size="md" label="edit" -->
                   <q-btn dense class="q-mx-xs" outline v-if="(props.row.edit)" color="primary" size="sm" label="edit"
-                  @click="clickEdit(props.row.channel)" no-caps/>
+                  @click="clickEdit(props.row.channelNumber)" no-caps/>
                 </q-td>
               </q-tr>
             </template>
@@ -39,6 +40,12 @@
         </q-card-section>
 
   </q-card>
+
+  <NodeChannelVariablesDialog v-model='showNodeChannelVariablesDialog'
+    :nodeNumber = nodeNumber
+    :channelNumber = selected_channelNumber
+    :configuration = selected_configuration
+  />
 
 
 </template>
@@ -60,44 +67,44 @@ import {inject, ref, onBeforeMount, onMounted, onUpdated, computed, watch} from 
 import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import {timeStampedLog} from "components/functions/utils.js"
+import NodeChannelVariablesDialog from "components/dialogs/NodeChannelVariablesDialog"
 
 const $q = useQuasar()
 const store = inject('store')
 const name = "NodeChannelList"
-const showEventVariablesDialog = ref(false)
-const selected_nodeNumber = ref(0)
-const showWaitingOnBusTrafficDialog = ref(false)
-const WaitingOnBusTrafficMessage = ref('')
-const WaitingOnBusTrafficDialogReturn = ref('')
+const showNodeChannelVariablesDialog = ref(false)
+const selected_channelNumber = ref()
+const selected_configuration = ref()
 
 const props = defineProps({
   nodeNumber: {type: Number, default: 0 },
   configuration: {type: Object, required: true}
 })
 
-
 const teRows = ref([])
 
 const teColumns = [
-  {name: 'channel', field: 'channel', required: true, label: 'channel', align: 'left', sortable: true},
+  {name: 'channelNumber', field: 'channelNumber', required: true, label: 'Channel', align: 'left', sortable: true},
   {name: 'name', field: 'name', required: true, label: 'Name (click to edit)', align: 'left', sortable: true},
   {name: 'channelType', field: 'channelType', required: true, label: 'Type', align: 'left', sortable: true},
-  {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
+  {name: 'information', field: 'information', required: true, label: '', align: 'left', sortable: true},
+  {name: 'actions', field: 'actions', required: true, label: '', align: 'left', sortable: true}
 ]
 
 const update_node_channels = async () => {
   try{
     timeStampedLog(name + `: update_node_channels`)
     teRows.value = []
-    timeStampedLog(name + `: update_node_channels ${JSON.stringify(props.configuration)}`)
+    //timeStampedLog(name + `: update_node_channels ${JSON.stringify(props.configuration)}`)
     let i=1
     let MDF_NodeChannels = Object.keys(props.configuration.channels)
-    MDF_NodeChannels.forEach(channel => {
+    MDF_NodeChannels.forEach(channelNumber => {
       teRows.value.push({
-        "channel" : channel,
-        "name" : store.getters.node_channel_name(props.nodeNumber, channel),
-        "channelType": props.configuration.channels[channel].channelType,
-        "edit": props.configuration.channels[channel].edit ? true : false
+        "channelNumber" : channelNumber,
+        "name" : store.getters.node_channel_name(props.nodeNumber, channelNumber),
+        "channelType": props.configuration.channels[channelNumber].channelType,
+        "information": "just some random text",
+        "edit": props.configuration.channels[channelNumber].edit ? true : false
       })
     })
   } catch (err){
@@ -115,16 +122,16 @@ const nameChanged = (channelName, channelNumber) => {
 
 
 onBeforeMount(() => {
-//  timeStampedLog(name + `: onBeforeMount`)
+  //timeStampedLog(name + `: onBeforeMount`)
 })
 
 onMounted(() => {
-//  timeStampedLog(name + ': props: ' + JSON.stringify(props))
+  //timeStampedLog(name + ': props: ' + JSON.stringify(props))
   update_node_channels()
 })
 
 onUpdated(() => {
-//  timeStampedLog(name + `: onUpdated`)
+  //timeStampedLog(name + `: onUpdated`)
   update_node_channels()
 })
 
@@ -137,8 +144,13 @@ Click event handlers
 
 //
 //
-const clickEdit = async (channel) => {
-  timeStampedLog(name + `: clickEdit: node ${props.nodeNumber} channel ${channel}`)
+const clickEdit = async (channelNumber) => {
+  timeStampedLog(name + `: clickEdit: node ${props.nodeNumber} channel ${channelNumber}`)
+  // JSON keys are strings, so convert to number
+  selected_channelNumber.value = parseInt(channelNumber)
+  selected_configuration.value = props.configuration.channels[channelNumber].edit
+  //timeStampedLog(name + `: clickEdit: config ${JSON.stringify(selected_configuration.value)}`)
+  showNodeChannelVariablesDialog.value=true
 }
 
 
