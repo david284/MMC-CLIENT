@@ -59,8 +59,8 @@
 //    {
 //      "type": "NodeChannelList",
 //      "channels":{
-//        "1": {"channelType": "output", "edit": []},
-//        "2": {"channelType": "output", "edit": []},
+//        "1": {"channelType": "output", "channelVariables": []},
+//        "2": {"channelType": "output", "channelVariables": []},
 //
 
 import {inject, ref, onBeforeMount, onMounted, onUpdated, computed, watch} from "vue";
@@ -69,6 +69,7 @@ import {sleep} from "components/functions/utils.js"
 import {timeStampedLog} from "components/functions/utils.js"
 import NodeChannelVariablesDialog from "components/dialogs/NodeChannelVariablesDialog"
 import {overloadedLabel} from "components/modules/common/CommonLogicParsers.js";
+import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
 
 
 const $q = useQuasar()
@@ -106,8 +107,8 @@ const update_node_channels = async () => {
         "channelNumber" : channelNumber,
         "name" : store.getters.node_channel_name(props.nodeNumber, channelNumber),
         "channelType": getChannelTypeText(props.configuration.channels[channelNumber]),
-        "information": getInformationText(props.configuration.channels[channelNumber]),
-        "edit": props.configuration.channels[channelNumber].edit ? true : false
+        "information": getInformationText(channelNumber, props.configuration.channels[channelNumber]),
+        "edit": props.configuration.channels[channelNumber].channelVariables ? true : false
       })
     })
   } catch (err){
@@ -136,24 +137,38 @@ const getChannelTypeText = (channelDescriptor) => {
 
 //
 //
-const getInformationText = (channelDescriptor) => {
+const getInformationText = (channelNumber, channelDescriptor) => {
   try{
     let result = ""
-    timeStampedLog(name + `: getInformationText ${JSON.stringify(channelDescriptor.information)}`)
+    timeStampedLog(name + `: getInformationText: channel ${channelNumber} ${JSON.stringify(channelDescriptor.information)}`)
     let information = channelDescriptor.information
     for (var item in information){
       timeStampedLog(name + `: getInformationText: item ${JSON.stringify(information[item])}`)
 
-      if (information[item].overload != undefined) {
-        result += overloadedLabel(props.nodeNumber, information[item].overload, store)
-        result += " "
+      if (information[item].text != undefined) {
+        if (information[item].text.visibilityLogic){
+          if (parseLogicElement(props.nodeNumber, information[item].text.visibilityLogic, store)){
+            result += '<' + information[item].text.label + '> '
+          }
+        }
       }
     }
+    timeStampedLog(name + `: getInformationText: result ${JSON.stringify(result)}`)
     return result
   } catch(err){
     timeStampedLog(name + `: getInformationText ${err}`)
   }
 }
+
+function isVisible(item){
+  var result = true
+  if (item.visibilityLogic) {
+    result = parseLogicElement(props.nodeNumber, item.visibilityLogic, store)
+  }
+//  console.log(name + `: isVisible: ` + result + ' ' + item.type)
+  return result
+}
+
 
 const nameChanged = (channelName, channelNumber) => {
   timeStampedLog(name + `: nameChanged: ${channelNumber} ${channelName}`)
@@ -191,7 +206,7 @@ const clickEdit = async (channelNumber) => {
   timeStampedLog(name + `: clickEdit: node ${props.nodeNumber} channel ${channelNumber}`)
   // JSON keys are strings, so convert to number
   selected_channelNumber.value = parseInt(channelNumber)
-  selected_configuration.value = props.configuration.channels[channelNumber].edit
+  selected_configuration.value = props.configuration.channels[channelNumber].channelVariables
   timeStampedLog(name + `: clickEdit: config ${JSON.stringify(selected_configuration.value)}`)
   showNodeChannelVariablesDialog.value=true
 }
