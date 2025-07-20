@@ -102,6 +102,7 @@
               @click=clickSingleBusEvent(message)
               >
               <q-item-label dense caption class="q-pa-none q-my-none">
+                <!-- <span class="text-bold text-blue">{{ message.timeStamp }} {{ message.direction }}</span> -->
                 <span class="text-bold text-blue">{{ message.direction }}</span>
                 <span>:&nbsp;</span>
                 <span class="text-bold">{{ message.json.text }}</span>
@@ -516,7 +517,8 @@ const clickSingleBusEvent = (message) => {
   scrollAreaRef.value.setScrollPercentage('vertical', 1)
   showModifiedGridConnectDialog.value = true
 
-//  showBusTrafficDialog.value = true
+  //store.methods.request_log_file("bustraffic.txt")
+  //showBusTrafficDialog.value = true
 }
 
 //

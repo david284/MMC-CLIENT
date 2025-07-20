@@ -61,8 +61,18 @@
 //    {
 //      "type": "NodeChannelList",
 //      "channels":{
-//        "1": {"channelType": "output", "channelVariables": []},
-//        "2": {"channelType": "output", "channelVariables": []},
+//        "1": {"channelType": "output", "information":[], "channelVariables": []},
+//        "2": {"channelType": "output", "information":[], "channelVariables": []},
+//        ...
+//  The content of "information" is expected to be a "text" type element
+//  which can have visibility logic, and overloaded labels as well (not shown for clarity)
+//            {
+//              "type":"text",
+//              "visibilityLogic":{"JLL":{ "==" :[ {"NVbit":[1, 7]}, true] } },
+//              "label": "Repeat enabled "
+//            }
+//  The content of "channelVariables" is those usual elements (nodeSlider etc..) that are specific
+//  to thois specific channel (anything that would previously been put in a channel 'tab' for instance)
 //
 
 import {inject, ref, onBeforeMount, onMounted, onUpdated, computed, watch} from "vue";
@@ -142,15 +152,32 @@ const getChannelTypeText = (channelDescriptor) => {
 const getInformationText = (channelNumber, channelDescriptor) => {
   try{
     let result = ""
-    timeStampedLog(name + `: getInformationText: channel ${channelNumber} ${JSON.stringify(channelDescriptor.information)}`)
+    //timeStampedLog(name + `: getInformationText: channel ${channelNumber} ${JSON.stringify(channelDescriptor.information)}`)
     let information = channelDescriptor.information
-    for (var item in information){
-      timeStampedLog(name + `: getInformationText: item ${JSON.stringify(information[item])}`)
-
-      if (information[item].text != undefined) {
-        if (information[item].text.visibilityLogic){
-          if (parseLogicElement(props.nodeNumber, information[item].text.visibilityLogic, store)){
-            result += '<' + information[item].text.label + '> '
+    for (var index in information){
+      //timeStampedLog(name + `: getInformationText: item ${JSON.stringify(information[index])}`)
+      //timeStampedLog(name + `: getInformationText: visibilityLogic ${JSON.stringify(information[index].visibilityLogic)}`)
+      //timeStampedLog(name + `: getInformationText: label ${JSON.stringify(information[index].label)}`)
+      let label = null
+      if (information[index].type == "text") {
+        // check if it should be shown
+        if (information[index].visibilityLogic){
+          if (parseLogicElement(props.nodeNumber, information[index].visibilityLogic, store)){
+            label = information[index].label
+          }
+        } else {
+          // no logic, so show anyway
+          label = information[index].label
+        }
+        // ok, so label should now contain something if we're going to show it...
+        if (label != null) {
+          // check if the label is overloaded
+          if (label.overload != undefined) {
+            label = overloadedLabel(props.nodeNumber, label.overload, store)
+          }
+          // ok, can now add to result if there is a label
+          if (label != null) {
+            result += '<' + label + '> '
           }
         }
       }

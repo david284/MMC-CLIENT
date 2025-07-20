@@ -222,6 +222,11 @@ const methods = {
     timeStampedLog(name + `: REQUEST_BUS_EVENTS`)
   },
   //
+  request_log_file(filename) {
+    timeStampedLog(`REQUEST_LOG_FILE : ` + filename)
+    socket.emit('REQUEST_LOG_FILE', {"fileName":filename})
+  },
+  //
   request_MDF_delete(filename) {
     timeStampedLog(`REQUEST_MDF_DELETE : ` + filename)
     socket.emit('REQUEST_MDF_DELETE', {"filename":filename})
@@ -725,6 +730,17 @@ socket.on('LAYOUTS_LIST', (data) => {
   state.layouts_list = data;
 })
 
+//
+//
+socket.on('LOG_FILE', (data) => {
+  if ((data.fileName.length > 0) & (data.logFile.length > 0)){
+    timeStampedLog(name + `: RECEIVED LOG_FILE ${data.fileName} ${data.logFile.length}`)
+    eventBus.emit('LOG_FILE', data.fileName, data.logFile)
+  } else {
+    timeStampedLog(name + `: RECEIVED unexpected LOG_FILE`)
+    timeStampedLog(name + `: RECEIVED unexpected LOG_FILE  ${data.fileName} ${data.logFile.length}`)
+  }
+})
 
 socket.on("MDF_EXPORT", (location, filename, MDF) => {
   timeStampedLog(name + `: RECEIVED MDF_EXPORT ` + location + ' ' + filename)
