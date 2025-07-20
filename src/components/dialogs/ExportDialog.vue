@@ -156,7 +156,8 @@ const clickExport = async (filename) => {
   xlsx.utils.book_append_sheet(workbook, channelsWorksheet, "Channels");
 
   const fileName = store.state.layout.layoutDetails.title + ' export '+createDateStamp() + '.ods'
-  xlsx.writeFile(workbook, fileName, { bookType:'ods', compression: true, cellStyles: true });
+  const newFilename = fileName.replaceAll(" ", "_")
+  xlsx.writeFile(workbook, newFilename, { bookType:'ods', compression: true, cellStyles: true });
 
 }
 
