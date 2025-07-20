@@ -129,6 +129,14 @@ const clickExport = async (filename) => {
     }
   }
 
+  // lets put a blank line into channels to ensure we get headers
+  let channelOutput = []
+  channelOutput['channelName'] = ''
+  channelOutput['nodeName'] = ''
+  channelOutput['nodeNumber'] = ''
+  channelOutput['channelNumber'] = ''
+  channels.push(channelOutput)
+
   const nodesWorksheet = xlsx.utils.json_to_sheet(nodes);
   /* calculate column width */
   const nodes_max_width = nodes.reduce((w, r) => Math.max(w, r.nodeName.length), 20);
