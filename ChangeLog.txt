@@ -1,3 +1,10 @@
+Version 0.10.4
+  Added prototype MDF channeList support
+  export filename now has underscores in place of spaces
+  export now ensures headers on channels sheet even if no data
+  Started work on BusTrafficLogDialog - but not completed, so not enabled
+
+
 Version 0.10.3
   Added NodeVariableButtons
   Amended NodeVariableNumber to support scaling down to 0.01 (2 decimal places)
