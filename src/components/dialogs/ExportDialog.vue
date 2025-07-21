@@ -129,13 +129,35 @@ const clickExport = async (filename) => {
     }
   }
 
-  // lets put a blank line into channels to ensure we get headers
+  // lets put a blank line into all json data to ensure we get headers
+  // need to have a blank entry for each column to get a column header
+
+  let eventOutput = []
+  eventOutput['eventName'] = ''
+  eventOutput['eventNumber'] = ''
+  eventOutput['eventGroup'] = ''
+  shortEvents.push(eventOutput)
+  eventOutput['eventNodeNumber'] = ''
+  longEvents.push(eventOutput)
+  //
+  let nodeOutput = []
+  nodeOutput['nodeName'] = ''
+  nodeOutput['moduleName'] = ''
+  nodeOutput['nodeNumber'] = ''
+  nodeOutput['nodeGroup'] = ''
+  nodes.push(nodeOutput)
+  //
+
   let channelOutput = []
   channelOutput['channelName'] = ''
   channelOutput['nodeName'] = ''
   channelOutput['nodeNumber'] = ''
   channelOutput['channelNumber'] = ''
   channels.push(channelOutput)
+
+  // ok, lets convert that json data into sheets
+  // add some formatting while we're at it
+  //
 
   const nodesWorksheet = xlsx.utils.json_to_sheet(nodes);
   /* calculate column width */
