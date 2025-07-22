@@ -3,8 +3,9 @@ import io from 'socket.io-client'
 //import VueSocketIO from 'vue-socket.io'
 import { EventBus } from 'quasar'
 import {NodeParameterNames} from "src/definitions/Text_NodeParameterNames"
-import {secondsNow} from "components/functions/utils.js"
 import {timeStampedLog} from "components/functions/utils.js"
+import { getNumberOfChannels } from "components/functions/NodeFunctions"
+
 
 const eventBus = new EventBus()
 const host = window.location.hostname
@@ -818,6 +819,8 @@ socket.on("NODE_DESCRIPTOR", (data) => {
   var moduleDescriptor = Object.values(data)[0] // get first value
   timeStampedLog(name + `: RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber + ' ' + moduleDescriptor.moduleDescriptorFilename)
   state.nodeDescriptors[nodeNumber] = moduleDescriptor
+  const store = {"state":state}
+  state.layout.nodeDetails[nodeNumber].numberOfChannels = getNumberOfChannels(store, nodeNumber)
   state.MDFupdateTimestamp = Date.now()
 })
 

@@ -1,11 +1,11 @@
 
-import {inject} from "vue";
 import {secondsNow} from "components/functions/utils.js"
 
 const name = "NodeFunctions"
 
 export function getNumberOfChannels(store, nodeNumber) {
-  let numberOfChannels = 0
+  let numberOfChannels = null
+  // first, try the MDF, if there is one
   try {
     numberOfChannels = store.state.nodeDescriptors[nodeNumber].numberOfChannels
     if (numberOfChannels == undefined){ numberOfChannels = 0 }
@@ -25,6 +25,13 @@ export function getNumberOfChannels(store, nodeNumber) {
     //console.log(name + `: ${err}`)
     //console.log(name + `: failed to get channelNames`)
   }
+  // if result still null, then see if we've stored a previous value
+  if (numberOfChannels == null){
+    try{
+      numberOfChannels = store.state.layout.nodeDetails[nodeNumber].numberOfChannels
+    } catch {}
+  }
+
   console.log(secondsNow() + ': ' + name + `: numberOfChannels: ${numberOfChannels}`)
   return numberOfChannels
 }
