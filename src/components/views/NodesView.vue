@@ -43,6 +43,7 @@
           <q-td key="nodeName" :props="props">{{ props.row.nodeName }} </q-td>
           <q-td key="group" :props="props">{{ props.row.group }} </q-td>
           <q-td key="moduleName" :props="props">{{ props.row.moduleName }}</q-td>
+          <q-td key="moduleVersion" :props="props">{{ props.row.moduleVersion }}</q-td>
           <q-td key="mode" :props="props">
             <q-chip dense color="white" text-color="blue" v-if="(props.row.mode=='FLiM')">{{ props.row.mode }}</q-chip>
             <q-chip dense color="white" text-color="red" v-else>{{ props.row.mode }}</q-chip>
@@ -147,6 +148,7 @@ const columns = [
   {name: 'nodeName', field: 'nodeName', required: true, label: 'Name', align: 'left', sortable: true},
   {name: 'group', field: 'group', required: true, label: 'Group', align: 'left', sortable: true},
   {name: 'moduleName', field: 'moduleName', required: true, label: 'Module name', align: 'left', sortable: true},
+  {name: 'moduleVersion', field: 'moduleVersion', required: true, label: 'Version', align: 'left', sortable: true},
   {name: 'mode', field: 'mode', required: true, label: 'Mode', align: 'left', sortable: true},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},
   {name: 'events', field: 'events', required: true, label: 'Stored Events', align: 'center', sortable: true},
@@ -209,6 +211,7 @@ const update_rows = () => {
       output['nodeName'] = store.getters.node_name(node.nodeNumber)
       output['group'] = store.getters.node_group(node.nodeNumber)
       output['moduleName'] = store.getters.module_name(node.nodeNumber)
+      output['moduleVersion'] = store.getters.module_version(node.nodeNumber)
       output['component'] = node.component
       output['status'] = node.status
       if (node.flim == true) {

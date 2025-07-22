@@ -456,6 +456,15 @@ const getters = {
       return "unknown"
     }
   },
+  module_version(nodeNumber){
+    try{
+      if (state.nodes[nodeNumber].moduleVersion){
+        return state.nodes[nodeNumber].moduleVersion
+      }
+    } catch{
+      return ""
+    }
+  },
   node_can_id(nodeNumber){
     var CAN_ID = undefined
     try{
