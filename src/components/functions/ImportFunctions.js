@@ -266,7 +266,7 @@ function addNodeChannelName(store, nodeNumber, channelNumber, channelName, modeV
   try {
     existingChannelName = store.state.layout.nodeDetails[nodeNumber].channels[channelNumber].channelName
   } catch {}
-  if (existingChannelName == null){
+  if ((existingChannelName == null) || (existingChannelName.length == 0)){
     console.log('node ' + nodeNumber + ": channelName: " + channelName + " ChannelName not found - updated")
     store.setters.node_channel_name(nodeNumber, channelNumber, channelName)
   } else if (existingChannelName == channelName){

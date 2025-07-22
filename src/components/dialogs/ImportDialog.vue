@@ -104,10 +104,8 @@
           </div>
           <br>
           <div class="text-subtitle2">
-            The node information is expected to be on a sheet named 'Nodes'
-          </div>
-          <div class="text-subtitle2">
-            'moduleName' is optional, and will be updated when the node connects anyway, but useful if the node isn't connected
+            The node information is expected to be on a sheet named 'Nodes'.<br>
+            'moduleName' is optional, and will be updated when the node connects anyway, but useful if the node isn't connected.
           </div>
           <div>
             <q-img
@@ -118,10 +116,10 @@
           </div>
           <br>
           <div class="text-subtitle2">
-            The channel information is expected to be on a sheet named 'Channels'
-          </div>
-          <div class="text-subtitle2">
-            'nodeName' is optional, and will be updated when the node connects anyway, but useful if the node isn't connected
+            The channel information is expected to be on a sheet named 'Channels'.<br>
+            Only 'nodeNumber', 'channelNumber' & 'channelName' are actually used by the import.<br>
+            'nodeName', 'moduleName' and 'groupName' are not used by the import, and so optional.<br>
+             These are populated when a spreadsheet is exported, and very useful to make the list more readable.
           </div>
           <div>
             <q-img
@@ -132,10 +130,10 @@
           </div>
           <br>
           <div class="text-subtitle2">
-            NOTE: the column names are case sensitive and have no spaces, but the order of the columns doesn't matter, as it looks for columns by name, not position
+            NOTE: the column names are case sensitive and have no spaces, but the order of the columns doesn't matter, as it looks for columns by name, not position.
           </div>
           <div class="text-subtitle2">
-            Additional columns with different headers are ignored, as are other sheets with different names
+            Additional columns with different headers are ignored, as are other sheets with different names.
           </div>
         </q-card-section>
       </q-card>
