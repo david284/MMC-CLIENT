@@ -1,5 +1,6 @@
 version 0.10.5
   Amended columns in export
+  Amended import to match export changes
   Added module version in nodes list
 
 Version 0.10.4
