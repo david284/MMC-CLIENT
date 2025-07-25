@@ -1,10 +1,11 @@
 
-import {secondsNow} from "components/functions/utils.js"
+import {timeStampedLog} from "components/functions/utils.js"
+
 
 const name = "NodeFunctions"
 
 export function getNumberOfChannels(store, nodeNumber) {
-  let numberOfChannels = null
+  let numberOfChannels = 0
   // first, try the MDF, if there is one
   try {
     numberOfChannels = store.state.nodeDescriptors[nodeNumber].numberOfChannels
@@ -32,7 +33,7 @@ export function getNumberOfChannels(store, nodeNumber) {
     } catch {}
   }
 
-  console.log(secondsNow() + ': ' + name + `: numberOfChannels: ${numberOfChannels}`)
+  //timeStampedLog(name + `: numberOfChannels: ${numberOfChannels}`)
   return numberOfChannels
 }
 
