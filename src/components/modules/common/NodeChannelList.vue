@@ -109,7 +109,7 @@ const teColumns = [
 
 const update_node_channels = async () => {
   try{
-    timeStampedLog(name + `: update_node_channels`)
+    //timeStampedLog(name + `: update_node_channels`)
     teRows.value = []
     //timeStampedLog(name + `: update_node_channels ${JSON.stringify(props.configuration)}`)
     let i=1
@@ -182,7 +182,7 @@ const getInformationText = (channelNumber, channelDescriptor) => {
         }
       }
     }
-    timeStampedLog(name + `: getInformationText: result ${JSON.stringify(result)}`)
+    //timeStampedLog(name + `: getInformationText: result ${JSON.stringify(result)}`)
     return result
   } catch(err){
     timeStampedLog(name + `: getInformationText ${err}`)
@@ -200,7 +200,7 @@ function isVisible(item){
 
 
 const nameChanged = (channelName, channelNumber) => {
-  timeStampedLog(name + `: nameChanged: ${channelNumber} ${channelName}`)
+  //timeStampedLog(name + `: nameChanged: ${channelNumber} ${channelName}`)
   store.setters.node_channel_name(props.nodeNumber, channelNumber, channelName)
   update_node_channels()
 }
@@ -236,7 +236,7 @@ const clickEdit = async (channelNumber) => {
   // JSON keys are strings, so convert to number
   selected_channelNumber.value = parseInt(channelNumber)
   selected_configuration.value = props.configuration.channels[channelNumber].channelVariables
-  timeStampedLog(name + `: clickEdit: config ${JSON.stringify(selected_configuration.value)}`)
+  //timeStampedLog(name + `: clickEdit: config ${JSON.stringify(selected_configuration.value)}`)
   showNodeChannelVariablesDialog.value=true
 }
 

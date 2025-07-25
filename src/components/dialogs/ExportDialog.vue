@@ -42,6 +42,8 @@ import {importFCU} from "components/functions/ImportFunctions.js"
 import {createDateStamp} from "components/functions/utils.js"
 import {sleep} from "components/functions/utils.js"
 import { getNumberOfChannels } from "../functions/NodeFunctions";
+import {timeStampedLog} from "components/functions/utils.js"
+
 
 
 const $q = useQuasar()
@@ -64,7 +66,7 @@ const model = computed({
 })
 
 watch(model, () => {
-  //console.log(name + `: WATCH model`)
+  //timeStampedLog(name + `: WATCH model`)
   if (model.value){
     // now clear filename when dialog opened
     importFile.value = undefined
@@ -87,7 +89,7 @@ Click event handlers
 
 
 const clickExport = async (filename) => {
-  console.log(name + `: clickExport`)
+  timeStampedLog(name + `: clickExport`)
 
   //
   // Uses sheetsjs
@@ -131,7 +133,7 @@ const clickExport = async (filename) => {
     nodes.push(output)
     try{
       let numberOfChannels = getNumberOfChannels(store, nodeNumber)
-      console.log(name + `: clickExport: number of channels ${numberOfChannels}`)
+      timeStampedLog(name + `: clickExport: node ${nodeNumber} number of channels ${numberOfChannels}`)
       for (var i= 1; i <= numberOfChannels; i++){
         let channelOutput = []
         channelOutput['nodeNumber'] = parseInt(nodeNumber)
@@ -147,7 +149,7 @@ const clickExport = async (filename) => {
         channels.push(channelOutput)
       }
     } catch(err){
-      console.log(name + `: clickExport: ${err}`)
+      timeStampedLog(name + `: clickExport: ${err}`)
     }
   }
 
@@ -214,7 +216,7 @@ const clickExport = async (filename) => {
   const nodeName_width = channels.reduce((w, r) => Math.max(w, r.nodeName.length), 15) + 5;
   const nodeGroup_width = channels.reduce((w, r) => Math.max(w, r.nodeGroup.length), 15) + 5;
   const moduleName_width = channels.reduce((w, r) => Math.max(w, r.moduleName.length), 15) + 5;
-  //console.log(`channels widths:  nodeNames ${nodeName_width} ChannelNames ${channelName_width}}`)
+  //timeStampedLog(`channels widths:  nodeNames ${nodeName_width} ChannelNames ${channelName_width}}`)
   channelsWorksheet["!cols"] = [ { wch: 15 }, { wch: nodeName_width }, { wch: nodeGroup_width }, { wch: moduleName_width }, { wch: 18 }, { wch: channelName_width } ];
 
   const workbook = xlsx.utils.book_new();
