@@ -15,6 +15,9 @@
           <div class="text-subtitle2">
             The data exported includes node & event names
           </div>
+          <div class="text-subtitle2">
+            The export data does not include node configuration & events, use node backup for that
+          </div>
         </q-card-section>
 
         <q-card style="min-width: 350px">

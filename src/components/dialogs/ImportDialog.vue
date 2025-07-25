@@ -16,7 +16,8 @@
           <div class="text-h6">
             This allows the import of names, groups & modules for Events & Nodes from external files
           </div>
-          <div class="text-h6">The data imported depends on the file type</div>
+          <div class="text-h6">Node variables and events are not imported, please use node restore for that</div>
+          <div class="text-h6">The data imported is dependant on the file type below</div>
           <div class="text-h6">Click the info button by each file type for more details</div>
         </q-card-section>
 
