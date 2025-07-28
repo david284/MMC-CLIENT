@@ -1,4 +1,7 @@
 version 0.10.5
+  Node parameters not being loaded - problem introduced in last version because param9 already loaded
+
+version 0.10.5
   Amended columns in export
   Amended import to match export changes
   Added module version in nodes list
