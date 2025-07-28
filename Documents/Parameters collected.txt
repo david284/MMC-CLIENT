@@ -1,0 +1,15 @@
+Parameters collected on startup
+
+1 - ManufacturerID
+2 - Minor version
+3 - ModuleID
+....
+7 - Major version
+8 - flags
+9 - CpuType
+
+Should check 5 & 6 to see if all parameters loaded
+    "No. of Event Variables per event", // 5
+    "No. of Node Variables",            // 6
+
+

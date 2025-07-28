@@ -105,8 +105,9 @@ const update_nodes_table = async () => {
 const checkNodeParameters = async (nodeNumber) => {
   //console.log(name + ': checkNodeParameters: node ' + nodeNumber)
   //
-  // param9 - cpu type to check if parameters have been fully retrieved
-  if(store.state.nodes[nodeNumber].parameters[9]){
+  // params 5 & 6 - check if parameters have been fully retrieved
+  // logical and &&
+  if((store.state.nodes[nodeNumber].parameters[5]) && (store.state.nodes[nodeNumber].parameters[6])){
     // parameters exist, so don't need to load
   } else {
     WaitingOnBusTrafficDialogReturn.value =''
