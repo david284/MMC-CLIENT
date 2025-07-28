@@ -120,7 +120,7 @@ const checkNodeParameters = async (nodeNumber) => {
     }
     showWaitingOnBusTrafficDialog.value = false
   }
-  var result = (store.state.nodes[nodeNumber].parameters[9] != undefined)? true : false
+  var result = (store.state.nodes[nodeNumber].parameters[5] != undefined)? true : false
   if (result == false){
     console.log(name + `: checkNodeParameters: node ${nodeNumber} failed`)
     $q.notify({
