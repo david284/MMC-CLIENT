@@ -21,18 +21,17 @@ export function getNumberOfChannels(store, nodeNumber) {
       //console.log(name + `: index ${index} maxChannel ${maxChannel}`)
     })
     if (maxChannel > numberOfChannels){numberOfChannels = maxChannel}
-    //console.log(name + `: maxChannel ${maxChannel}`)
   } catch (err) {
-    //console.log(name + `: ${err}`)
     //console.log(name + `: failed to get channelNames`)
   }
-  // if result still null, then see if we've stored a previous value
-  if (numberOfChannels == null){
+  // if result still null or zero, then see if we've stored a previous value
+  if ((numberOfChannels == null) || (numberOfChannels == 0)){
     try{
       numberOfChannels = store.state.layout.nodeDetails[nodeNumber].numberOfChannels
-    } catch {}
+    } catch {
+      //console.log(name + `: failed to get stored numberOfChannels`)
+    }
   }
-
   //timeStampedLog(name + `: numberOfChannels: ${numberOfChannels}`)
   return numberOfChannels
 }
