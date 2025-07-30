@@ -306,7 +306,6 @@ const getEventVariables = async (eventIdentifier) => {
   if (WaitingOnBusTrafficDialogReturn.value.length > 0)
     {
       // success if we exit early
-      //timeStampedLog(name + ': checkNodeParameters: return ' + WaitingOnBusTrafficDialogReturn.value)
       break
     }
     await sleep (100)

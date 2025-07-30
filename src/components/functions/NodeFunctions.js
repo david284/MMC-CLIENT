@@ -36,3 +36,29 @@ export function getNumberOfChannels(store, nodeNumber) {
   return numberOfChannels
 }
 
+
+//
+//Parameters collected on startup
+// 1 - ManufacturerID
+// 2 - Minor version
+// 3 - ModuleID
+// ....
+// 7 - Major version
+// 8 - flags
+// 9 - CpuType
+// so check that 4,5 & 6 are also loaded to be sure it's fully loaded
+//
+export function NodeParametersLoaded(store, nodeNumber) {
+  // logical and '&&'
+  if( (store.state.nodes[nodeNumber].parameters[4])
+    && (store.state.nodes[nodeNumber].parameters[5])
+    && (store.state.nodes[nodeNumber].parameters[6])
+  ){
+    return true
+  } else {
+    return false
+  }
+}
+
+
+

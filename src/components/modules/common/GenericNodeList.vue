@@ -53,6 +53,7 @@ import {inject, ref, onBeforeMount, onMounted, onUpdated, computed, watch} from 
 import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import {refreshEventIndexes} from "components/functions/EventFunctions.js"
+import {NodeParametersLoaded} from "components/functions/NodeFunctions.js"
 import EventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
 
@@ -105,9 +106,8 @@ const update_nodes_table = async () => {
 const checkNodeParameters = async (nodeNumber) => {
   //console.log(name + ': checkNodeParameters: node ' + nodeNumber)
   //
-  // params 5 & 6 - check if parameters have been fully retrieved
-  // logical and &&
-  if((store.state.nodes[nodeNumber].parameters[5]) && (store.state.nodes[nodeNumber].parameters[6])){
+  // check if parameters have already been fully retrieved
+  if(NodeParametersLoaded(store, nodeNumber)){
     // parameters exist, so don't need to load
   } else {
     WaitingOnBusTrafficDialogReturn.value =''

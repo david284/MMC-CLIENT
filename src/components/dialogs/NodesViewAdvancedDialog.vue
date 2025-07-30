@@ -71,6 +71,7 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import {sleep} from "components/functions/utils.js"
 import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
 import { date, useQuasar, scroll } from 'quasar'
+import {NodeParametersLoaded} from "components/functions/NodeFunctions.js"
 import programNodeDialog from "components/dialogs/programNodeDialog"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
 
@@ -103,9 +104,8 @@ const model = computed({
 const checkNodeParameters = async (nodeNumber) => {
   //console.log(name + ': checkNodeParameters: node ' + nodeNumber)
   //
-  // params 5 & 6 - check if parameters have been fully retrieved
-  // logical and &&
-  if((store.state.nodes[nodeNumber].parameters[5]) && (store.state.nodes[nodeNumber].parameters[6])){
+  // check if parameters have already been fully retrieved
+  if(NodeParametersLoaded(store, nodeNumber)){
     // parameters exist, so don't need to load
   } else {
     WaitingOnBusTrafficDialogReturn.value =''
@@ -120,8 +120,7 @@ const checkNodeParameters = async (nodeNumber) => {
     }
     showWaitingOnBusTrafficDialog.value = false
   }
-  var result = (store.state.nodes[nodeNumber].parameters[5] != undefined)? true : false
-  if (result == false){
+  if (NodeParametersLoaded(store, nodeNumber) == false){
     console.log(name + `: checkNodeParameters: node ${nodeNumber} failed`)
     $q.notify({
       message: 'Reading Node Parameters has failed',
@@ -132,7 +131,7 @@ const checkNodeParameters = async (nodeNumber) => {
       actions: [ { label: 'Dismiss' } ]
     })
   }
-  return result
+  return NodeParametersLoaded(store, nodeNumber)
 }
 
 
