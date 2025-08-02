@@ -17,7 +17,7 @@
 
 
       <div class="q-pa-xs row">
- 
+
         <q-card flat style="width: 370px">
 
           <q-card-section>
@@ -38,7 +38,7 @@
             <q-checkbox v-model="programCONFIG" label="Program configuration" />
           </q-card-section>
           <q-card-section class="no-margin q-py-none">
-            <q-checkbox v-model="programEEPROM" label="Program EEPROM" />
+            <q-checkbox :disable="programEEPROMCheckBoxDisabled" v-model="programEEPROM" label="Program EEPROM" />
           </q-card-section>
           <q-card-section class="no-margin q-py-none">
             <q-checkbox :disable="cpuTypeCheckBoxDisabled" v-model="cpuTypeCheckIgnore" label="Ignore CPU type" />
@@ -129,6 +129,7 @@ const programCONFIG = ref(false)
 const programEEPROM = ref(false)
 const cpuTypeCheckIgnore = ref(false)
 const bootModeFlag = ref(false)
+const programEEPROMCheckBoxDisabled = ref(false)
 const bootModeCheckBoxDisabled = ref(false)
 const cpuTypeCheckBoxDisabled = ref(false)
 const FIRMWARE_STATUS = ref()
@@ -153,11 +154,25 @@ const model = computed({
 
 watch(model, () => {
   //console.log(name + `: WATCH model: mode ` + props.mode)
-  uploadFile.value = null
   Title.value = "program node " + store.getters.node_name(props.nodeNumber)
+  //
+  uploadFile.value = null
+  //
+  programCONFIG.value = false
+  programEEPROM.value = false
+  cpuTypeCheckIgnore.value = false
+  bootModeFlag.value = false
+  //
+  programEEPROMCheckBoxDisabled.value = false
+  cpuTypeCheckBoxDisabled.value = false
+  bootModeCheckBoxDisabled.value = false
+  //
   if (props.mode == "BOOT"){
+    programEEPROM.value = true
     bootModeFlag.value = true
     cpuTypeCheckIgnore.value = true
+    //
+    programEEPROMCheckBoxDisabled.value = true
     bootModeCheckBoxDisabled.value = true
     cpuTypeCheckBoxDisabled.value = true
     Title.value = "program node in boot mode"
