@@ -141,19 +141,27 @@ const Title = ref()
 var flags = 0
 var cpuType = undefined
 
+//
+//
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
   nodeNumber: { type: Number },
   mode: {type: String, default: "NORMAL" }
 })
 
+//
+//
 const emit = defineEmits(['update:modelValue'])
 
+//
+//
 const model = computed({
   get() { return props.modelValue },
   set(newValue) { emit('update:modelValue', newValue) }
 })
 
+//
+//
 watch(model, () => {
   //console.log(name + `: WATCH model: mode ` + props.mode)
   Title.value = "program node " + store.getters.node_name(props.nodeNumber)
@@ -181,6 +189,16 @@ watch(model, () => {
   }
 })
 
+//
+//
+watch(uploadFile, () => {
+  if(uploadFile.value != null){
+    console.log(name + `: WATCH uploadFile ${uploadFile.value.name}`)
+  }
+})
+
+//
+//
 watch (programCONFIG, () => {
   if (programCONFIG.value){
     $q.notify({
@@ -198,7 +216,8 @@ watch (programCONFIG, () => {
   }
 })
 
-
+//
+//
 watch (cpuTypeCheckIgnore, () => {
   if (cpuTypeCheckIgnore.value){
   // always program EEPROM if different CPU
@@ -210,35 +229,8 @@ watch (cpuTypeCheckIgnore, () => {
   }
 })
 
-
-onBeforeMount(() => {
-})
-
-onMounted(() => {
-})
-
-
-const actionUpload = async () => {
-  var result = {}
-  if (uploadFile.value){
-    var fileName = uploadFile.value.name
-    console.log(name + ': selected filename ' + fileName)
-    let reader = new FileReader();
-    reader.readAsText(uploadFile.value)
-    reader.onload = function() {
-      try{
-        console.log(name + `: actionUpload: result: ` + reader.result)
-      } catch(err){
-        console.log(name + `: actionUpload: ` + err)
-      }
-      store.methods.program_node(props.nodeNumber, cpuType, flags, uploadFile.value)
-    }
-//    uploadFile.value=null
-  } else {
-    console.log(name + `: actionUpload: uploadFile no value `)
-  }
-}
-
+//
+//
 store.eventBus.on('PROGRAM_NODE_PROGRESS', (text) => {
 // console.log(name + ': REQUEST_NODE_NUMBER_EVENT: ' + text)
  progressText.value = text
@@ -248,20 +240,21 @@ store.eventBus.on('PROGRAM_NODE_PROGRESS', (text) => {
  }
 })
 
-
 /*/////////////////////////////////////////////////////////////////////////////
 
 // Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
+//
+//
 const clickInfo = () => {
   console.log(name + `: clickInfo`)
   showInfoDialog.value = true
 }
 
-
-
+//
+//
 const clickProgram = async () => {
   flags = programCONFIG.value ? flags | 1 : flags & ~1   // program CONFIG
   flags = programEEPROM.value ? flags | 2 : flags & ~2   // program EEPROM
@@ -270,9 +263,15 @@ const clickProgram = async () => {
   cpuType = store.state.nodes[props.nodeNumber].parameters[9]
   console.log(name + ": clickProgram: node: " + props.nodeNumber + ' cpuType: '+ cpuType +' flags: ' + flags)
   FIRMWARE_STATUS.value = ''
-  await actionUpload()
+  if (uploadFile.value){
+    store.methods.program_node(props.nodeNumber, cpuType, flags, uploadFile.value)
+  } else {
+    console.log(name + `: clickProgram: uploadFile no value `)
+  }
 }
 
+//
+//
 const clickClose = async () => {
   console.log(name + ': clickClose: flags: ' + flags)
   if (flags & 2){
