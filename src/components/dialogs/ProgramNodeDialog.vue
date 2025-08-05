@@ -120,8 +120,10 @@
 //
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
+import { useQuasar } from 'quasar'
 import ProgramNodeInfoDialog from "components/dialogs/ProgramNodeInfoDialog"
 
+const $q = useQuasar()
 const store = inject('store')
 const name = "ProgramNodeDialog"
 const uploadFile = ref(null)
@@ -176,6 +178,35 @@ watch(model, () => {
     bootModeCheckBoxDisabled.value = true
     cpuTypeCheckBoxDisabled.value = true
     Title.value = "program node in boot mode"
+  }
+})
+
+watch (programCONFIG, () => {
+  if (programCONFIG.value){
+    $q.notify({
+      message: "WARNING: Programming the CONFIG may break the bootloader",
+      caption: "Proceed only if the firmware explicitly requires it, otherwise CANCEL",
+      timeout: 0,
+      position: 'center',
+      color: 'primary',
+      actions: [
+        { label: 'PROCEED', color: 'white', handler: async () => {
+        } },
+        { label: 'CANCEL', color: 'white', handler: () => { programCONFIG.value = false } }
+      ]
+    })
+  }
+})
+
+
+watch (cpuTypeCheckIgnore, () => {
+  if (cpuTypeCheckIgnore.value){
+  // always program EEPROM if different CPU
+    programEEPROM.value = true
+    programEEPROMCheckBoxDisabled.value = true
+  } else {
+    programEEPROM.value = false
+    programEEPROMCheckBoxDisabled.value = false
   }
 })
 
