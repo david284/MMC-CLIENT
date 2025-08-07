@@ -780,7 +780,8 @@ socket.on("MATCHING_MDF_LIST", (location, nodeNumber, list) => {
 
 //
 socket.on("MODULE_NAMES", (data) => {
-  timeStampedLog(name + `: RECEIVED MODULE_NAMES ${JSON.stringify(data)}`)
+  timeStampedLog(name + `: RECEIVED MODULE_NAMES`)
+  //timeStampedLog(name + `: RECEIVED MODULE_NAMES ${JSON.stringify(data)}`)
   state.moduleNames = data
   state.server["moduleNames"] = data
 })

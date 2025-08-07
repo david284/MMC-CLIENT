@@ -38,6 +38,8 @@
               <br/>
               File CPU type: {{ fileCpuType }}
               <br/>
+              File version: {{ fileVersion }}
+              <br/>
             </div>
           </q-card-section>
 
@@ -146,11 +148,13 @@ const FIRMWARE_STATUS = ref()
 const progressText = ref('')
 const fileModuleID = ref(null)
 const fileCpuType = ref(null)
+const fileVersion = ref(null)
 const showInfoDialog = ref(false)
 const showFileInfo = ref(false)
 const Title = ref()
 var flags = 0
 var cpuType = undefined
+
 
 //
 //
@@ -271,6 +275,10 @@ store.eventBus.on('FIRMWARE_INFO', (data) => {
     let nodeModuleType = store.state.nodes[props.nodeNumber].parameters[3]
     fileModuleID.value = "A5" + decToHex(data.moduleID, 2)
     fileCpuType.value = data.targetCpuType
+    fileVersion.value = data.versionNumber
+    if (data.betaNumber > 0){
+      fileVersion.value += ' beta ' + data.betaNumber
+    }
     showFileInfo.value = true
     // check matching CPU type
     if (nodeCpuType != undefined){
