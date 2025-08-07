@@ -1,4 +1,7 @@
-version 0.10.5
+Version 0.10.7
+  Modified ProgramNode to display file information & enforce options on mismatch
+
+version 0.10.6
   Node parameters not being loaded - problem introduced in last version because param9 already loaded
 
 version 0.10.5
