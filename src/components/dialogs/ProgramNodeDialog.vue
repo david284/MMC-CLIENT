@@ -181,17 +181,7 @@ watch(model, () => {
   //console.log(name + `: WATCH model: mode ` + props.mode)
   Title.value = "program node " + store.getters.node_name(props.nodeNumber)
   //
-  uploadFile.value = null
-  showFileInfo.value = false
-  //
-  programCONFIG.value = false
-  programEEPROM.value = false
-  cpuTypeCheckIgnore.value = false
-  bootModeFlag.value = false
-  //
-  programEEPROMCheckBoxDisabled.value = false
-  cpuTypeCheckBoxDisabled.value = false
-  bootModeCheckBoxDisabled.value = false
+  clearAllSelections()
   //
   if (props.mode == "BOOT"){
     programEEPROM.value = true
@@ -259,18 +249,29 @@ store.eventBus.on('PROGRAM_NODE_PROGRESS', (text) => {
   }
 })
 
-const clearFileSelected = () => {
+//
+//
+const clearAllSelections = () => {
   timeStampedLog( name + `: clearFileSelected` )
-  cpuTypeCheckIgnore.value = false
   uploadFile.value = null
   showFileInfo.value = false
+  //
+  programCONFIG.value = false
+  programEEPROM.value = false
+  cpuTypeCheckIgnore.value = false
+  bootModeFlag.value = false
+  //
+  programEEPROMCheckBoxDisabled.value = false
+  cpuTypeCheckBoxDisabled.value = false
+  bootModeCheckBoxDisabled.value = false
 }
 
 //
 // don't process event if dialog not visible
 store.eventBus.on('FIRMWARE_INFO', (data) => {
   if (model.value){
-    timeStampedLog( name + `: FIRMWARE_INFO event: ${JSON.stringify(data)}` )
+    //timeStampedLog( name + `: FIRMWARE_INFO event: ${JSON.stringify(data)}` )
+    timeStampedLog( name + `: FIRMWARE_INFO event:` )
     let nodeCpuType = store.state.nodes[props.nodeNumber].parameters[9]
     let nodeModuleType = store.state.nodes[props.nodeNumber].parameters[3]
     fileModuleID.value = "A5" + decToHex(data.moduleID, 2)
@@ -282,23 +283,23 @@ store.eventBus.on('FIRMWARE_INFO', (data) => {
     showFileInfo.value = true
     // check matching CPU type
     if (nodeCpuType != undefined){
-      timeStampedLog( name + `: FIRMWARE_INFO event: node ${props.nodeNumber} cpuTypes ${fileCpuType.value} ${nodeCpuType}` )
+      //timeStampedLog( name + `: FIRMWARE_INFO event: node ${props.nodeNumber} cpuTypes ${fileCpuType.value} ${nodeCpuType}` )
       if (fileCpuType.value != nodeCpuType){
         cpuTypeCheckIgnore.value = true
+        cpuTypeCheckBoxDisabled.value = true
         $q.notify({
           message: `WARNING: CPU types do not match` ,
-          caption: "Proceed to accept the mismatch, otherwise CANCEL",
+          caption: "PROCEED accepts the mismatch, and forces EEPROM to be programmed, CANCEL clears all selections",
           timeout: 0,
           position: 'center',
           color: 'primary',
           actions: [
             { label: 'PROCEED', color: 'white', handler: async () => {
-              //cpuTypeCheckIgnore.value = true
               timeStampedLog( name + `: FIRMWARE_INFO event: PROCEED` )
             } },
             { label: 'CANCEL', color: 'white', handler: () => {
               timeStampedLog( name + `: FIRMWARE_INFO event: CANCEL` )
-              clearFileSelected()
+              clearAllSelections()
             } }
           ]
         })
@@ -306,23 +307,23 @@ store.eventBus.on('FIRMWARE_INFO', (data) => {
     }
     // check matching module type
     if (nodeModuleType != undefined){
-      timeStampedLog( name + `: FIRMWARE_INFO event: node ${props.nodeNumber} module Types ${data.moduleID} ${nodeModuleType}` )
+      //timeStampedLog( name + `: FIRMWARE_INFO event: node ${props.nodeNumber} module Types ${data.moduleID} ${nodeModuleType}` )
       if (data.moduleID != nodeModuleType){
         programEEPROM.value = true
+        programEEPROMCheckBoxDisabled.value = true
         $q.notify({
           message: `WARNING: Module types do not match` ,
-          caption: "Proceed to accept the mismatch, otherwise CANCEL",
+          caption: "PROCEED accepts the mismatch, and forces EEPROM to be programmed, CANCEL clears all selections",
           timeout: 0,
           position: 'center',
           color: 'primary',
           actions: [
             { label: 'PROCEED', color: 'white', handler: async () => {
-              //cpuTypeCheckIgnore.value = true
               timeStampedLog( name + `: FIRMWARE_INFO event: PROCEED` )
             } },
             { label: 'CANCEL', color: 'white', handler: () => {
               timeStampedLog( name + `: FIRMWARE_INFO event: CANCEL` )
-              clearFileSelected()
+              clearAllSelections()
             } }
           ]
         })
