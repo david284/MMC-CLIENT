@@ -22,28 +22,32 @@
 
           <q-card-section>
             <div class="text-h6">Select a file to upload</div>
+
+            <q-file
+              v-model="uploadFile"
+              label="Pick one file"
+              dense
+              filled
+              style="max-width: 300px"
+            />
           </q-card-section>
 
-          <q-file
-            v-model="uploadFile"
-            label="Pick one file"
-            filled
-            style="max-width: 300px"
-          />
+          <q-card-section style="min-height: 100px" class="no-margin q-py-none">
+            <div v-if="showFileInfo" class="text-body1">
+              File module type: {{ store.state.moduleNames[fileModuleID].name }}
+              <br/>
+              File CPU type: {{ fileCpuType }}
+              <br/>
+            </div>
+          </q-card-section>
 
           <q-card-section class="no-margin q-py-none">
             FLASH memory is always programmed
           </q-card-section>
-          <q-card-section class="no-margin q-py-none">
+          <q-card-section style="max-width: 300px" class="no-margin q-py-none">
             <q-checkbox v-model="programCONFIG" label="Program configuration" />
-          </q-card-section>
-          <q-card-section class="no-margin q-py-none">
             <q-checkbox :disable="programEEPROMCheckBoxDisabled" v-model="programEEPROM" label="Program EEPROM" />
-          </q-card-section>
-          <q-card-section class="no-margin q-py-none">
             <q-checkbox :disable="cpuTypeCheckBoxDisabled" v-model="cpuTypeCheckIgnore" label="Ignore CPU type" />
-          </q-card-section>
-          <q-card-section class="no-margin q-py-none">
             <q-checkbox :disable="bootModeCheckBoxDisabled" v-model="bootModeFlag" label="Program in Boot Mode" />
           </q-card-section>
 
@@ -52,6 +56,8 @@
         <q-card flat class="q-pa-sm" style="width: 370px">
           <q-card-section v-if="(mode=='NORMAL')">
             <div class="text-h6">
+              Node Module type: {{ store.state.nodes[nodeNumber].moduleName }}
+              <br/>
               Node CPU type: {{ store.state.nodes[nodeNumber].cpuName }} ({{ store.state.nodes[nodeNumber].parameters[9] }})
             </div>
             <br/>
@@ -119,8 +125,10 @@
 //     * 8 = Program in Boot Mode
 //
 
-import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
+import {inject, onBeforeMount, onMounted, computed, onUpdated, watch, ref} from "vue";
 import { useQuasar } from 'quasar'
+import {timeStampedLog} from "components/functions/utils.js"
+import {decToHex} from "components/functions/utils.js"
 import ProgramNodeInfoDialog from "components/dialogs/ProgramNodeInfoDialog"
 
 const $q = useQuasar()
@@ -136,7 +144,10 @@ const bootModeCheckBoxDisabled = ref(false)
 const cpuTypeCheckBoxDisabled = ref(false)
 const FIRMWARE_STATUS = ref()
 const progressText = ref('')
+const fileModuleID = ref(null)
+const fileCpuType = ref(null)
 const showInfoDialog = ref(false)
+const showFileInfo = ref(false)
 const Title = ref()
 var flags = 0
 var cpuType = undefined
@@ -167,6 +178,7 @@ watch(model, () => {
   Title.value = "program node " + store.getters.node_name(props.nodeNumber)
   //
   uploadFile.value = null
+  showFileInfo.value = false
   //
   programCONFIG.value = false
   programEEPROM.value = false
@@ -193,7 +205,8 @@ watch(model, () => {
 //
 watch(uploadFile, () => {
   if(uploadFile.value != null){
-    console.log(name + `: WATCH uploadFile ${uploadFile.value.name}`)
+    timeStampedLog(name + `: WATCH uploadFile ${uploadFile.value.name}`)
+    store.methods.request_firmware_info(uploadFile.value)
   }
 })
 
@@ -230,15 +243,99 @@ watch (cpuTypeCheckIgnore, () => {
 })
 
 //
-//
+// don't process event if dialog not visible
 store.eventBus.on('PROGRAM_NODE_PROGRESS', (text) => {
-// console.log(name + ': REQUEST_NODE_NUMBER_EVENT: ' + text)
- progressText.value = text
- if (text.includes('FIRMWARE:')){
-  const array = text.split('FIRMWARE:')
-  FIRMWARE_STATUS.value = array[1]
- }
+  if (model.value){
+    timeStampedLog(name + ': PROGRAM_NODE_PROGRESS event: ' + text)
+    progressText.value = text
+    if (text.includes('FIRMWARE:')){
+      const array = text.split('FIRMWARE:')
+      FIRMWARE_STATUS.value = array[1]
+    }
+  }
 })
+
+const clearFileSelected = () => {
+  timeStampedLog( name + `: clearFileSelected` )
+  cpuTypeCheckIgnore.value = false
+  uploadFile.value = null
+  showFileInfo.value = false
+}
+
+//
+// don't process event if dialog not visible
+store.eventBus.on('FIRMWARE_INFO', (data) => {
+  if (model.value){
+    timeStampedLog( name + `: FIRMWARE_INFO event: ${JSON.stringify(data)}` )
+    let nodeCpuType = store.state.nodes[props.nodeNumber].parameters[9]
+    let nodeModuleType = store.state.nodes[props.nodeNumber].parameters[3]
+    fileModuleID.value = "A5" + decToHex(data.moduleID, 2)
+    fileCpuType.value = data.targetCpuType
+    showFileInfo.value = true
+    // check matching CPU type
+    if (nodeCpuType != undefined){
+      timeStampedLog( name + `: FIRMWARE_INFO event: node ${props.nodeNumber} cpuTypes ${fileCpuType.value} ${nodeCpuType}` )
+      if (fileCpuType.value != nodeCpuType){
+        cpuTypeCheckIgnore.value = true
+        $q.notify({
+          message: `WARNING: CPU types do not match` ,
+          caption: "Proceed to accept the mismatch, otherwise CANCEL",
+          timeout: 0,
+          position: 'center',
+          color: 'primary',
+          actions: [
+            { label: 'PROCEED', color: 'white', handler: async () => {
+              //cpuTypeCheckIgnore.value = true
+              timeStampedLog( name + `: FIRMWARE_INFO event: PROCEED` )
+            } },
+            { label: 'CANCEL', color: 'white', handler: () => {
+              timeStampedLog( name + `: FIRMWARE_INFO event: CANCEL` )
+              clearFileSelected()
+            } }
+          ]
+        })
+      }
+    }
+    // check matching module type
+    if (nodeModuleType != undefined){
+      timeStampedLog( name + `: FIRMWARE_INFO event: node ${props.nodeNumber} module Types ${data.moduleID} ${nodeModuleType}` )
+      if (data.moduleID != nodeModuleType){
+        programEEPROM.value = true
+        $q.notify({
+          message: `WARNING: Module types do not match` ,
+          caption: "Proceed to accept the mismatch, otherwise CANCEL",
+          timeout: 0,
+          position: 'center',
+          color: 'primary',
+          actions: [
+            { label: 'PROCEED', color: 'white', handler: async () => {
+              //cpuTypeCheckIgnore.value = true
+              timeStampedLog( name + `: FIRMWARE_INFO event: PROCEED` )
+            } },
+            { label: 'CANCEL', color: 'white', handler: () => {
+              timeStampedLog( name + `: FIRMWARE_INFO event: CANCEL` )
+              clearFileSelected()
+            } }
+          ]
+        })
+      }
+    }
+  }
+})
+
+
+onBeforeMount(() => {
+  timeStampedLog( name + `: onBeforeMount node ${props.nodeNumber}` )
+})
+
+onMounted(() => {
+  timeStampedLog( name + `: onMounted node ${props.nodeNumber}` )
+})
+
+onUpdated(() =>{
+  timeStampedLog( name + `: onUpdated node ${props.nodeNumber}` )
+})
+
 
 /*/////////////////////////////////////////////////////////////////////////////
 

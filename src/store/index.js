@@ -30,6 +30,7 @@ const state = reactive({
   layouts_list: [],
   loadFile_notification_raised: {},
   MDFupdateTimestamp: Date.now(),
+  moduleNames: {},
   networkConnection_notify: true,
   nodeDescriptors: {},
   nodeDescriptorList: {},
@@ -139,7 +140,7 @@ const methods = {
   },
   //
   program_node(nodeNumber, cpuType, flags, hexFile) {
-    timeStampedLog(name + `: PROGRAM_NODE : ` + nodeNumber)
+    timeStampedLog(name + `: PROGRAM_NODE : node: ${nodeNumber} hexfile: ${hexFile.name}`)
     socket.emit('PROGRAM_NODE', {
       "nodeNumber": nodeNumber,
       "cpuType": cpuType,
@@ -222,6 +223,12 @@ const methods = {
     socket.emit('REQUEST_BUS_EVENTS')
     timeStampedLog(name + `: REQUEST_BUS_EVENTS`)
   },
+  //
+  request_firmware_info(file) {
+    timeStampedLog(`REQUEST_FIRMWARE_INFO : ` + file.name)
+    socket.emit('REQUEST_FIRMWARE_INFO', file)
+  },
+
   //
   request_log_file(filename) {
     timeStampedLog(`REQUEST_LOG_FILE : ` + filename)
@@ -728,6 +735,11 @@ socket.on("error", (data) => {
   timeStampedLog(name + `: connection error`)
 })
 
+socket.on("FIRMWARE_INFO", (data) => {
+  timeStampedLog(name + `: FIRMWARE_INFO ${JSON.stringify(data)}`)
+  eventBus.emit('FIRMWARE_INFO', data)
+})
+
 socket.on('LAYOUT_DATA', (data) => {
   timeStampedLog(name + `: RECEIVED Layout Data`)
   state.layout = data;
@@ -752,6 +764,7 @@ socket.on('LOG_FILE', (data) => {
   }
 })
 
+//
 socket.on("MDF_EXPORT", (location, filename, MDF) => {
   timeStampedLog(name + `: RECEIVED MDF_EXPORT ` + location + ' ' + filename)
   state.exported_MDF = MDF
@@ -763,6 +776,13 @@ socket.on("MATCHING_MDF_LIST", (location, nodeNumber, list) => {
   if (state.server.nodes[nodeNumber] == undefined){state.server.nodes[nodeNumber] = {} }
   state.server.nodes[nodeNumber][location + '_MDF_List'] = list
   state.MDFupdateTimestamp = Date.now()
+})
+
+//
+socket.on("MODULE_NAMES", (data) => {
+  timeStampedLog(name + `: RECEIVED MODULE_NAMES ${JSON.stringify(data)}`)
+  state.moduleNames = data
+  state.server["moduleNames"] = data
 })
 
 //
