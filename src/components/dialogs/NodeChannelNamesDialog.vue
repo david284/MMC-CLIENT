@@ -59,7 +59,7 @@ const name = "NodeChannelNamesDialog"
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
   nodeNumber: { type:Number, required: true },
-  numberOfChannels: { type:Number, required: true }
+  numberOfChannels: { type:Number, default: 0 }
 })
 
 const emit = defineEmits(['update:modelValue'])

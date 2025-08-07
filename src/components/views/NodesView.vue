@@ -296,8 +296,10 @@ const checkNodeParameters = async (nodeNumber) => {
       await sleep (100)
     }
     showWaitingOnBusTrafficDialog.value = false
+    timeStampedLog(name + `: checkNodeParameters: WaitingOnBusTraffic ended`)
   }
-  if (NodeParametersLoaded(store, nodeNumber) == false){
+  let result = NodeParametersLoaded(store, nodeNumber)
+  if ( result == false){
     timeStampedLog(name + `: checkNodeParameters: node ${nodeNumber} failed`)
     $q.notify({
       message: 'Reading Node Parameters has failed',
@@ -308,7 +310,7 @@ const checkNodeParameters = async (nodeNumber) => {
       actions: [ { label: 'Dismiss' } ]
     })
   }
-  return
+  return result
 }
 
 

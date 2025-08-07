@@ -62,7 +62,7 @@ watch(model, async () => {
 const waitOnBusTraffic = async () => {
 
   store.state.cbusTrafficTimeStamp = Date.now()
-  while ((Date.now() - store.state.cbusTrafficTimeStamp) < 800) {
+  while ((Date.now() - store.state.cbusTrafficTimeStamp) < 300) {
     await sleep(10)
   }
 

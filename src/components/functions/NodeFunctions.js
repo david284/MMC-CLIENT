@@ -50,12 +50,16 @@ export function getNumberOfChannels(store, nodeNumber) {
 //
 export function NodeParametersLoaded(store, nodeNumber) {
   // logical and '&&'
-  if( (store.state.nodes[nodeNumber].parameters[4])
-    && (store.state.nodes[nodeNumber].parameters[5])
-    && (store.state.nodes[nodeNumber].parameters[6])
+  if( (store.state.nodes[nodeNumber].parameters[4] != undefined)
+    && (store.state.nodes[nodeNumber].parameters[5] != undefined)
+    && (store.state.nodes[nodeNumber].parameters[6] != undefined)
   ){
     return true
   } else {
+    timeStampedLog(name + `:  NodeParametersLoaded false
+        ${store.state.nodes[nodeNumber].parameters[4]} :
+        ${store.state.nodes[nodeNumber].parameters[5]} :
+        ${store.state.nodes[nodeNumber].parameters[6]}`)
     return false
   }
 }
