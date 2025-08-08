@@ -94,7 +94,6 @@ import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from 
 import { date, useQuasar, scroll } from 'quasar'
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import {createNewEvent} from "components/functions/EventFunctions.js"
-import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import {sleep} from "components/functions/utils.js"
 import {NodeParametersLoaded} from "components/functions/NodeFunctions.js"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
