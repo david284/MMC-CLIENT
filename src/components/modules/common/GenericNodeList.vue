@@ -52,10 +52,10 @@
 import {inject, ref, onBeforeMount, onMounted, onUpdated, computed, watch} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
-import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import {NodeParametersLoaded} from "components/functions/NodeFunctions.js"
 import EventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
+import {timeStampedLog} from "components/functions/utils.js"
 
 const $q = useQuasar()
 const store = inject('store')
@@ -88,7 +88,7 @@ const teColumns = [
 ]
 
 const update_nodes_table = async () => {
-//  console.log(name + `: update__nodes_table`)
+//  timeStampedLog(name + `: update__nodes_table`)
   teRows.value = []
   props.nodeNumberList.forEach(nodeNumber => {
     var nodeName = store.getters.node_name(nodeNumber)
@@ -104,7 +104,7 @@ const update_nodes_table = async () => {
 //
 //
 const checkNodeParameters = async (nodeNumber) => {
-  //console.log(name + ': checkNodeParameters: node ' + nodeNumber)
+  //timeStampedLog(name + ': checkNodeParameters: node ' + nodeNumber)
   //
   // check if parameters have already been fully retrieved
   if(NodeParametersLoaded(store, nodeNumber)){
@@ -128,10 +128,10 @@ const checkNodeParameters = async (nodeNumber) => {
 //
 //
 const checkNodeVariables = async (nodeNumber) => {
-  //console.log(name + ': checkNodeVariables: node ' + nodeNumber)
+  //timeStampedLog(name + ': checkNodeVariables: node ' + nodeNumber)
   var maxNodeVariableIndex = store.state.nodes[nodeNumber].parameters[6]
   if(store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex] != undefined){
-    //console.log(name + ": checkNodeVariables: already read")
+    //timeStampedLog(name + ": checkNodeVariables: already read")
   } else {
     WaitingOnBusTrafficDialogReturn.value =''
     WaitingOnBusTrafficMessage.value = "Loading Node Variables"
@@ -146,19 +146,42 @@ const checkNodeVariables = async (nodeNumber) => {
   }
 }
 
+//
+//
+const getEventIndexes = async () => {
+  WaitingOnBusTrafficMessage.value = "Loading Event Indexes"
+  timeStampedLog(name + `: ${WaitingOnBusTrafficMessage.value}`)
+  //
+  WaitingOnBusTrafficDialogReturn.value =''
+  showWaitingOnBusTrafficDialog.value = true
+  store.methods.request_all_node_events(props.nodeNumber)
+
+  // allow up to 1 minutes to finish loading
+  let startTime = Date.now()
+  while ((Date.now() - startTime) < 60000){
+  if (WaitingOnBusTrafficDialogReturn.value.length > 0)
+    {
+      // success if we exit early
+      break
+    }
+    await sleep (10)
+  }
+  showWaitingOnBusTrafficDialog.value = false
+}
+
 
 
 
 onBeforeMount(() => {
-//  console.log(name + `: onBeforeMount`)
+//  timeStampedLog(name + `: onBeforeMount`)
 })
 
 onMounted(() => {
-//  console.log(name + ': props: ' + JSON.stringify(props))
+//  timeStampedLog(name + ': props: ' + JSON.stringify(props))
 })
 
 onUpdated(() => {
-//  console.log(name + `: onUpdated`)
+//  timeStampedLog(name + `: onUpdated`)
   update_nodes_table()
 })
 
@@ -171,7 +194,7 @@ Click event handlers
 
 
 const clickDelete = (nodeNumber) => {
-  console.log(name + `: clickDelete`)
+  timeStampedLog(name + `: clickDelete`)
   const result = $q.notify({
     message: 'Are you sure you want to delete event ' + store.getters.event_name(props.eventIdentifier) + ' from node ' + store.getters.node_name(nodeNumber),
     timeout: 0,
@@ -179,7 +202,7 @@ const clickDelete = (nodeNumber) => {
     color: 'primary',
     actions: [
       { label: 'YES', color: 'white', handler: async () => {
-        console.log(`removeEvent ` + nodeNumber + ' ' + props.eventIdentifier)
+        timeStampedLog(`removeEvent ` + nodeNumber + ' ' + props.eventIdentifier)
         store.methods.remove_event(nodeNumber, props.eventIdentifier)
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
@@ -189,11 +212,13 @@ const clickDelete = (nodeNumber) => {
 
 
 const clickVariables = async (nodeNumber) => {
-  console.log(name + `: clickVariables: node ` + nodeNumber + ' eventIdentifer ' + props.eventIdentifier)
+  timeStampedLog(name + `: clickVariables: node ` + nodeNumber + ' eventIdentifer ' + props.eventIdentifier)
   selected_nodeNumber.value = nodeNumber
   await checkNodeParameters(nodeNumber)
   await checkNodeVariables(nodeNumber)
-  await refreshEventIndexes(store, props.nodeNumber)
+  if(store.state.nodes[nodeNumber].VLCB == false){
+    await getEventIndexes()
+  }
   await store.methods.request_event_variables_by_identifier(nodeNumber, props.eventIdentifier)
   showEventVariablesDialog.value = true
 }

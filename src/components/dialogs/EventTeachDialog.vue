@@ -98,6 +98,8 @@ import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import {sleep} from "components/functions/utils.js"
 import {NodeParametersLoaded} from "components/functions/NodeFunctions.js"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
+import {timeStampedLog} from "components/functions/utils.js"
+
 
 const $q = useQuasar()
 const store = inject('store')
@@ -127,7 +129,7 @@ const model = computed({
 
 // model changes when Dialog opened & closed
 watch(model, () => {
-//  console.log(name + `: WATCH model`)
+//  timeStampedLog(name + `: WATCH model`)
   newNode.value = ''
 })
 
@@ -147,12 +149,12 @@ const teColumns = [
 
 
 const nodesUpdated = computed(() => {
-//  console.log(name + `: nodesUpdated`)
+//  timeStampedLog(name + `: nodesUpdated`)
   return store.state.nodes.updateTimestamp
 })
 
 watch(nodesUpdated, () => {
-//  console.log(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
+//  timeStampedLog(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
   if (props.eventIdentifier){
     update_taught_nodes()
   }
@@ -160,7 +162,7 @@ watch(nodesUpdated, () => {
 
 
 const update_taught_nodes = async () => {
-//  console.log(name + `: update_taught_nodes: eventIdentifier ` + props.eventIdentifier)
+//  timeStampedLog(name + `: update_taught_nodes: eventIdentifier ` + props.eventIdentifier)
   try{
     teRows.value = []
     taughtNodes.value = []
@@ -183,13 +185,13 @@ const update_taught_nodes = async () => {
     })
     update_available_nodes()
   } catch (err) {
-    console.log(name + `: update_taught_nodes ` + err)
+    timeStampedLog(name + `: update_taught_nodes ` + err)
   }
 }
 
 
 const update_available_nodes = () =>{
-//  console.log(name + `: update_available_nodes ` + props.eventIdentifier)
+//  timeStampedLog(name + `: update_available_nodes ` + props.eventIdentifier)
   try {
     availableNodes.value = []
     var nodes = store.state.nodes
@@ -198,8 +200,8 @@ const update_available_nodes = () =>{
     for (var nodeNumber in nodes) {
       // loop through each node, but check if it's valid to be added first
       let addNode = true  // assume we'll add it unless we find otherwise
-      //    console.log(name + `: update_available_nodes: node ` + nodeNumber)
-      //    console.log(name + `: update_available_nodes: taughtNodes ` + JSON.stringify(taughtNodes.value))
+      //    timeStampedLog(name + `: update_available_nodes: node ` + nodeNumber)
+      //    timeStampedLog(name + `: update_available_nodes: taughtNodes ` + JSON.stringify(taughtNodes.value))
       //
       // don't add node if event already taught to this node
       for (var index in taughtNodes.value){
@@ -226,7 +228,7 @@ const update_available_nodes = () =>{
       }
     }
   } catch (err){
-    console.log(name + `: update_available_nodes: ` + err)
+    timeStampedLog(name + `: update_available_nodes: ` + err)
   }
 }
 
@@ -237,7 +239,7 @@ onMounted(() => {
 })
 
 onUpdated(() => {
-//  console.log(name + ": onUpdated")
+//  timeStampedLog(name + ": onUpdated")
   if (props.eventIdentifier){
     update_taught_nodes()
   }
@@ -246,7 +248,7 @@ onUpdated(() => {
 //
 //
 const checkNodeParameters = async (nodeNumber) => {
-  //console.log(name + ': checkNodeParameters: node ' + nodeNumber)
+  //timeStampedLog(name + ': checkNodeParameters: node ' + nodeNumber)
   //
   // check if parameters have already been fully retrieved
   if(NodeParametersLoaded(store, nodeNumber)){
@@ -269,10 +271,10 @@ const checkNodeParameters = async (nodeNumber) => {
 //
 //
 const checkNodeVariables = async (nodeNumber) => {
-  //console.log(name + ': checkNodeVariables: node ' + nodeNumber)
+  //timeStampedLog(name + ': checkNodeVariables: node ' + nodeNumber)
   var maxNodeVariableIndex = store.state.nodes[nodeNumber].parameters[6]
   if(store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex] != undefined){
-    //console.log(name + ": checkNodeVariables: already read")
+    //timeStampedLog(name + ": checkNodeVariables: already read")
   } else {
     WaitingOnBusTrafficDialogReturn.value =''
     WaitingOnBusTrafficMessage.value = "Loading Node Variables"
@@ -287,7 +289,26 @@ const checkNodeVariables = async (nodeNumber) => {
   }
 }
 
+const getEventIndexes = async () => {
+  WaitingOnBusTrafficMessage.value = "Loading Event Indexes"
+  timeStampedLog(name + `: ${WaitingOnBusTrafficMessage.value}`)
+  //
+  WaitingOnBusTrafficDialogReturn.value =''
+  showWaitingOnBusTrafficDialog.value = true
+  store.methods.request_all_node_events(props.nodeNumber)
 
+  // allow up to 1 minutes to finish loading
+  let startTime = Date.now()
+  while ((Date.now() - startTime) < 60000){
+  if (WaitingOnBusTrafficDialogReturn.value.length > 0)
+    {
+      // success if we exit early
+      break
+    }
+    await sleep (10)
+  }
+  showWaitingOnBusTrafficDialog.value = false
+}
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -297,7 +318,7 @@ Click event handlers
 
 
 const clickTeachEvent = async () => {
-  console.log(name + `: clickTeachEvent: ${newNode.value} : ${props.eventIdentifier}`)
+  timeStampedLog(name + `: clickTeachEvent: ${newNode.value} : ${props.eventIdentifier}`)
   if (newNode.value != "") {
     // get node number from input value
     var array = newNode.value.split(':')
@@ -331,13 +352,16 @@ const clickTeachEvent = async () => {
 
 const clickVariables = async (nodeNumber, eventIdentifier) => {
   let intNodeNumber = parseInt(nodeNumber)
-  console.log(name + `: clickVariables ` + intNodeNumber + ' ' + eventIdentifier)
+  timeStampedLog(name + `: clickVariables ` + intNodeNumber + ' ' + eventIdentifier)
   selected_event_node.value = intNodeNumber
   selected_event_Identifier.value = eventIdentifier
   isNewEvent.value=false
   await checkNodeParameters(intNodeNumber)
   await checkNodeVariables(intNodeNumber)
-  await refreshEventIndexes(store, intNodeNumber)
+  // make sure the indexes are up to date
+  if(store.state.nodes[nodeNumber].VLCB == false){
+    await getEventIndexes()
+  }
   await store.methods.request_event_variables_by_identifier(intNodeNumber, eventIdentifier)
   showEventVariablesDialog.value = true
 }
