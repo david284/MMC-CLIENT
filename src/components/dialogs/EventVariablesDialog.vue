@@ -100,9 +100,11 @@
   />
 
   <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
-    callingModule = "Event Variables"
-    message = "Waiting for event variables loading"
+    callingModule = "EventVariablesDialog"
+    :message = WaitingOnBusTrafficMessage
+    @WaitingOnBusTrafficDialogEvent="WaitingOnBusTrafficDialogReturn = $event"
   />
+
 
 
 </template>
@@ -115,7 +117,6 @@ import { useQuasar, useTimeout } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import {timeStampedLog} from "components/functions/utils.js"
 import {createNewEvent} from "components/functions/EventFunctions.js"
-import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import EventVariables from "components/modules/common/EventVariables"
 import EventRawVariables from "components/modules/common/EventRawVariables"
 import NodeChannelNamesDialog from "./NodeChannelNamesDialog.vue";
@@ -139,6 +140,9 @@ const showStoredEventJSON = ref(false)
 const eventVariableInformation = ref()
 const processedEventVariableDescriptor = ref()
 const numberOfChannels=ref(0)
+const WaitingOnBusTrafficDialogReturn = ref('')
+const WaitingOnBusTrafficMessage = ref('')
+
 
 
 const props = defineProps({
@@ -248,6 +252,26 @@ onUpdated(async () => {
   //timeStampedLog(name + ': onUpdated:')
 })
 
+const getEventIndexes = async () => {
+  WaitingOnBusTrafficMessage.value = "Loading Event Indexes"
+  timeStampedLog(name + `: ${WaitingOnBusTrafficMessage.value}`)
+  //
+  WaitingOnBusTrafficDialogReturn.value =''
+  showWaitingOnBusTrafficDialog.value = true
+  store.methods.request_all_node_events(props.nodeNumber)
+
+  // allow up to 1 minutes to finish loading
+  let startTime = Date.now()
+  while ((Date.now() - startTime) < 60000){
+  if (WaitingOnBusTrafficDialogReturn.value.length > 0)
+    {
+      // success if we exit early
+      break
+    }
+    await sleep (10)
+  }
+  showWaitingOnBusTrafficDialog.value = false
+}
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -297,8 +321,11 @@ const clickClose = async () => {
 const clickRefresh = async () => {
   timeStampedLog(name + `: clickRefresh`)
   // make sure the indexes are up to date
-  await refreshEventIndexes(store, props.nodeNumber)
+  if(store.state.nodes[props.nodeNumber].VLCB == false){
+    await getEventIndexes()
+  }
   store.methods.request_event_variables_by_identifier(props.nodeNumber, props.eventIdentifier)
+  WaitingOnBusTrafficMessage.value = "Loading Event Variables"
   showWaitingOnBusTrafficDialog.value = true
 }
 

@@ -113,7 +113,6 @@ import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import EventsByNodeViewInfoDialog from "components/dialogs/EventsByNodeViewInfoDialog"
-import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
 import { sleep } from "../functions/utils"
 import {timeStampedLog} from "components/functions/utils.js"
@@ -302,7 +301,7 @@ const getEventIndexes = async () => {
   //
   WaitingOnBusTrafficDialogReturn.value =''
   showWaitingOnBusTrafficDialog.value = true
-  await refreshEventIndexes(store, props.nodeNumber)
+  store.methods.request_all_node_events(props.nodeNumber)
 
   // allow up to 1 minutes to finish loading
   let startTime = Date.now()
@@ -317,6 +316,26 @@ const getEventIndexes = async () => {
   showWaitingOnBusTrafficDialog.value = false
 }
 
+const getEventVariables = async (eventIdentifier) => {
+  timeStampedLog(name + ': getEventVariables:')
+  //
+  WaitingOnBusTrafficDialogReturn.value =''
+  WaitingOnBusTrafficMessage.value = "Loading Event Variables"
+  showWaitingOnBusTrafficDialog.value = true
+  store.methods.request_event_variables_by_identifier(props.nodeNumber, eventIdentifier)
+
+  // allow up to 1 minutes to finish loading
+  let startTime = Date.now()
+  while ((Date.now() - startTime) < 60000){
+  if (WaitingOnBusTrafficDialogReturn.value.length > 0)
+    {
+      // success if we exit early
+      break
+    }
+    await sleep (10)
+  }
+  showWaitingOnBusTrafficDialog.value = false
+}
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -438,14 +457,15 @@ const clickToggleViewMode = () => {
 }
 
 const clickVariables = async (eventIdentifier) => {
+  timeStampedLog(name + `: clickVariables: node ` + props.nodeNumber)
   selected_event_Identifier.value = eventIdentifier
   showWaitingOnBusTrafficDialog.value = true
   await sleep(1)
   // make sure the indexes are up to date
-  //await refreshEventIndexes(store, props.nodeNumber)
-  await getEventIndexes()
-  store.methods.request_event_variables_by_identifier(props.nodeNumber, eventIdentifier)
-  timeStampedLog(name + `: clickVariables: node ` + props.nodeNumber)
+  if(store.state.nodes[props.nodeNumber].VLCB == false){
+    await getEventIndexes()
+  }
+  await getEventVariables(eventIdentifier)
   showEventVariablesDialog.value = true
 }
 

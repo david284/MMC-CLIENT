@@ -109,7 +109,6 @@ import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import EventsByNodeViewInfoDialog from "components/dialogs/EventsByNodeViewInfoDialog"
-import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
 import { sleep } from "../functions/utils"
 import {timeStampedLog} from "components/functions/utils.js"
@@ -298,7 +297,7 @@ const getEventIndexes = async () => {
   //
   WaitingOnBusTrafficDialogReturn.value =''
   showWaitingOnBusTrafficDialog.value = true
-  await refreshEventIndexes(store, props.nodeNumber)
+  store.methods.request_all_node_events(props.nodeNumber)
 
   // allow up to 1 minutes to finish loading
   let startTime = Date.now()

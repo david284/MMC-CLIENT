@@ -21,13 +21,13 @@ export async function refreshEventIndexes (store, nodeNumber, eventIdentifier) {
   // request all node events in advance of loading events as it refreshes the indexes
   console.log (name + ": refreshEventIndexes: Node " + nodeNumber)
   store.methods.request_all_node_events(nodeNumber)
-  await sleep(500)
+  //await sleep(500)
 }
 
 
 /*
 export function getStoredEventIndex (store, nodeNumber, eventIdentifier) {
-//  console.log(name +': getStoredEventIndex: ' + nodeNumber, eventIdentifier) 
+//  console.log(name +': getStoredEventIndex: ' + nodeNumber, eventIdentifier)
   var index = undefined
   try {
     for (let key in store.state.nodes[nodeNumber].storedEvents) {
@@ -36,7 +36,7 @@ export function getStoredEventIndex (store, nodeNumber, eventIdentifier) {
       }
     }
   } catch (err){}
-  console.log(name +': getStoredEventIndex: result ' + index) 
+  console.log(name +': getStoredEventIndex: result ' + index)
   return index
 }
 */
@@ -46,7 +46,7 @@ const getEventslist = (nodeNumber, store) => {
   var eventsList = []
 
   // do stored events for this node first.....
-  var events = Object.values(store.state.nodes[nodeNumber].storedEventsNI) 
+  var events = Object.values(store.state.nodes[nodeNumber].storedEventsNI)
   events.forEach(event => {
     var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
     let output = {}
@@ -61,7 +61,7 @@ const getEventslist = (nodeNumber, store) => {
   })
 
   // now add bus events... but not if already in the list
-  var busEvents = Object.values(store.state.busEvents) 
+  var busEvents = Object.values(store.state.busEvents)
   busEvents.forEach(busEvent => {
     if (busEvent.nodeNumber == nodeNumber){
       // lets see if it's already in the stored events...
