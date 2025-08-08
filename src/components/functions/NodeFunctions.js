@@ -56,7 +56,7 @@ export function NodeParametersLoaded(store, nodeNumber) {
   ){
     return true
   } else {
-    timeStampedLog(name + `:  NodeParametersLoaded false
+    timeStampedLog(name + `:  NodeParametersLoaded node ${nodeNumber} false
         ${store.state.nodes[nodeNumber].parameters[4]} :
         ${store.state.nodes[nodeNumber].parameters[5]} :
         ${store.state.nodes[nodeNumber].parameters[6]}`)
