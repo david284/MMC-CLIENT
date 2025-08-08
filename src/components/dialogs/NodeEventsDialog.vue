@@ -92,8 +92,9 @@
       <EventsByNodeViewInfoDialog v-model='showEventsByNodeViewInfoDialog'/>
 
       <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
-        callingModule = "Events by Node"
-        message = "Waiting for event variables loading"
+        callingModule = "EventsListByNode"
+        :message = WaitingOnBusTrafficMessage
+        @WaitingOnBusTrafficDialogEvent="WaitingOnBusTrafficDialogReturn = $event"
       />
 
     </q-dialog>
@@ -136,6 +137,8 @@ const selected_event_Identifier = ref("") // Dialog will complain if null
 const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
 var eventType = ref()
+const WaitingOnBusTrafficDialogReturn = ref('')
+const WaitingOnBusTrafficMessage = ref('')
 
 
 const props = defineProps({
@@ -293,6 +296,27 @@ onBeforeMount(() => {
   }
 })
 
+const getEventIndexes = async () => {
+  WaitingOnBusTrafficMessage.value = "Loading Event Indexes"
+  timeStampedLog(name + `: ${WaitingOnBusTrafficMessage.value}`)
+  //
+  WaitingOnBusTrafficDialogReturn.value =''
+  showWaitingOnBusTrafficDialog.value = true
+  await refreshEventIndexes(store, props.nodeNumber)
+
+  // allow up to 1 minutes to finish loading
+  let startTime = Date.now()
+  while ((Date.now() - startTime) < 60000){
+  if (WaitingOnBusTrafficDialogReturn.value.length > 0)
+    {
+      // success if we exit early
+      break
+    }
+    await sleep (10)
+  }
+  showWaitingOnBusTrafficDialog.value = false
+}
+
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -418,7 +442,8 @@ const clickVariables = async (eventIdentifier) => {
   showWaitingOnBusTrafficDialog.value = true
   await sleep(1)
   // make sure the indexes are up to date
-  await refreshEventIndexes(store, props.nodeNumber)
+  //await refreshEventIndexes(store, props.nodeNumber)
+  await getEventIndexes()
   store.methods.request_event_variables_by_identifier(props.nodeNumber, eventIdentifier)
   timeStampedLog(name + `: clickVariables: node ` + props.nodeNumber)
   showEventVariablesDialog.value = true

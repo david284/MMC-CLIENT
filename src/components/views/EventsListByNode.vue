@@ -460,7 +460,9 @@ const clickToggleViewMode = () => {
 const clickVariables = async (eventIdentifier) => {
   timeStampedLog(name + `: clickVariables: node ${props.nodeNumber} event ${eventIdentifier}`)
   selected_event_Identifier.value = eventIdentifier
-  await getEventIndexes()
+  if(store.state.nodes[props.nodeNumber].VLCB == false){
+    await getEventIndexes()
+  }
   await getEventVariables(eventIdentifier)
   showEventVariablesDialog.value = true
 }
