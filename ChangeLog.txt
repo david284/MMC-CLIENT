@@ -1,5 +1,6 @@
 Version 0.10.7
   Modified ProgramNode to display file information & enforce options on mismatch
+  Modified reading event variables to allow more time to refresh event indexes
 
 version 0.10.6
   Node parameters not being loaded - problem introduced in last version because param9 already loaded
