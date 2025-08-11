@@ -290,7 +290,7 @@ const checkNodeParameters = async (nodeNumber) => {
       if (WaitingOnBusTrafficDialogReturn.value.length > 0)
       {
         // success if we exit early
-        //timeStampedLog(name + ': checkNodeParameters: return ' + WaitingOnBusTrafficDialogReturn.value)
+        timeStampedLog(name + `: checkNodeParameters: early exit ${Date.now() - startTime} `)
         break
       }
       await sleep (100)

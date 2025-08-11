@@ -62,12 +62,16 @@ watch(model, async () => {
 const waitOnBusTraffic = async () => {
 
   store.state.cbusTrafficTimeStamp = Date.now()
-  while ((Date.now() - store.state.cbusTrafficTimeStamp) < 300) {
+  // be generous with this timeout as we're dependent on when the server sends the data,
+  // not just when bus traffic is received
+  // and if the server is busy loading MDF's etc, there may be a gap in traffic
+  while ((Date.now() - store.state.cbusTrafficTimeStamp) < 1000) {
     await sleep(10)
   }
 
   //timeStampedLog(name + `: END wait`)
   // signal it's complete
+  timeStampedLog(name + `: waitOnBusTraffic ended ${Date.now() - store.state.cbusTrafficTimeStamp}`)
   emit('WaitingOnBusTrafficDialogEvent', 'finished')
   model.value = false
 }

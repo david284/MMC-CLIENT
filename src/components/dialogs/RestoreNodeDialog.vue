@@ -376,7 +376,8 @@ const clickRestore = async (row) => {
     // now lets reset the node
     restoreStatus.value = "node reset"
     store.methods.reset_node(props.nodeNumber)
-    await sleep(300)
+    // allow up to 1 second for module to restart
+    await sleep(1000)
     // now lets refresh all node variables
     store.methods.request_all_node_variables(
       props.nodeNumber,
