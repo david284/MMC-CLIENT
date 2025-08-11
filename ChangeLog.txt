@@ -1,4 +1,9 @@
 Version 0.10.7
+  Increased time after node reset in RestoreNodeDialog to reflect changes in universal firmware V4bs onwards.
+  Increased timeout in WaitingOnBusTrafficDialog to allow for gaps in received traffic from server
+  when it's busy (e.g. reading MDF's).
+
+Version 0.10.7
   Modified ProgramNode to display file information & enforce options on mismatch
   Modified reading event variables to allow more time to refresh event indexes
 
