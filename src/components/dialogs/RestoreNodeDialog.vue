@@ -364,7 +364,7 @@ const actionUpload = async() => {
     reader.onload = async function() {
       try{
         var resultOBJ = JSON.parse(reader.result)
-        store.methods.save_node_backup(props.nodeNumber, resultOBJ)
+        store.methods.save_node_backup(props.nodeNumber, resultOBJ.backupNode)
         await sleep(500)
         store.methods.request_node_backups_list(store.state.layout.layoutDetails.title, props.nodeNumber)
       } catch(e){
