@@ -19,8 +19,8 @@
 
       <div class="q-pa-md row" style="max-height: 80vh">
 
-        <q-card flat inline class="q-pa-none q-ma-none" style="width: 450px">
-          <div class="text-h6">List of Backups</div>
+        <q-card flat inline class="q-pa-none q-ma-none" style="width: 500px">
+          <div class="text-h6">Select a backup from the list to download or restore</div>
           <q-card-section style="max-height: 75vh" class="scroll no-margin q-pa-xs">
 
             <q-table
@@ -45,9 +45,9 @@
                   />
                 </q-td>
                 <q-td >
-                  <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="xs" label="Rename"
+                  <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="sm" label="Rename"
                   @click="() => {oldFilename = props.value; prompt = true;}" no-caps />
-                  <q-btn dense class="q-mx-xs q-my-none" outline color="negative" size="xs" label="Delete"
+                  <q-btn dense class="q-mx-xs q-my-none" outline color="negative" size="sm" label="Delete"
                   @click="clickDelete(props.value)" no-caps />
                 </q-td>
               </template>
@@ -84,22 +84,24 @@
             />
           </q-card>
 
-
-
-        <q-card-section>
-          <q-card-actions align="center">
-            <q-btn :disabled="!ready" color="primary" label="Restore Node" @click="clickRestore()"/>
-          </q-card-actions>
-        </q-card-section>
-
-
         </q-card>
 
       </div>
 
+      <q-card-section>
+        <q-card-actions>
+          <q-btn color="primary" label="Upload Backup" @click="clickUpload()"/>
+          <div class="text-body"> &nbsp; Upload an external backup file</div>
+          <q-space />
+          <q-btn :disabled="!ready" color="primary" label="Download Backup" @click="clickDownload()"/>
+          <q-btn :disabled="!ready" color="primary" label="Restore Node" @click="clickRestore()"/>
+        </q-card-actions>
+      </q-card-section>
+
+
       <q-card class="no-margin no-padding">
         <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Toggle node json" @click="clickToggleNodeJSON()"/>
+          <q-btn flat label="Toggle backup json" @click="clickToggleBackupJSON()"/>
         </q-card-actions>
         <q-card-section v-if="showNodeJSON" style="width: 350px" class="text-body2 no-margin no-padding">
           <pre>{{ restoredNode }}</pre>
@@ -124,9 +126,38 @@
         <q-btn flat label="Close" v-close-popup></q-btn>
         <q-btn flat label="change Filename" @click="clickChangeFilename()" v-close-popup></q-btn>
       </q-card-actions>
+
+
+
     </q-card>
   </q-dialog>
 
+  <q-dialog v-model="showUploadDialog" persistent>
+    <q-card style="min-width: 350px">
+
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+        <div class="text-h6">
+          Upload external backup file
+        </div>
+        <template v-slot:action>
+          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+        </template>
+      </q-banner>
+
+      <q-file
+          v-model="uploadFile"
+          label="Pick one file"
+          filled
+          style="max-width: 300px"
+        />
+
+        <q-card-actions align="right" class="text-primary">
+          <!-- // Only close top dialog - this gives time for underlying dialogs to update -->
+          <q-btn color="positive" label="Upload" v-close-popup  @click="actionUpload()" />
+        </q-card-actions>
+
+    </q-card>
+  </q-dialog>
 
 </template>
 
@@ -153,6 +184,8 @@ const numberOfEVs = ref("")
 const restoreStatus = ref("awaiting backup selection")
 const inProgress = ref(false)
 const prompt = ref(false)
+const showUploadDialog = ref(false)
+const uploadFile = ref()
 const newFilename = ref("")
 const oldFilename = ref("")
 
@@ -318,6 +351,40 @@ onMounted(() => {
 Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
+
+const actionUpload = async() => {
+  console.log(name + `: actionUpload`)
+
+  var result = {}
+  if (uploadFile.value){
+    var fileName = uploadFile.value.name
+    console.log(name + ': selected filename ' + fileName)
+    let reader = new FileReader();
+    reader.readAsText(uploadFile.value)
+    reader.onload = async function() {
+      try{
+        var resultOBJ = JSON.parse(reader.result)
+        store.methods.save_node_backup(props.nodeNumber, resultOBJ)
+        await sleep(500)
+        store.methods.request_node_backups_list(store.state.layout.layoutDetails.title, props.nodeNumber)
+      } catch(e){
+        $q.notify({
+          message: 'backup file upload has failed',
+          caption: 'please check the file is valid JSON, and try again',
+          timeout: 0,
+          type: 'warning',
+          position: 'center',
+          actions: [ { label: 'Dismiss' } ]
+        })
+      }
+    }
+    uploadFile.value=null
+  } else {
+    console.log(name + `: actionUpload: uploadFile no value `)
+  }
+}
+
+
 //
 //
 const clickChangeFilename = async() => {
@@ -363,6 +430,33 @@ const clickDelete = (fileName) => {
   })
 }
 
+const clickDownload = async () => {
+  console.log(name + `: clickDownload ${backupFilename.value}`)
+
+  let text = JSON.stringify(store.state.restoredData, null, "  ")
+
+  let element = document.createElement('a');
+  element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', backupFilename.value);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+  document.body.removeChild(element);
+
+}
+
+//
+//
+const clickUpload = () => {
+  console.log(name + `: clickImport`)
+  showUploadDialog.value = true
+
+  //store.methods.save_node_backup(props.nodeNumber, store.state.nodes[props.nodeNumber])
+
+}
+
 //
 //
 const clickRestore = async (row) => {
@@ -404,8 +498,8 @@ const clickRestore = async (row) => {
 
 //
 //
-const clickToggleNodeJSON = () => {
-  console.log(name + `: clickToggleNodeJSON`)
+const clickToggleBackupJSON = () => {
+  console.log(name + `: clickToggleBackupJSON`)
   showNodeJSON.value  = showNodeJSON.value ? false : true
 }
 
