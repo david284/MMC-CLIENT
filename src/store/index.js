@@ -673,6 +673,11 @@ socket.on('BACKUPS_LIST', (data) => {
   state.backups_list = data;
 })
 
+socket.on('NODE_BACKUP_SAVED', (filename) => {
+  timeStampedLog(name + `: RECEIVED NODE_BACKUP_SAVED ${filename}`)
+  eventBus.emit('NODE_BACKUP_SAVED', filename)
+})
+
 socket.on('NODE_BACKUPS_LIST', (data) => {
   timeStampedLog(name + `: RECEIVED NODE_BACKUPS_LIST`)
   state.backups_list = data;

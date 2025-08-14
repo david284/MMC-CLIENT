@@ -377,6 +377,21 @@ store.eventBus.on('NODE_BACKUP_COMPLETED', () => {
   store.methods.request_node_backups_list(store.state.layout.layoutDetails.title, props.nodeNumber)
 })
 
+store.eventBus.on('NODE_BACKUP_SAVED', (filename) => {
+  if (model.value){
+    $q.notify({
+      message: 'Backup saved',
+      caption: filename,
+      timeout: 2000,
+      position: 'center',
+      color: 'primary',
+      actions: [
+        { label: 'dismiss', color: 'white', handler: () => { /* ... */ } }
+      ]
+    })
+  }
+})
+
 
 /*/////////////////////////////////////////////////////////////////////////////
 
