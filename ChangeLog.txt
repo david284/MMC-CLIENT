@@ -1,3 +1,8 @@
+Version 0.10.9
+  Changed RestoreNodeDialog to NodeBackupAndRestoreDialog
+  added link to NodeBackupDialog in NodeBackupAndRestoreDialog
+  Added upload & download to NodeBackupAndRestoreDialog
+  Added support for NODE_BACKUP_SAVED message from server
 
 Version 0.10.8
   Increased time after node reset in RestoreNodeDialog to reflect changes in universal firmware V4bs onwards.
