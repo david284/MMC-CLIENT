@@ -116,6 +116,7 @@ const backupNode = async () => {
     // now store backup if it was successfull
     store.methods.save_node_backup(props.nodeNumber, store.state.nodes[props.nodeNumber])
     backupStatus.value = "Backup completed"
+    store.eventBus.emit('NODE_BACKUP_COMPLETED')
   } else {
     // display popup for failure
     backupStatus.value = result

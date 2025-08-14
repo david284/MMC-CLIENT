@@ -7,7 +7,7 @@
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
           <div class="text-h6">
-            Restore Node: {{ store.getters.node_name(nodeNumber) }}
+            Backup & Restore Node: {{ store.getters.node_name(nodeNumber) }}
           </div>
           <template v-slot:action>
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
@@ -15,6 +15,17 @@
         </q-banner>
       </q-card-section>
 
+      <q-card align="right" flat inline class="row">
+        <q-space /><q-space /><q-space />
+        <div class="text-h6">Backup this node</div>
+        &nbsp;
+        <q-card-actions >
+          <q-btn color="primary" label="backup" @click="clickBackup()"></q-btn>
+        </q-card-actions>
+        <q-space />
+      </q-card>
+
+      <q-separator/>
       <div style="max-height: 85vh" class="scroll no-margin no-padding">
 
       <div class="q-pa-md row" style="max-height: 80vh">
@@ -167,6 +178,10 @@
     </q-card>
   </q-dialog>
 
+  <NodeBackupDialog v-model='showNodeBackupDialog'
+    :nodeNumber = nodeNumber
+  />
+
 </template>
 
 
@@ -176,10 +191,11 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { useQuasar } from 'quasar'
 import {sleep} from "components/functions/utils.js"
+import NodeBackupDialog from "components/dialogs/NodeBackupDialog"
 
 const $q = useQuasar()
 const store = inject('store')
-const name = "RestoreNodeDialog"
+const name = "NodeBackupAndRestoreDialog"
 const backupFilename = ref("")
 const ready = ref(false)
 const restoredNode = ref("")
@@ -196,7 +212,7 @@ const showUploadDialog = ref(false)
 const uploadFile = ref()
 const newFilename = ref("")
 const oldFilename = ref("")
-
+const showNodeBackupDialog = ref(false)
 
 const teColumns = [
   {name: 'backup', field: 'backup', required: true, label: 'backup', align: 'left', sortable: true},
@@ -252,6 +268,9 @@ watch(restoredData, () => {
   }
 })
 
+
+//
+//
 const backupList = computed(() => {
   return store.state.backups_list
 })
@@ -354,6 +373,11 @@ onBeforeMount(() => {
 onMounted(() => {
 })
 
+store.eventBus.on('NODE_BACKUP_COMPLETED', () => {
+  store.methods.request_node_backups_list(store.state.layout.layoutDetails.title, props.nodeNumber)
+})
+
+
 /*/////////////////////////////////////////////////////////////////////////////
 
 Click event handlers
@@ -392,6 +416,12 @@ const actionUpload = async() => {
   }
 }
 
+//
+//
+const clickBackup = async() => {
+  console.log(name + `: clickBackup`)
+  showNodeBackupDialog.value = true
+}
 
 //
 //

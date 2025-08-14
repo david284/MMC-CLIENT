@@ -17,11 +17,11 @@
               Node is offline, so standard function are unavailable
             </div>
         </q-card-section>
-        
+
         <q-card-section v-if="(store.state.nodes[nodeNumber].status)">
           <q-card-actions align="left">
-            <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Backup Node"
-            @click="clickBackupNode()"/>
+            <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Backup & Restore"
+            @click="clickBackupAndRestoreNode()"/>
           </q-card-actions>
 
           <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
@@ -59,11 +59,6 @@
             @click="clickResetNode()"/>
           </q-card-actions>
 
-          <q-card-actions align="left">
-            <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Restore Node"
-            @click="clickRestoreNode()"/>
-          </q-card-actions>
-
           <q-card-actions align="left" v-if="(store.state.nodes[nodeNumber].VLCB == false)">
             <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Set CANID"
             @click="clickSetCAN_ID()"/>
@@ -91,16 +86,12 @@
       :nodeNumber = nodeNumber
     />
 
-    <NodeBackupDialog v-model='showNodeBackupDialog'
-      :nodeNumber = nodeNumber
-    />
-
     <programNodeDialog v-model='showProgramNodeDialog'
       :nodeNumber = nodeNumber
       :mode = programNodeMode
     />
 
-    <RestoreNodeDialog  v-model='showRestoreNodeDialog'
+    <NodeBackupAndRestoreDialog  v-model='showNodeBackupAndRestoreDialog'
         :nodeNumber = nodeNumber
       />
 
@@ -118,9 +109,8 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
 import MDFDialog from "components/dialogs/MDFDialog"
-import NodeBackupDialog from "components/dialogs/NodeBackupDialog"
 import programNodeDialog from "components/dialogs/programNodeDialog"
-import RestoreNodeDialog from "components/dialogs/RestoreNodeDialog"
+import NodeBackupAndRestoreDialog from "components/dialogs/NodeBackupAndRestoreDialog"
 import setCanIdDialog from "components/dialogs/setCanIdDialog"
 import cbusLib from "cbuslibrary"
 
@@ -129,9 +119,8 @@ const store = inject('store')
 const name = "AdvancedNodeDialog"
 const programNodeMode = ref("NORMAL")
 const showMDFDialog = ref(false)
-const showNodeBackupDialog = ref(false)
 const showProgramNodeDialog = ref(false)
-const showRestoreNodeDialog = ref(false)
+const showNodeBackupAndRestoreDialog = ref(false)
 const showSetCanIdDialog = ref(false)
 
 const props = defineProps({
@@ -161,13 +150,10 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 //
-// At this point we already have all the node parameters
-// So read all the node variables
-// and then read all the events & variables
 //
-const clickBackupNode = async () => {
-  console.log(name + `: clickBackupNode ` + props.nodeNumber)
-  showNodeBackupDialog.value=true
+const clickBackupAndRestoreNode = () => {
+  console.log(name + `: clickBackupAndRestoreNode ` + props.nodeNumber)
+  showNodeBackupAndRestoreDialog.value = true
 }
 
 //
@@ -191,7 +177,7 @@ const clickMDF = () => {
 // Mode values for Event_Acknowledge
 // Event_Acknowledge 0ff = 0x0B
 // Event_Acknowledge 0n = 0x0A
-// 
+//
 const click_MODE_Event_Acknowledge = () => {
   console.log(name + `: click_MODE_Event_Acknowledge`)
   const result = $q.notify({
@@ -200,18 +186,18 @@ const click_MODE_Event_Acknowledge = () => {
     position: 'center',
     color: 'primary',
     actions: [
-      { label: 'ON', color: 'white', handler: async () => { 
+      { label: 'ON', color: 'white', handler: async () => {
         let commandString = cbusLib.encodeMODE(props.nodeNumber, 0x0A)
         store.methods.send_cbus_message(commandString)
       } },
       { label: 'OFF', color: 'white', handler: () => {
         let commandString = cbusLib.encodeMODE(props.nodeNumber, 0x0B)
-        store.methods.send_cbus_message(commandString) 
+        store.methods.send_cbus_message(commandString)
       } },
       { label: 'CANCEL', color: 'white', handler: () => {} }
     ]
   })
-}  
+}
 
 //
 // Mode values for FCU_Compatibility
@@ -226,18 +212,18 @@ const click_MODE_FCU_Compatibility = () => {
     position: 'center',
     color: 'primary',
     actions: [
-      { label: 'ON', color: 'white', handler: async () => { 
+      { label: 'ON', color: 'white', handler: async () => {
         let commandString = cbusLib.encodeMODE(props.nodeNumber, 0x10)
         store.methods.send_cbus_message(commandString)
       } },
       { label: 'OFF', color: 'white', handler: () => {
         let commandString = cbusLib.encodeMODE(props.nodeNumber, 0x11)
-        store.methods.send_cbus_message(commandString) 
+        store.methods.send_cbus_message(commandString)
       } },
       { label: 'CANCEL', color: 'white', handler: () => {} }
     ]
   })
-}  
+}
 
 //
 // Mode values for Heartbeat
@@ -252,18 +238,18 @@ const click_Mode_Heartbeat = () => {
     position: 'center',
     color: 'primary',
     actions: [
-      { label: 'ON', color: 'white', handler: async () => { 
+      { label: 'ON', color: 'white', handler: async () => {
         let commandString = cbusLib.encodeMODE(props.nodeNumber, 0x0C)
         store.methods.send_cbus_message(commandString)
       } },
       { label: 'OFF', color: 'white', handler: () => {
         let commandString = cbusLib.encodeMODE(props.nodeNumber, 0x0D)
-        store.methods.send_cbus_message(commandString) 
+        store.methods.send_cbus_message(commandString)
       } },
       { label: 'CANCEL', color: 'white', handler: () => {} }
     ]
   })
-}  
+}
 
 //
 //
@@ -286,13 +272,6 @@ const clickProgramInBootMode = () => {
 const clickResetNode = () => {
   console.log(name + `: clickResetNode ` + props.nodeNumber)
   store.methods.reset_node(props.nodeNumber)
-}
-
-//
-//
-const clickRestoreNode = () => {
-  console.log(name + `: clickRestoreNode ` + props.nodeNumber)
-  showRestoreNodeDialog.value = true
 }
 
 //
