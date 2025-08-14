@@ -143,17 +143,25 @@
           <q-btn flat color="white" size="md" label="Close" v-close-popup/>
         </template>
       </q-banner>
-
-      <q-file
+        <q-card-section>
+          <div class="text-body">
+            click below to select backup file to upload
+          </div>
+        </q-card-section>
+        <q-file
           v-model="uploadFile"
           label="Pick one file"
           filled
           style="max-width: 300px"
         />
-
+        <q-card-section>
+          <div class="text-body">
+            Note that the uploaded file name will have an updated timestamp
+          </div>
+        </q-card-section>
         <q-card-actions align="right" class="text-primary">
           <!-- // Only close top dialog - this gives time for underlying dialogs to update -->
-          <q-btn color="positive" label="Upload" v-close-popup  @click="actionUpload()" />
+          <q-btn :disabled="!uploadFile" color="positive" label="Upload" v-close-popup  @click="actionUpload()" />
         </q-card-actions>
 
     </q-card>
