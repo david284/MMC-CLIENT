@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model="model" persistent>
-    <q-card  style="min-width: 800px;" class="q-pa-none q-ma-none">
+    <q-card  style="min-width: 80vw;" class="q-pa-none q-ma-none">
 
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
@@ -8,24 +8,34 @@
             Bus Traffic
           </div>
           <template v-slot:action>
+            <q-btn flat color="white" size="md" label="start" @click="clickStart()"/>
+            <q-btn flat color="white" size="md" label="end" @click="clickEnd()"/>
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
           </template>
         </q-banner>
       </q-card-section>
 
       <q-card>
-        <q-card-section style="max-height: 85vh" class="scroll q-py-none no-margin">
-          <q-list>
+        <q-card-section style="max-height: 90vh" class="scroll q-py-none no-margin">
+
+          <q-virtual-scroll
+            ref="virtualListRef"
+            style="max-height: 85vh;"
+            :items="heavyList"
+            v-slot="{ item, index }"
+          >
             <q-item
-              v-for="message in logArray"
-              :key="message"
-              clickable
+              :key="index"
               dense
-              v-ripple
-              >
-            <q-item-label dense class="q-pa-none q-my-none">{{ message}}</q-item-label>
+            >
+              <q-item-section>
+                <q-item-label>
+                  #{{index}} - {{ item.label }}
+                </q-item-label>
+              </q-item-section>
             </q-item>
-          </q-list>
+          </q-virtual-scroll>
+
         </q-card-section>
       </q-card>
 
@@ -33,18 +43,25 @@
   </q-dialog>
 </template>
 
+<!--
+--
+--
+--
+-->
 
 <script setup>
 
-
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
+import {timeStampedLog} from "components/functions/utils.js"
 
 const $q = useQuasar()
 const store = inject('store')
 const name = "BusTrafficDialog"
 const showMore = ref(false)
 const logArray = ref()
+const heavyList = ref([])
+const virtualListRef = ref(null)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true }
@@ -74,8 +91,14 @@ onMounted(() => {
 store.eventBus.on('LOG_FILE', (fileName, logFile) => {
   if (fileName == "bustraffic.txt"){
     let temp = atob(logFile)
-    let temp2 = temp.split("\r")
-    let caption = "lines: " + temp2.length
+    let bustrafficArray = temp.split("\r")
+    // split will return an empty line at the end, so ignore that
+    for (let i = 0; i < bustrafficArray.length - 1; i++) {
+      heavyList.value.push({ label: bustrafficArray[i] })
+    }
+
+    /*
+    let caption = "Number of lines: " + bustrafficArray.length
     $q.notify({
       message: 'bustraffic.txt received - processing',
       caption: caption,
@@ -83,9 +106,11 @@ store.eventBus.on('LOG_FILE', (fileName, logFile) => {
       type: 'warning',
       position: 'center'
     })
+      */
+
     //
-    // *********** commented out as taking far too long ***************
-    //
+    virtualListRef.value.scrollTo(1000)
+
     //logArray.value = temp2
     //
     //
@@ -98,6 +123,20 @@ store.eventBus.on('LOG_FILE', (fileName, logFile) => {
 Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
+
+//
+//
+const clickEnd = () => {
+  timeStampedLog(name + ": clickEnd")
+  virtualListRef.value.scrollTo(heavyList.value.length)
+}
+
+//
+//
+const clickStart = () => {
+  timeStampedLog(name + ": clickStart")
+  virtualListRef.value.scrollTo(0)
+}
 
 //
 //

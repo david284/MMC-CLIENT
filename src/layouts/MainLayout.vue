@@ -515,10 +515,10 @@ const clickSingleBusEvent = (message) => {
   console.log(name + ': clickSingleBusEvent')
   busMessage.value = message
   scrollAreaRef.value.setScrollPercentage('vertical', 1)
-  showModifiedGridConnectDialog.value = true
+  //showModifiedGridConnectDialog.value = true
 
-  //store.methods.request_log_file("bustraffic.txt")
-  //showBusTrafficDialog.value = true
+  store.methods.request_log_file("bustraffic.txt")
+  showBusTrafficDialog.value = true
 }
 
 //
