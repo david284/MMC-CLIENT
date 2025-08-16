@@ -10,6 +10,7 @@
           <template v-slot:action>
             <q-btn flat color="white" size="md" label="start" @click="clickStart()"/>
             <q-btn flat color="white" size="md" label="end" @click="clickEnd()"/>
+            <q-btn flat color="white" size="md" label="download" @click="clickDownload()"/>
             <q-btn flat color="white" size="md" label="refresh" @click="clickRefresh()"/>
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
           </template>
@@ -61,6 +62,7 @@ const store = inject('store')
 const name = "BusTrafficDialog"
 const heavyList = ref([])
 const virtualListRef = ref(null)
+let rawFile = null
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true }
@@ -91,8 +93,8 @@ store.eventBus.on('LOG_FILE', (fileName, logFile) => {
   if(model.value){
     if (fileName == "bustraffic.txt"){
       timeStampedLog(name + ": Updated BusTrafficDialog")
-      let temp = atob(logFile)
-      let bustrafficArray = temp.split("\r")
+      rawFile = atob(logFile)
+      let bustrafficArray = rawFile.split("\r")
       // split will return an empty line at the end, so ignore that
       for (let i = 0; i < bustrafficArray.length - 1; i++) {
         heavyList.value.push({ label: bustrafficArray[i] })
@@ -119,6 +121,23 @@ store.eventBus.on('LOG_FILE', (fileName, logFile) => {
 Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
+
+//
+//
+const clickDownload = () => {
+  timeStampedLog(name + ": clickDownload")
+
+  let element = document.createElement('a');
+  element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(rawFile));
+  element.setAttribute('download', "BusTrafficLog.txt");
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+  document.body.removeChild(element);
+
+}
 
 //
 //
