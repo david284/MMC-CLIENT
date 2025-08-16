@@ -10,6 +10,7 @@
           <template v-slot:action>
             <q-btn flat color="white" size="md" label="start" @click="clickStart()"/>
             <q-btn flat color="white" size="md" label="end" @click="clickEnd()"/>
+            <q-btn flat color="white" size="md" label="refresh" @click="clickRefresh()"/>
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
           </template>
         </q-banner>
@@ -52,14 +53,12 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
-import { date, useQuasar, scroll } from 'quasar'
+import { useQuasar } from 'quasar'
 import {timeStampedLog} from "components/functions/utils.js"
 
 const $q = useQuasar()
 const store = inject('store')
 const name = "BusTrafficDialog"
-const showMore = ref(false)
-const logArray = ref()
 const heavyList = ref([])
 const virtualListRef = ref(null)
 
@@ -76,7 +75,7 @@ const model = computed({
 
 // model changes when Dialog opened & closed
 watch(model, () => {
-//  console.log(name + `: WATCH model`)
+  //timeStampedLog(name + `: WATCH model`)
 })
 
 
@@ -89,31 +88,28 @@ onMounted(() => {
 //
 //
 store.eventBus.on('LOG_FILE', (fileName, logFile) => {
-  if (fileName == "bustraffic.txt"){
-    let temp = atob(logFile)
-    let bustrafficArray = temp.split("\r")
-    // split will return an empty line at the end, so ignore that
-    for (let i = 0; i < bustrafficArray.length - 1; i++) {
-      heavyList.value.push({ label: bustrafficArray[i] })
+  if(model.value){
+    if (fileName == "bustraffic.txt"){
+      timeStampedLog(name + ": Updated BusTrafficDialog")
+      let temp = atob(logFile)
+      let bustrafficArray = temp.split("\r")
+      // split will return an empty line at the end, so ignore that
+      for (let i = 0; i < bustrafficArray.length - 1; i++) {
+        heavyList.value.push({ label: bustrafficArray[i] })
+      }
+
+      /*
+      let caption = "Number of lines: " + bustrafficArray.length
+      $q.notify({
+        message: 'bustraffic.txt received - processing',
+        caption: caption,
+        timeout: 1000,
+        type: 'warning',
+        position: 'center'
+      })
+        */
+
     }
-
-    /*
-    let caption = "Number of lines: " + bustrafficArray.length
-    $q.notify({
-      message: 'bustraffic.txt received - processing',
-      caption: caption,
-      timeout: 1000,
-      type: 'warning',
-      position: 'center'
-    })
-      */
-
-    //
-    virtualListRef.value.scrollTo(1000)
-
-    //logArray.value = temp2
-    //
-    //
   }
 })
 
@@ -133,17 +129,17 @@ const clickEnd = () => {
 
 //
 //
+const clickRefresh = () => {
+  timeStampedLog(name + ": clickRefresh")
+  store.methods.request_log_file("bustraffic.txt")
+}
+
+//
+//
 const clickStart = () => {
   timeStampedLog(name + ": clickStart")
   virtualListRef.value.scrollTo(0)
 }
-
-//
-//
-const clickShowMore = () => {
-  showMore.value = showMore.value ? false : true
-}
-
 
 
 </script>

@@ -85,10 +85,13 @@
       dense
       bordered
       >
-      <q-banner inline-actions style="min-height: 0px;" class="bg-primary text-white dense no-margin q-py-none q-px-xs">
-        <div class="text-h6 no-margin no-padding">
-        Bus traffic
-      </div>
+      <q-banner inline-actions style="min-height: 0px;" class="bg-primary text-white dense no-margin q-py-none q-px-xs row">
+        <div class="text-h6">Bus traffic</div>
+        <template v-slot:action>
+          <div class="text-h6 float-right">
+            <q-btn size="sm" color="blue" label="All" @click="clickAllBusTraffic()"/>
+          </div>
+        </template>
       </q-banner>
 
       <q-card class="no-margin no-padding">
@@ -429,6 +432,15 @@ Click event handlers
 
 //
 //
+const clickAllBusTraffic = (message) => {
+  console.log(name + ': clickAllBusTraffic')
+  store.methods.request_log_file("bustraffic.txt")
+  showBusTrafficDialog.value = true
+}
+
+
+//
+//
 const clickBusEventsView = () => {
   console.log(name + ': clickBusEventsView')
   selectedView.value = 'BusEventsView'
@@ -515,10 +527,7 @@ const clickSingleBusEvent = (message) => {
   console.log(name + ': clickSingleBusEvent')
   busMessage.value = message
   scrollAreaRef.value.setScrollPercentage('vertical', 1)
-  //showModifiedGridConnectDialog.value = true
-
-  store.methods.request_log_file("bustraffic.txt")
-  showBusTrafficDialog.value = true
+  showModifiedGridConnectDialog.value = true
 }
 
 //
