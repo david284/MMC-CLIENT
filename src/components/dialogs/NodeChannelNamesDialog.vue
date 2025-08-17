@@ -12,36 +12,38 @@
         </template>
       </q-banner>
 
-      <q-card-section class="no-margin q-py-none-xs">
+      <q-card class="q-pa-none q-ma-none">
+        <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none-xs">
 
-        <q-table
-          flat bordered
-          dense
-          :rows="teRows"
-          :columns="teColumns"
-          row-key="channelNumber"
-          hide-bottom
-          virtual-scroll
-          :rows-per-page-options="[0]"
-          :virtual-scroll-sticky-size-start="0"
-          >
+          <q-table
+            flat bordered
+            dense
+            :rows="teRows"
+            :columns="teColumns"
+            row-key="channelNumber"
+            hide-bottom
+            virtual-scroll
+            :rows-per-page-options="[0]"
+            :virtual-scroll-sticky-size-start="0"
+            >
 
-          <template v-slot:body="props">
-            <q-tr :props="props" class="q-my-none q-py-none">
-              <q-td key="channelNumber" :props="props">{{ props.row.channelNumber }}</q-td>
-              <q-td key="name" :props="props">
-                {{ props.row.name }}
-                <q-popup-edit v-model="props.row.name" v-slot="scope" buttons
-                  @save="(newName) => nameChanged(newName, props.row.channelNumber)">
-                  <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
-                </q-popup-edit>
-              </q-td>
+            <template v-slot:body="props">
+              <q-tr :props="props" class="q-my-none q-py-none">
+                <q-td key="channelNumber" :props="props">{{ props.row.channelNumber }}</q-td>
+                <q-td key="name" :props="props">
+                  {{ props.row.name }}
+                  <q-popup-edit v-model="props.row.name" v-slot="scope" buttons
+                    @save="(newName) => nameChanged(newName, props.row.channelNumber)">
+                    <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
+                  </q-popup-edit>
+                </q-td>
 
-            </q-tr>
-          </template>
-        </q-table>
+              </q-tr>
+            </template>
+          </q-table>
 
-      </q-card-section>
+        </q-card-section>
+      </q-card>
 
     </q-card>
   </q-dialog>
