@@ -235,9 +235,9 @@ const methods = {
     socket.emit('REQUEST_LOG_FILE', {"fileName":filename})
   },
   //
-  request_MDF_delete(filename) {
-    timeStampedLog(`REQUEST_MDF_DELETE : ` + filename)
-    socket.emit('REQUEST_MDF_DELETE', {"filename":filename})
+  request_MDF_delete(filename, nodeNumber) {
+    timeStampedLog(`REQUEST_MDF_DELETE : ${filename} ${nodeNumber}`)
+    socket.emit('REQUEST_MDF_DELETE', {"filename":filename, "nodeNumber":nodeNumber})
   },
   //
   request_MDF_export(location, filename) {
