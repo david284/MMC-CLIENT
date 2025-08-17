@@ -315,7 +315,6 @@ const clickDelete = (filename) => {
     actions: [
       { label: 'YES', color: 'white', handler: async () => {
         store.methods.request_MDF_delete(filename, props.nodeNumber)
-        //refresh_user_list()
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
     ]
