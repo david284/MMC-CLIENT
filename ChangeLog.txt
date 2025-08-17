@@ -5,6 +5,7 @@ Version 0.10.9
   Added support for NODE_BACKUP_SAVED message from server
   Added BusTrafficDialog to display all of the BusTrafficLog
   Added 'ALL' to BusTraffic sidebar to invoke the new BusTrafficDialog
+  Removed refresh_user_list on MDF delete, now done in server (better control of when it's done)
 
 Version 0.10.8
   Increased time after node reset in RestoreNodeDialog to reflect changes in universal firmware V4bs onwards.
