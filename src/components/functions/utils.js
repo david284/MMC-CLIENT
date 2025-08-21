@@ -111,12 +111,15 @@ export function createTimeStamp(){
 export function TimeStampToText(timestamp){
   //timeStampedLog("TimeStampToText: length " + timestamp.length)
   var text = ''
-  if (timestamp.length == 12){
+  if (timestamp.length >= 12){
     text = timestamp.substring(0,4)     // get year
     text += '/' + timestamp.substring(4,6)  // get month
     text += '/' + timestamp.substring(6,8)  // get day
     text += ' ' + timestamp.substring(8,10)  // get hour
     text += ':' + timestamp.substring(10,12)  // get minutes
+  }
+  if (timestamp.length >= 14){
+    text += ':' + timestamp.substring(12,14)  // get seconds
   }
   return text
 }

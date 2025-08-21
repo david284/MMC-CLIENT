@@ -2,7 +2,7 @@
   <q-dialog v-model="model">
 
     <!-- min-width: has no effect on q-dialog -->
-    <q-card  style="min-width: 800px" class="q-pa-none q-ma-none">
+    <q-card  style="min-width: 600px" class="q-pa-none q-ma-none">
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
           <div class="text-h6">
@@ -14,15 +14,15 @@
         </q-banner>
       </q-card-section>
 
-      <q-card flat inline class="q-pa-xs q-ma-none" style="width: 500px">
-        <div class="text-h6">Select an archived logs file to download</div>
+      <q-card flat inline class="q-pa-xs q-ma-none">
+        <div class="text-h6">Select an archived logs file to download - newest files at top</div>
+        <div class="text-body">Archive directory: {{ archiveDirectory }}</div>
         <q-card-section style="max-height: 75vh" class="scroll no-margin q-pa-xs">
 
           <q-table
-            dense
             :rows="teRows"
             :columns="teColumns"
-            row-key="name"
+            row-key="archive"
             virtual-scroll
             :rows-per-page-options="[0]"
             :virtual-scroll-sticky-size-start="0"
@@ -30,21 +30,18 @@
             hide-bottom
           >
             <template #body-cell="props">
-              <q-td :props="props" >
-                <q-btn
-                  flat
-                  color="primary"
-                  :label="props.value"
-                />
-              </q-td>
+              <q-tr :props="props">
+                <q-td key="archive" :props="props">{{ props.row.archive }} </q-td>
+                <q-td key="time" :props="props">{{ props.row.time }} </q-td>
                 <q-td >
-                  <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="sm" label="Download"
-                  @click="clickDownload(props.value)" no-caps />
+                  <q-btn class="q-mx-xs q-my-none" outline color="primary" size="sm" label="Download"
+                  @click="clickDownload(props.row.archive)"/>
                   <!--
                   <q-btn dense class="q-mx-xs q-my-none" outline color="negative" size="sm" label="Delete"
                   @click="clickDelete(props.value)" no-caps />
                   -->
                 </q-td>
+              </q-tr>
             </template>
           </q-table>
         </q-card-section>
@@ -59,7 +56,7 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
-import {timeStampedLog} from "components/functions/utils.js"
+import * as utils from "components/functions/utils.js"
 
 const store = inject('store')
 const name = "LogsDialog"
@@ -76,6 +73,7 @@ const emit = defineEmits(['update:modelValue'])
 
 const teColumns = [
   {name: 'archive', field: 'archive', required: true, label: 'archive', align: 'left', sortable: true},
+  {name: 'time', field: 'time', required: true, label: 'time', align: 'left', sortable: true},
 ]
 
 const model = computed({
@@ -85,7 +83,7 @@ const model = computed({
 
 // model changes when Dialog opened & closed
 watch(model, () => {
-  //timeStampedLog(name + `: WATCH model`)
+  //utils.timeStampedLog(name + `: WATCH model`)
   if(model.value){
     store.methods.request_archives_list()
   }
@@ -93,7 +91,7 @@ watch(model, () => {
 
 store.eventBus.on('ARCHIVES_LIST', (data) => {
   if(model.value){
-    timeStampedLog(name + `: RECEIVED ARCHIVES_LIST ${JSON.stringify(data)}`)
+    //utils.timeStampedLog(name + `: RECEIVED ARCHIVES_LIST ${JSON.stringify(data)}`)
     archiveList.value = data.list
     archiveDirectory.value = data.directory
   }
@@ -110,9 +108,14 @@ watch(archiveList, () => {
 const updateArchiveList = () => {
   teRows.value = []
   archiveList.value.forEach(archiveFilename => {
-    //timeStampedLog(name + `: update ` + backup)
-    teRows.value.push({"archive" : archiveFilename})
+    //utils.timeStampedLog(name + `: update ` + backup)
+    let array = archiveFilename.split('_')
+    let denseTimeStamp = array[1]
+    teRows.value.push({"archive" : archiveFilename, "time" : utils.TimeStampToText(denseTimeStamp)})
+
   })
+    // sort rows with newest first
+    teRows.value.sort(function(a, b){return (a.archive < b.archive)? 1 : -1;});
 }
 
 onBeforeMount(() => {
@@ -132,7 +135,7 @@ Click event handlers
 //
 //
 const clickDownload = async(filename) => {
-  timeStampedLog(name + `: clickDownload ${filename}`)
+  utils.timeStampedLog(name + `: clickDownload ${filename}`)
 }
 
 
