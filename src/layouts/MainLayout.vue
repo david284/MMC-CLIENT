@@ -13,6 +13,9 @@
               <q-item clickable @click="clickImport()">
                 <q-item-section>Import</q-item-section>
               </q-item>
+              <q-item clickable @click="clickLogs()">
+                <q-item-section>Logs</q-item-section>
+              </q-item>
               <q-item clickable @click="clickJson()">
                 <q-item-section>JSON</q-item-section>
               </q-item>
@@ -142,6 +145,7 @@
   <ExportDialog v-model='showExportDialog' />
   <jsonDialog v-model='showJsonDialog' />
   <ImportDialog v-model='showImportDialog' />
+  <LogsDialog v-model='showLogsDialog' />
   <modifiedGridConnectDialog v-model='showModifiedGridConnectDialog'
     :busMessage="busMessage"/>
 
@@ -181,6 +185,7 @@ import cbusErrorsDialog from "components/dialogs/CbusErrorsDialog";
 import ExportDialog from "components/dialogs/ExportDialog";
 import jsonDialog from "components/dialogs/JsonDialog";
 import ImportDialog from "components/dialogs/ImportDialog";
+import LogsDialog from "components/dialogs/LogsDialog";
 import modifiedGridConnectDialog from "components/dialogs/ModifiedGridConnectDialog";
 import newNodeDialog from "components/dialogs/NewNodeDialog";
 import startupDialog from "components/dialogs/StartupDialog";
@@ -204,6 +209,7 @@ const showCbusErrorsDialog = ref(false)
 const showExportDialog = ref(false)
 const showJsonDialog = ref(false)
 const showImportDialog = ref(false)
+const showLogsDialog = ref(false)
 const showModifiedGridConnectDialog = ref(false)
 const showNewNodeDialog = ref(false)
 const showStartupDialog = ref(true)
@@ -448,20 +454,6 @@ const clickBusEventsView = () => {
 
 //
 //
-const clickEventsView = () => {
-  console.log(name + ': clickEventView')
-  selectedView.value = 'EventsView'
-}
-
-//
-//
-const clickNodesView = () => {
-  console.log(name + ': clickNodeView')
-  selectedView.value = 'NodesView'
-}
-
-//
-//
 const clickCbusErrors = () => {
   console.log(name + ': clickCbusErrors')
   showCbusErrorsDialog.value = true
@@ -469,9 +461,23 @@ const clickCbusErrors = () => {
 
 //
 //
+const clickEventsView = () => {
+  console.log(name + ': clickEventView')
+  selectedView.value = 'EventsView'
+}
+
+//
+//
 const clickExample = () => {
   console.log(name + `: clickExample`)
   showDialogExampleCompositionAPI.value = true
+}
+
+//
+//
+const clickNodesView = () => {
+  console.log(name + ': clickNodeView')
+  selectedView.value = 'NodesView'
 }
 
 //
@@ -509,6 +515,13 @@ const clickiframe = () => {
 
 //
 //
+const clickImport = () => {
+  console.log(name + ': clickImport')
+  showImportDialog.value = true
+}
+
+//
+//
 const clickJson = () => {
   console.log(name + ': clickJson')
   showJsonDialog.value = true
@@ -516,9 +529,9 @@ const clickJson = () => {
 
 //
 //
-const clickImport = () => {
-  console.log(name + ': clickImport')
-  showImportDialog.value = true
+const clickLogs = () => {
+  console.log(name + ': clickLogs')
+  showLogsDialog.value = true
 }
 
 //

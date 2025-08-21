@@ -187,6 +187,11 @@ const methods = {
     timeStampedLog(`REQUEST_ALL_EVENT_VARIABLES_FOR_NODE: node ` + nodeNumber)
   },
   //
+  request_archives_list() {
+    timeStampedLog(`REQUEST_ARCHIVES_LIST :`)
+    socket.emit('REQUEST_ARCHIVES_LIST')
+  },
+  //
   request_backup(layoutName, filename) {
     timeStampedLog(`REQUEST_BACKUP : ` + layoutName + ' ' + filename)
     socket.emit('REQUEST_BACKUP', {"layoutName":layoutName, "fileName":filename})
@@ -667,6 +672,12 @@ const setters = {
 //  socket events
 //-----------------------------------------------------------------------------
 const socket = io(`http://${host}:${port}`)
+
+socket.on('ARCHIVES_LIST', (data) => {
+  timeStampedLog(name + `: RECEIVED ARCHIVES_LIST`)
+  //timeStampedLog(name + `: RECEIVED ARCHIVES_LIST ${JSON.stringify(data)}`)
+  eventBus.emit('ARCHIVES_LIST', data)
+})
 
 socket.on('BACKUPS_LIST', (data) => {
   timeStampedLog(name + `: RECEIVED BACKUPS_LIST`)
