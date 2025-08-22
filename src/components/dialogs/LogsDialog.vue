@@ -118,6 +118,12 @@ const updateArchiveList = () => {
     teRows.value.sort(function(a, b){return (a.archive < b.archive)? 1 : -1;});
 }
 
+store.eventBus.on('BINARY_FILE', (data) => {
+  if(model.value){
+    utils.timeStampedLog(name + `: RECEIVED BINARY_FILE ${data.fileName}`)
+  }
+})
+
 onBeforeMount(() => {
 })
 
@@ -135,7 +141,12 @@ Click event handlers
 //
 //
 const clickDownload = async(filename) => {
-  utils.timeStampedLog(name + `: clickDownload ${filename}`)
+  try{
+    utils.timeStampedLog(name + `: clickDownload ${filename}`)
+    store.methods.request_binary_file(archiveDirectory.value, filename)
+  } catch (err){
+    timeStampedLog(name + `: clickDownload: ${err}`)
+  }
 }
 
 

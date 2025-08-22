@@ -202,6 +202,11 @@ const methods = {
     socket.emit('REQUEST_BACKUPS_LIST', {"layoutName":layoutName})
   },
   //
+  request_binary_file(directory, fileName) {
+    timeStampedLog(`REQUEST_BINARY_FILE : ` + directory + ' ' + fileName)
+    socket.emit('REQUEST_BINARY_FILE', {"directory":directory, "fileName":fileName})
+  },
+  //
   request_diagnostics(nodeNumber, serviceIndex) {
     if (serviceIndex == undefined){serviceIndex = 0;}
     timeStampedLog(`Request Service Diagnostics : node ` + nodeNumber + ' Service Index ' + serviceIndex )
@@ -673,17 +678,30 @@ const setters = {
 //-----------------------------------------------------------------------------
 const socket = io(`http://${host}:${port}`)
 
+//
+//
 socket.on('ARCHIVES_LIST', (data) => {
   timeStampedLog(name + `: RECEIVED ARCHIVES_LIST`)
   //timeStampedLog(name + `: RECEIVED ARCHIVES_LIST ${JSON.stringify(data)}`)
   eventBus.emit('ARCHIVES_LIST', data)
 })
 
+//
+//
 socket.on('BACKUPS_LIST', (data) => {
   timeStampedLog(name + `: RECEIVED BACKUPS_LIST`)
   state.backups_list = data;
 })
 
+//
+//
+socket.on('BINARY_FILE', (data) => {
+  timeStampedLog(name + `: RECEIVED BINARY_FILE ${data.directory} ${data.fileName}`)
+  eventBus.emit('BINARY_FILE', data)
+})
+
+//
+//
 socket.on('NODE_BACKUP_SAVED', (filename) => {
   timeStampedLog(name + `: RECEIVED NODE_BACKUP_SAVED ${filename}`)
   eventBus.emit('NODE_BACKUP_SAVED', filename)
