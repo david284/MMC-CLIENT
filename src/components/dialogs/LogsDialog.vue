@@ -29,17 +29,13 @@
             hide-header
             hide-bottom
           >
-            <template #body-cell="props">
+            <template v-slot:body="props">
               <q-tr :props="props">
                 <q-td key="archive" :props="props">{{ props.row.archive }} </q-td>
                 <q-td key="time" :props="props">{{ props.row.time }} </q-td>
                 <q-td >
                   <q-btn class="q-mx-xs q-my-none" outline color="primary" size="sm" label="Download"
                   @click="clickDownload(props.row.archive)"/>
-                  <!--
-                  <q-btn dense class="q-mx-xs q-my-none" outline color="negative" size="sm" label="Delete"
-                  @click="clickDelete(props.value)" no-caps />
-                  -->
                 </q-td>
               </q-tr>
             </template>
@@ -108,14 +104,14 @@ watch(archiveList, () => {
 const updateArchiveList = () => {
   teRows.value = []
   archiveList.value.forEach(archiveFilename => {
-    //utils.timeStampedLog(name + `: update ` + backup)
     let array = archiveFilename.split('_')
     let denseTimeStamp = array[1]
     teRows.value.push({"archive" : archiveFilename, "time" : utils.TimeStampToText(denseTimeStamp)})
-
+    utils.timeStampedLog(name + `: updateArchiveList ${archiveFilename}`)
   })
     // sort rows with newest first
     teRows.value.sort(function(a, b){return (a.archive < b.archive)? 1 : -1;});
+    utils.timeStampedLog(name + `: teRows count ${teRows.value.length}`)
 }
 
 store.eventBus.on('BINARY_FILE', async (data) => {
