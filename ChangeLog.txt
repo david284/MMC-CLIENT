@@ -1,3 +1,6 @@
+version0.11.0
+  Added LogsDialog to download log files from server
+
 Version 0.10.9
   Changed RestoreNodeDialog to NodeBackupAndRestoreDialog
   added link to NodeBackupDialog in NodeBackupAndRestoreDialog

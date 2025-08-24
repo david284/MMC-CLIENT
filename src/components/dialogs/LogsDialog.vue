@@ -56,7 +56,6 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
-import { base64StringToBlob } from 'blob-util';
 import * as utils from "components/functions/utils.js"
 
 const store = inject('store')
