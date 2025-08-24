@@ -85,13 +85,13 @@ const model = computed({
 watch(model, () => {
   //utils.timeStampedLog(name + `: WATCH model`)
   if(model.value){
-    store.methods.request_archives_list()
+    store.methods.request_archived_logs_list()
   }
 })
 
-store.eventBus.on('ARCHIVES_LIST', (data) => {
+store.eventBus.on('ARCHIVED_LOGS_LIST', (data) => {
   if(model.value){
-    //utils.timeStampedLog(name + `: RECEIVED ARCHIVES_LIST ${JSON.stringify(data)}`)
+    //utils.timeStampedLog(name + `: RECEIVED ARCHIVED_LOGS_LIST ${JSON.stringify(data)}`)
     archiveList.value = data.list
     archiveDirectory.value = data.directory
   }
