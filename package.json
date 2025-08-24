@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "blob-util": "^2.0.2",
     "cbuslibrary": "^2.7.6",
     "core-js": "^3.6.5",
     "json-case-convertor": "^1.4.4",

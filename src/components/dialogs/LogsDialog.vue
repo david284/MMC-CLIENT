@@ -56,6 +56,7 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
+import { base64StringToBlob } from 'blob-util';
 import * as utils from "components/functions/utils.js"
 
 const store = inject('store')
@@ -118,11 +119,41 @@ const updateArchiveList = () => {
     teRows.value.sort(function(a, b){return (a.archive < b.archive)? 1 : -1;});
 }
 
-store.eventBus.on('BINARY_FILE', (data) => {
+store.eventBus.on('BINARY_FILE', async (data) => {
   if(model.value){
-    utils.timeStampedLog(name + `: RECEIVED BINARY_FILE ${data.fileName}`)
+    try {
+      utils.timeStampedLog(name + `: RECEIVED BINARY_FILE ${data.fileName} length ${data.data.length}`)
+
+      // convert from base64 to string
+      const bufferArray = atob(data.data)
+      utils.timeStampedLog(name + `: RECEIVED BINARY_FILE buffer length: ${bufferArray.length}`)
+      //utils.timeStampedLog(name + `: RECEIVED BINARY_FILE buffer: ${bufferArray}`)
+
+      // convert from string to byte array
+      let bytesArray = new Uint8Array(bufferArray.length);
+      for (var i = 0; i < bufferArray.length; i++) {
+        bytesArray[i] = bufferArray[i].charCodeAt(0)
+      }
+      utils.timeStampedLog(name + `: RECEIVED BINARY_FILE bytesArray length: ${bytesArray.length}`)
+      //utils.timeStampedLog(name + `: RECEIVED BINARY_FILE buffer: ${bytesArray}`)
+
+      const blob = new Blob([bytesArray]);
+      utils.timeStampedLog(name + `: RECEIVED BINARY_FILE blob length: ${blob.size}`)
+
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      a.href = URL.createObjectURL( blob )
+      a.download = data.fileName;
+      a.click();
+      document.body.removeChild(a);
+    }catch(err){
+      utils.timeStampedLog(name + `: RECEIVED BINARY_FILE: ${err}`)
+    }
   }
 })
+
+
 
 onBeforeMount(() => {
 })

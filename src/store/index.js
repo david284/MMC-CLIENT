@@ -696,7 +696,8 @@ socket.on('BACKUPS_LIST', (data) => {
 //
 //
 socket.on('BINARY_FILE', (data) => {
-  timeStampedLog(name + `: RECEIVED BINARY_FILE ${data.directory} ${data.fileName}`)
+  timeStampedLog(name + `: RECEIVED BINARY_FILE ${data.directory} ${data.fileName} length ${data.data.length}`)
+  //timeStampedLog(name + `: RECEIVED BINARY_FILE base 64 : ${data.data}`)
   eventBus.emit('BINARY_FILE', data)
 })
 
