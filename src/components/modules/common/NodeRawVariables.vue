@@ -1,12 +1,12 @@
 <template>
   <q-card flat class = "q-pa-none q-ma-none row justify-between">
     <q-card-section class="text-primary">
-      <div class="text-h6">Raw view</div>     
+      <div class="text-h6">Raw view</div>
     </q-card-section>
     <q-card-actions class="text-primary">
       <q-btn size="sm" color="blue" label="Toggle" @click="clickToggle()"/>
       &nbsp;&nbsp;
-      <div class="text-h6"> display in {{ numberBase }} </div>
+      <div class="text-h6"> display is in {{ numberBase }} </div>
     </q-card-actions>
     <q-card-section>
       <div class="text-body">Enter value in decimal, or hexadecimal preceeded by '0x' (e.g. 0x55), irrespective of display format </div>

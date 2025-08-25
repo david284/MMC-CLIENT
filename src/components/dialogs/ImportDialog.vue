@@ -153,10 +153,10 @@
         </q-banner>
       <q-card-section>
         <div class="text-subtitle2">
-          FCU confiduration files contain names for events, nodes and modules, but doesn't support groups
+          FCU configuration files contain names for events, nodes and modules, but doesn't support groups
         </div>
         <div class="text-subtitle2">
-          FCU confiduration files are xml, and the elements used are as follows
+          FCU configuration files are xml, and the elements used are as follows
         </div>
         <div class="text-subtitle2">
           For events, the elements used are: eventNode, eventValue and eventName
