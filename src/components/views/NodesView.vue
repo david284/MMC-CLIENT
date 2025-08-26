@@ -35,12 +35,13 @@
         virtual-scroll
         :rows-per-page-options="[0]"
         :virtual-scroll-sticky-size-start="0"
+        :visible-columns="visibleColumns"
         hide-bottom
       >
       <template v-slot:body="props" >
           <q-tr :props="props" :class="selected_nodeNumber==props.row.nodeNumber?'bg-blue-1':'bg-white'" class="q-my-none q-py-none">
           <q-td key="nodeNumber" :class="'text-'+nodeColour(props.row.nodeNumber)" :props="props">{{ props.row.nodeNumber }}</q-td>
-          <q-td key="CANID" :props="props">{{ props.row.CANID }} </q-td>
+          <q-td key="CANID" v-if="(settings.enableCANID)" :props="props">{{ props.row.CANID }} </q-td>
           <q-td key="nodeName" :props="props">{{ props.row.nodeName }} </q-td>
           <q-td key="group" :props="props">{{ props.row.group }} </q-td>
           <q-td key="moduleName" :props="props">{{ props.row.moduleName }}</q-td>
@@ -122,7 +123,7 @@
         :URL=exampleURL />
 
   <q-dialog v-model="showSettingsDialog" persistent>
-    <q-card style="min-width: 350px">
+    <q-card style="min-width: 500px">
 
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
@@ -132,6 +133,12 @@
           <q-btn flat color="white" size="md" label="Close" v-close-popup/>
         </template>
       </q-banner>
+
+      <q-card class="q-pa-md" flat>
+        <q-checkbox v-model="settings.enableCANID" @click="click_enableCANID" label="show CANID column"></q-checkbox>
+        <q-checkbox v-model="settings.enableSpaceLeft" @click="click_enableSpaceLeft" label="show remaining event space column"></q-checkbox>
+        <q-checkbox v-model="settings.enableStoredEvents" @click="click_enableStoredEvents" label="show stored events column"></q-checkbox>
+      </q-card>
 
     </q-card>
   </q-dialog>
@@ -160,17 +167,20 @@ import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDia
 
 const $q = useQuasar()
 
+const visibleColumns = ref([])
+
+
 const columns = [
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node number', align: 'center', sortable: true},
-  {name: 'CANID', field: 'CANID', required: true, label: 'CAN ID', align: 'center', sortable: true},
+  {name: 'CANID', field: 'CANID', label: 'CAN ID', align: 'center', sortable: true},
   {name: 'nodeName', field: 'nodeName', required: true, label: 'Name', align: 'left', sortable: true},
   {name: 'group', field: 'group', required: true, label: 'Group', align: 'left', sortable: true},
   {name: 'moduleName', field: 'moduleName', required: true, label: 'Module name', align: 'left', sortable: true},
   {name: 'moduleVersion', field: 'moduleVersion', required: true, label: 'Version', align: 'left', sortable: true},
   {name: 'mode', field: 'mode', required: true, label: 'Mode', align: 'left', sortable: true},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},
-  {name: 'events', field: 'events', required: true, label: 'Stored Events', align: 'center', sortable: true},
-  {name: 'spaceLeft', field: 'spaceLeft', required: true, label: 'Space', align: 'center', sortable: true},
+  {name: 'events', field: 'events', label: 'Stored Events', align: 'center', sortable: true},
+  {name: 'spaceLeft', field: 'spaceLeft', label: 'Space', align: 'center', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
@@ -196,6 +206,7 @@ const WaitingOnBusTrafficMessage = ref('')
 const WaitingOnBusTrafficDialogReturn = ref('')
 const tableStyle = ref("nodes-view-split-table")
 const showSettingsDialog = ref(false)
+const settings = ref({})
 
 const nodesUpdated = computed(() => {
   return store.state.nodes.updateTimestamp
@@ -260,6 +271,14 @@ const nodeColour = (nodeNumber) => {
 
 onBeforeMount(() => {
   //timeStampedLog(name + `: onBeforeMount`)
+  if (store.state.layout.settings == undefined){store.state.layout["settings"] = {"NodesView":{}}}
+  if (store.state.layout.settings.NodesView == undefined){store.state.layout.settings["NodesView"] = {}}
+  settings.value['enableCANID'] = true
+  setVisibleColumn("CANID", settings.value.enableCANID)
+  settings.value['enableSpaceLeft'] = true
+  setVisibleColumn("spaceLeft", settings.value.enableSpaceLeft)
+  settings.value['enableStoredEvents'] = true
+  setVisibleColumn("events", settings.value.enableStoredEvents)
   if (store.state.nodes_view_mode == undefined){
     store.state.nodes_view_mode = "split"
   }
@@ -271,6 +290,21 @@ onBeforeMount(() => {
  update_rows()
 })
 
+
+//
+//
+const setVisibleColumn = (columnName, state) => {
+  let index = visibleColumns.value.indexOf(columnName)
+  if (state){
+    if (index == -1){
+      visibleColumns.value.push(columnName)
+    }
+  } else {
+    if (index != -1){
+      visibleColumns.value.splice(index)
+    }
+  }
+}
 
 const select_node_row = async (nodeNumber) => {
   //timeStampedLog(name + ': select_node_row: node ' + nodeNumber)
@@ -396,6 +430,27 @@ const clickDeleteNode = (nodeNumber) => {
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
     ]
   })
+}
+
+//
+//
+const click_enableCANID = (nodeNumber) => {
+  timeStampedLog(name + `: click_enableCANID ${settings.value.enableCANID}`)
+  setVisibleColumn("CANID", settings.value.enableCANID)
+}
+
+//
+//
+const click_enableSpaceLeft = (nodeNumber) => {
+  timeStampedLog(name + `: click_enableSPACE ${settings.value.enableSpaceLeft}`)
+  setVisibleColumn("spaceLeft", settings.value.enableSpaceLeft)
+}
+
+//
+//
+const click_enableStoredEvents = (nodeNumber) => {
+  timeStampedLog(name + `: click_enableStoredEvents ${settings.value.enableStoredEvents}`)
+  setVisibleColumn("events", settings.value.enableStoredEvents)
 }
 
 //
