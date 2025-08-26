@@ -19,6 +19,7 @@
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Advanced" @click="clickAdvanced()"/>
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
+        <q-btn square unelevated color="primary" icon="settings" @click="clickSettings()"/>
       </template>
     </q-banner>
 
@@ -34,6 +35,7 @@
       virtual-scroll
       :rows-per-page-options="[0]"
       :virtual-scroll-sticky-size-start="0"
+      :visible-columns="visibleColumns"
       hide-bottom
     >
       <template v-slot:body="props">
@@ -95,6 +97,27 @@
         @WaitingOnBusTrafficDialogEvent="WaitingOnBusTrafficDialogReturn = $event"
       />
 
+    <q-dialog v-model="showSettingsDialog" persistent>
+      <q-card style="min-width: 500px">
+
+        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+          <div class="text-h6">
+            Events by Node View Settings
+          </div>
+          <template v-slot:action>
+            <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+          </template>
+        </q-banner>
+
+        <q-card>
+          <q-card-section class="no-margin no-padding">
+            <q-checkbox v-model="store.state.layout.settings.EventsByNodeView.enableEventIdentifier" @click="click_enableEventIdentifier" label="show Event Identifier column"></q-checkbox>
+          </q-card-section>
+        </q-card>
+
+      </q-card>
+    </q-dialog>
+
   </div>
 </template>
 
@@ -133,14 +156,17 @@ const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
 const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref('')
+const showSettingsDialog = ref(false)
 
 
 const props = defineProps({
   nodeNumber: {type: Number, required: true }
 })
 
+const visibleColumns = ref([])
+
 const columns = [
-  {name: 'eventIdentifier', field: 'eventIdentifier', required: true, label: 'Identifier', align: 'left', sortable: true},
+  {name: 'eventIdentifier', field: 'eventIdentifier', label: 'Identifier', align: 'left', sortable: true},
   {name: 'eventName', field: 'eventName', required: false, label: 'Name', align: 'left', sortable: true},
   {name: 'eventGroup', field: 'eventGroup', required: false, label: 'Group', align: 'left', sortable: true},
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Event node', align: 'left', sortable: true},
@@ -276,6 +302,7 @@ const update_rows = () => {
 
 onBeforeMount(() => {
   //timeStampedLog(name + ": onBeforeMount")
+  getSettings()
   if (props.nodeNumber){
     update_rows()
   }
@@ -336,6 +363,34 @@ const getEventVariables = async (eventIdentifier) => {
 }
 
 
+//
+//
+const getSettings = () => {
+  if (store.state.layout.settings == undefined){store.state.layout["settings"] = {"EventsByNodeView":{}}}
+  if (store.state.layout.settings.EventsByNodeView == undefined){store.state.layout.settings["EventsByNodeView"] = {}}
+  //
+  if (store.state.layout.settings.EventsByNodeView.enableEventIdentifier == undefined){
+    store.state.layout.settings.EventsByNodeView['enableEventIdentifier'] = true
+    store.state.update_layout_needed = true
+  }
+  setVisibleColumn("events", store.state.layout.settings.EventsByNodeView.enableEventIdentifier)
+}
+
+//
+//
+const setVisibleColumn = (columnName, state) => {
+  let index = visibleColumns.value.indexOf(columnName)
+  if (state){
+    if (index == -1){
+      visibleColumns.value.push(columnName)
+    }
+  } else {
+    if (index != -1){
+      visibleColumns.value.splice(index)
+    }
+  }
+}
+
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -343,6 +398,8 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
+//
+//
 const clickAddEvent = () => {
   timeStampedLog(name + `: clickAddEvent`)
   if(store.state.nodes[props.nodeNumber].eventSpaceLeft > 0 ) {
@@ -360,13 +417,15 @@ const clickAddEvent = () => {
   }
 }
 
-
+//
+//
 const clickAdvanced = () => {
   timeStampedLog(name + `: clickAdvanced`)
   showAdvancedEventDialog.value = true
 }
 
-
+//
+//
 const clickDelete = (eventIdentifier) => {
   timeStampedLog(name + `: clickDelete`)
   const result = $q.notify({
@@ -384,7 +443,18 @@ const clickDelete = (eventIdentifier) => {
   })
 }
 
+//
+//
+const click_enableEventIdentifier = () => {
+  timeStampedLog(name + `: click_enableEventIdentifier ${store.state.layout.settings.EventsByNodeView.enableEventIdentifier}`)
+  setVisibleColumn("eventIdentifier", store.state.layout.settings.EventsByNodeView.enableEventIdentifier)
+  store.state.update_layout_needed = true
+}
 
+
+
+//
+//
 const clickEventName = (eventIdentifier) => {
   timeStampedLog(name + `: clickEventName ` + eventIdentifier)
   selected_event_Identifier.value = eventIdentifier
@@ -392,18 +462,23 @@ const clickEventName = (eventIdentifier) => {
   showNameEventDialog.value = true;
 }
 
-
+//
+//
 const clickInfo = () => {
   timeStampedLog(name + `: clickInfo`)
   showEventsByNodeViewInfoDialog.value = true
 }
 
+//
+//
 const clickRefresh = () => {
   timeStampedLog(name + `: clickRefresh`)
   store.methods.request_all_node_events(props.nodeNumber)
 update_rows()
 }
 
+//
+//
 const clickSendOff = (eventIdentifier) => {
   timeStampedLog (name + ": send OFF " + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
@@ -415,7 +490,8 @@ const clickSendOff = (eventIdentifier) => {
   }
 }
 
-
+//
+//
 const clickSendOn = (eventIdentifier) => {
   timeStampedLog (name + ": send ON " + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
@@ -427,14 +503,23 @@ const clickSendOn = (eventIdentifier) => {
   }
 }
 
+//
+//
+const clickSettings = () => {
+  timeStampedLog(name + ': clickSettings')
+  showSettingsDialog.value = true
+}
 
+//
+//
 const clickTeach = (eventIndentifier) => {
   timeStampedLog(name + `: clickTeach`)
   selected_event_Identifier.value = eventIndentifier
   showEventTeachDialog.value = true
 }
 
-
+//
+//
 const clickToggleViewMode = () => {
   timeStampedLog(name + `: clickToggleViewMode`)
   switch(store.state.events_view_mode){
@@ -456,6 +541,8 @@ const clickToggleViewMode = () => {
   update_rows()
 }
 
+//
+//
 const clickVariables = async (eventIdentifier) => {
   timeStampedLog(name + `: clickVariables: node ${props.nodeNumber} event ${eventIdentifier}`)
   selected_event_Identifier.value = eventIdentifier
