@@ -29,6 +29,10 @@
       </q-card>
 
       <q-card class="q-pa-md" flat bordered>
+        <a href="https://github.com/david284/MMC-SERVER">MMC-SERVER github repository</a>
+      </q-card>
+
+      <q-card class="q-pa-md" flat bordered>
         <div><span class="text-h6">app storage directory &nbsp;</span> {{ store.state.serverStatus.appStorageDirectory }}
           &nbsp; <q-btn dense color="primary" size="xs" label="copy" @click="clickCopyApp()" no-caps/>
         </div>
