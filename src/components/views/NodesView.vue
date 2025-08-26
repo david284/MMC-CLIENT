@@ -134,10 +134,16 @@
         </template>
       </q-banner>
 
-      <q-card class="q-pa-md" flat>
-        <q-checkbox v-model="store.state.layout.settings.NodesView.enableCANID" @click="click_enableCANID" label="show CANID column"></q-checkbox>
-        <q-checkbox v-model="store.state.layout.settings.NodesView.enableSpaceLeft" @click="click_enableSpaceLeft" label="show remaining event space column"></q-checkbox>
-        <q-checkbox v-model="store.state.layout.settings.NodesView.enableStoredEvents" @click="click_enableStoredEvents" label="show stored events column"></q-checkbox>
+      <q-card>
+        <q-card-section class="no-margin no-padding">
+          <q-checkbox v-model="store.state.layout.settings.NodesView.enableCANID" @click="click_enableCANID" label="show CANID column"></q-checkbox>
+        </q-card-section>
+        <q-card-section class="no-margin no-padding">
+          <q-checkbox v-model="store.state.layout.settings.NodesView.enableSpaceLeft" @click="click_enableSpaceLeft" label="show remaining event space column"></q-checkbox>
+        </q-card-section>
+        <q-card-section class="no-margin no-padding">
+          <q-checkbox v-model="store.state.layout.settings.NodesView.enableStoredEvents" @click="click_enableStoredEvents" label="show stored events column"></q-checkbox>
+        </q-card-section>
       </q-card>
 
     </q-card>
