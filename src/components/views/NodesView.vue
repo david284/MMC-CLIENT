@@ -41,7 +41,7 @@
       <template v-slot:body="props" >
           <q-tr :props="props" :class="selected_nodeNumber==props.row.nodeNumber?'bg-blue-1':'bg-white'" class="q-my-none q-py-none">
           <q-td key="nodeNumber" :class="'text-'+nodeColour(props.row.nodeNumber)" :props="props">{{ props.row.nodeNumber }}</q-td>
-          <q-td key="CANID" v-if="(settings.enableCANID)" :props="props">{{ props.row.CANID }} </q-td>
+          <q-td key="CANID" :props="props">{{ props.row.CANID }} </q-td>
           <q-td key="nodeName" :props="props">{{ props.row.nodeName }} </q-td>
           <q-td key="group" :props="props">{{ props.row.group }} </q-td>
           <q-td key="moduleName" :props="props">{{ props.row.moduleName }}</q-td>
@@ -135,9 +135,9 @@
       </q-banner>
 
       <q-card class="q-pa-md" flat>
-        <q-checkbox v-model="settings.enableCANID" @click="click_enableCANID" label="show CANID column"></q-checkbox>
-        <q-checkbox v-model="settings.enableSpaceLeft" @click="click_enableSpaceLeft" label="show remaining event space column"></q-checkbox>
-        <q-checkbox v-model="settings.enableStoredEvents" @click="click_enableStoredEvents" label="show stored events column"></q-checkbox>
+        <q-checkbox v-model="store.state.layout.settings.NodesView.enableCANID" @click="click_enableCANID" label="show CANID column"></q-checkbox>
+        <q-checkbox v-model="store.state.layout.settings.NodesView.enableSpaceLeft" @click="click_enableSpaceLeft" label="show remaining event space column"></q-checkbox>
+        <q-checkbox v-model="store.state.layout.settings.NodesView.enableStoredEvents" @click="click_enableStoredEvents" label="show stored events column"></q-checkbox>
       </q-card>
 
     </q-card>
@@ -206,7 +206,6 @@ const WaitingOnBusTrafficMessage = ref('')
 const WaitingOnBusTrafficDialogReturn = ref('')
 const tableStyle = ref("nodes-view-split-table")
 const showSettingsDialog = ref(false)
-const settings = ref({})
 
 const nodesUpdated = computed(() => {
   return store.state.nodes.updateTimestamp
@@ -271,14 +270,7 @@ const nodeColour = (nodeNumber) => {
 
 onBeforeMount(() => {
   //timeStampedLog(name + `: onBeforeMount`)
-  if (store.state.layout.settings == undefined){store.state.layout["settings"] = {"NodesView":{}}}
-  if (store.state.layout.settings.NodesView == undefined){store.state.layout.settings["NodesView"] = {}}
-  settings.value['enableCANID'] = true
-  setVisibleColumn("CANID", settings.value.enableCANID)
-  settings.value['enableSpaceLeft'] = true
-  setVisibleColumn("spaceLeft", settings.value.enableSpaceLeft)
-  settings.value['enableStoredEvents'] = true
-  setVisibleColumn("events", settings.value.enableStoredEvents)
+  getSettings()
   if (store.state.nodes_view_mode == undefined){
     store.state.nodes_view_mode = "split"
   }
@@ -290,6 +282,28 @@ onBeforeMount(() => {
  update_rows()
 })
 
+//
+//
+const getSettings = () => {
+  if (store.state.layout.settings == undefined){store.state.layout["settings"] = {"NodesView":{}}}
+  if (store.state.layout.settings.NodesView == undefined){store.state.layout.settings["NodesView"] = {}}
+  //
+  if (store.state.layout.settings.NodesView.enableCANID == undefined){
+    store.state.layout.settings.NodesView['enableCANID'] = true
+    store.state.update_layout_needed = true
+  }
+  if (store.state.layout.settings.NodesView.enableSpaceLeft == undefined){
+    store.state.layout.settings.NodesView['enableSpaceLeft'] = true
+    store.state.update_layout_needed = true
+  }
+  if (store.state.layout.settings.NodesView.enableStoredEvents == undefined){
+    store.state.layout.settings.NodesView['enableStoredEvents'] = true
+    store.state.update_layout_needed = true
+  }
+  setVisibleColumn("CANID", store.state.layout.settings.NodesView.enableCANID)
+  setVisibleColumn("spaceLeft", store.state.layout.settings.NodesView.enableSpaceLeft)
+  setVisibleColumn("events", store.state.layout.settings.NodesView.enableStoredEvents)
+}
 
 //
 //
@@ -435,22 +449,25 @@ const clickDeleteNode = (nodeNumber) => {
 //
 //
 const click_enableCANID = (nodeNumber) => {
-  timeStampedLog(name + `: click_enableCANID ${settings.value.enableCANID}`)
-  setVisibleColumn("CANID", settings.value.enableCANID)
+  timeStampedLog(name + `: click_enableCANID ${store.state.layout.settings.NodesView.enableCANID}`)
+  setVisibleColumn("CANID", store.state.layout.settings.NodesView.enableCANID)
+  store.state.update_layout_needed = true
 }
 
 //
 //
 const click_enableSpaceLeft = (nodeNumber) => {
-  timeStampedLog(name + `: click_enableSPACE ${settings.value.enableSpaceLeft}`)
-  setVisibleColumn("spaceLeft", settings.value.enableSpaceLeft)
+  timeStampedLog(name + `: click_enableSPACE ${store.state.layout.settings.NodesView.enableSpaceLeft}`)
+  setVisibleColumn("spaceLeft", store.state.layout.settings.NodesView.enableSpaceLeft)
+  store.state.update_layout_needed = true
 }
 
 //
 //
 const click_enableStoredEvents = (nodeNumber) => {
-  timeStampedLog(name + `: click_enableStoredEvents ${settings.value.enableStoredEvents}`)
-  setVisibleColumn("events", settings.value.enableStoredEvents)
+  timeStampedLog(name + `: click_enableStoredEvents ${store.state.layout.settings.NodesView.enableStoredEvents}`)
+  setVisibleColumn("events", store.state.layout.settings.NodesView.enableStoredEvents)
+  store.state.update_layout_needed = true
 }
 
 //
