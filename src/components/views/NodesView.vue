@@ -19,6 +19,7 @@
           @click="clickNodesViewAdvanced()"/>
         &nbsp;&nbsp;
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
+        <q-btn square unelevated color="primary" icon="settings" @click="clickSettings()"/>
       </template>
     </q-banner>
 
@@ -120,6 +121,22 @@
       <iFrameDialog v-model='showiFrameDialog'
         :URL=exampleURL />
 
+  <q-dialog v-model="showSettingsDialog" persistent>
+    <q-card style="min-width: 350px">
+
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+        <div class="text-h6">
+          Nodes View Settings
+        </div>
+        <template v-slot:action>
+          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+        </template>
+      </q-banner>
+
+    </q-card>
+  </q-dialog>
+
+
   </div>
 </template>
 
@@ -178,6 +195,7 @@ const exampleURL = ref("dummyModule/index.html")
 const WaitingOnBusTrafficMessage = ref('')
 const WaitingOnBusTrafficDialogReturn = ref('')
 const tableStyle = ref("nodes-view-split-table")
+const showSettingsDialog = ref(false)
 
 const nodesUpdated = computed(() => {
   return store.state.nodes.updateTimestamp
@@ -463,6 +481,13 @@ const clickParameters = async (nodeNumber) => {
 const clickRefresh = () => {
   timeStampedLog(name + ': clickRefresh')
   store.methods.query_all_nodes()
+}
+
+//
+//
+const clickSettings = () => {
+  timeStampedLog(name + ': clickSettings')
+  showSettingsDialog.value = true
 }
 
 //
