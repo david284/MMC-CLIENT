@@ -1,3 +1,8 @@
+version0.11.1
+  Added github repo link in SystemDialog
+  expanded file info display in ProgramNodeDialog
+  Added settings button to NodesView & EventsListByNode Dialogs to select certain columns to display
+
 version0.11.0
   Added LogsDialog to download log files from server
 
