@@ -32,13 +32,18 @@
             />
           </q-card-section>
 
-          <q-card-section style="min-height: 100px" class="no-margin q-py-none">
+          <q-card-section style="min-height: 120px" class="no-margin q-py-none">
             <div v-if="showFileInfo" class="text-body1">
               File module type: {{ store.state.moduleNames[fileModuleID].name }}
               <br/>
               File CPU type: {{ fileCpuType }}
               <br/>
               File version: {{ fileVersion }}
+              <br/>
+              load address {{ fileLoadAddress }}
+              <br/>
+              bootable {{ fileBootable }}
+              <br/>
               <br/>
             </div>
           </q-card-section>
@@ -149,6 +154,8 @@ const progressText = ref('')
 const fileModuleID = ref(null)
 const fileCpuType = ref(null)
 const fileVersion = ref(null)
+const fileLoadAddress = ref (null)
+const fileBootable = ref (null)
 const showInfoDialog = ref(false)
 const showFileInfo = ref(false)
 const Title = ref()
@@ -277,6 +284,8 @@ store.eventBus.on('FIRMWARE_INFO', (data) => {
     fileModuleID.value = "A5" + decToHex(data.moduleID, 2)
     fileCpuType.value = data.targetCpuType
     fileVersion.value = data.versionNumber
+    fileLoadAddress.value = data.loadAddress
+    fileBootable.value = data.bootable
     if (data.betaNumber > 0){
       fileVersion.value += ' beta ' + data.betaNumber
     }
