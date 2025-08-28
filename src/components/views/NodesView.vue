@@ -176,7 +176,7 @@ const $q = useQuasar()
 const visibleColumns = ref([])
 
 const columns = [
-  {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node number', align: 'center', sortable: true},
+  {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node', align: 'center', sortable: true},
   {name: 'CANID', field: 'CANID', label: 'CAN ID', align: 'center', sortable: true},
   {name: 'nodeName', field: 'nodeName', required: true, label: 'Name', align: 'left', sortable: true},
   {name: 'group', field: 'group', required: true, label: 'Group', align: 'left', sortable: true},
