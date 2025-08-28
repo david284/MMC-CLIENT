@@ -320,7 +320,7 @@ const setVisibleColumn = (columnName, state) => {
     }
   } else {
     if (index != -1){
-      visibleColumns.value.splice(index)
+      visibleColumns.value.splice(index, 1)
     }
   }
 }
