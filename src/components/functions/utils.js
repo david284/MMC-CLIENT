@@ -128,3 +128,20 @@ export function timeStampedLog(text){
   console.log('TS ' + secondsNow() + ': ' + text)
 }
 
+//
+// adds or removes columnName from visibleColumns array
+// depending on enableState
+export function setVisibleColumn (visibleColumns, columnName, enableState) {
+  let index = visibleColumns.indexOf(columnName)
+  if (enableState){
+    if (index == -1){
+      visibleColumns.push(columnName)
+    }
+  } else {
+    if (index != -1){
+      visibleColumns.splice(index, 1)
+    }
+  }
+  timeStampedLog(name + `: setVisibleColumn: ${visibleColumns}`)
+}
+

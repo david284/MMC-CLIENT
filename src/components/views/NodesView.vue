@@ -156,7 +156,7 @@
 <script setup>
 import {inject, ref, onBeforeMount, onMounted, computed, watch} from "vue"
 import { date, useQuasar, scroll } from 'quasar'
-import {sleep} from "components/functions/utils.js"
+import * as utils from "components/functions/utils.js"
 import {NodeParametersLoaded} from "components/functions/NodeFunctions.js"
 import {timeStampedLog} from "components/functions/utils.js"
 import EventsListByNode from "components/views/EventsListByNode"
@@ -216,22 +216,28 @@ const nodesUpdated = computed(() => {
   return store.state.nodes.updateTimestamp
 })
 
+//
+//
 watch(nodesUpdated, () => {
   //timeStampedLog(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
   update_rows()
 })
 
-
+//
+//
 const layoutUpdated = computed(() => {
   return store.state.layout.updateTimestamp
 })
 
+//
+//
 watch(layoutUpdated, () => {
   //timeStampedLog(name + `: WATCH: layoutUpdated`)
   update_rows()
 })
 
-
+//
+//
 const update_rows = () => {
 //  timeStampedLog(name + ': update_rows')
   rows.value = []
@@ -263,7 +269,8 @@ const update_rows = () => {
   })
 }
 
-
+//
+//
 const nodeColour = (nodeNumber) => {
   if (nodeNumber in store.state.layout.nodeDetails) {
     return store.state.layout.nodeDetails[nodeNumber].colour
@@ -272,7 +279,8 @@ const nodeColour = (nodeNumber) => {
   }
 }
 
-
+//
+//
 onBeforeMount(() => {
   //timeStampedLog(name + `: onBeforeMount`)
   getSettings()
@@ -305,37 +313,25 @@ const getSettings = () => {
     store.state.layout.settings.NodesView['enableStoredEvents'] = true
     store.state.update_layout_needed = true
   }
-  setVisibleColumn("CANID", store.state.layout.settings.NodesView.enableCANID)
-  setVisibleColumn("spaceLeft", store.state.layout.settings.NodesView.enableSpaceLeft)
-  setVisibleColumn("events", store.state.layout.settings.NodesView.enableStoredEvents)
+  utils.setVisibleColumn(visibleColumns.value, "CANID", store.state.layout.settings.NodesView.enableCANID)
+  utils.setVisibleColumn(visibleColumns.value, "spaceLeft", store.state.layout.settings.NodesView.enableSpaceLeft)
+  utils.setVisibleColumn(visibleColumns.value, "events", store.state.layout.settings.NodesView.enableStoredEvents)
 }
 
 //
 //
-const setVisibleColumn = (columnName, state) => {
-  let index = visibleColumns.value.indexOf(columnName)
-  if (state){
-    if (index == -1){
-      visibleColumns.value.push(columnName)
-    }
-  } else {
-    if (index != -1){
-      visibleColumns.value.splice(index, 1)
-    }
-  }
-}
-
 const select_node_row = async (nodeNumber) => {
   //timeStampedLog(name + ': select_node_row: node ' + nodeNumber)
   store.state.selected_node = nodeNumber
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   selected_node_valid.value = true
   // give the module chance to report it's events
-  await sleep(300)
+  await utils.sleep(300)
 //    timeStampedLog(name + ': node row ', store.state.selected_node + " selected")
 }
 
-
+//
+//
 store.eventBus.on('NODE_DELETED_EVENT', (nodeNumber) => {
 //  timeStampedLog(name + ': NODE_DELETED_EVENT - node number ' + nodeNumber)
   if (store.state.selected_node == nodeNumber){
@@ -343,7 +339,8 @@ store.eventBus.on('NODE_DELETED_EVENT', (nodeNumber) => {
   }
 })
 
-
+//
+//
 const checkNodeParameters = async (nodeNumber) => {
   //timeStampedLog(name + ': checkNodeParameters: node ' + nodeNumber)
   //
@@ -364,7 +361,7 @@ const checkNodeParameters = async (nodeNumber) => {
         timeStampedLog(name + `: checkNodeParameters: early exit ${Date.now() - startTime} `)
         break
       }
-      await sleep (100)
+      await utils.sleep (100)
     }
     showWaitingOnBusTrafficDialog.value = false
     timeStampedLog(name + `: checkNodeParameters: WaitingOnBusTraffic ended`)
@@ -384,11 +381,10 @@ const checkNodeParameters = async (nodeNumber) => {
   return result
 }
 
-
-
+//
 // raise notification if nodeDescriptor file not present
 const checkFileLoad = async (nodeNumber) => {
-//  await sleep(500)
+//  await utils.sleep(500)
   //timeStampedLog(name + `: checkFileLoad`)
   if (store.state.loadFile_notification_raised[nodeNumber] == undefined) {
     if (store.state.nodeDescriptors[nodeNumber] == undefined)
@@ -405,7 +401,8 @@ const checkFileLoad = async (nodeNumber) => {
   }
 }
 
-
+//
+//
 const checkNodeVariables = async (nodeNumber) => {
   //timeStampedLog(name + ': checkNodeVariables: node ' + nodeNumber)
   var maxNodeVariableIndex = store.state.nodes[nodeNumber].parameters[6]
@@ -419,12 +416,11 @@ const checkNodeVariables = async (nodeNumber) => {
     // wait for variables to load
     for (let i = 0; i < 10000; i++){
       if (WaitingOnBusTrafficDialogReturn.value.length > 0) break
-      await sleep (10)
+      await utils.sleep (10)
     }
     showWaitingOnBusTrafficDialog.value = false
   }
 }
-
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -455,7 +451,7 @@ const clickDeleteNode = (nodeNumber) => {
 //
 const click_enableCANID = (nodeNumber) => {
   timeStampedLog(name + `: click_enableCANID ${store.state.layout.settings.NodesView.enableCANID}`)
-  setVisibleColumn("CANID", store.state.layout.settings.NodesView.enableCANID)
+  utils.setVisibleColumn(visibleColumns.value, "CANID", store.state.layout.settings.NodesView.enableCANID)
   store.state.update_layout_needed = true
 }
 
@@ -463,7 +459,7 @@ const click_enableCANID = (nodeNumber) => {
 //
 const click_enableSpaceLeft = (nodeNumber) => {
   timeStampedLog(name + `: click_enableSPACE ${store.state.layout.settings.NodesView.enableSpaceLeft}`)
-  setVisibleColumn("spaceLeft", store.state.layout.settings.NodesView.enableSpaceLeft)
+  utils.setVisibleColumn(visibleColumns.value, "spaceLeft", store.state.layout.settings.NodesView.enableSpaceLeft)
   store.state.update_layout_needed = true
 }
 
@@ -471,7 +467,7 @@ const click_enableSpaceLeft = (nodeNumber) => {
 //
 const click_enableStoredEvents = (nodeNumber) => {
   timeStampedLog(name + `: click_enableStoredEvents ${store.state.layout.settings.NodesView.enableStoredEvents}`)
-  setVisibleColumn("events", store.state.layout.settings.NodesView.enableStoredEvents)
+  utils.setVisibleColumn(visibleColumns.value, "events", store.state.layout.settings.NodesView.enableStoredEvents)
   store.state.update_layout_needed = true
 }
 
@@ -591,7 +587,7 @@ const clickVLCB = async (nodeNumber) => {
   await select_node_row(nodeNumber)
   await store.methods.request_service_discovery(store.state.selected_node)
   // give the module chance to report it's services before we request diagnostics
-  await sleep(200)
+  await utils.sleep(200)
   showVLCBServicesDialog.value = true
 }
 

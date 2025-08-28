@@ -125,6 +125,7 @@
 
 import {computed, inject, ref, watch, onBeforeMount, onMounted, onUpdated} from "vue"
 import { date, useQuasar, scroll } from 'quasar'
+import * as utils from "components/functions/utils.js"
 import AddEventDialog from "components/dialogs/AddEventDialog"
 import advancedEventsDialog from "components/dialogs/AdvancedEventsDialog"
 import sendEventDialog from "components/dialogs/SendEventDialog"
@@ -133,7 +134,6 @@ import eventTeachDialog from "components/dialogs/EventTeachDialog"
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import EventsByNodeViewInfoDialog from "components/dialogs/EventsByNodeViewInfoDialog"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
-import { sleep } from "../functions/utils"
 import {timeStampedLog} from "components/functions/utils.js"
 
 
@@ -334,7 +334,7 @@ const getEventIndexes = async () => {
       // success if we exit early
       break
     }
-    await sleep (10)
+    await utils.sleep (10)
   }
   showWaitingOnBusTrafficDialog.value = false
 }
@@ -357,7 +357,7 @@ const getEventVariables = async (eventIdentifier) => {
       // success if we exit early
       break
     }
-    await sleep (10)
+    await utils.sleep (10)
   }
   showWaitingOnBusTrafficDialog.value = false
 }
@@ -373,24 +373,8 @@ const getSettings = () => {
     store.state.layout.settings.EventsByNodeView['enableEventIdentifier'] = true
     store.state.update_layout_needed = true
   }
-  setVisibleColumn("events", store.state.layout.settings.EventsByNodeView.enableEventIdentifier)
+  utils.setVisibleColumn(visibleColumns.value, "eventIdentifier", store.state.layout.settings.EventsByNodeView.enableEventIdentifier)
 }
-
-//
-//
-const setVisibleColumn = (columnName, state) => {
-  let index = visibleColumns.value.indexOf(columnName)
-  if (state){
-    if (index == -1){
-      visibleColumns.value.push(columnName)
-    }
-  } else {
-    if (index != -1){
-      visibleColumns.value.splice(index, 1)
-    }
-  }
-}
-
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -447,7 +431,7 @@ const clickDelete = (eventIdentifier) => {
 //
 const click_enableEventIdentifier = () => {
   timeStampedLog(name + `: click_enableEventIdentifier ${store.state.layout.settings.EventsByNodeView.enableEventIdentifier}`)
-  setVisibleColumn("eventIdentifier", store.state.layout.settings.EventsByNodeView.enableEventIdentifier)
+  utils.setVisibleColumn(visibleColumns.value, "eventIdentifier", store.state.layout.settings.EventsByNodeView.enableEventIdentifier)
   store.state.update_layout_needed = true
 }
 
