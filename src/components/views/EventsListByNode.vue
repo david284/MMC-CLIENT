@@ -167,8 +167,8 @@ const visibleColumns = ref([])
 
 const columns = [
   {name: 'eventIdentifier', field: 'eventIdentifier', label: 'Identifier', align: 'left', sortable: true},
-  {name: 'eventName', field: 'eventName', required: false, label: 'Name', align: 'left', sortable: true},
-  {name: 'eventGroup', field: 'eventGroup', required: false, label: 'Group', align: 'left', sortable: true},
+  {name: 'eventName', field: 'eventName', required: true, label: 'Name', align: 'left', sortable: true},
+  {name: 'eventGroup', field: 'eventGroup', required: true, label: 'Group', align: 'left', sortable: true},
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Event node', align: 'left', sortable: true},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event number', align: 'left', sortable: true},
   {name: 'eventType', field: 'eventType', required: true, label: 'Event type', align: 'left', sortable: true},
