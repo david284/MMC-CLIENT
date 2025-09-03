@@ -192,16 +192,6 @@ const methods = {
     socket.emit('REQUEST_ARCHIVED_LOGS_LIST')
   },
   //
-  request_backup(layoutName, filename) {
-    timeStampedLog(`REQUEST_BACKUP : ` + layoutName + ' ' + filename)
-    socket.emit('REQUEST_BACKUP', {"layoutName":layoutName, "fileName":filename})
-  },
-  //
-  request_backups_list(layoutName) {
-    timeStampedLog(`REQUEST_BACKUPS_LIST : ` + layoutName)
-    socket.emit('REQUEST_BACKUPS_LIST', {"layoutName":layoutName})
-  },
-  //
   request_binary_file(directory, fileName) {
     timeStampedLog(`REQUEST_BINARY_FILE : ` + directory + ' ' + fileName)
     socket.emit('REQUEST_BINARY_FILE', {"directory":directory, "fileName":fileName})
