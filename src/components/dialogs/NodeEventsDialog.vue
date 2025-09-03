@@ -295,27 +295,8 @@ onBeforeMount(() => {
   }
 })
 
-const getEventIndexes = async () => {
-  WaitingOnBusTrafficMessage.value = "Loading Event Indexes"
-  timeStampedLog(name + `: ${WaitingOnBusTrafficMessage.value}`)
-  //
-  WaitingOnBusTrafficDialogReturn.value =''
-  showWaitingOnBusTrafficDialog.value = true
-  store.methods.request_all_node_events(props.nodeNumber)
-
-  // allow up to 1 minutes to finish loading
-  let startTime = Date.now()
-  while ((Date.now() - startTime) < 60000){
-  if (WaitingOnBusTrafficDialogReturn.value.length > 0)
-    {
-      // success if we exit early
-      break
-    }
-    await sleep (10)
-  }
-  showWaitingOnBusTrafficDialog.value = false
-}
-
+//
+//
 const getEventVariables = async (eventIdentifier) => {
   timeStampedLog(name + ': getEventVariables:')
   //
@@ -461,10 +442,6 @@ const clickVariables = async (eventIdentifier) => {
   selected_event_Identifier.value = eventIdentifier
   showWaitingOnBusTrafficDialog.value = true
   await sleep(1)
-  // make sure the indexes are up to date
-  if(store.state.nodes[props.nodeNumber].VLCB == false){
-    await getEventIndexes()
-  }
   await getEventVariables(eventIdentifier)
   showEventVariablesDialog.value = true
 }

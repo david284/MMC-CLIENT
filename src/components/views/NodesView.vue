@@ -56,6 +56,10 @@
           </q-td>
           <q-td key="events" :props="props">{{ props.row.events }}</q-td>
           <q-td key="spaceLeft" :props="props">{{ props.row.spaceLeft }}</q-td>
+          <q-td key="backupStatus" :props="props">
+            <q-chip dense color="white" text-color="green" v-if="props.row.backup">good</q-chip>
+            <q-chip dense color="white" text-color="red" v-else>bad</q-chip>
+          </q-td>
           <q-td key="actions">
             <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Events"
               :disabled="!props.row.status" @click="clickEvents(props.row.nodeNumber)" no-caps/>
@@ -135,6 +139,9 @@
       </q-banner>
 
       <q-card>
+        <q-card-section v-if="(store.state.develop)" class="no-margin no-padding">
+          <q-checkbox v-model="store.state.layout.settings.NodesView.enableBackupStatus" @click="click_enableBackupStatus" label="show backup status column"></q-checkbox>
+        </q-card-section>
         <q-card-section class="no-margin no-padding">
           <q-checkbox v-model="store.state.layout.settings.NodesView.enableCANID" @click="click_enableCANID" label="show CANID column"></q-checkbox>
         </q-card-section>
@@ -186,6 +193,7 @@ const columns = [
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},
   {name: 'events', field: 'events', label: 'Stored Events', align: 'center', sortable: true},
   {name: 'spaceLeft', field: 'spaceLeft', label: 'Space', align: 'center', sortable: true},
+  {name: 'backupStatus', field: 'backupStatus', label: 'Backup', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
@@ -254,6 +262,7 @@ const update_rows = () => {
       output['moduleVersion'] = store.getters.module_version(node.nodeNumber)
       output['component'] = node.component
       output['status'] = node.status
+      output['backup'] = true
       if (node.flim == true) {
         output['mode'] = 'FLiM'
       } else if (node.flim == false) {
@@ -301,6 +310,11 @@ const getSettings = () => {
   if (store.state.layout.settings == undefined){store.state.layout["settings"] = {"NodesView":{}}}
   if (store.state.layout.settings.NodesView == undefined){store.state.layout.settings["NodesView"] = {}}
   //
+  if (store.state.layout.settings.NodesView.enableBackupStatus == undefined){
+    store.state.layout.settings.NodesView['enableBackupStatus'] = true
+    store.state.update_layout_needed = false
+  }
+  //
   if (store.state.layout.settings.NodesView.enableCANID == undefined){
     store.state.layout.settings.NodesView['enableCANID'] = true
     store.state.update_layout_needed = true
@@ -313,6 +327,7 @@ const getSettings = () => {
     store.state.layout.settings.NodesView['enableStoredEvents'] = true
     store.state.update_layout_needed = true
   }
+  utils.setVisibleColumn(visibleColumns.value, "backupStatus", store.state.layout.settings.NodesView.enableBackupStatus)
   utils.setVisibleColumn(visibleColumns.value, "CANID", store.state.layout.settings.NodesView.enableCANID)
   utils.setVisibleColumn(visibleColumns.value, "spaceLeft", store.state.layout.settings.NodesView.enableSpaceLeft)
   utils.setVisibleColumn(visibleColumns.value, "events", store.state.layout.settings.NodesView.enableStoredEvents)
@@ -445,6 +460,14 @@ const clickDeleteNode = (nodeNumber) => {
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
     ]
   })
+}
+
+//
+//
+const click_enableBackupStatus = (nodeNumber) => {
+  timeStampedLog(name + `: click_enableBackupStatus ${store.state.layout.settings.NodesView.enableBackupStatus}`)
+  utils.setVisibleColumn(visibleColumns.value, "backupStatus", store.state.layout.settings.NodesView.enableBackupStatus)
+  store.state.update_layout_needed = true
 }
 
 //

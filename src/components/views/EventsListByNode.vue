@@ -45,7 +45,7 @@
           <q-td key="eventGroup" :props="props">{{ props.row.eventGroup }}</q-td>
           <q-td key="nodeNumber" :props="props">{{ props.row.nodeNumber }}</q-td>
           <q-td key="eventNumber" :props="props">{{ props.row.eventNumber }}</q-td>
-          <!-- <q-td key="eventIndex" :props="props">{{ props.row.eventIndex }}</q-td> -->
+          <q-td key="eventIndex" :props="props">{{ props.row.eventIndex }}</q-td>
           <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td>
           <q-td key="source" :props="props">{{ props.row.source }}</q-td>
           <q-td key="actions" :props="props">
@@ -113,6 +113,9 @@
           <q-card-section class="no-margin no-padding">
             <q-checkbox v-model="store.state.layout.settings.EventsByNodeView.enableEventIdentifier" @click="click_enableEventIdentifier" label="show Event Identifier column"></q-checkbox>
           </q-card-section>
+          <q-card-section class="no-margin no-padding">
+            <q-checkbox v-model="store.state.layout.settings.EventsByNodeView.enableEventIndex" @click="click_enableEventIndex" label="show Event Index column"></q-checkbox>
+          </q-card-section>
         </q-card>
 
       </q-card>
@@ -171,6 +174,7 @@ const columns = [
   {name: 'eventGroup', field: 'eventGroup', required: true, label: 'Group', align: 'left', sortable: true},
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Event node', align: 'left', sortable: true},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event number', align: 'left', sortable: true},
+  {name: 'eventIndex', field: 'eventIndex', label: 'Event index', align: 'left', sortable: true},
   {name: 'eventType', field: 'eventType', required: true, label: 'Event type', align: 'left', sortable: true},
   {name: 'source', field: 'source', required: true, label: 'Event source', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
@@ -248,6 +252,7 @@ const update_rows = () => {
         output['eventName'] = store.getters.event_name(event.eventIdentifier)
         output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
         output['nodeNumber'] = eventNodeNumber
+        output['eventIndex'] = event.eventIndex
         output['eventNumber'] = eventNumber
         output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
         output['storedEvent'] = true
@@ -318,29 +323,6 @@ onUpdated(() => {
 })
 */
 
-const getEventIndexes = async () => {
-  WaitingOnBusTrafficMessage.value = "Loading Event Indexes"
-  timeStampedLog(name + `: ${WaitingOnBusTrafficMessage.value}`)
-  //
-  WaitingOnBusTrafficDialogReturn.value =''
-  showWaitingOnBusTrafficDialog.value = true
-  store.methods.request_all_node_events(props.nodeNumber)
-
-  // allow up to 1 minutes to finish loading
-  let startTime = Date.now()
-  while ((Date.now() - startTime) < 60000){
-  if (WaitingOnBusTrafficDialogReturn.value.length > 0)
-    {
-      // success if we exit early
-      break
-    }
-    await utils.sleep (10)
-  }
-  showWaitingOnBusTrafficDialog.value = false
-}
-
-
-
 const getEventVariables = async (eventIdentifier) => {
   timeStampedLog(name + ': getEventVariables:')
   //
@@ -374,6 +356,12 @@ const getSettings = () => {
     store.state.update_layout_needed = true
   }
   utils.setVisibleColumn(visibleColumns.value, "eventIdentifier", store.state.layout.settings.EventsByNodeView.enableEventIdentifier)
+  //
+  if (store.state.layout.settings.EventsByNodeView.enableEventIndex == undefined){
+    store.state.layout.settings.EventsByNodeView['enableEventIndex'] = true
+    store.state.update_layout_needed = true
+  }
+  utils.setVisibleColumn(visibleColumns.value, "eventIndex", store.state.layout.settings.EventsByNodeView.enableEventIndex)
 }
 
 /*/////////////////////////////////////////////////////////////////////////////
@@ -435,7 +423,13 @@ const click_enableEventIdentifier = () => {
   store.state.update_layout_needed = true
 }
 
-
+//
+//
+const click_enableEventIndex = () => {
+  timeStampedLog(name + `: click_enableEventIndex ${store.state.layout.settings.EventsByNodeView.enableEventIndex}`)
+  utils.setVisibleColumn(visibleColumns.value, "eventIndex", store.state.layout.settings.EventsByNodeView.enableEventIndex)
+  store.state.update_layout_needed = true
+}
 
 //
 //
@@ -530,9 +524,6 @@ const clickToggleViewMode = () => {
 const clickVariables = async (eventIdentifier) => {
   timeStampedLog(name + `: clickVariables: node ${props.nodeNumber} event ${eventIdentifier}`)
   selected_event_Identifier.value = eventIdentifier
-  if(store.state.nodes[props.nodeNumber].VLCB == false){
-    await getEventIndexes()
-  }
   await getEventVariables(eventIdentifier)
   showEventVariablesDialog.value = true
 }

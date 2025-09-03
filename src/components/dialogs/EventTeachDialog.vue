@@ -288,27 +288,6 @@ const checkNodeVariables = async (nodeNumber) => {
   }
 }
 
-const getEventIndexes = async () => {
-  WaitingOnBusTrafficMessage.value = "Loading Event Indexes"
-  timeStampedLog(name + `: ${WaitingOnBusTrafficMessage.value}`)
-  //
-  WaitingOnBusTrafficDialogReturn.value =''
-  showWaitingOnBusTrafficDialog.value = true
-  store.methods.request_all_node_events(props.nodeNumber)
-
-  // allow up to 1 minutes to finish loading
-  let startTime = Date.now()
-  while ((Date.now() - startTime) < 60000){
-  if (WaitingOnBusTrafficDialogReturn.value.length > 0)
-    {
-      // success if we exit early
-      break
-    }
-    await sleep (10)
-  }
-  showWaitingOnBusTrafficDialog.value = false
-}
-
 /*/////////////////////////////////////////////////////////////////////////////
 
 Click event handlers
@@ -357,10 +336,6 @@ const clickVariables = async (nodeNumber, eventIdentifier) => {
   isNewEvent.value=false
   await checkNodeParameters(intNodeNumber)
   await checkNodeVariables(intNodeNumber)
-  // make sure the indexes are up to date
-  if(store.state.nodes[nodeNumber].VLCB == false){
-    await getEventIndexes()
-  }
   await store.methods.request_event_variables_by_identifier(intNodeNumber, eventIdentifier)
   showEventVariablesDialog.value = true
 }
