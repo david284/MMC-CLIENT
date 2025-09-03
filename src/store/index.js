@@ -315,12 +315,6 @@ const methods = {
     timeStampedLog(name + ': RESET_NODE ' + nodeNumber)
   },
   //
-  save_backup(data){
-    timeStampedLog(`SAVE_BACKUP`)
-    data['layoutName'] = state.layout.layoutDetails.title
-    socket.emit('SAVE_BACKUP', data)
-  },
-  //
   save_node_backup(nodeNumber, backupNode){
     timeStampedLog(`SAVE_NODE_BACKUP`)
     let data = {
