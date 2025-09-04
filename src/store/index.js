@@ -687,6 +687,22 @@ socket.on('BINARY_FILE', (data) => {
 
 //
 //
+socket.on('LIST_OF_BACKUPS_FOR_ALL_NODES', (data) => {
+  try{
+    timeStampedLog(name + `: RECEIVED LIST_OF_BACKUPS_FOR_ALL_NODES ${JSON.stringify(data)}`)
+    for(const node in data){
+      // extract node number
+      let nodeNumber = node.replace(/[^0-9]/g, "")
+      state.layout.nodeDetails[nodeNumber]['backupList'] = data[node]
+    }
+    eventBus.emit('LIST_OF_BACKUPS_FOR_ALL_NODES', data)
+  } catch(err){
+    timeStampedLog(name + `: RECEIVED LIST_OF_BACKUPS_FOR_ALL_NODES: ${err}`)
+  }
+})
+
+//
+//
 socket.on('NODE_BACKUP_SAVED', (filename) => {
   timeStampedLog(name + `: RECEIVED NODE_BACKUP_SAVED ${filename}`)
   eventBus.emit('NODE_BACKUP_SAVED', filename)

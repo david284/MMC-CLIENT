@@ -57,8 +57,8 @@
           <q-td key="events" :props="props">{{ props.row.events }}</q-td>
           <q-td key="spaceLeft" :props="props">{{ props.row.spaceLeft }}</q-td>
           <q-td key="backupStatus" :props="props">
-            <q-chip dense color="white" text-color="green" v-if="props.row.backup">good</q-chip>
-            <q-chip dense color="white" text-color="red" v-else>bad</q-chip>
+            <q-chip dense color="white" text-color="green" v-if="props.row.backup > 0">{{props.row.backup}}</q-chip>
+            <q-chip dense color="white" text-color="red" v-else>{{props.row.backup}}</q-chip>
           </q-td>
           <q-td key="actions">
             <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Events"
@@ -193,7 +193,7 @@ const columns = [
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},
   {name: 'events', field: 'events', label: 'Stored Events', align: 'center', sortable: true},
   {name: 'spaceLeft', field: 'spaceLeft', label: 'Space', align: 'center', sortable: true},
-  {name: 'backupStatus', field: 'backupStatus', label: 'Backup', align: 'left', sortable: true},
+  {name: 'backupStatus', field: 'backupStatus', label: 'Backups', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
@@ -262,7 +262,7 @@ const update_rows = () => {
       output['moduleVersion'] = store.getters.module_version(node.nodeNumber)
       output['component'] = node.component
       output['status'] = node.status
-      output['backup'] = true
+      output['backup'] = backupCount(node.nodeNumber)
       if (node.flim == true) {
         output['mode'] = 'FLiM'
       } else if (node.flim == false) {
@@ -285,6 +285,17 @@ const nodeColour = (nodeNumber) => {
     return store.state.layout.nodeDetails[nodeNumber].colour
   } else {
     return 'blue'
+  }
+}
+
+//
+//
+const backupCount = (nodeNumber) => {
+  try {
+    let node = store.state.layout.nodeDetails[nodeNumber]
+    return (node.backupList != undefined) ? node.backupList.length : 0
+  } catch (err){
+    return 0
   }
 }
 
@@ -352,6 +363,13 @@ store.eventBus.on('NODE_DELETED_EVENT', (nodeNumber) => {
   if (store.state.selected_node == nodeNumber){
     selected_node_valid.value = false
   }
+})
+
+//
+//
+store.eventBus.on('LIST_OF_BACKUPS_FOR_ALL_NODES', () => {
+//  timeStampedLog(name + ': LIST_OF_BACKUPS_FOR_ALL_NODES')
+  update_rows()
 })
 
 //
