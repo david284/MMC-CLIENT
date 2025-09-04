@@ -1,6 +1,7 @@
 version 0.11.3
   Removed getEventIndexes, now done in server
   Removed obsolete backup websocket methods
+  Added LIST_OF_BACKUPS_FOR_ALL_NODES event from server
 
 version 0.11.2
   Fixed missing event name & group in events by node list
