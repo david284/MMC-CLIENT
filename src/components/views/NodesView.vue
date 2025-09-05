@@ -140,7 +140,7 @@
 
       <q-card>
         <q-card-section class="no-margin no-padding">
-          <q-checkbox v-model="store.state.layout.settings.NodesView.enableBackupStatus" @click="click_enableBackupStatus" label="show backup status column"></q-checkbox>
+          <q-checkbox v-model="store.state.layout.settings.NodesView.enableBackupStatus" @click="click_enableBackupStatus" label="show backups column"></q-checkbox>
         </q-card-section>
         <q-card-section class="no-margin no-padding">
           <q-checkbox v-model="store.state.layout.settings.NodesView.enableCANID" @click="click_enableCANID" label="show CANID column"></q-checkbox>
