@@ -139,7 +139,7 @@
       </q-banner>
 
       <q-card>
-        <q-card-section v-if="(store.state.develop)" class="no-margin no-padding">
+        <q-card-section class="no-margin no-padding">
           <q-checkbox v-model="store.state.layout.settings.NodesView.enableBackupStatus" @click="click_enableBackupStatus" label="show backup status column"></q-checkbox>
         </q-card-section>
         <q-card-section class="no-margin no-padding">
@@ -323,7 +323,7 @@ const getSettings = () => {
   //
   if (store.state.layout.settings.NodesView.enableBackupStatus == undefined){
     store.state.layout.settings.NodesView['enableBackupStatus'] = true
-    store.state.update_layout_needed = false
+    store.state.update_layout_needed = true
   }
   //
   if (store.state.layout.settings.NodesView.enableCANID == undefined){
