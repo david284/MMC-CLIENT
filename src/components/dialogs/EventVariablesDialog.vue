@@ -94,6 +94,10 @@
     :nodeNumber = nodeNumber
   />
 
+  <NodeBackupDialog v-model='showNodeBackupDialog'
+    :nodeNumber = nodeNumber
+  />
+
   <NodeChannelNamesDialog v-model="showNodeChannelNamesDialog"
     :nodeNumber=nodeNumber
     :numberOfChannels=numberOfChannels
@@ -119,6 +123,7 @@ import {timeStampedLog} from "components/functions/utils.js"
 import {createNewEvent} from "components/functions/EventFunctions.js"
 import EventVariables from "components/modules/common/EventVariables"
 import EventRawVariables from "components/modules/common/EventRawVariables"
+import NodeBackupDialog from "components/dialogs/NodeBackupDialog"
 import NodeChannelNamesDialog from "./NodeChannelNamesDialog.vue";
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
 import MDFDialog from "components/dialogs/MDFDialog";
@@ -142,8 +147,8 @@ const processedEventVariableDescriptor = ref()
 const numberOfChannels=ref(0)
 const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref('')
-
-
+const showNodeBackupDialog = ref(false)
+var DialogOpenedTimestamp = Date.now()
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -167,6 +172,7 @@ const model = computed({
 watch(model, () => {
   //timeStampedLog(name + `: WATCH model`)
   if (model.value == true){
+    DialogOpenedTimestamp = Date.now()
     showVariablesDescriptor.value = false
     if (variablesDescriptor.value == undefined){
       showRawVariables.value = true
@@ -292,6 +298,24 @@ const clickClose = async () => {
     } catch (err){
       timeStampedLog(name + ': clickClose ' + err)
     }
+  }
+  // now look at backup notification
+  let nodeModified = ((store.state.nodes[props.nodeNumber].NodeModifiedTimestamp-DialogOpenedTimestamp) > 0) ? true : false
+  //timeStampedLog(name + `: clickClose: nodeModified ${nodeModified}`)
+  if((nodeModified) && (store.state.notification_settings.backup_notify)) {
+    $q.notify({
+      message: 'Variables changed',
+      caption: 'Do you want to take a backup?',
+      timeout: 0,
+      position: 'center',
+      color: 'primary',
+      actions: [
+        { label: 'YES', color: 'white', handler: async () => {
+          showNodeBackupDialog.value=true
+        } },
+        { label: 'NO', color: 'white', handler: () => { } }
+      ]
+    })
   }
 }
 

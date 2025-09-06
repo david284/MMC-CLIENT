@@ -37,6 +37,7 @@ const state = reactive({
   nodes: {},
   nodeTraffic: [],
   nodes_view_mode: 'split',
+  notification_settings:{backup_notify: true, networkConnection_notify: true, serialConnection_notify: true},
   restoredData: {},
   server: { "nodes":{} },
   selected_node: 0,
@@ -693,7 +694,10 @@ socket.on('LIST_OF_BACKUPS_FOR_ALL_NODES', (data) => {
     for(const node in data){
       // extract node number
       let nodeNumber = node.replace(/[^0-9]/g, "")
-      state.layout.nodeDetails[nodeNumber]['backupList'] = data[node]
+      if (nodeNumber != undefined){
+        timeStampedLog(name + `: RECEIVED LIST_OF_BACKUPS_FOR_ALL_NODES: node ${nodeNumber}`)
+        state.layout.nodeDetails[nodeNumber]['backupList'] = data[node]
+      }
     }
     eventBus.emit('LIST_OF_BACKUPS_FOR_ALL_NODES', data)
   } catch(err){

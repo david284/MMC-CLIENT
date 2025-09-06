@@ -374,7 +374,9 @@ onMounted(() => {
 })
 
 store.eventBus.on('NODE_BACKUP_COMPLETED', () => {
-  store.methods.request_node_backups_list(store.state.layout.layoutDetails.title, props.nodeNumber)
+  if (model.value){
+    store.methods.request_node_backups_list(store.state.layout.layoutDetails.title, props.nodeNumber)
+  }
 })
 
 store.eventBus.on('NODE_BACKUP_SAVED', (filename) => {
