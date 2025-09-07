@@ -304,8 +304,8 @@ const clickClose = async () => {
   //timeStampedLog(name + `: clickClose: nodeModified ${nodeModified}`)
   if((nodeModified) && (store.state.notification_settings.backup_notify)) {
     $q.notify({
-      message: 'Variables changed',
-      caption: 'Do you want to take a backup?',
+      message: 'Variables changed - Do you want to take a backup?',
+      caption: 'Yes, No or \'Don\'t remind me again\'',
       timeout: 0,
       position: 'center',
       color: 'primary',
@@ -313,7 +313,10 @@ const clickClose = async () => {
         { label: 'YES', color: 'white', handler: async () => {
           showNodeBackupDialog.value=true
         } },
-        { label: 'NO', color: 'white', handler: () => { } }
+        { label: 'NO', color: 'white', handler: () => { } },
+        { label: `Don't remind me again`, color:'white',
+            handler: () => { store.state.notification_settings.backup_notify = false }
+        }
       ]
     })
   }
