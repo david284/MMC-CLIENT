@@ -355,7 +355,7 @@ store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber, moduleName) => {
 //
 //
 store.eventBus.on('NETWORK_CONNECTION_FAILURE', (message, caption, type, timeout) => {
-  if(store.state.networkConnection_notify){
+  if(store.state.notification_settings.networkConnection_notify){
     try{
       $q.notify({
         message: message,
@@ -365,7 +365,7 @@ store.eventBus.on('NETWORK_CONNECTION_FAILURE', (message, caption, type, timeout
         position: 'center',
         actions: [
           { label: `Don't remind me again`,
-            handler: () => { store.state.networkConnection_notify = false }
+            handler: () => { store.state.notification_settings.networkConnection_notify = false }
           },
           { label: 'Dismiss' }
         ]
@@ -379,7 +379,7 @@ store.eventBus.on('NETWORK_CONNECTION_FAILURE', (message, caption, type, timeout
 //
 //
 store.eventBus.on('SERIAL_CONNECTION_FAILURE', (message, caption, type, timeout) => {
-  if(store.state.serialConnection_notify){
+  if(store.state.notification_settings.serialConnection_notify){
     try{
       $q.notify({
         message: message,
@@ -389,7 +389,7 @@ store.eventBus.on('SERIAL_CONNECTION_FAILURE', (message, caption, type, timeout)
         position: 'center',
         actions: [
           { label: `Don't remind me again`,
-            handler: () => { store.state.serialConnection_notify = false }
+            handler: () => { store.state.notification_settings.serialConnection_notify = false }
           },
           { label: 'Dismiss' }
         ]
