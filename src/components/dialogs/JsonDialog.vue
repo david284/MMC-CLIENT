@@ -30,7 +30,6 @@
           <q-tab name="layouts" label="Layouts"/>
           <q-tab name="nodes" label="Nodes"/>
           <q-tab name="nodeDescriptors" label="Node Descriptors"/>
-          <q-tab name="nodeDescriptorList" label="Node Descriptor Lists"/>
           <q-tab name="restoredData" label="RestoredData"/>
           <q-tab name="server" label="Server"/>
           <q-tab name="serverStatus" label="server Status"/>
@@ -70,15 +69,6 @@
               <div class="text-h6">Layouts</div>
               <pre>
               {{ store.state.layouts_list }}
-              </pre>
-            </q-card-section>
-          </q-tab-panel>
-
-          <q-tab-panel name="nodeDescriptorList">
-            <q-card-section style="max-height: 75vh" class="scroll no-margin q-py-none">
-              <div class="text-h6">Descriptor List</div>
-              <pre>
-                {{ store.state.nodeDescriptorList }}
               </pre>
             </q-card-section>
           </q-tab-panel>
@@ -151,8 +141,8 @@
 /************************************************************************************
       usage
       <JsonDialog v-model='showJsonDialog' />
-      
-************************************************************************************ */ 
+
+************************************************************************************ */
 
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";

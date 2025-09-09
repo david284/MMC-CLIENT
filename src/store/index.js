@@ -32,7 +32,6 @@ const state = reactive({
   MDFupdateTimestamp: Date.now(),
   moduleNames: {},
   nodeDescriptors: {},
-  nodeDescriptorList: {},
   nodes: {},
   nodeTraffic: [],
   nodes_view_mode: 'split',
@@ -880,12 +879,6 @@ socket.on("NODE_DESCRIPTOR", (data) => {
   const store = {"state":state}
   state.layout.nodeDetails[nodeNumber].numberOfChannels = getNumberOfChannels(store, nodeNumber)
   state.MDFupdateTimestamp = Date.now()
-})
-
-socket.on("NODE_DESCRIPTOR_FILE_LIST", (nodeNumber, list) => {
-  timeStampedLog(name + `: RECEIVED NODE_DESCRIPTOR_FILE_LIST : node ` + nodeNumber)
-//  timeStampedLog(`RECEIVED NODE_DESCRIPTOR_FILE_LIST : list ` + list)
-  state.nodeDescriptorList[nodeNumber] = list
 })
 
 socket.on("PROGRAM_NODE_PROGRESS", (text) => {
