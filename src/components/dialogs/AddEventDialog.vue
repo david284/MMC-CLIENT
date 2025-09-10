@@ -29,28 +29,39 @@
 
         <q-card style="min-height: 280px;">
 
-          <q-card-section style="min-height: 80px;">
+          <q-card-section style="min-height: 80px;" class="q-pa-xs q-ma-none">
             <q-card-section v-if="(eventType == 'long')" class="q-pa-none q-ma-none">
               <div class="text-body">Consumed events will need the number of the node that produces the event</div>
               <div class="text-body">Events produced by this node will need the number of this node, as well as editing the event variables</div>
             </q-card-section>
           </q-card-section>
 
-          <q-card class="q-py-none q-ma-xs row">
+          <q-card class="q-py-none q-ma-none row">
 
             <q-card style="width: 200px;">
               <q-card-section v-if="(eventType == 'long')">
                 <q-card-section class="q-pa-none q-ma-none">
                   <div class="text-h6">Node Number</div>
                 </q-card-section>
-                <q-card-section class="q-pa-none q-ma-none">
-                  <q-input dense v-model="newEventNodeNumber" type="number" autofocus />
+                <q-card-section class="q-px-xs q-ma-none">
+                  <q-input
+                    dense
+                    v-model="newEventNodeNumber"
+                    type="number"
+                    autofocus
+                    :rules="[ val => val <= 65535 || 'Please use value no greater than 65535']"
+                    />
                 </q-card-section>
                 <q-card-section class="q-pa-none q-ma-none">
                   <div class="text-h6">Event Number</div>
                 </q-card-section>
-                <q-card-section class="q-pa-none q-ma-none">
-                  <q-input dense v-model="newEventNumber" type="number" />
+                <q-card-section class="q-px-xs q-ma-none">
+                  <q-input
+                    dense
+                    v-model="newEventNumber"
+                    type="number"
+                    :rules="[ val => val <= 65535 || 'Please use value no greater than 65535']"
+                    />
                 </q-card-section>
               </q-card-section>
 
@@ -59,13 +70,19 @@
                   <div class="text-h6">Device Number</div>
                 </q-card-section>
                 <q-card-section class="q-pa-none q-ma-none">
-                  <q-input dense v-model="newEventNumber" type="number" autofocus />
+                  <q-input
+                    dense
+                    v-model="newEventNumber"
+                    type="number"
+                    autofocus
+                    :rules="[ val => val <= 65535 || 'Please use value no greater than 65535']"
+                    />
                 </q-card-section>
               </q-card-section>
             </q-card>
 
-            <q-card-section style="width: 350px;">
-              <q-card-actions v-if="(!addEventEnabled && (eventType != null))" align="center" class="q-pa-none q-ma-none">
+            <q-card-section style="width: 200px;">
+              <q-card-actions v-if="(!addEventEnabled && (eventType != null))" align="right" class="q-pa-none q-ma-none">
                 <q-btn :disable="!eventEntered" color="blue" label="check event" v-close-popup @click="clickCheckEvent()"/>
               </q-card-actions>
               <q-card-section v-if="(addEventEnabled)" class="q-pa-none q-ma-none">
@@ -78,7 +95,7 @@
         </q-card>
 
 
-        <q-card-section>
+        <q-card-section class="q-py-xs q-ma-none">
           <div class="text-body">Event Name and Event Group are optional values</div>
           <div class="text-body">Input will be disabled if previously entered</div>
           <q-card-section class="q-pa-none q-ma-none">
@@ -95,7 +112,7 @@
           </q-card-section>
         </q-card-section>
 
-        <q-card-section>
+        <q-card-section class="q-py-xs q-ma-none">
           <q-card-actions align="right" class=" q-pa-none q-ma-none">
             <q-btn :disable="!addEventEnabled" color="blue" label="Add Event" v-close-popup @click="clickAddEvent()"/>
           </q-card-actions>
