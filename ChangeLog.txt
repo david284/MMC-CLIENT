@@ -5,6 +5,7 @@ version 0.11.3
   Added backups column to Nodes View
   Added numeric limits to add event dialog
   ProgramNodeDialog - moved actions on closed to server
+  Fixed updating node & event variable dialog when MDF deleted
 
 version 0.11.2
   Fixed missing event name & group in events by node list

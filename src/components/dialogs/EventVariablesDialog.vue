@@ -177,6 +177,7 @@ watch(model, () => {
     if (variablesDescriptor.value == undefined){
       showRawVariables.value = true
       showDescriptorWarning.value = true
+      processedEventVariableDescriptor.value = undefined
     } else {
       showRawVariables.value = false
       showDescriptorWarning.value = false
