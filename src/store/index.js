@@ -872,13 +872,17 @@ socket.on("NODES", (data) => {
 })
 
 socket.on("NODE_DESCRIPTOR", (data) => {
-  var nodeNumber = Object.keys(data)[0]   // get first key
-  var moduleDescriptor = Object.values(data)[0] // get first value
-  timeStampedLog(name + `: RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber + ' ' + moduleDescriptor.moduleDescriptorFilename)
-  state.nodeDescriptors[nodeNumber] = moduleDescriptor
-  const store = {"state":state}
-  state.layout.nodeDetails[nodeNumber].numberOfChannels = getNumberOfChannels(store, nodeNumber)
-  state.MDFupdateTimestamp = Date.now()
+  try {
+    var nodeNumber = Object.keys(data)[0]   // get first key
+    var moduleDescriptor = Object.values(data)[0] // get first value
+    timeStampedLog(name + `: RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber + ' ' + moduleDescriptor.moduleDescriptorFilename)
+    state.nodeDescriptors[nodeNumber] = moduleDescriptor
+    const store = {"state":state}
+    state.layout.nodeDetails[nodeNumber].numberOfChannels = getNumberOfChannels(store, nodeNumber)
+    state.MDFupdateTimestamp = Date.now()
+  } catch (err) {
+    timeStampedLog(name + `: RECEIVED NODE_DESCRIPTOR: ${err} `)
+  }
 })
 
 socket.on("PROGRAM_NODE_PROGRESS", (text) => {

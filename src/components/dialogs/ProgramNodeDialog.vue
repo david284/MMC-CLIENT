@@ -389,13 +389,6 @@ const clickProgram = async () => {
 //
 const clickClose = async () => {
   console.log(name + ': clickClose: flags: ' + flags)
-  if (flags & 2){
-    // re-programmed EEPROM, so refresh node list
-    store.methods.query_all_nodes()
-  } else {
-    // parameters probably changed due to programming, so reload
-    store.methods.request_all_node_parameters(props.nodeNumber, 20, 100)
-  }
   model.value = false   // close the dialog
 }
 
