@@ -781,6 +781,7 @@ socket.on('LAYOUT_DATA', (data) => {
   state.layout = data;
   // put a fresh timestamp on it
   state.layout['updateTimestamp'] = Date.now()
+  eventBus.emit('LAYOUT_DATA', state.layout)
 })
 
 socket.on('LAYOUTS_LIST', (data) => {

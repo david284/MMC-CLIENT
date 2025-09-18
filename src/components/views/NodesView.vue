@@ -318,6 +318,7 @@ onBeforeMount(() => {
 //
 //
 const getSettings = () => {
+  //timeStampedLog(name + `: getSettings:`)
   if (store.state.layout.settings == undefined){store.state.layout["settings"] = {"NodesView":{}}}
   if (store.state.layout.settings.NodesView == undefined){store.state.layout.settings["NodesView"] = {}}
   //
@@ -370,6 +371,13 @@ store.eventBus.on('NODE_DELETED_EVENT', (nodeNumber) => {
 store.eventBus.on('LIST_OF_BACKUPS_FOR_ALL_NODES', () => {
 //  timeStampedLog(name + ': LIST_OF_BACKUPS_FOR_ALL_NODES')
   update_rows()
+})
+
+//
+//
+store.eventBus.on('LAYOUT_DATA', () => {
+//  timeStampedLog(name + ': LAYOUT_DATA')
+  getSettings()
 })
 
 //
