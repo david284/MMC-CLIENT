@@ -364,6 +364,15 @@ const getSettings = () => {
   utils.setVisibleColumn(visibleColumns.value, "eventIndex", store.state.layout.settings.EventsByNodeView.enableEventIndex)
 }
 
+//
+//
+store.eventBus.on('LAYOUT_DATA', () => {
+//  timeStampedLog(name + ': LAYOUT_DATA')
+  getSettings()
+})
+
+
+
 /*/////////////////////////////////////////////////////////////////////////////
 
 Click event handlers
