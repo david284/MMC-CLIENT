@@ -187,7 +187,7 @@ const columns = [
   {name: 'CANID', field: 'CANID', label: 'CAN ID', align: 'center', sortable: true},
   {name: 'nodeName', field: 'nodeName', required: true, label: 'Name', align: 'left', sortable: true},
   {name: 'group', field: 'group', required: true, label: 'Group', align: 'left', sortable: true},
-  {name: 'moduleName', field: 'moduleName', required: true, label: 'Module name', align: 'left', sortable: true},
+  {name: 'moduleName', field: 'moduleName', required: true, label: 'Module', align: 'left', sortable: true},
   {name: 'moduleVersion', field: 'moduleVersion', required: true, label: 'Version', align: 'left', sortable: true},
   {name: 'mode', field: 'mode', required: true, label: 'Mode', align: 'left', sortable: true},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},
