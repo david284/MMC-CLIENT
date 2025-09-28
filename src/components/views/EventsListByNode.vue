@@ -19,7 +19,18 @@
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Advanced" @click="clickAdvanced()"/>
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
-        <q-btn square unelevated color="primary" icon="settings" @click="clickSettings()"/>
+        <q-btn square unelevated color="primary" icon="settings">
+          <q-menu auto-close>
+            <q-list style="min-width: 100px">
+              <q-item>
+                <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.EventsByNodeView.enableEventIdentifier" @click="click_enableEventIdentifier" label="show Event Identifier column"></q-checkbox>
+              </q-item>               
+              <q-item>
+                <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.EventsByNodeView.enableEventIndex" @click="click_enableEventIndex" label="show Event Index column"></q-checkbox>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
       </template>
     </q-banner>
 
@@ -97,30 +108,6 @@
         @WaitingOnBusTrafficDialogEvent="WaitingOnBusTrafficDialogReturn = $event"
       />
 
-    <q-dialog v-model="showSettingsDialog" persistent>
-      <q-card style="min-width: 500px">
-
-        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
-          <div class="text-h6">
-            Events by Node View Settings
-          </div>
-          <template v-slot:action>
-            <q-btn flat color="white" size="md" label="Close" v-close-popup/>
-          </template>
-        </q-banner>
-
-        <q-card>
-          <q-card-section class="no-margin no-padding">
-            <q-checkbox v-model="store.state.layout.settings.EventsByNodeView.enableEventIdentifier" @click="click_enableEventIdentifier" label="show Event Identifier column"></q-checkbox>
-          </q-card-section>
-          <q-card-section class="no-margin no-padding">
-            <q-checkbox v-model="store.state.layout.settings.EventsByNodeView.enableEventIndex" @click="click_enableEventIndex" label="show Event Index column"></q-checkbox>
-          </q-card-section>
-        </q-card>
-
-      </q-card>
-    </q-dialog>
-
   </div>
 </template>
 
@@ -159,7 +146,6 @@ const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
 const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref('')
-const showSettingsDialog = ref(false)
 
 
 const props = defineProps({
@@ -479,13 +465,6 @@ const clickSendOn = (eventIdentifier) => {
   } else {
     store.methods.long_on_event(eventNodeNumber, eventNumber)
   }
-}
-
-//
-//
-const clickSettings = () => {
-  timeStampedLog(name + ': clickSettings')
-  showSettingsDialog.value = true
 }
 
 //

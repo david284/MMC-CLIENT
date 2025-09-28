@@ -19,7 +19,24 @@
           @click="clickNodesViewAdvanced()"/>
         &nbsp;&nbsp;
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
-        <q-btn square unelevated color="primary" icon="settings" @click="clickSettings()"/>
+        <q-btn square unelevated color="primary" icon="settings">
+          <q-menu auto-close>
+            <q-list style="min-width: 100px">
+              <q-item>
+                  <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.NodesView.enableBackupStatus" @click="click_enableBackupStatus" label="show backups column"></q-checkbox>
+              </q-item>
+              <q-item>
+                  <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.NodesView.enableCANID" @click="click_enableCANID" label="show CANID column"></q-checkbox>
+              </q-item>
+              <q-item>
+                  <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.NodesView.enableSpaceLeft" @click="click_enableSpaceLeft" label="show remaining event space column"></q-checkbox>
+              </q-item>
+              <q-item>
+                  <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.NodesView.enableStoredEvents" @click="click_enableStoredEvents" label="show stored events column"></q-checkbox>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
       </template>
     </q-banner>
 
@@ -126,37 +143,6 @@
       <iFrameDialog v-model='showiFrameDialog'
         :URL=exampleURL />
 
-  <q-dialog v-model="showSettingsDialog" persistent>
-    <q-card style="min-width: 500px">
-
-      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
-        <div class="text-h6">
-          Nodes View Settings
-        </div>
-        <template v-slot:action>
-          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
-        </template>
-      </q-banner>
-
-      <q-card>
-        <q-card-section class="no-margin no-padding">
-          <q-checkbox v-model="store.state.layout.settings.NodesView.enableBackupStatus" @click="click_enableBackupStatus" label="show backups column"></q-checkbox>
-        </q-card-section>
-        <q-card-section class="no-margin no-padding">
-          <q-checkbox v-model="store.state.layout.settings.NodesView.enableCANID" @click="click_enableCANID" label="show CANID column"></q-checkbox>
-        </q-card-section>
-        <q-card-section class="no-margin no-padding">
-          <q-checkbox v-model="store.state.layout.settings.NodesView.enableSpaceLeft" @click="click_enableSpaceLeft" label="show remaining event space column"></q-checkbox>
-        </q-card-section>
-        <q-card-section class="no-margin no-padding">
-          <q-checkbox v-model="store.state.layout.settings.NodesView.enableStoredEvents" @click="click_enableStoredEvents" label="show stored events column"></q-checkbox>
-        </q-card-section>
-      </q-card>
-
-    </q-card>
-  </q-dialog>
-
-
   </div>
 </template>
 
@@ -218,7 +204,6 @@ const exampleURL = ref("dummyModule/index.html")
 const WaitingOnBusTrafficMessage = ref('')
 const WaitingOnBusTrafficDialogReturn = ref('')
 const tableStyle = ref("nodes-view-split-table")
-const showSettingsDialog = ref(false)
 
 const nodesUpdated = computed(() => {
   return store.state.nodes.updateTimestamp
@@ -595,13 +580,6 @@ const clickParameters = async (nodeNumber) => {
 const clickRefresh = () => {
   timeStampedLog(name + ': clickRefresh')
   store.methods.query_all_nodes()
-}
-
-//
-//
-const clickSettings = () => {
-  timeStampedLog(name + ': clickSettings')
-  showSettingsDialog.value = true
 }
 
 //
