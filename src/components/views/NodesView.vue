@@ -259,7 +259,9 @@ const update_rows = () => {
       output['nodeName'] = store.getters.node_name(node.nodeNumber)
       output['group'] = store.getters.node_group(node.nodeNumber)
       output['moduleName'] = store.getters.module_name(node.nodeNumber)
-      output['moduleVersion'] = store.getters.module_version(node.nodeNumber)
+      let Beta = store.state.nodes[node.nodeNumber].parameters[20]
+      Beta = (Beta > 0) ? " B"+Beta : ""
+      output['moduleVersion'] = store.getters.module_version(node.nodeNumber) + Beta
       output['component'] = node.component
       output['status'] = node.status
       output['backup'] = backupCount(node.nodeNumber)

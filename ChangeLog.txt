@@ -1,6 +1,8 @@
 Version 0.x.x
-  Getenerate internal event when receiving LAYOUT_DATA
+  Generate internal event when receiving LAYOUT_DATA
   NodesView & EventsByNodeView uses this new event to get settings, to update visible columns
+  Added copy layout function to StartupDialog
+  Added beta number if non-zero to version column in Nodes View
 
 version 0.12.0
   Removed getEventIndexes, now done in server
