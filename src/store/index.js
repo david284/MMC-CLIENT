@@ -75,6 +75,12 @@ const methods = {
     })
   },
   //
+  copy_layout(sourceLayout, destinationLayout) {
+    let data = {"sourceLayout":sourceLayout, "destinationLayout":destinationLayout}
+    socket.emit('COPY_LAYOUT', data)
+    timeStampedLog(name + `: COPY_LAYOUT ${JSON.stringify(data)}`)
+  },
+  //
   delete_all_events(nodeNumber) {
     socket.emit('DELETE_ALL_EVENTS', {
         "nodeNumber": nodeNumber

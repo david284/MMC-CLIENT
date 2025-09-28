@@ -38,6 +38,8 @@
                       @click="clickSelectLayout(props.value)" />
                     </q-td>
                     <q-td >
+                      <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="xs" label="Copy"
+                      @click="clickCopyLayout(props.value)" no-caps />
                       <q-btn dense class="q-mx-xs q-my-none" outline color="negative" size="xs" label="Delete"
                       @click="clickDeleteLayout(props.value)" no-caps />
                     </q-td>
@@ -110,6 +112,24 @@
 
     <StartupInfoDialog v-model='showStartupInfoDialog' />
 
+  <q-dialog v-model="showCopyLayout" persistent>
+    <q-card style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">copy layout: {{ selected_layout_name }}</div>
+      </q-card-section>
+      <q-card-section>
+        <div>enter name for the new copy, followed by &lt;enter&gt;</div>
+      </q-card-section>
+      <q-card-section class="q-pt-none">
+        <q-input dense v-model="newLayoutName" autofocus @keyup.enter="copyLayout(selected_layout_name, newLayoutName)"></q-input>
+      </q-card-section>
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Close" v-close-popup></q-btn>
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
+
 </template>
 
 
@@ -132,7 +152,11 @@ const showEditConnectionDetailsDialog = ref(false)
 const showStartupInfoDialog = ref(false)
 const readyToProceed = ref(false)
 const layoutValid = ref(false)
+const selected_layout_name = ref()
 const connectionDetails = ref([])
+const showCopyLayout = ref(false)
+const newLayoutName = ref("")
+
 
 const teColumns = [
   {name: 'layout', field: 'layout', required: true, label: 'Layout', sortable: true}
@@ -153,7 +177,10 @@ const model = computed({
 // model changes when Dialog opened & closed
 watch(model, () => {
 //  console.log(name + `: WATCH model`)
-  updateLayoutList()
+  if (model.value == true){
+    updateLayoutList()
+    newLayoutName.value=""
+  }
 })
 
 const layout = computed(() => {
@@ -236,6 +263,29 @@ Click event handlers
 const clickAddNewLayout = async () => {
   console.log(name + ': clickAddNewLayout')
   showAddLayoutDialog.value=true
+}
+
+const clickCopyLayout = async (layout) => {
+  console.log(name + ': clickCopyLayout')
+  selected_layout_name.value = layout
+  showCopyLayout.value=true
+}
+
+const copyLayout = async (sourceLayout, destinationLayout) => {
+  console.log(name + `: copyLayout ${sourceLayout} ${destinationLayout}`)
+  if (destinationLayout.length > 0){
+    store.methods.copy_layout(sourceLayout, destinationLayout)
+  } else {
+    $q.notify({
+      message: 'no layout name entered',
+      timeout: 1000,
+      type: 'warning',
+      position: 'center',
+      actions: [ { label: 'Dismiss' } ]
+    })
+  }
+  //
+  showCopyLayout.value=false
 }
 
 const clickDeleteLayout = async (row) => {
