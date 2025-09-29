@@ -74,6 +74,15 @@
       <q-toolbar class="col no-margin q-py-none">
         <q-space />
         <div class="text-h6 float-right">
+          <q-btn square unelevated color="primary" icon="settings">
+            <q-menu auto-close>
+              <q-list style="min-width: 100px">
+                <q-item>
+                    <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.enableBusTraffic" @click="click_enableBusTraffic" label="show Bus Traffic"></q-checkbox>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
           <q-btn size="md" color="negative" label="Exit" @click="clickExit()" no-caps/>
         </div>
       </q-toolbar>
@@ -81,6 +90,7 @@
     </q-header>
 
     <q-drawer class="no-margin no-padding"
+      v-if="store.state.layout.settings.enableBusTraffic"
       v-model="leftDrawerOpen"
       show-if-above
       side="left"
@@ -89,7 +99,7 @@
       bordered
       >
       <q-banner inline-actions style="min-height: 0px;" class="bg-primary text-white dense no-margin q-py-none q-px-xs row">
-        <div class="text-h6">Bus traffic</div>
+        <div class="text-h6">Bus Traffic</div>
         <template v-slot:action>
           <div class="text-h6 float-right">
             <q-btn size="sm" color="blue" label="All" @click="clickAllBusTraffic()"/>
@@ -255,6 +265,7 @@ const layoutDataTitle = computed(() => {
 onBeforeMount(() => {
   store.methods.request_server_status()
   store.methods.request_layout_list()
+  getSettings()
 })
 
 //
@@ -429,6 +440,23 @@ store.eventBus.on('SERVER_DISCONNECT', () => {
   })
 })
 
+//
+//
+store.eventBus.on('LAYOUT_DATA', () => {
+//  timeStampedLog(name + ': LAYOUT_DATA')
+  getSettings()
+})
+
+//
+//
+const getSettings = () => {
+  if (store.state.layout.settings == undefined){store.state.layout["settings"] = {}}
+  //
+  if (store.state.layout.settings.enableBusTraffic == undefined){
+    store.state.layout.settings['enableBusTraffic'] = true
+    store.state.update_layout_needed = true
+  }
+}
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -457,6 +485,13 @@ const clickBusEventsView = () => {
 const clickCbusErrors = () => {
   console.log(name + ': clickCbusErrors')
   showCbusErrorsDialog.value = true
+}
+
+//
+//
+const click_enableBusTraffic = () =>{
+  console.log(name + ': click_enableBusTraffic')
+
 }
 
 //
