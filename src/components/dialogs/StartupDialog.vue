@@ -253,6 +253,40 @@ onBeforeMount(() => {
 onMounted(() => {
 })
 
+//
+//
+const getNewLayoutName = (layout) => {
+  try {
+    let newList = layoutList.value.filter((A) => A.toUpperCase().includes(layout));
+    console.log(name + `: getNewLayoutName: newList: ${newList}`)
+    if (newList.length == 1){
+      return layout.toUpperCase() + " COPY 01"
+    } else {
+      // ok, lets see if there's copies already
+      let newList2 = newList.filter((B) => B.includes("COPY"));
+      console.log(name + `: getNewLayoutName: newList2: ${newList2}`)
+      if (newList2.length == 0){
+        return layout.toUpperCase() + " COPY 01"
+      } else {
+        // array should be ordered, so we want the last entry
+        let targetlayout = newList2[newList2.length-1]
+        console.log(name + `: getNewLayoutName: newlayout: ${targetlayout}`)
+        // find last instance of 'COPY'
+        let copyString = targetlayout.substring(targetlayout.lastIndexOf("COPY"), targetlayout.length)
+        console.log(name + `: getNewLayoutName: copyString: ${copyString}`)
+        // extract number and increment
+        let copyNumber = parseInt(copyString.replace(/[^0-9]/g, '')) + 1
+        console.log(name + `: getNewLayoutName: copyNumber: ${copyNumber}`)
+        let newlayout = layout + " COPY " + copyNumber.toString().padStart(2,0)
+        return newlayout
+      }
+    }
+  } catch (err) {
+    console.log(name + `: getNewLayoutName: ${err}`)
+    return ""
+  }
+}
+
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -268,7 +302,8 @@ const clickAddNewLayout = async () => {
 const clickCopyLayout = async (layout) => {
   console.log(name + ': clickCopyLayout')
   selected_layout_name.value = layout
-  showCopyLayout.value=true
+  newLayoutName.value = getNewLayoutName(layout.toUpperCase())
+  showCopyLayout.value = true
 }
 
 const copyLayout = async (sourceLayout, destinationLayout) => {
