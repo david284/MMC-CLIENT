@@ -24,9 +24,12 @@
             <q-list style="min-width: 100px">
               <q-item>
                 <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.EventsByNodeView.enableEventIdentifier" @click="click_enableEventIdentifier" label="show Event Identifier column"></q-checkbox>
-              </q-item>               
+              </q-item>
               <q-item>
                 <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.EventsByNodeView.enableEventIndex" @click="click_enableEventIndex" label="show Event Index column"></q-checkbox>
+              </q-item>
+              <q-item>
+                <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.EventsByNodeView.enableGroup" @click="click_enableGroup" label="show Group column"></q-checkbox>
               </q-item>
             </q-list>
           </q-menu>
@@ -157,7 +160,7 @@ const visibleColumns = ref([])
 const columns = [
   {name: 'eventIdentifier', field: 'eventIdentifier', label: 'Identifier', align: 'left', sortable: true},
   {name: 'eventName', field: 'eventName', required: true, label: 'Name', align: 'left', sortable: true},
-  {name: 'eventGroup', field: 'eventGroup', required: true, label: 'Group', align: 'left', sortable: true},
+  {name: 'eventGroup', field: 'eventGroup', label: 'Group', align: 'left', sortable: true},
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Event node', align: 'left', sortable: true},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event number', align: 'left', sortable: true},
   {name: 'eventIndex', field: 'eventIndex', label: 'Index', align: 'left', sortable: true},
@@ -341,13 +344,19 @@ const getSettings = () => {
     store.state.layout.settings.EventsByNodeView['enableEventIdentifier'] = true
     store.state.update_layout_needed = true
   }
-  utils.setVisibleColumn(visibleColumns.value, "eventIdentifier", store.state.layout.settings.EventsByNodeView.enableEventIdentifier)
   //
   if (store.state.layout.settings.EventsByNodeView.enableEventIndex == undefined){
     store.state.layout.settings.EventsByNodeView['enableEventIndex'] = true
     store.state.update_layout_needed = true
   }
+  //
+  if (store.state.layout.settings.EventsByNodeView.enableGroup == undefined){
+    store.state.layout.settings.EventsByNodeView['enableGroup'] = true
+    store.state.update_layout_needed = true
+  }
+  utils.setVisibleColumn(visibleColumns.value, "eventIdentifier", store.state.layout.settings.EventsByNodeView.enableEventIdentifier)
   utils.setVisibleColumn(visibleColumns.value, "eventIndex", store.state.layout.settings.EventsByNodeView.enableEventIndex)
+  utils.setVisibleColumn(visibleColumns.value, "eventGroup", store.state.layout.settings.EventsByNodeView.enableGroup)
 }
 
 //
@@ -423,6 +432,14 @@ const click_enableEventIdentifier = () => {
 const click_enableEventIndex = () => {
   timeStampedLog(name + `: click_enableEventIndex ${store.state.layout.settings.EventsByNodeView.enableEventIndex}`)
   utils.setVisibleColumn(visibleColumns.value, "eventIndex", store.state.layout.settings.EventsByNodeView.enableEventIndex)
+  store.state.update_layout_needed = true
+}
+
+//
+//
+const click_enableGroup = () => {
+  timeStampedLog(name + `: click_enableGroup ${store.state.layout.settings.EventsByNodeView.enableGroup}`)
+  utils.setVisibleColumn(visibleColumns.value, "eventGroup", store.state.layout.settings.EventsByNodeView.enableGroup)
   store.state.update_layout_needed = true
 }
 
