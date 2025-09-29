@@ -29,6 +29,9 @@
                   <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.NodesView.enableCANID" @click="click_enableCANID" label="show CANID column"></q-checkbox>
               </q-item>
               <q-item>
+                  <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.NodesView.enableGroup" @click="click_enableGroup" label="show Group column"></q-checkbox>
+              </q-item>
+              <q-item>
                   <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.NodesView.enableSpaceLeft" @click="click_enableSpaceLeft" label="show remaining event space column"></q-checkbox>
               </q-item>
               <q-item>
@@ -172,7 +175,7 @@ const columns = [
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Node', align: 'center', sortable: true},
   {name: 'CANID', field: 'CANID', label: 'CAN ID', align: 'center', sortable: true},
   {name: 'nodeName', field: 'nodeName', required: true, label: 'Name', align: 'left', sortable: true},
-  {name: 'group', field: 'group', required: true, label: 'Group', align: 'left', sortable: true},
+  {name: 'group', field: 'group', label: 'Group', align: 'left', sortable: true},
   {name: 'moduleName', field: 'moduleName', required: true, label: 'Module', align: 'left', sortable: true},
   {name: 'moduleVersion', field: 'moduleVersion', required: true, label: 'Version', align: 'left', sortable: true},
   {name: 'mode', field: 'mode', required: true, label: 'Mode', align: 'left', sortable: true},
@@ -318,6 +321,11 @@ const getSettings = () => {
     store.state.layout.settings.NodesView['enableCANID'] = true
     store.state.update_layout_needed = true
   }
+  //
+  if (store.state.layout.settings.NodesView.enableGroup == undefined){
+    store.state.layout.settings.NodesView['enableGroup'] = true
+    store.state.update_layout_needed = true
+  }
   if (store.state.layout.settings.NodesView.enableSpaceLeft == undefined){
     store.state.layout.settings.NodesView['enableSpaceLeft'] = true
     store.state.update_layout_needed = true
@@ -328,6 +336,7 @@ const getSettings = () => {
   }
   utils.setVisibleColumn(visibleColumns.value, "backupStatus", store.state.layout.settings.NodesView.enableBackupStatus)
   utils.setVisibleColumn(visibleColumns.value, "CANID", store.state.layout.settings.NodesView.enableCANID)
+  utils.setVisibleColumn(visibleColumns.value, "group", store.state.layout.settings.NodesView.enableGroup)
   utils.setVisibleColumn(visibleColumns.value, "spaceLeft", store.state.layout.settings.NodesView.enableSpaceLeft)
   utils.setVisibleColumn(visibleColumns.value, "events", store.state.layout.settings.NodesView.enableStoredEvents)
 }
@@ -488,6 +497,14 @@ const click_enableBackupStatus = (nodeNumber) => {
 const click_enableCANID = (nodeNumber) => {
   timeStampedLog(name + `: click_enableCANID ${store.state.layout.settings.NodesView.enableCANID}`)
   utils.setVisibleColumn(visibleColumns.value, "CANID", store.state.layout.settings.NodesView.enableCANID)
+  store.state.update_layout_needed = true
+}
+
+//
+//
+const click_enableGroup = (nodeNumber) => {
+  timeStampedLog(name + `: click_enableGroup ${store.state.layout.settings.NodesView.enableGroup}`)
+  utils.setVisibleColumn(visibleColumns.value, "CANID", store.state.layout.settings.NodesView.enableGroup)
   store.state.update_layout_needed = true
 }
 
