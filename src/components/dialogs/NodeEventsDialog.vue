@@ -19,6 +19,21 @@
           <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
           <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Advanced" @click="clickAdvanced()"/>
           <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
+          <q-btn square unelevated color="primary" icon="settings">
+            <q-menu auto-close>
+              <q-list style="min-width: 100px">
+                <q-item>
+                  <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.enableEventIdentifier" @click="click_enableEventIdentifier" label="show Event Identifier column"></q-checkbox>
+                </q-item>
+                <q-item>
+                  <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.EventsByNodeView.enableEventIndex" @click="click_enableEventIndex" label="show Event Index column"></q-checkbox>
+                </q-item>
+                <q-item>
+                  <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.enableEventGroup" @click="click_enableEventGroup" label="show Group column"></q-checkbox>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
           <q-btn flat color="white" size="md" label="Close" v-close-popup/>
         </template>
       </q-banner>
@@ -35,6 +50,7 @@
           virtual-scroll
           :rows-per-page-options="[0]"
           :virtual-scroll-sticky-size-start="0"
+          :visible-columns="visibleColumns"
           hide-bottom
         >
           <template v-slot:body="props">
@@ -44,6 +60,7 @@
               <q-td key="eventGroup" :props="props">{{ props.row.eventGroup }}</q-td>
               <q-td key="nodeNumber" :props="props">{{ props.row.nodeNumber }}</q-td>
               <q-td key="eventNumber" :props="props">{{ props.row.eventNumber }}</q-td>
+              <q-td key="eventIndex" :props="props">{{ props.row.eventIndex }}</q-td>
               <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td>
               <q-td key="source" :props="props">{{ props.row.source }}</q-td>
               <q-td key="actions" :props="props">
@@ -105,7 +122,8 @@
 <script setup>
 
 import {computed, inject, ref, watch, onBeforeMount, onMounted, onUpdated} from "vue"
-import { date, useQuasar, scroll } from 'quasar'
+import { useQuasar } from 'quasar'
+import * as utils from "components/functions/utils.js"
 import AddEventDialog from "components/dialogs/AddEventDialog"
 import advancedEventsDialog from "components/dialogs/AdvancedEventsDialog"
 import sendEventDialog from "components/dialogs/SendEventDialog"
@@ -114,8 +132,6 @@ import eventTeachDialog from "components/dialogs/EventTeachDialog"
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import EventsByNodeViewInfoDialog from "components/dialogs/EventsByNodeViewInfoDialog"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
-import { sleep } from "../functions/utils"
-import {timeStampedLog} from "components/functions/utils.js"
 
 
 const $q = useQuasar()
@@ -138,7 +154,7 @@ const selected_event_number = ref(0) // Dialog will complain if null
 var eventType = ref()
 const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref('')
-
+const visibleColumns = ref([])
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -154,11 +170,12 @@ const model = computed({
 
 
 const columns = [
-  {name: 'eventIdentifier', field: 'eventIdentifier', required: true, label: 'Identifier', align: 'left', sortable: true},
-  {name: 'eventName', field: 'eventName', required: false, label: 'Name', align: 'left', sortable: true},
-  {name: 'eventGroup', field: 'eventGroup', required: false, label: 'Group', align: 'left', sortable: true},
+  {name: 'eventIdentifier', field: 'eventIdentifier', label: 'Identifier', align: 'left', sortable: true},
+  {name: 'eventName', field: 'eventName', required: true, label: 'Name', align: 'left', sortable: true},
+  {name: 'eventGroup', field: 'eventGroup', label: 'Group', align: 'left', sortable: true},
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Event node', align: 'left', sortable: true},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event number', align: 'left', sortable: true},
+  {name: 'eventIndex', field: 'eventIndex', label: 'Index', align: 'left', sortable: true},
   {name: 'eventType', field: 'eventType', required: true, label: 'Event type', align: 'left', sortable: true},
   {name: 'source', field: 'source', required: true, label: 'Event source', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
@@ -170,7 +187,7 @@ const selected_node = computed(() =>{
   return props.nodeNumber
 })
 watch(selected_node, () => {
-  //timeStampedLog(name + `: WATCH selected_node`)
+  //utils.timeStampedLog(name + `: WATCH selected_node`)
   if (props.nodeNumber){
     update_rows()
   }
@@ -182,7 +199,7 @@ const busEvents = computed(() =>{
   return Object.values(store.state.busEvents)
 })
 watch(busEvents, () => {
-  //timeStampedLog(name + `: WATCH busEvents`)
+  //utils.timeStampedLog(name + `: WATCH busEvents`)
   if (props.nodeNumber){
     update_rows()
   }
@@ -195,7 +212,7 @@ const layoutUpdated = computed(() => {
 })
 
 watch(layoutUpdated, () => {
-  //timeStampedLog(name + `: WATCH: layoutUpdated`)
+  //utils.timeStampedLog(name + `: WATCH: layoutUpdated`)
   if (props.nodeNumber){
     update_rows()
   }
@@ -208,7 +225,7 @@ const nodesUpdated = computed(() => {
 })
 
 watch(nodesUpdated, () => {
-  //timeStampedLog(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
+  //utils.timeStampedLog(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
   if (props.nodeNumber){
     update_rows()
   }
@@ -216,7 +233,7 @@ watch(nodesUpdated, () => {
 
 
 const update_rows = () => {
-//  timeStampedLog(name + ': update_rows ' + props.nodeNumber)
+//  utils.timeStampedLog(name + ': update_rows ' + props.nodeNumber)
   rows.value = []
   try{
     // do stored events for this node first.....
@@ -237,6 +254,7 @@ const update_rows = () => {
         output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
         output['nodeNumber'] = eventNodeNumber
         output['eventNumber'] = eventNumber
+        output['eventIndex'] = event.eventIndex
         output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
         output['storedEvent'] = true
         output['source'] = "stored event"
@@ -289,16 +307,17 @@ const update_rows = () => {
 
 
 onBeforeMount(() => {
-  //timeStampedLog(name + ": onBeforeMount")
+  //utils.timeStampedLog(name + ": onBeforeMount")
   if (props.nodeNumber){
     update_rows()
+    getSettings()
   }
 })
 
 //
 //
 const getEventVariables = async (eventIdentifier) => {
-  timeStampedLog(name + ': getEventVariables:')
+  utils.timeStampedLog(name + ': getEventVariables:')
   //
   WaitingOnBusTrafficDialogReturn.value =''
   WaitingOnBusTrafficMessage.value = "Loading Event Variables"
@@ -313,10 +332,43 @@ const getEventVariables = async (eventIdentifier) => {
       // success if we exit early
       break
     }
-    await sleep (10)
+    await utils.sleep (10)
   }
   showWaitingOnBusTrafficDialog.value = false
 }
+
+//
+//
+const getSettings = () => {
+  if (store.state.layout.settings == undefined){store.state.layout["settings"] = {"EventsByNodeView":{}}}
+  if (store.state.layout.settings.EventsByNodeView == undefined){store.state.layout.settings["EventsByNodeView"] = {}}
+  //
+  if (store.state.layout.settings.enableEventIdentifier == undefined){
+    store.state.layout.settings['enableEventIdentifier'] = true
+    store.state.update_layout_needed = true
+  }
+  //
+  if (store.state.layout.settings.EventsByNodeView.enableEventIndex == undefined){
+    store.state.layout.settings.EventsByNodeView['enableEventIndex'] = true
+    store.state.update_layout_needed = true
+  }
+  //
+  if (store.state.layout.settings.enableEventGroup == undefined){
+    store.state.layout.settings['enableEventGroup'] = true
+    store.state.update_layout_needed = true
+  }
+  utils.setVisibleColumn(visibleColumns.value, "eventIdentifier", store.state.layout.settings.enableEventIdentifier)
+  utils.setVisibleColumn(visibleColumns.value, "eventIndex", store.state.layout.settings.EventsByNodeView.enableEventIndex)
+  utils.setVisibleColumn(visibleColumns.value, "eventGroup", store.state.layout.settings.enableEventGroup)
+}
+
+//
+//
+store.eventBus.on('LAYOUT_DATA', () => {
+//  utils.timeStampedLog(name + ': LAYOUT_DATA')
+  getSettings()
+})
+
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -325,7 +377,7 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 const clickAddEvent = () => {
-  timeStampedLog(name + `: clickAddEvent`)
+  utils.timeStampedLog(name + `: clickAddEvent`)
   if(store.state.nodes[props.nodeNumber].eventSpaceLeft > 0 ) {
     showAddEventDialog.value = true
   } else {
@@ -343,13 +395,13 @@ const clickAddEvent = () => {
 
 
 const clickAdvanced = () => {
-  timeStampedLog(name + `: clickAdvanced`)
+  utils.timeStampedLog(name + `: clickAdvanced`)
   showAdvancedEventDialog.value = true
 }
 
 
 const clickDelete = (eventIdentifier) => {
-  timeStampedLog(name + `: clickDelete`)
+  utils.timeStampedLog(name + `: clickDelete`)
   const result = $q.notify({
     message: 'Are you sure you want to delete event ' + store.getters.event_name(eventIdentifier),
     timeout: 0,
@@ -357,7 +409,7 @@ const clickDelete = (eventIdentifier) => {
     color: 'primary',
     actions: [
       { label: 'YES', color: 'white', handler: async () => {
-        timeStampedLog(`removeEvent ` + props.nodeNumber + ' ' + eventIdentifier)
+        utils.timeStampedLog(`removeEvent ` + props.nodeNumber + ' ' + eventIdentifier)
         store.methods.remove_event(props.nodeNumber, eventIdentifier)
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
@@ -365,9 +417,34 @@ const clickDelete = (eventIdentifier) => {
   })
 }
 
+//
+//
+const click_enableEventIdentifier = () => {
+  utils.timeStampedLog(name + `: click_enableEventIdentifier ${store.state.layout.settings.enableEventIdentifier}`)
+  utils.setVisibleColumn(visibleColumns.value, "eventIdentifier", store.state.layout.settings.enableEventIdentifier)
+  store.state.update_layout_needed = true
+}
 
+//
+//
+const click_enableEventIndex = () => {
+  utils.timeStampedLog(name + `: click_enableEventIndex ${store.state.layout.settings.EventsByNodeView.enableEventIndex}`)
+  utils.setVisibleColumn(visibleColumns.value, "eventIndex", store.state.layout.settings.EventsByNodeView.enableEventIndex)
+  store.state.update_layout_needed = true
+}
+
+//
+//
+const click_enableEventGroup = () => {
+  utils.timeStampedLog(name + `: click_enableEventGroup ${store.state.layout.settings.enableEventGroup}`)
+  utils.setVisibleColumn(visibleColumns.value, "eventGroup", store.state.layout.settings.enableEventGroup)
+  store.state.update_layout_needed = true
+}
+
+//
+//
 const clickEventName = (eventIdentifier) => {
-  timeStampedLog(name + `: clickEventName ` + eventIdentifier)
+  utils.timeStampedLog(name + `: clickEventName ` + eventIdentifier)
   selected_event_Identifier.value = eventIdentifier
   newEventName.value = store.getters.event_name(eventIdentifier)
   showNameEventDialog.value = true;
@@ -375,18 +452,18 @@ const clickEventName = (eventIdentifier) => {
 
 
 const clickInfo = () => {
-  timeStampedLog(name + `: clickInfo`)
+  utils.timeStampedLog(name + `: clickInfo`)
   showEventsByNodeViewInfoDialog.value = true
 }
 
 const clickRefresh = () => {
-  timeStampedLog(name + `: clickRefresh`)
+  utils.timeStampedLog(name + `: clickRefresh`)
   store.methods.request_all_node_events(props.nodeNumber)
 update_rows()
 }
 
 const clickSendOff = (eventIdentifier) => {
-  timeStampedLog (name + ": send OFF " + eventIdentifier)
+  utils.timeStampedLog (name + ": send OFF " + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
   var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
   if (eventNodeNumber == 0) {
@@ -398,7 +475,7 @@ const clickSendOff = (eventIdentifier) => {
 
 
 const clickSendOn = (eventIdentifier) => {
-  timeStampedLog (name + ": send ON " + eventIdentifier)
+  utils.timeStampedLog (name + ": send ON " + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
   var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
   if (eventNodeNumber == 0) {
@@ -410,14 +487,14 @@ const clickSendOn = (eventIdentifier) => {
 
 
 const clickTeach = (eventIndentifier) => {
-  timeStampedLog(name + `: clickTeach`)
+  utils.timeStampedLog(name + `: clickTeach`)
   selected_event_Identifier.value = eventIndentifier
   showEventTeachDialog.value = true
 }
 
 
 const clickToggleViewMode = () => {
-  timeStampedLog(name + `: clickToggleViewMode`)
+  utils.timeStampedLog(name + `: clickToggleViewMode`)
   switch(store.state.events_view_mode){
     case 'all':
       store.state.events_view_mode = 'short'
@@ -438,10 +515,10 @@ const clickToggleViewMode = () => {
 }
 
 const clickVariables = async (eventIdentifier) => {
-  timeStampedLog(name + `: clickVariables: node ` + props.nodeNumber)
+  utils.timeStampedLog(name + `: clickVariables: node ` + props.nodeNumber)
   selected_event_Identifier.value = eventIdentifier
   showWaitingOnBusTrafficDialog.value = true
-  await sleep(1)
+  await utils.sleep(1)
   await getEventVariables(eventIdentifier)
   showEventVariablesDialog.value = true
 }

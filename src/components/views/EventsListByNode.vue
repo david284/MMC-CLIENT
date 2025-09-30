@@ -333,7 +333,6 @@ const getEventVariables = async (eventIdentifier) => {
   showWaitingOnBusTrafficDialog.value = false
 }
 
-
 //
 //
 const getSettings = () => {
