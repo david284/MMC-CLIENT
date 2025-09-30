@@ -21,7 +21,7 @@
         <q-space/>
         <q-btn class="q-mx-xs q-my-none" size="sm" color="blue" label="SCAN NODES"  no-caps
           @click="clickScanNodes()" />
-       <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
+        <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
         <q-btn square unelevated color="primary" icon="settings">
           <q-menu auto-close>
             <q-list style="min-width: 100px">
