@@ -23,7 +23,7 @@
           <q-menu auto-close>
             <q-list style="min-width: 100px">
               <q-item>
-                <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.EventsByNodeView.enableEventIdentifier" @click="click_enableEventIdentifier" label="show Event Identifier column"></q-checkbox>
+                <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.enableEventIdentifier" @click="click_enableEventIdentifier" label="show Event Identifier column"></q-checkbox>
               </q-item>
               <q-item>
                 <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.EventsByNodeView.enableEventIndex" @click="click_enableEventIndex" label="show Event Index column"></q-checkbox>
@@ -340,8 +340,8 @@ const getSettings = () => {
   if (store.state.layout.settings == undefined){store.state.layout["settings"] = {"EventsByNodeView":{}}}
   if (store.state.layout.settings.EventsByNodeView == undefined){store.state.layout.settings["EventsByNodeView"] = {}}
   //
-  if (store.state.layout.settings.EventsByNodeView.enableEventIdentifier == undefined){
-    store.state.layout.settings.EventsByNodeView['enableEventIdentifier'] = true
+  if (store.state.layout.settings.enableEventIdentifier == undefined){
+    store.state.layout.settings['enableEventIdentifier'] = true
     store.state.update_layout_needed = true
   }
   //
@@ -354,7 +354,7 @@ const getSettings = () => {
     store.state.layout.settings.EventsByNodeView['enableGroup'] = true
     store.state.update_layout_needed = true
   }
-  utils.setVisibleColumn(visibleColumns.value, "eventIdentifier", store.state.layout.settings.EventsByNodeView.enableEventIdentifier)
+  utils.setVisibleColumn(visibleColumns.value, "eventIdentifier", store.state.layout.settings.enableEventIdentifier)
   utils.setVisibleColumn(visibleColumns.value, "eventIndex", store.state.layout.settings.EventsByNodeView.enableEventIndex)
   utils.setVisibleColumn(visibleColumns.value, "eventGroup", store.state.layout.settings.EventsByNodeView.enableGroup)
 }
@@ -422,8 +422,8 @@ const clickDelete = (eventIdentifier) => {
 //
 //
 const click_enableEventIdentifier = () => {
-  timeStampedLog(name + `: click_enableEventIdentifier ${store.state.layout.settings.EventsByNodeView.enableEventIdentifier}`)
-  utils.setVisibleColumn(visibleColumns.value, "eventIdentifier", store.state.layout.settings.EventsByNodeView.enableEventIdentifier)
+  timeStampedLog(name + `: click_enableEventIdentifier ${store.state.layout.settings.enableEventIdentifier}`)
+  utils.setVisibleColumn(visibleColumns.value, "eventIdentifier", store.state.layout.settings.enableEventIdentifier)
   store.state.update_layout_needed = true
 }
 
