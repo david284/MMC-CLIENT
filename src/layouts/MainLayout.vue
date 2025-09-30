@@ -80,6 +80,9 @@
                 <q-item>
                     <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.enableBusTraffic" @click="click_enableBusTraffic" label="show Bus Traffic"></q-checkbox>
                 </q-item>
+                <q-item>
+                  <q-btn size="md" color="primary" outline label="Reset all settings" @click="clickResetSettings()" no-caps/>
+                </q-item>
               </q-list>
             </q-menu>
           </q-btn>
@@ -568,6 +571,15 @@ const clickLogs = () => {
   console.log(name + ': clickLogs')
   showLogsDialog.value = true
 }
+
+//
+//
+const clickResetSettings = () => {
+  console.log(name + ': clickResetSettings')
+  store.state.layout.settings = {}
+  store.state.update_layout_needed = true
+}
+
 
 //
 //
