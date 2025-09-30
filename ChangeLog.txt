@@ -5,6 +5,7 @@ Version 0.13.0
   Added beta number if non-zero to version column in Nodes View
   Added 'enableGroup' to NodesView & EventsListByNode
   Added 'enableBusTraffic' to MainLayout
+  Added column settings to BusEvents, EventsView & NodeEventsView
   Merged Sven's changes
     Changed settings dialogs to dropdown menu
     Shortened a few column names
