@@ -29,7 +29,7 @@
                 <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.EventsByNodeView.enableEventIndex" @click="click_enableEventIndex" label="show Event Index column"></q-checkbox>
               </q-item>
               <q-item>
-                <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.EventsByNodeView.enableGroup" @click="click_enableGroup" label="show Group column"></q-checkbox>
+                <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.enableEventGroup" @click="click_enableEventGroup" label="show Group column"></q-checkbox>
               </q-item>
             </q-list>
           </q-menu>
@@ -350,13 +350,13 @@ const getSettings = () => {
     store.state.update_layout_needed = true
   }
   //
-  if (store.state.layout.settings.EventsByNodeView.enableGroup == undefined){
-    store.state.layout.settings.EventsByNodeView['enableGroup'] = true
+  if (store.state.layout.settings.enableEventGroup == undefined){
+    store.state.layout.settings['enableEventGroup'] = true
     store.state.update_layout_needed = true
   }
   utils.setVisibleColumn(visibleColumns.value, "eventIdentifier", store.state.layout.settings.enableEventIdentifier)
   utils.setVisibleColumn(visibleColumns.value, "eventIndex", store.state.layout.settings.EventsByNodeView.enableEventIndex)
-  utils.setVisibleColumn(visibleColumns.value, "eventGroup", store.state.layout.settings.EventsByNodeView.enableGroup)
+  utils.setVisibleColumn(visibleColumns.value, "eventGroup", store.state.layout.settings.enableEventGroup)
 }
 
 //
@@ -437,9 +437,9 @@ const click_enableEventIndex = () => {
 
 //
 //
-const click_enableGroup = () => {
-  timeStampedLog(name + `: click_enableGroup ${store.state.layout.settings.EventsByNodeView.enableGroup}`)
-  utils.setVisibleColumn(visibleColumns.value, "eventGroup", store.state.layout.settings.EventsByNodeView.enableGroup)
+const click_enableEventGroup = () => {
+  timeStampedLog(name + `: click_enableEventGroup ${store.state.layout.settings.enableEventGroup}`)
+  utils.setVisibleColumn(visibleColumns.value, "eventGroup", store.state.layout.settings.enableEventGroup)
   store.state.update_layout_needed = true
 }
 
