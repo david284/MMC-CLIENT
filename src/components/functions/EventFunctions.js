@@ -1,6 +1,6 @@
 
 import {inject} from "vue";
-import {sleep} from "components/functions/utils.js"
+import * as utils from "components/functions/utils.js"
 
 const name = "EventFunctions"
 
@@ -21,27 +21,10 @@ export async function refreshEventIndexes (store, nodeNumber, eventIdentifier) {
   // request all node events in advance of loading events as it refreshes the indexes
   console.log (name + ": refreshEventIndexes: Node " + nodeNumber)
   store.methods.request_all_node_events(nodeNumber)
-  //await sleep(500)
 }
 
-
-/*
-export function getStoredEventIndex (store, nodeNumber, eventIdentifier) {
-//  console.log(name +': getStoredEventIndex: ' + nodeNumber, eventIdentifier)
-  var index = undefined
-  try {
-    for (let key in store.state.nodes[nodeNumber].storedEvents) {
-      if (store.state.nodes[nodeNumber].storedEvents[key].eventIdentifier === eventIdentifier){
-        index = parseInt(key)
-      }
-    }
-  } catch (err){}
-  console.log(name +': getStoredEventIndex: result ' + index)
-  return index
-}
-*/
-
-
+//
+//
 const getEventslist = (nodeNumber, store) => {
   var eventsList = []
 
@@ -89,7 +72,8 @@ const getEventslist = (nodeNumber, store) => {
   return eventsList
 }
 
-
+//
+//
 export function createNewEvent (store, nodeNumber, eventIdentifier) {
   console.log(name + `: createNewEvent: ${nodeNumber} : ${eventIdentifier}`)
   var result = false
@@ -111,6 +95,40 @@ export function createNewEvent (store, nodeNumber, eventIdentifier) {
     result = true
   } else {
     console.log(name + `: createNewEvent: event already exists ${nodeNumber} : ${eventIdentifier}`)
+  }
+  return result
+}
+
+//
+// checks if cbus message is an ON or OFF event
+//
+export function getEventType (cbusMsg) {
+  utils.timeStampedLog(name + ': getEventType : opcode ' + cbusMsg.opCode)
+  let result = undefined
+  let opCode = cbusMsg.opCode
+  if (
+    (opCode == '90')
+    || (opCode == '98')
+    || (opCode == 'B0')
+    || (opCode == 'B8')
+    || (opCode == 'D0')
+    || (opCode == 'D8')
+    || (opCode == 'F0')
+    || (opCode == 'F8')
+  ){
+    result = {"type":"ON"}
+  }
+  else if(
+    (opCode == '91')
+    || (opCode == '99')
+    || (opCode == 'B1')
+    || (opCode == 'B9')
+    || (opCode == 'D1')
+    || (opCode == 'D9')
+    || (opCode == 'F1')
+    || (opCode == 'F9')
+  ){
+    result = {"type":"OFF"}
   }
   return result
 }

@@ -106,6 +106,15 @@
         <template v-slot:action>
           <div class="text-h6 float-right">
             <q-btn size="sm" color="blue" label="All" @click="clickAllBusTraffic()"/>
+            <q-btn square unelevated color="primary" icon="settings">
+              <q-menu auto-close>
+                <q-list style="min-width: 100px">
+                  <q-item>
+                      <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.MainLayout.showEventsOnly" label="show events only"></q-checkbox>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
           </div>
         </template>
       </q-banner>
@@ -114,7 +123,7 @@
         <q-scroll-area id="demo" ref="scrollAreaRef" style="height: 89vh;">
           <q-list>
             <q-item
-              v-for="message in store.state.nodeTraffic"
+              v-for="message in busTraffic"
               :key="message"
               clickable
               dense
@@ -192,6 +201,7 @@
 
 import {computed, inject, onBeforeMount, onMounted, onUpdated, ref, watch} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
+import * as utils from "components/functions/utils.js"
 import nodesView from "components/views/NodesView"
 import busTrafficDialog from "components/dialogs/BusTrafficDialog";
 import cbusErrorsDialog from "components/dialogs/CbusErrorsDialog";
@@ -225,7 +235,6 @@ const showImportDialog = ref(false)
 const showLogsDialog = ref(false)
 const showModifiedGridConnectDialog = ref(false)
 const showNewNodeDialog = ref(false)
-const showStartupDialog = ref(true)
 const showSystemDialog = ref(false)
 const previousNodeNumber = ref(0)
 const nodeModuleName = ref('')
@@ -237,21 +246,7 @@ const selectedView = ref('NodesView')
 var serverDisconnectNotification = null
 var oneShotScroll
 const showSendCbusDialog = ref(false)
-
-
-//
-//
-const nodeTraffic = computed(() => {
-  return Object.values(store.state.nodeTraffic)
-})
-
-//
-//
-watch(nodeTraffic, () => {
-  //console.log(name + `: WATCH nodeTraffic`)
-  scrollAreaRef.value.setScrollPercentage('vertical', 1)
-  oneShotScroll = setTimeout(scrollFunc,200);
-})
+const busTraffic = ref([])
 
 //
 //
@@ -282,8 +277,6 @@ onMounted(() => {
 //
 //
 onUpdated(() =>{
-  scrollAreaRef.value.setScrollPercentage('vertical', 1)
-//  oneShotScroll = setInterval(scrollIntervalFunc,1000);
 })
 
 //
@@ -454,12 +447,35 @@ store.eventBus.on('LAYOUT_DATA', () => {
 //
 const getSettings = () => {
   if (store.state.layout.settings == undefined){store.state.layout["settings"] = {}}
+  if (store.state.layout.settings.MainLayout == undefined){store.state.layout.settings["MainLayout"] = {}}
   //
   if (store.state.layout.settings.enableBusTraffic == undefined){
     store.state.layout.settings['enableBusTraffic'] = true
     store.state.update_layout_needed = true
   }
+  //
+  if (store.state.layout.settings.MainLayout.showEventsOnly == undefined){
+    store.state.layout.settings.MainLayout['showEventsOnly'] = false
+    store.state.update_layout_needed = true
+  }
 }
+
+
+store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
+
+  utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : ' + JSON.stringify(data))
+  let cbusMsg = data.json
+  utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : opcode ' + cbusMsg.opCode)
+
+  busTraffic.value.push(data)
+  if (busTraffic.value.length > 32) {
+    busTraffic.value.shift()
+  }
+
+  //scrollAreaRef.value.setScrollPercentage('vertical', 1)
+  oneShotScroll = setTimeout(scrollFunc,200);
+})
+
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -586,7 +602,6 @@ const clickResetSettings = () => {
 const clickSingleBusEvent = (message) => {
   console.log(name + ': clickSingleBusEvent')
   busMessage.value = message
-  scrollAreaRef.value.setScrollPercentage('vertical', 1)
   showModifiedGridConnectDialog.value = true
 }
 
