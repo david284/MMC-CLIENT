@@ -133,7 +133,7 @@
                 <!-- <span class="text-bold text-blue">{{ message.timeStamp }} {{ message.direction }}</span> -->
                 <span class="text-bold text-blue">{{ message.direction }}</span>
                 <span>:&nbsp;</span>
-                <span class="text-bold">{{ message.json.text }}</span>
+                <span class="text-bold">{{ message.displayText }}</span>
               </q-item-label>
             </q-item>
           </q-list>
@@ -202,6 +202,7 @@
 import {computed, inject, onBeforeMount, onMounted, onUpdated, ref, watch} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import * as utils from "components/functions/utils.js"
+import * as EventFunctions from "components/functions/EventFunctions.js"
 import nodesView from "components/views/NodesView"
 import busTrafficDialog from "components/dialogs/BusTrafficDialog";
 import cbusErrorsDialog from "components/dialogs/CbusErrorsDialog";
@@ -314,8 +315,9 @@ const fastIntervalFunction = () => {
 //
 const scrollFunc = () => {
 //  console.log(name + ": scroll timeout " + Date.now())
-//  clearInterval(oneShotScroll)
-  scrollAreaRef.value.setScrollPercentage('vertical', 1)
+  try {
+    scrollAreaRef.value.setScrollPercentage('vertical', 1)
+  } catch {}
 }
 
 
@@ -466,8 +468,24 @@ store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
   utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : ' + JSON.stringify(data))
   let cbusMsg = data.json
   utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : opcode ' + cbusMsg.opCode)
+  if (store.state.layout.settings.MainLayout.showEventsOnly){
+    if (EventFunctions.getEventDetails(cbusMsg).type != undefined){
+      data["displayText"] = cbusMsg.mnemonic
+      data["displayText"] += " NN:" + cbusMsg.nodeNumber
+      if (EventFunctions.getEventDetails(cbusMsg).type == "LONG"){
+        data["displayText"] += " EN:" + cbusMsg.eventNumber
+      } else {
+        data["displayText"] += " EN:" + cbusMsg.deviceNumber
+      }
+      data["displayText"] += " " + store.getters.event_name(cbusMsg.eventIdentifier)
+      busTraffic.value.push(data)
+    }
+  } else {
+    // display all messages
+    data["displayText"] = cbusMsg.text
+    busTraffic.value.push(data)
+  }
 
-  busTraffic.value.push(data)
   if (busTraffic.value.length > 32) {
     busTraffic.value.shift()
   }

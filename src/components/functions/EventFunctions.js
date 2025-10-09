@@ -102,33 +102,45 @@ export function createNewEvent (store, nodeNumber, eventIdentifier) {
 //
 // checks if cbus message is an ON or OFF event
 //
-export function getEventType (cbusMsg) {
-  utils.timeStampedLog(name + ': getEventType : opcode ' + cbusMsg.opCode)
-  let result = undefined
+export function getEventDetails (cbusMsg) {
+  utils.timeStampedLog(name + ': getEventDetails : opcode ' + cbusMsg.opCode)
+  let result = {"type":undefined,"state":undefined, }
   let opCode = cbusMsg.opCode
   if (
     (opCode == '90')
-    || (opCode == '98')
     || (opCode == 'B0')
-    || (opCode == 'B8')
     || (opCode == 'D0')
-    || (opCode == 'D8')
     || (opCode == 'F0')
+  ){
+    result.type = "LONG"
+    result.state = "ON"
+  }
+  else if (
+    (opCode == '98')
+    || (opCode == 'B8')
+    || (opCode == 'D8')
     || (opCode == 'F8')
   ){
-    result = {"type":"ON"}
+    result.type = "SHORT"
+    result.state = "ON"
   }
   else if(
     (opCode == '91')
-    || (opCode == '99')
     || (opCode == 'B1')
-    || (opCode == 'B9')
     || (opCode == 'D1')
-    || (opCode == 'D9')
     || (opCode == 'F1')
+  ){
+    result.type = "LONG"
+    result.state = "OFF"
+  }
+  else if(
+     (opCode == '99')
+    || (opCode == 'B9')
+    || (opCode == 'D9')
     || (opCode == 'F9')
   ){
-    result = {"type":"OFF"}
+    result.type = "SHORT"
+    result.state = "OFF"
   }
   return result
 }
