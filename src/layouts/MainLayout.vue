@@ -106,8 +106,8 @@
         <template v-slot:action>
           <div class="text-h6 float-right">
             <q-btn size="sm" color="blue" label="All" @click="clickAllBusTraffic()"/>
-            <q-btn square unelevated color="primary" icon="settings">
-              <q-menu auto-close>
+            <q-btn square unelevated color="primary" icon="settings" @click="clickBusTrafficSettings()">
+              <q-menu auto-close v-model="showBusTrafficSettings">
                 <q-list style="min-width: 100px">
                   <q-item>
                       <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.MainLayout.showEventsOnly" label="show events only"></q-checkbox>
@@ -248,6 +248,7 @@ var serverDisconnectNotification = null
 var oneShotScroll
 const showSendCbusDialog = ref(false)
 const busTraffic = ref([])
+const showBusTrafficSettings = ref(false)
 
 //
 //
@@ -471,13 +472,14 @@ store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
   if (store.state.layout.settings.MainLayout.showEventsOnly){
     if (EventFunctions.getEventDetails(cbusMsg).type != undefined){
       data["displayText"] = cbusMsg.mnemonic
-      data["displayText"] += " NN:" + cbusMsg.nodeNumber
+      data["displayText"] += " Node:" + cbusMsg.nodeNumber
       if (EventFunctions.getEventDetails(cbusMsg).type == "LONG"){
-        data["displayText"] += " EN:" + cbusMsg.eventNumber
+        data["displayText"] += " Event:" + cbusMsg.eventNumber
       } else {
-        data["displayText"] += " EN:" + cbusMsg.deviceNumber
+        data["displayText"] += " Event:" + cbusMsg.deviceNumber
       }
-      data["displayText"] += " " + store.getters.event_name(cbusMsg.eventIdentifier)
+//      data["displayText"] += " " + store.getters.event_name(cbusMsg.eventIdentifier)
+      data["displayText"] += " " + store.state.layout.eventDetails[cbusMsg.eventIdentifier].name
       busTraffic.value.push(data)
     }
   } else {
@@ -515,6 +517,14 @@ const clickAllBusTraffic = (message) => {
 const clickBusEventsView = () => {
   console.log(name + ': clickBusEventsView')
   selectedView.value = 'BusEventsView'
+}
+
+//
+//
+const clickBusTrafficSettings = async () => {
+  console.log(name + ': clickBusTrafficSettings')
+  await utils.sleep(5000)
+  showBusTrafficSettings.value = false
 }
 
 //
