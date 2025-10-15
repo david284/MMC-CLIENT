@@ -309,6 +309,11 @@ const methods = {
     timeStampedLog(name + ': RESET_NODE ' + nodeNumber)
   },
   //
+  save_logs_archive(){
+    timeStampedLog(`SAVE_LOGS_ARCHIVE`)
+    socket.emit('SAVE_LOGS_ARCHIVE')
+  },
+  //
   save_node_backup(nodeNumber, backupNode){
     timeStampedLog(`SAVE_NODE_BACKUP`)
     let data = {

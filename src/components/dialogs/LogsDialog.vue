@@ -15,6 +15,11 @@
       </q-card-section>
 
       <q-card flat inline class="q-pa-xs q-ma-none">
+        <q-card-actions class="text-primary">
+          <q-btn color="positive" size="sm" label="Archive now" @click="clickArchiveNow()" />
+          &nbsp; Create an archive immediately (automatically done at shutdown)
+        </q-card-actions>
+
         <div class="text-h6">Select an archived logs file to download - newest files at top</div>
         <div class="text-body">Archive directory: {{ archiveDirectory }}</div>
         <q-card-section style="max-height: 75vh" class="scroll no-margin q-pa-xs">
@@ -163,6 +168,13 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
+
+const clickArchiveNow = async() => {
+  utils.timeStampedLog(name + `: clickArchiveNow`)
+  store.methods.save_logs_archive()
+  await utils.sleep(2000)
+  store.methods.request_archived_logs_list()
+}
 
 //
 //

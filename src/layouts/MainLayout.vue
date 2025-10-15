@@ -523,7 +523,7 @@ const clickBusEventsView = () => {
 //
 const clickBusTrafficSettings = async () => {
   console.log(name + ': clickBusTrafficSettings')
-  await utils.sleep(5000)
+  await utils.sleep(3000)
   showBusTrafficSettings.value = false
 }
 
