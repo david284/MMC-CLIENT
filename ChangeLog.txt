@@ -1,3 +1,7 @@
+Version 0.14.0
+  Added 'show events only' to BusTraffic side bar
+  Added "Archive now" to LogsDialog
+
 Version 0.13.0
   Generate internal event when receiving LAYOUT_DATA
   NodesView & EventsByNodeView uses this new event to get settings, to update visible columns
