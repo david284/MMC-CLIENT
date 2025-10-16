@@ -24,6 +24,11 @@ describe('mfdLogic Test', () => {
     expect(myLogic.evaluate(node, expression, '11112222')).toBe(true)
   });
 
+  it('evparse_true', () => {
+    let expression = { "==" : [ {"ev" : [2]}, 4] }
+    expect(myLogic.evaluate(node, expression, '11112222')).toBe(true)
+  });
+
   it('EVparse_false', () => {
     let expression = { "==" : [ {"EV" : [3]}, 4] }
     expect(myLogic.evaluate(node, expression, '11112222')).toBe(false)
@@ -63,7 +68,7 @@ describe('mfdLogic Test', () => {
     expect(myLogic.evaluate(node, expression)).toBe(true)
   });
 
-  
+
   it('NPbitParse_false', () => {
     let expression = { "==" : [ {"NPbit" : [2, 1]}, true] }
     expect(myLogic.evaluate(node, expression)).toBe(false)
@@ -108,17 +113,17 @@ describe('mfdLogic Test', () => {
       "and" : [
         { "==" : [ {"NP" : [1]}, 7] },
         { "==" : [ {"NV" : [2]}, 1] }
-      ] 
+      ]
     }
     expect(myLogic.evaluate(node, expression)).toBe(true)
   });
 
-  
+
   node.storedEventsNI['11112222'] = {
     "eventIdentifier": "11112222",
     "variables": { "0": 3, "1": 5, "2": 4, "3": 3 }
   }
-  
+
   node.nodeVariables[5] = 7
 
 // EV1 = 5

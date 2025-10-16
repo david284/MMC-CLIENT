@@ -1,4 +1,5 @@
 import jsonLogic from 'json-logic-js'
+import jcc from 'json-case-convertor'
 
 export class mdfLogic {
 
@@ -14,7 +15,7 @@ export class mdfLogic {
     var EVoperator = function(a){
       return this.node.storedEventsNI[this.eventIdentifier].variables[a]
     }.bind(this);
-    jsonLogic.add_operation("EV", EVoperator);
+    jsonLogic.add_operation("ev", EVoperator);
 
     var EVbitOperator = function(a, b){
       let result = false
@@ -22,7 +23,7 @@ export class mdfLogic {
       if ((eventVariable & 2**b) > 0) { result = true}
       return result
     }.bind(this);
-    jsonLogic.add_operation("EVbit", EVbitOperator);
+    jsonLogic.add_operation("evbit", EVbitOperator);
 
     //
     // node parameter operators
@@ -31,14 +32,14 @@ export class mdfLogic {
     var NPoperator = function(a){
       return this.node.parameters[a]
     }.bind(this);
-    jsonLogic.add_operation("NP", NPoperator);
+    jsonLogic.add_operation("np", NPoperator);
 
     var NPbitOperator = function(a, b){
       let result = false
       if ((this.node.parameters[a] & 2**b) > 0) { result = true}
       return result
     }.bind(this);
-    jsonLogic.add_operation("NPbit", NPbitOperator);
+    jsonLogic.add_operation("npbit", NPbitOperator);
 
     //
     // node variable operators
@@ -47,7 +48,7 @@ export class mdfLogic {
     var NVoperator = function(a){
       return this.node.nodeVariables[a]
     }.bind(this);
-    jsonLogic.add_operation("NV", NVoperator);
+    jsonLogic.add_operation("nv", NVoperator);
 
 
     var NVbitOperator = function(a, b){
@@ -55,28 +56,31 @@ export class mdfLogic {
       if ((this.node.nodeVariables[a] & 2**b) > 0) { result = true}
       return result
     }.bind(this);
-    jsonLogic.add_operation("NVbit", NVbitOperator);
+    jsonLogic.add_operation("nvbit", NVbitOperator);
 
 
   }
 
 
   //
-  // method to evaluate expression
+  // main method to evaluate expression
   // will always need node & lociexpression to evaluate
   // will only need eventIdentifier if EV or EVbit operators used
+  // added jcc library to convert all logic operations to lower case
   //
   evaluate(node, logicExpression, eventIdentifier){
     this.node = node
     this.eventIdentifier = eventIdentifier
-//    console.log("mdfLogic.parse " + JSON.stringify(node))
-//    console.log("mdfLogic.parse " + JSON.stringify(logicExpression))
-//    console.log("mdfLogic.parse " + eventIdentifier)
+    // ensure all operations (keys) are lower case
+    let lowercaseLogicExpression = jcc.lowerCaseKeys(logicExpression)
+    //console.log("mdfLogic.parse " + JSON.stringify(node))
+    //console.log("mdfLogic.parse " + JSON.stringify(lowercaseLogicExpression))
+    //console.log("mdfLogic.parse " + eventIdentifier)
     try{
-      let result = jsonLogic.apply(logicExpression)
+      let result = jsonLogic.apply(lowercaseLogicExpression)
       /*
       console.log("mdfLogic.parse:"
-        + ' logic: ' + JSON.stringify(logicExpression)
+        + ' logic: ' + JSON.stringify(lowercaseLogicExpression)
         + ' result: ' + result )
       */
       return result
