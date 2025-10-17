@@ -113,6 +113,9 @@
                       <q-checkbox class="no-margin no-padding" label="show events only"
                         v-model="store.state.layout.settings.MainLayout.showEventsOnly" @click="clickShowEventsOnly()"></q-checkbox>
                   </q-item>
+                  <q-item>
+                    <q-btn size="md" color="primary" outline label="Clear bus traffic" @click="clickClearBusTraffic()" no-caps/>
+                  </q-item>
                 </q-list>
               </q-menu>
             </q-btn>
@@ -539,6 +542,16 @@ const clickCbusErrors = () => {
   console.log(name + ': clickCbusErrors')
   showCbusErrorsDialog.value = true
 }
+
+
+//
+//
+const clickClearBusTraffic = () => {
+  console.log(name + ': clickClearBusTraffic')
+  busTraffic.value = []
+  updateBusTrafficDisplay()
+}
+
 
 //
 //

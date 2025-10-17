@@ -1,5 +1,6 @@
 Version 0.14.0
   Added 'show events only' to BusTraffic side bar
+  Added 'clear bus traffic' to BusTraffic side bar
   Added "Archive now" to LogsDialog
   JsonLogic (JLL) operators (keys) now forced to lowercase
 
