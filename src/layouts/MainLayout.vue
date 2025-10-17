@@ -110,7 +110,8 @@
               <q-menu auto-close v-model="showBusTrafficSettings">
                 <q-list style="min-width: 100px">
                   <q-item>
-                      <q-checkbox class="no-margin no-padding" v-model="store.state.layout.settings.MainLayout.showEventsOnly" label="show events only"></q-checkbox>
+                      <q-checkbox class="no-margin no-padding" label="show events only"
+                        v-model="store.state.layout.settings.MainLayout.showEventsOnly" @click="clickShowEventsOnly()"></q-checkbox>
                   </q-item>
                 </q-list>
               </q-menu>
@@ -123,7 +124,7 @@
         <q-scroll-area id="demo" ref="scrollAreaRef" style="height: 89vh;">
           <q-list>
             <q-item
-              v-for="message in busTraffic"
+              v-for="message in busTrafficDisplay"
               :key="message"
               clickable
               dense
@@ -248,6 +249,7 @@ var serverDisconnectNotification = null
 var oneShotScroll
 const showSendCbusDialog = ref(false)
 const busTraffic = ref([])
+const busTrafficDisplay = ref([])
 const showBusTrafficSettings = ref(false)
 
 //
@@ -461,41 +463,45 @@ const getSettings = () => {
     store.state.layout.settings.MainLayout['showEventsOnly'] = false
     store.state.update_layout_needed = true
   }
+  updateBusTrafficDisplay()
 }
 
 
 store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
-
   utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : ' + JSON.stringify(data))
-  let cbusMsg = data.json
-  utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : opcode ' + cbusMsg.opCode)
-  if (store.state.layout.settings.MainLayout.showEventsOnly){
-    if (EventFunctions.getEventDetails(cbusMsg).type != undefined){
-      data["displayText"] = cbusMsg.mnemonic
-      data["displayText"] += " Node:" + cbusMsg.nodeNumber
-      if (EventFunctions.getEventDetails(cbusMsg).type == "LONG"){
-        data["displayText"] += " Event:" + cbusMsg.eventNumber
-      } else {
-        data["displayText"] += " Event:" + cbusMsg.deviceNumber
-      }
-//      data["displayText"] += " " + store.getters.event_name(cbusMsg.eventIdentifier)
-      data["displayText"] += " " + store.state.layout.eventDetails[cbusMsg.eventIdentifier].name
-      busTraffic.value.push(data)
-    }
-  } else {
-    // display all messages
-    data["displayText"] = cbusMsg.text
-    busTraffic.value.push(data)
-  }
-
+  busTraffic.value.push(data)
   if (busTraffic.value.length > 32) {
     busTraffic.value.shift()
   }
-
-  //scrollAreaRef.value.setScrollPercentage('vertical', 1)
-  oneShotScroll = setTimeout(scrollFunc,200);
+  updateBusTrafficDisplay()
 })
 
+const updateBusTrafficDisplay = () => {
+  busTrafficDisplay.value=[]
+  for (let i =0; i < busTraffic.value.length; i++){
+    let data = busTraffic.value[i]
+    let cbusMsg = data.json
+    if (store.state.layout.settings.MainLayout.showEventsOnly){
+      if (EventFunctions.getEventDetails(cbusMsg).type != undefined){
+        data["displayText"] = cbusMsg.mnemonic
+        data["displayText"] += " Node:" + cbusMsg.nodeNumber
+        if (EventFunctions.getEventDetails(cbusMsg).type == "LONG"){
+          data["displayText"] += " Event:" + cbusMsg.eventNumber
+        } else {
+          data["displayText"] += " Event:" + cbusMsg.deviceNumber
+        }
+        data["displayText"] += " " + store.state.layout.eventDetails[cbusMsg.eventIdentifier].name
+        busTrafficDisplay.value.push(data)
+      }
+    } else {
+      // display all messages
+      data["displayText"] = cbusMsg.text
+      busTrafficDisplay.value.push(data)
+    }
+  }
+  //scrollAreaRef.value.setScrollPercentage('vertical', 1)
+  oneShotScroll = setTimeout(scrollFunc,200);
+}
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -523,7 +529,7 @@ const clickBusEventsView = () => {
 //
 const clickBusTrafficSettings = async () => {
   console.log(name + ': clickBusTrafficSettings')
-  await utils.sleep(3000)
+  await utils.sleep(5000)   // collapse popup after 5 seconds
   showBusTrafficSettings.value = false
 }
 
@@ -624,6 +630,13 @@ const clickResetSettings = () => {
   store.state.update_layout_needed = true
 }
 
+//
+//
+const clickShowEventsOnly = () => {
+  console.log(name + ': clickShowEventsOnly')
+  store.state.update_layout_needed = true
+  updateBusTrafficDisplay()
+}
 
 //
 //
