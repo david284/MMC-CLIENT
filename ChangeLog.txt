@@ -1,7 +1,7 @@
 Version 0.14.0
   Added 'show events only' to BusTraffic side bar
   Added "Archive now" to LogsDialog
-  JsonLogic (JLL) expressions now forced to lowercase
+  JsonLogic (JLL) operators (keys) now forced to lowercase
 
 Version 0.13.0
   Generate internal event when receiving LAYOUT_DATA
