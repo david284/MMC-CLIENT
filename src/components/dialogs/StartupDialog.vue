@@ -137,7 +137,7 @@
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { useQuasar } from 'quasar'
-import {sleep} from "components/functions/utils.js"
+import * as utils from "components/functions/utils.js"
 import addLayoutDialog from "components/dialogs/AddLayoutDialog";
 import EditConnectionDetailsDialog from "components/dialogs/EditConnectionDetailsDialog";
 import StartupInfoDialog from "components/dialogs/StartupInfoDialog";
@@ -156,6 +156,7 @@ const selected_layout_name = ref()
 const connectionDetails = ref([])
 const showCopyLayout = ref(false)
 const newLayoutName = ref("")
+const lastLayoutSelection = ref(Date.now())
 
 
 const teColumns = [
@@ -176,7 +177,7 @@ const model = computed({
 
 // model changes when Dialog opened & closed
 watch(model, () => {
-//  console.log(name + `: WATCH model`)
+//  utils.timeStampedLog(name + `: WATCH model`)
   if (model.value == true){
     updateLayoutList()
     newLayoutName.value=""
@@ -189,7 +190,7 @@ const layout = computed(() => {
 
 // need to update when new layout added
 watch(layout, () => {
-//  console.log(name + `: WATCH layout`)
+//  utils.timeStampedLog(name + `: WATCH layout`)
   updateLayout()
 })
 
@@ -199,13 +200,13 @@ const layoutList = computed(() => {
 
 // need to update when new layout added
 watch(layoutList, () => {
-//  console.log(name + `: WATCH layoutList`)
+//  utils.timeStampedLog(name + `: WATCH layoutList`)
   updateLayoutList()
 })
 
 
 const updateLayout = () => {
-//    console.log(name + `: updateLayout: ` + JSON.stringify(teRows))
+//    utils.timeStampedLog(name + `: updateLayout: ` + JSON.stringify(teRows))
   try{
       layoutName.value = store.state.layout.layoutDetails.title
     } catch {}
@@ -241,10 +242,10 @@ const updateLayout = () => {
 const updateLayoutList = () => {
   teRows.value = []
   layoutList.value.forEach(layout => {
-//    console.log(name + `: update ` + layout)
+//    utils.timeStampedLog(name + `: update ` + layout)
     teRows.value.push({"layout" : layout})
   })
-//    console.log(name + `: updateLayoutList: ` + JSON.stringify(teRows))
+//    utils.timeStampedLog(name + `: updateLayoutList: ` + JSON.stringify(teRows))
 }
 
 onBeforeMount(() => {
@@ -258,31 +259,31 @@ onMounted(() => {
 const getNewLayoutName = (layout) => {
   try {
     let newList = layoutList.value.filter((A) => A.toUpperCase().includes(layout));
-    console.log(name + `: getNewLayoutName: newList: ${newList}`)
+    utils.timeStampedLog(name + `: getNewLayoutName: newList: ${newList}`)
     if (newList.length == 1){
       return layout.toUpperCase() + " COPY 01"
     } else {
       // ok, lets see if there's copies already
       let newList2 = newList.filter((B) => B.includes("COPY"));
-      console.log(name + `: getNewLayoutName: newList2: ${newList2}`)
+      utils.timeStampedLog(name + `: getNewLayoutName: newList2: ${newList2}`)
       if (newList2.length == 0){
         return layout.toUpperCase() + " COPY 01"
       } else {
         // array should be ordered, so we want the last entry
         let targetlayout = newList2[newList2.length-1]
-        console.log(name + `: getNewLayoutName: newlayout: ${targetlayout}`)
+        utils.timeStampedLog(name + `: getNewLayoutName: newlayout: ${targetlayout}`)
         // find last instance of 'COPY'
         let copyString = targetlayout.substring(targetlayout.lastIndexOf("COPY"), targetlayout.length)
-        console.log(name + `: getNewLayoutName: copyString: ${copyString}`)
+        utils.timeStampedLog(name + `: getNewLayoutName: copyString: ${copyString}`)
         // extract number and increment
         let copyNumber = parseInt(copyString.replace(/[^0-9]/g, '')) + 1
-        console.log(name + `: getNewLayoutName: copyNumber: ${copyNumber}`)
+        utils.timeStampedLog(name + `: getNewLayoutName: copyNumber: ${copyNumber}`)
         let newlayout = layout + " COPY " + copyNumber.toString().padStart(2,0)
         return newlayout
       }
     }
   } catch (err) {
-    console.log(name + `: getNewLayoutName: ${err}`)
+    utils.timeStampedLog(name + `: getNewLayoutName: ${err}`)
     return ""
   }
 }
@@ -295,19 +296,19 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 const clickAddNewLayout = async () => {
-  console.log(name + ': clickAddNewLayout')
+  utils.timeStampedLog(name + ': clickAddNewLayout')
   showAddLayoutDialog.value=true
 }
 
 const clickCopyLayout = async (layout) => {
-  console.log(name + ': clickCopyLayout')
+  utils.timeStampedLog(name + ': clickCopyLayout')
   selected_layout_name.value = layout
   newLayoutName.value = getNewLayoutName(layout.toUpperCase())
   showCopyLayout.value = true
 }
 
 const copyLayout = async (sourceLayout, destinationLayout) => {
-  console.log(name + `: copyLayout ${sourceLayout} ${destinationLayout}`)
+  utils.timeStampedLog(name + `: copyLayout ${sourceLayout} ${destinationLayout}`)
   if (destinationLayout.length > 0){
     store.methods.copy_layout(sourceLayout, destinationLayout)
   } else {
@@ -324,7 +325,7 @@ const copyLayout = async (sourceLayout, destinationLayout) => {
 }
 
 const clickDeleteLayout = async (row) => {
-  console.log(name + ': clickDeleteLayout ', row)
+  utils.timeStampedLog(name + ': clickDeleteLayout ', row)
   const result = $q.notify({
     message: 'Are you sure you want to delete layout ' + row,
     timeout: 0,
@@ -333,7 +334,7 @@ const clickDeleteLayout = async (row) => {
     actions: [
       { label: 'YES', color: 'white', handler: async () => {
         store.methods.delete_layout(row)
-        await sleep(50)     // allow a bit of a delay for the change
+        await utils.sleep(50)     // allow a bit of a delay for the change
         store.methods.request_layout_list()
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
@@ -342,17 +343,17 @@ const clickDeleteLayout = async (row) => {
 }
 
 const clickEditConnectionDetails = async () => {
-  console.log(name + ': clickEditConnectionDetails')
+  utils.timeStampedLog(name + ': clickEditConnectionDetails')
   showEditConnectionDetailsDialog.value=true
 }
 
 const clickInfo = async () => {
-  console.log(name + ': clickInfo')
+  utils.timeStampedLog(name + ': clickInfo')
   showStartupInfoDialog.value = true
 }
 
 const clickExit = () => {
-  console.log(name + `: clickExit`)
+  utils.timeStampedLog(name + `: clickExit`)
   const result = $q.notify({
     message: 'Are you sure you want to close the application?',
     timeout: 0,
@@ -361,7 +362,7 @@ const clickExit = () => {
     actions: [
       { label: 'YES', color: 'white', handler: async () => {
         store.methods.STOP_SERVER()
-        await sleep(50)     // allow a bit of a delay for the change
+        await utils.sleep(50)     // allow a bit of a delay for the change
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
     ]
@@ -369,20 +370,26 @@ const clickExit = () => {
 }
 
 const clickProceed = async () => {
-  console.log(name + ': clickProceed')
+  utils.timeStampedLog(name + ': clickProceed')
   if (store.state.layout != {} ){
     store.methods.start_connection(store.state.layout.connectionDetails)
-    await sleep(500)     // allow a bit of a delay for the change
+    await utils.sleep(500)     // allow a bit of a delay for the change
     store.state.inStartup = false
     model.value = false
   }
 }
 
-
+//
+// Added time delay between selections to avoid overwriting problems
+//
 const clickSelectLayout = async (row) => {
-  console.log(name + ': clickLayouts on ', row)
-  store.methods.change_layout(row)
-  readyToProceed.value = ref(true)
+  let interval = Date.now() - lastLayoutSelection.value
+  if (interval > 800){
+    utils.timeStampedLog(name + ': clickLayouts on ', row)
+    lastLayoutSelection.value = Date.now()
+    store.methods.change_layout(row)
+    readyToProceed.value = ref(true)
+  }
 }
 
 

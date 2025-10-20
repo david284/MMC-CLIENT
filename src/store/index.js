@@ -371,9 +371,11 @@ const methods = {
   },
   //
   update_layout() {
+    try{
       timeStampedLog(`Update Layout Data : ` + state.layout.layoutDetails.title)
       //timeStampedLog(`Update Layout Data : ` + JSON.stringify(state.layout))
       socket.emit('UPDATE_LAYOUT_DATA', state.layout)
+    } catch {}
   },
   //
   // reLoad is a flag to indicate if node variable(s) need to be read back

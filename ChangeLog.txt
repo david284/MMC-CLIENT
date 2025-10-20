@@ -3,6 +3,7 @@ Version 0.14.0
   Added 'clear bus traffic' to BusTraffic side bar
   Added "Archive now" to LogsDialog
   JsonLogic (JLL) operators (keys) now forced to lowercase
+  Added interval between selecting layouts to avoid over overwriting layput data
 
 Version 0.13.0
   Generate internal event when receiving LAYOUT_DATA
