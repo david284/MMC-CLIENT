@@ -34,6 +34,9 @@
               <q-item v-if="(store.state.develop)" clickable @click="clickiframe()">
                 <q-item-section>Example iFrame</q-item-section>
               </q-item>
+              <q-item v-if="(store.state.develop)" clickable @click="clickTest()">
+                <q-item-section>Test</q-item-section>
+              </q-item>
             </q-list>
           </q-menu>
         </q-btn>
@@ -165,8 +168,6 @@
 
 
   <busTrafficDialog v-model='showBusTrafficDialog' />
-
-
   <cbusErrorsDialog v-model='showCbusErrorsDialog' />
   <ExportDialog v-model='showExportDialog' />
   <jsonDialog v-model='showJsonDialog' />
@@ -174,11 +175,10 @@
   <LogsDialog v-model='showLogsDialog' />
   <modifiedGridConnectDialog v-model='showModifiedGridConnectDialog'
     :busMessage="busMessage"/>
-
-
-    <newNodeDialog v-model='showNewNodeDialog'
+  <newNodeDialog v-model='showNewNodeDialog'
     :previousNodeNumber="previousNodeNumber"
     :moduleName="nodeModuleName" />
+  <TestDialog v-model='showTestDialog' />
   <SendCbusDialog v-model='showSendCbusDialog' />
   <startupDialog v-model='store.state.inStartup' />
   <systemDialog v-model='showSystemDialog' />
@@ -216,6 +216,7 @@ import ImportDialog from "components/dialogs/ImportDialog";
 import LogsDialog from "components/dialogs/LogsDialog";
 import modifiedGridConnectDialog from "components/dialogs/ModifiedGridConnectDialog";
 import newNodeDialog from "components/dialogs/NewNodeDialog";
+import TestDialog from "components/dialogs/TestDialog";
 import startupDialog from "components/dialogs/StartupDialog";
 import systemDialog from "components/dialogs/SystemDialog";
 import dialogExampleCompositionAPI from "components/dialogs/DialogExampleCompositionAPI";
@@ -254,6 +255,7 @@ const showSendCbusDialog = ref(false)
 const busTraffic = ref([])
 const busTrafficDisplay = ref([])
 const showBusTrafficSettings = ref(false)
+const showTestDialog = ref(false)
 
 //
 //
@@ -641,6 +643,14 @@ const clickResetSettings = () => {
   console.log(name + ': clickResetSettings')
   store.state.layout.settings = {}
   store.state.update_layout_needed = true
+}
+
+
+//
+//
+const clickTest = () => {
+  console.log(name + ': clickTest')
+  showTestDialog.value = true
 }
 
 //

@@ -271,6 +271,11 @@ const methods = {
     timeStampedLog(name + `: REQUEST_ALL_NODE_EVENTS ${nodeNumber}`)
   },
   //
+  request_node_event_by_index(nodeNumber, eventIndex) {
+    socket.emit('REQUEST_NODE_EVENT_BY_INDEX', {"nodeNumber": nodeNumber, "eventIndex":eventIndex})
+    timeStampedLog(name + `: REQUEST_NODE_EVENT_BY_INDEX ${nodeNumber} ${eventIndex}`)
+  },
+  //
   request_event_variables_by_identifier(nodeNumber, eventIdentifier) {
     timeStampedLog(name + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER: nodeNumber: ` + nodeNumber + ` eventIdentifier: ` + eventIdentifier)
     socket.emit(`REQUEST_EVENT_VARIABLES_BY_IDENTIFIER`, {

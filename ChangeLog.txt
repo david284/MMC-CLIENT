@@ -1,3 +1,7 @@
+Version 0.15.0
+  Added REQUEST_NODE_EVENT_BY_INDEX
+  Added TestDialog under develop flag
+
 Version 0.14.0
   Added 'show events only' to BusTraffic side bar
   Added 'clear bus traffic' to BusTraffic side bar
