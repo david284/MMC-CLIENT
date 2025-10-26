@@ -153,6 +153,7 @@
 import {inject, ref, onBeforeMount, onMounted, computed, watch} from "vue"
 import { date, useQuasar, scroll } from 'quasar'
 import * as utils from "components/functions/utils.js"
+import * as eventFunctions from "components/functions/EventFunctions.js"
 import {NodeParametersLoaded} from "components/functions/NodeFunctions.js"
 import {timeStampedLog} from "components/functions/utils.js"
 import EventsListByNode from "components/views/EventsListByNode"
@@ -531,7 +532,11 @@ const clickEvents = async (nodeNumber) => {
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   await checkNodeParameters(nodeNumber)
   await checkNodeVariables(nodeNumber)
-  store.methods.request_all_node_events(nodeNumber)
+  if (store.getters.getEvents_useNENRD(nodeNumber)) {
+    eventFunctions.requestAllEventsByIndex(store, nodeNumber)
+  } else {
+    store.methods.request_all_node_events(nodeNumber)
+  }
   await select_node_row(nodeNumber)
   if (store.state.nodes_view_mode == 'full'){
     showNodeEventsDialog.value = true

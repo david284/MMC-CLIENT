@@ -454,6 +454,7 @@ const getters = {
       return ""
     }
   },
+  //
   event_variable_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex){
     //timeStampedLog(name + `: event_variable_by_identifier: ${nodeNumber} ${eventIdentifier} ${eventVariableIndex}`)
     try{
@@ -463,6 +464,14 @@ const getters = {
       return 0
     }
   },
+  getEvents_useNENRD(nodeNumber){
+    try{
+      return state.nodeDescriptors[nodeNumber].events.useNENRD
+    } catch{
+      return false
+    }
+  },
+  //
   module_name(nodeNumber){
     try{
       if (state.nodes[nodeNumber].moduleName){

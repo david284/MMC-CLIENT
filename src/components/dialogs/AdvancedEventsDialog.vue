@@ -15,6 +15,16 @@
         <q-card-actions align="left" class="text-primary">
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Delete all events" v-close-popup @click="deleteAllEvents()"/>
         </q-card-actions>
+        <q-card-actions v-if="(store.state.develop)" align="left" class="text-primary">
+          Develop
+          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md"
+            label="Send NERD" v-close-popup @click="clickSendNERD()"/>
+        </q-card-actions>
+        <q-card-actions v-if="(store.state.develop)" align="left" class="text-primary">
+          Develop
+          <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md"
+            label="Send NENRD" v-close-popup @click="clickSendNENRD()"/>
+        </q-card-actions>
       </q-card>
     </q-dialog>
 
@@ -57,7 +67,7 @@ const deleteAllEvents = () => {
     position: 'center',
     color: 'primary',
     actions: [
-      { label: 'YES', color: 'white', handler: async () => { 
+      { label: 'YES', color: 'white', handler: async () => {
         store.methods.delete_all_events(props.nodeNumber)
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
@@ -65,8 +75,19 @@ const deleteAllEvents = () => {
   })
 }
 
+const clickSendNERD = () => {
+  console.log(name + `: clickSendNERD ` + props.nodeNumber)
+  store.methods.request_all_node_events(props.nodeNumber)
+}
 
-
+const clickSendNENRD = () => {
+  console.log(name + `: clickSendNENRD ` + props.nodeNumber)
+  let numberOfEvents = store.state.nodes[props.nodeNumber].parameters[4]
+  if (numberOfEvents < 8){numberOfEvents = 8}
+  for (let i= 1; i <= numberOfEvents; i++){
+    store.methods.request_node_event_by_index(props.nodeNumber, i)
+  }
+}
 
 onBeforeMount(() => {
 })

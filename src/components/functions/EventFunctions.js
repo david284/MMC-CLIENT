@@ -5,9 +5,9 @@ import * as utils from "components/functions/utils.js"
 const name = "EventFunctions"
 
 export function  getEventCount (nodeNumber, store) {
-  console.log (name + " getEventList " + nodeNumber)
+  utils.timeStampedLog (name + " getEventList " + nodeNumber)
   var count = Object.keys(getEventslist(nodeNumber, store)).length
-  console.log (name + " getEventList - count " + count)
+  utils.timeStampedLog (name + " getEventList - count " + count)
   return count
 }
 
@@ -19,7 +19,7 @@ export function  getEventCount (nodeNumber, store) {
 //
 export async function refreshEventIndexes (store, nodeNumber, eventIdentifier) {
   // request all node events in advance of loading events as it refreshes the indexes
-  console.log (name + ": refreshEventIndexes: Node " + nodeNumber)
+  utils.timeStampedLog (name + ": refreshEventIndexes: Node " + nodeNumber)
   store.methods.request_all_node_events(nodeNumber)
 }
 
@@ -68,14 +68,14 @@ const getEventslist = (nodeNumber, store) => {
 
   // sort rows by eventIdentifier, not eventIndex
   eventsList.sort(function(a, b){return (a.eventIdentifier < b.eventIdentifier)? -1 : 1;});
-  console.log(name + JSON.stringify(eventsList))
+  utils.timeStampedLog(name + JSON.stringify(eventsList))
   return eventsList
 }
 
 //
 //
 export function createNewEvent (store, nodeNumber, eventIdentifier) {
-  console.log(name + `: createNewEvent: ${nodeNumber} : ${eventIdentifier}`)
+  utils.timeStampedLog(name + `: createNewEvent: ${nodeNumber} : ${eventIdentifier}`)
   var result = false
   // lets create a shortcut to the node entry for readability
   var nodeEntry = store.state.nodes[nodeNumber]
@@ -94,7 +94,7 @@ export function createNewEvent (store, nodeNumber, eventIdentifier) {
     }
     result = true
   } else {
-    console.log(name + `: createNewEvent: event already exists ${nodeNumber} : ${eventIdentifier}`)
+    utils.timeStampedLog(name + `: createNewEvent: event already exists ${nodeNumber} : ${eventIdentifier}`)
   }
   return result
 }
@@ -143,4 +143,19 @@ export function getEventDetails (cbusMsg) {
     result.state = "OFF"
   }
   return result
+}
+
+
+//
+// checks if cbus message is an ON or OFF event
+//
+export function requestAllEventsByIndex (store, nodeNumber) {
+  try{
+    let descriptor = store.state.nodeDescriptors[nodeNumber]
+    for (let i= 1; i <= descriptor.events.numberOfEvents; i++){
+      store.methods.request_node_event_by_index(nodeNumber, i)
+    }
+  } catch (err){
+    utils.timeStampedLog(name + `: requestAllEventsByIndex ${err}`)
+  }
 }
