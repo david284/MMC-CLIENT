@@ -532,7 +532,7 @@ const clickEvents = async (nodeNumber) => {
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   await checkNodeParameters(nodeNumber)
   await checkNodeVariables(nodeNumber)
-  if (store.getters.getEvents_useNENRD(nodeNumber)) {
+  if (store.getters.node_descriptor_useNENRD(nodeNumber)) {
     eventFunctions.requestAllEventsByIndex(store, nodeNumber)
   } else {
     store.methods.request_all_node_events(nodeNumber)

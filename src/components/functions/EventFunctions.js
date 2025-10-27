@@ -150,11 +150,19 @@ export function getEventDetails (cbusMsg) {
 // checks if cbus message is an ON or OFF event
 //
 export function requestAllEventsByIndex (store, nodeNumber) {
+  //utils.timeStampedLog(name + `: requestAllEventsByIndex: nodeNumber ${nodeNumber}`)
   try{
-    let descriptor = store.state.nodeDescriptors[nodeNumber]
-    for (let i= 1; i <= descriptor.events.numberOfEvents; i++){
-      store.methods.request_node_event_by_index(nodeNumber, i)
+    let numberOfEvents = store.getters.node_descriptor_numberOfEvents(nodeNumber)
+    // will return 0 if descriptor doesn't have numberOfEvents defined
+    if(numberOfEvents == 0){
+      // param 4 is number of events supported
+      numberOfEvents = store.state.nodes[nodeNumber].parameters[4]
     }
+    // always request at least 8
+    if((numberOfEvents < 8 ) || (numberOfEvents == undefined)){ numberOfEvents = 8 }
+    //utils.timeStampedLog(name + `: requestAllEventsByIndex: numberOfEvents ${numberOfEvents}`)
+    store.methods.request_all_node_events_by_index(nodeNumber, numberOfEvents)
+    return numberOfEvents   // for unit test
   } catch (err){
     utils.timeStampedLog(name + `: requestAllEventsByIndex ${err}`)
   }

@@ -35,7 +35,9 @@
 
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
-import { date, useQuasar, scroll } from 'quasar'
+import { useQuasar } from 'quasar'
+import * as utils from "components/functions/utils.js"
+import * as eventFunctions from "components/functions/EventFunctions.js"
 
 const $q = useQuasar()
 const store = inject('store')
@@ -60,7 +62,7 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 const deleteAllEvents = () => {
-  console.log(name + `: deleteAllEvents ` + props.nodeNumber)
+  utils.timeStampedLog(name + `: deleteAllEvents ` + props.nodeNumber)
   const result = $q.notify({
     message: 'Are you sure you want to delete all events for node '+ store.getters.node_name(props.nodeNumber),
     timeout: 0,
@@ -76,17 +78,13 @@ const deleteAllEvents = () => {
 }
 
 const clickSendNERD = () => {
-  console.log(name + `: clickSendNERD ` + props.nodeNumber)
+  utils.timeStampedLog(name + `: clickSendNERD ` + props.nodeNumber)
   store.methods.request_all_node_events(props.nodeNumber)
 }
 
 const clickSendNENRD = () => {
-  console.log(name + `: clickSendNENRD ` + props.nodeNumber)
-  let numberOfEvents = store.state.nodes[props.nodeNumber].parameters[4]
-  if (numberOfEvents < 8){numberOfEvents = 8}
-  for (let i= 1; i <= numberOfEvents; i++){
-    store.methods.request_node_event_by_index(props.nodeNumber, i)
-  }
+  utils.timeStampedLog(name + `: clickSendNENRD ` + props.nodeNumber)
+  eventFunctions.requestAllEventsByIndex(store, props.nodeNumber)
 }
 
 onBeforeMount(() => {

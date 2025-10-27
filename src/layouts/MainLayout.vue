@@ -291,7 +291,7 @@ onUpdated(() =>{
 //
 //
 const eventIntervalFunc = () => {
-  //console.log(name + ": interval " + Date.now())
+  //utils.timeStampedLog(name + ": interval " + Date.now())
   store.methods.request_server_status()
 }
 
@@ -300,7 +300,7 @@ const eventIntervalFunc = () => {
 // Method to throttle the update to the server
 //
 const layoutDetailsIntervalFunc = () => {
-//  console.log(name + ": layoutDetailsIntervalFunc " + Date.now())
+//  utils.timeStampedLog(name + ": layoutDetailsIntervalFunc " + Date.now())
   if (store.state.update_layout_needed == true){
     // clear the flag immediately, so something else can set it again whilt update in process
     store.state.update_layout_needed = false
@@ -322,7 +322,7 @@ const fastIntervalFunction = () => {
 //
 //
 const scrollFunc = () => {
-//  console.log(name + ": scroll timeout " + Date.now())
+//  utils.timeStampedLog(name + ": scroll timeout " + Date.now())
   try {
     scrollAreaRef.value.setScrollPercentage('vertical', 1)
   } catch {}
@@ -334,7 +334,7 @@ const scrollFunc = () => {
 // types are 'positive', 'negative', 'warning', 'info', 'ongoing'
 //
 store.eventBus.on('GENERAL_MESSAGE_EVENT', (message, caption, type, timeout) => {
-  console.log(name + ': GENERAL_MESSAGE_EVENT ' + JSON.stringify(message))
+  //utils.timeStampedLog(name + ': GENERAL_MESSAGE_EVENT ' + JSON.stringify(message))
   try{
     if ((timeout > 0) && (timeout <= 2000)){
       $q.notify({   // don't add a dismiss button
@@ -356,14 +356,14 @@ store.eventBus.on('GENERAL_MESSAGE_EVENT', (message, caption, type, timeout) => 
       })
     }
   } catch(err){
-    console.log(name + ': MESSAGE_EVENT: ' + err)
+    utils.timeStampedLog(name + ': MESSAGE_EVENT: ' + err)
   }
 })
 
 //
 //
 store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber, moduleName) => {
- console.log(name + ': REQUEST_NODE_NUMBER_EVENT - previous node number ' + nodeNumber + ' moduleName ' + moduleName )
+ //utils.timeStampedLog(name + ': REQUEST_NODE_NUMBER_EVENT - previous node number ' + nodeNumber + ' moduleName ' + moduleName )
  previousNodeNumber.value = nodeNumber
  nodeModuleName.value = moduleName
  showNewNodeDialog.value = true
@@ -388,7 +388,7 @@ store.eventBus.on('NETWORK_CONNECTION_FAILURE', (message, caption, type, timeout
         ]
       })
     } catch(err){
-      console.log(name + ': NETWORK_CONNECTION_FAILURE: ' + err)
+      utils.timeStampedLog(name + ': NETWORK_CONNECTION_FAILURE: ' + err)
     }
   }
 })
@@ -412,7 +412,7 @@ store.eventBus.on('SERIAL_CONNECTION_FAILURE', (message, caption, type, timeout)
         ]
       })
     } catch(err){
-      console.log(name + ': SERIAL_CONNECTION_FAILURE: ' + err)
+      utils.timeStampedLog(name + ': SERIAL_CONNECTION_FAILURE: ' + err)
     }
   }
 })
@@ -449,7 +449,7 @@ store.eventBus.on('SERVER_DISCONNECT', () => {
 //
 //
 store.eventBus.on('LAYOUT_DATA', () => {
-//  timeStampedLog(name + ': LAYOUT_DATA')
+  //utils.timeStampedLog(name + ': LAYOUT_DATA')
   getSettings()
 })
 
@@ -473,7 +473,7 @@ const getSettings = () => {
 
 
 store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
-  utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : ' + JSON.stringify(data))
+  //utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : ' + JSON.stringify(data))
   busTraffic.value.push(data)
   if (busTraffic.value.length > 32) {
     busTraffic.value.shift()
@@ -517,7 +517,7 @@ Click event handlers
 //
 //
 const clickAllBusTraffic = (message) => {
-  console.log(name + ': clickAllBusTraffic')
+  utils.timeStampedLog(name + ': clickAllBusTraffic')
   store.methods.request_log_file("bustraffic.txt")
   showBusTrafficDialog.value = true
 }
@@ -526,14 +526,14 @@ const clickAllBusTraffic = (message) => {
 //
 //
 const clickBusEventsView = () => {
-  console.log(name + ': clickBusEventsView')
+  utils.timeStampedLog(name + ': clickBusEventsView')
   selectedView.value = 'BusEventsView'
 }
 
 //
 //
 const clickBusTrafficSettings = async () => {
-  console.log(name + ': clickBusTrafficSettings')
+  utils.timeStampedLog(name + ': clickBusTrafficSettings')
   await utils.sleep(5000)   // collapse popup after 5 seconds
   showBusTrafficSettings.value = false
 }
@@ -541,7 +541,7 @@ const clickBusTrafficSettings = async () => {
 //
 //
 const clickCbusErrors = () => {
-  console.log(name + ': clickCbusErrors')
+  utils.timeStampedLog(name + ': clickCbusErrors')
   showCbusErrorsDialog.value = true
 }
 
@@ -549,7 +549,7 @@ const clickCbusErrors = () => {
 //
 //
 const clickClearBusTraffic = () => {
-  console.log(name + ': clickClearBusTraffic')
+  utils.timeStampedLog(name + ': clickClearBusTraffic')
   busTraffic.value = []
   updateBusTrafficDisplay()
 }
@@ -558,35 +558,35 @@ const clickClearBusTraffic = () => {
 //
 //
 const click_enableBusTraffic = () =>{
-  console.log(name + ': click_enableBusTraffic')
+  utils.timeStampedLog(name + ': click_enableBusTraffic')
 
 }
 
 //
 //
 const clickEventsView = () => {
-  console.log(name + ': clickEventView')
+  utils.timeStampedLog(name + ': clickEventView')
   selectedView.value = 'EventsView'
 }
 
 //
 //
 const clickExample = () => {
-  console.log(name + `: clickExample`)
+  utils.timeStampedLog(name + `: clickExample`)
   showDialogExampleCompositionAPI.value = true
 }
 
 //
 //
 const clickNodesView = () => {
-  console.log(name + ': clickNodeView')
+  utils.timeStampedLog(name + ': clickNodeView')
   selectedView.value = 'NodesView'
 }
 
 //
 //
 const clickExit = () => {
-  console.log(name + `: clickExit`)
+  utils.timeStampedLog(name + `: clickExit`)
   const result = $q.notify({
     message: 'Are you sure you want to close the application?',
     timeout: 0,
@@ -605,42 +605,42 @@ const clickExit = () => {
 //
 //
 const clickExport = () => {
-  console.log(name + ': clickExport')
+  utils.timeStampedLog(name + ': clickExport')
   showExportDialog.value = true
 }
 
 //
 //
 const clickiframe = () => {
-  console.log(name + ': clickiframe')
+  utils.timeStampedLog(name + ': clickiframe')
   showiFrameDialog.value = true
 }
 
 //
 //
 const clickImport = () => {
-  console.log(name + ': clickImport')
+  utils.timeStampedLog(name + ': clickImport')
   showImportDialog.value = true
 }
 
 //
 //
 const clickJson = () => {
-  console.log(name + ': clickJson')
+  utils.timeStampedLog(name + ': clickJson')
   showJsonDialog.value = true
 }
 
 //
 //
 const clickLogs = () => {
-  console.log(name + ': clickLogs')
+  utils.timeStampedLog(name + ': clickLogs')
   showLogsDialog.value = true
 }
 
 //
 //
 const clickResetSettings = () => {
-  console.log(name + ': clickResetSettings')
+  utils.timeStampedLog(name + ': clickResetSettings')
   store.state.layout.settings = {}
   store.state.update_layout_needed = true
 }
@@ -649,14 +649,14 @@ const clickResetSettings = () => {
 //
 //
 const clickTest = () => {
-  console.log(name + ': clickTest')
+  utils.timeStampedLog(name + ': clickTest')
   showTestDialog.value = true
 }
 
 //
 //
 const clickShowEventsOnly = () => {
-  console.log(name + ': clickShowEventsOnly')
+  utils.timeStampedLog(name + ': clickShowEventsOnly')
   store.state.update_layout_needed = true
   updateBusTrafficDisplay()
 }
@@ -664,7 +664,7 @@ const clickShowEventsOnly = () => {
 //
 //
 const clickSingleBusEvent = (message) => {
-  console.log(name + ': clickSingleBusEvent')
+  utils.timeStampedLog(name + ': clickSingleBusEvent')
   busMessage.value = message
   showModifiedGridConnectDialog.value = true
 }
@@ -672,14 +672,14 @@ const clickSingleBusEvent = (message) => {
 //
 //
 const clickSendCBUS = () => {
-  console.log(name + ': clickSendCBUS')
+  utils.timeStampedLog(name + ': clickSendCBUS')
   showSendCbusDialog.value = true
 }
 
 //
 //
 const clickSystem = () => {
-  console.log(name + ': clickSystem')
+  utils.timeStampedLog(name + ': clickSystem')
   showSystemDialog.value = true
 }
 

@@ -9,9 +9,15 @@ let name = "UNIT TEST"
     "state":{
       "nodeDescriptors":{"1":{ "events":{"numberOfEvents": 3}}}
     },
+    "getters":{
+      node_descriptor_numberOfEvents(nodeNumber){
+        if (nodeNumber == 1){return 3}
+        if (nodeNumber == 2){return 9}
+      }
+    },
     "methods":{
-      request_node_event_by_index(nodeNumber, eventIndex){
-      utils.timeStampedLog(name + `: request_node_event_by_index: ${nodeNumber} ${eventIndex}`)
+      request_all_node_events_by_index(nodeNumber, numberOfEvents){
+      utils.timeStampedLog(name + `: request_all_node_events_by_index: ${nodeNumber} ${numberOfEvents}`)
       }
     }
   }
@@ -116,12 +122,20 @@ describe('EventFunctions Test', () => {
 
   //
   //
-  it('requestAllEventsByIndex', () => {
+  it('requestAllEventsByIndex_1', () => {
     utils.timeStampedLog(name + `: requestAllEventsByIndex`)
-    EventFunctions.requestAllEventsByIndex(store, 1)
+    let result = EventFunctions.requestAllEventsByIndex(store, 1)
     //utils.timeStampedLog(`getEventDetails ASOF3 Result: ${JSON.stringify(result)}`)
-    //expect(result.type).toEqual(undefined)
-    //expect(result.state).toEqual(undefined)
+    expect(result).toEqual(8)
+  });
+
+  //
+  //
+  it('requestAllEventsByIndex_2', () => {
+    utils.timeStampedLog(name + `: requestAllEventsByIndex`)
+    let result = EventFunctions.requestAllEventsByIndex(store, 2)
+    //utils.timeStampedLog(`getEventDetails ASOF3 Result: ${JSON.stringify(result)}`)
+    expect(result).toEqual(9)
   });
 
 });
