@@ -5,6 +5,10 @@
         Events for node :  {{ store.getters.node_name(props.nodeNumber) }}
       </div>
       <template v-slot:action>
+        <q-btn class="q-mx-xs  q-my-none" size="sm" color="black" no-caps
+          @click="clickToggleEventMode()">
+          {{eventMode}}
+        </q-btn>
         <q-btn class="q-mx-xs  q-my-none" size="sm" color="blue" label="Toggle"  no-caps
           @click="clickToggleViewMode()" />
         <div class="text-h6" style="min-width: 250px">view {{ store.state.events_view_mode }} events</div>
@@ -149,6 +153,7 @@ const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
 const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref('')
+const eventMode = ref('Event')
 
 
 const props = defineProps({
@@ -221,12 +226,91 @@ watch(nodesUpdated, () => {
 
 
 const update_rows = () => {
-//  timeStampedLog(name + ': update_rows ' + props.nodeNumber)
+  timeStampedLog(name + `: update_rows: node ${props.nodeNumber} `)
   rows.value = []
   try{
-    // do stored events for this node first.....
-    var storedEventsNI = Object.values(store.state.nodes[props.nodeNumber].storedEventsNI)
-    storedEventsNI.forEach(event => {
+    if (eventMode.value == "Event"){
+      timeStampedLog(name + `: update_rows: node ${props.nodeNumber} `)
+      // do stored events for this node first.....
+      var storedEventsNI = Object.values(store.state.nodes[props.nodeNumber].storedEventsNI)
+      storedEventsNI.forEach(event => {
+        var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
+        var eventNumber = parseInt(event.eventIdentifier.substr(4, 4), 16)
+        //
+        // we use events_view_mode to decide which events we want to exclude from being displayed
+        if (((store.state.events_view_mode == 'short') && (eventNodeNumber > 0)) ||
+          ((store.state.events_view_mode == 'long') && (eventNodeNumber == 0)) ||
+          ((store.state.events_view_mode == 'named') && (store.state.layout.eventDetails[event.eventIdentifier].name.length == ''))) {
+          // don't add this node as we've elected to not display it
+        } else {
+          let output = {}
+          output['eventIdentifier'] = event.eventIdentifier
+          output['eventName'] = store.getters.event_name(event.eventIdentifier)
+          output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
+          output['nodeNumber'] = eventNodeNumber
+          output['eventIndex'] = event.eventIndex
+          output['eventNumber'] = eventNumber
+          output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
+          output['storedEvent'] = true
+          output['source'] = "stored event"
+          rows.value.push(output)
+        }
+      })
+
+      // now add bus events... but not if already in the list
+      // need to be careful with short events
+      var busEvents = Object.values(store.state.busEvents)
+      busEvents.forEach(busEvent => {
+        if (busEvent.nodeNumber == props.nodeNumber){
+          // ok, it's an event matching this node
+          // lets see if it's already in the stored events...
+          // we need to match long and short events differently
+          var alreadyInList = false
+          var eventIdentifier = busEvent.eventIdentifier
+
+          // for short events, we need to drop the nodenumber to find a match
+          // as 'short' stored events will always have 0 as node number
+          if (busEvent.type == 'short'){
+            eventIdentifier = '0000' + eventIdentifier.substr(4,4)
+          }
+
+          // now find if we have a match
+          storedEventsNI.forEach(event => {
+            if(eventIdentifier == event.eventIdentifier){
+              alreadyInList = true
+            }
+          })
+
+          if (alreadyInList == false){
+            let output = {}
+            output['eventIdentifier'] = eventIdentifier
+            output['eventName'] = store.getters.event_name(eventIdentifier)
+            output['eventGroup'] = store.getters.event_group(eventIdentifier)
+            output['nodeNumber'] = busEvent.nodeNumber
+            output['eventNumber'] = busEvent.eventNumber
+            output['eventType'] = busEvent.type
+            output['storedEvent'] = false
+            output['source'] = "bus event"
+            rows.value.push(output)
+          }
+        }
+      })
+      // sort rows by eventIdentifier, not eventIndex
+      rows.value.sort(function(a, b){return (a.eventIdentifier < b.eventIdentifier)? -1 : 1;});
+    } else {
+      update_rows_indexed()
+    }
+  } catch (err) {
+    timeStampedLog(name + `: update_rows: ${err} `)
+  }
+}
+
+
+const update_rows_indexed = () => {
+  try{
+    timeStampedLog(name + `: update_rows_indexed: node ${props.nodeNumber} `)
+    var eventsByIndex = Object.values(store.state.nodes[props.nodeNumber].eventsByIndex)
+    eventsByIndex.forEach(event => {
       var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
       var eventNumber = parseInt(event.eventIdentifier.substr(4, 4), 16)
       //
@@ -249,48 +333,11 @@ const update_rows = () => {
         rows.value.push(output)
       }
     })
-
-    // now add bus events... but not if already in the list
-    // need to be careful with short events
-    var busEvents = Object.values(store.state.busEvents)
-    busEvents.forEach(busEvent => {
-      if (busEvent.nodeNumber == props.nodeNumber){
-        // ok, it's an event matching this node
-        // lets see if it's already in the stored events...
-        // we need to match long and short events differently
-        var alreadyInList = false
-        var eventIdentifier = busEvent.eventIdentifier
-
-        // for short events, we need to drop the nodenumber to find a match
-        // as 'short' stored events will always have 0 as node number
-        if (busEvent.type == 'short'){
-          eventIdentifier = '0000' + eventIdentifier.substr(4,4)
-        }
-
-        // now find if we have a match
-        storedEventsNI.forEach(event => {
-          if(eventIdentifier == event.eventIdentifier){
-            alreadyInList = true
-          }
-        })
-
-        if (alreadyInList == false){
-          let output = {}
-          output['eventIdentifier'] = eventIdentifier
-          output['eventName'] = store.getters.event_name(eventIdentifier)
-          output['eventGroup'] = store.getters.event_group(eventIdentifier)
-          output['nodeNumber'] = busEvent.nodeNumber
-          output['eventNumber'] = busEvent.eventNumber
-          output['eventType'] = busEvent.type
-          output['storedEvent'] = false
-          output['source'] = "bus event"
-          rows.value.push(output)
-        }
-      }
-    })
     // sort rows by eventIdentifier, not eventIndex
-    rows.value.sort(function(a, b){return (a.eventIdentifier < b.eventIdentifier)? -1 : 1;});
-  } catch {}
+    rows.value.sort(function(a, b){return (a.eventIndex < b.eventIndex)? -1 : 1;});
+  } catch(err){
+    timeStampedLog(name + `: update_rows_indexed: ${err} `)
+  }
 }
 
 
@@ -498,6 +545,15 @@ const clickTeach = (eventIndentifier) => {
   timeStampedLog(name + `: clickTeach`)
   selected_event_Identifier.value = eventIndentifier
   showEventTeachDialog.value = true
+}
+
+
+//
+//
+const clickToggleEventMode = () => {
+  timeStampedLog(name + `: clickToggleEventMode`)
+  eventMode.value = (eventMode.value == 'Event') ? 'Index' : 'Event'
+  update_rows()
 }
 
 //
