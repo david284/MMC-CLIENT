@@ -69,7 +69,7 @@
           <q-td key="actions" :props="props">
             <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
             <q-btn dense class="q-mx-xs" outline :disabled="!props.row.storedEvent" color="primary" size="md" label="Variables"
-            @click="clickVariables(props.row.eventIdentifier)" no-caps/>
+            @click="clickVariables(props.row.eventIdentifier, props.row.eventIndex)" no-caps/>
             <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
             <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.eventIdentifier)" no-caps>send ON</q-btn>
             <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.eventIdentifier)" no-caps>send OFF</q-btn>
@@ -123,6 +123,7 @@
 import {computed, inject, ref, watch, onBeforeMount, onMounted, onUpdated} from "vue"
 import { date, useQuasar, scroll } from 'quasar'
 import * as utils from "components/functions/utils.js"
+import * as eventFunctions from "components/functions/EventFunctions.js"
 import AddEventDialog from "components/dialogs/AddEventDialog"
 import advancedEventsDialog from "components/dialogs/AdvancedEventsDialog"
 import sendEventDialog from "components/dialogs/SendEventDialog"
@@ -359,13 +360,17 @@ onUpdated(() => {
 })
 */
 
-const getEventVariables = async (eventIdentifier) => {
-  timeStampedLog(name + ': getEventVariables:')
+const getEventVariables = async (eventIdentifier, eventIndex) => {
+  timeStampedLog(name + `: getEventVariables: ${eventIdentifier} ${eventIndex}`)
   //
   WaitingOnBusTrafficDialogReturn.value =''
   WaitingOnBusTrafficMessage.value = "Loading Event Variables"
   showWaitingOnBusTrafficDialog.value = true
-  store.methods.request_event_variables_by_identifier(props.nodeNumber, eventIdentifier)
+  if (eventMode.value == "Index"){
+    store.methods.request_event_variables_by_index(props.nodeNumber, eventIndex)
+  } else {
+    store.methods.request_event_variables_by_identifier(props.nodeNumber, eventIdentifier)
+  }
 
   // allow up to 1 minutes to finish loading
   let startTime = Date.now()
@@ -509,7 +514,11 @@ const clickInfo = () => {
 //
 const clickRefresh = () => {
   timeStampedLog(name + `: clickRefresh`)
-  store.methods.request_all_node_events(props.nodeNumber)
+  if (eventMode.value == "Index"){
+    eventFunctions.requestAllEventsByIndex(store, props.nodeNumber)
+  } else {
+    store.methods.request_all_node_events(props.nodeNumber)
+  }
 update_rows()
 }
 
@@ -581,10 +590,10 @@ const clickToggleViewMode = () => {
 
 //
 //
-const clickVariables = async (eventIdentifier) => {
+const clickVariables = async (eventIdentifier, eventIndex) => {
   timeStampedLog(name + `: clickVariables: node ${props.nodeNumber} event ${eventIdentifier}`)
   selected_event_Identifier.value = eventIdentifier
-  await getEventVariables(eventIdentifier)
+  await getEventVariables(eventIdentifier, eventIndex)
   showEventVariablesDialog.value = true
 }
 

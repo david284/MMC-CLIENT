@@ -290,6 +290,12 @@ const methods = {
     })
   },
   //
+  request_event_variables_by_index(nodeNumber, eventIndex) {
+    let data = { "nodeNumber": nodeNumber, "eventIndex": eventIndex }
+    utils.timeStampedLog(name + `: REQUEST_EVENT_VARIABLES_BY_INDEX: nodeNumber: ${JSON.stringify(data)}`)
+    socket.emit(`REQUEST_EVENT_VARIABLES_BY_INDEX`, data)
+  },
+  //
   request_service_discovery(nodeNumber) {
     utils.timeStampedLog(`Request Service Discovery : ` + nodeNumber)
     socket.emit('REQUEST_SERVICE_DISCOVERY', {"nodeNumber":nodeNumber})
