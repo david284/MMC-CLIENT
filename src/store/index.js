@@ -283,11 +283,9 @@ const methods = {
   },
   //
   request_event_variables_by_identifier(nodeNumber, eventIdentifier) {
-    utils.timeStampedLog(name + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER: nodeNumber: ` + nodeNumber + ` eventIdentifier: ` + eventIdentifier)
-    socket.emit(`REQUEST_EVENT_VARIABLES_BY_IDENTIFIER`, {
-      "nodeNumber": nodeNumber,
-      "eventIdentifier": eventIdentifier
-    })
+    let data = { "nodeNumber": nodeNumber, "eventIdentifier": eventIdentifier }
+    utils.timeStampedLog(name + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER: nodeNumber: ${JSON.stringify(data)}`)
+    socket.emit(`REQUEST_EVENT_VARIABLES_BY_IDENTIFIER`, data)
   },
   //
   request_event_variables_by_index(nodeNumber, eventIndex) {
