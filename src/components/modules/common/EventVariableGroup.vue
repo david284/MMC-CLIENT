@@ -11,7 +11,9 @@
         <EventVariables
           :configuration = configuration.groupItems
           :nodeNumber = nodeNumber
-          :eventIdentifier = eventIdentifier>
+          :eventIdentifier = eventIdentifier
+          :eventIndex = eventIndex
+          >
         </EventVariables>
       </q-card-section>
 
@@ -29,6 +31,7 @@
     configuration: Object,
     nodeNumber: {type: Number, required: true },
     eventIdentifier: {type: String, required: true },
+    eventIndex: {type: Number, required: true }
   })
 
   const store = inject('store')

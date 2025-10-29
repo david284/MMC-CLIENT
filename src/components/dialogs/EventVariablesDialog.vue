@@ -44,7 +44,8 @@
             <EventVariables v-if="store.state.nodeDescriptors[props.nodeNumber]"
               :configuration = processedEventVariableDescriptor
               :nodeNumber = props.nodeNumber
-              :eventIdentifier = props.eventIdentifier>
+              :eventIdentifier = props.eventIdentifier
+              :eventIndex = props.eventIndex>
             </EventVariables>
 
           </div>
@@ -154,6 +155,7 @@ const props = defineProps({
   modelValue: { type: Boolean, required: true },
   nodeNumber: {type: Number, default: 0 },
   eventIdentifier: {type: String, required: true },
+  eventIndex: {type: Number, required: true },
   newEvent:  { type: Boolean, default: false }
 })
 

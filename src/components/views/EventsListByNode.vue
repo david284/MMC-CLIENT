@@ -105,6 +105,7 @@
     <eventVariablesDialog v-model='showEventVariablesDialog'
         :nodeNumber = nodeNumber
         :eventIdentifier = selected_event_Identifier
+        :eventIndex = selected_event_Index
       />
 
       <EventsByNodeViewInfoDialog v-model='showEventsByNodeViewInfoDialog'/>
@@ -149,6 +150,7 @@ const showNameEventDialog = ref(false)
 const showSendEventDialog = ref(false)
 const newEventName = ref()
 const selected_event_Identifier = ref("") // Dialog will complain if null
+const selected_event_Index = ref()
 const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
 const WaitingOnBusTrafficDialogReturn = ref('')
@@ -600,6 +602,7 @@ const clickToggleViewMode = () => {
 const clickVariables = async (eventIdentifier, eventIndex) => {
   utils.timeStampedLog(name + `: clickVariables: node ${props.nodeNumber} event ${eventIdentifier}`)
   selected_event_Identifier.value = eventIdentifier
+  selected_event_Index.value = eventIndex
   await getEventVariables(eventIdentifier, eventIndex)
   showEventVariablesDialog.value = true
 }

@@ -23,6 +23,7 @@
       <EventVariableGroup v-if="(item.type=='EventVariableGroup') && (isVisible(item))"
         :node-number=props.nodeNumber
         :eventIdentifier= props.eventIdentifier
+        :eventIndex= props.eventIndex
         :configuration = item>
       </EventVariableGroup>
       <EventVariableNumber v-if="(item.type=='EventVariableNumber') && (isVisible(item))"
@@ -68,6 +69,7 @@
       <EventVariableTabs v-if="(item.type=='EventVariableTabs') && (isVisible(item))"
         :node-number=props.nodeNumber
         :eventIdentifier= props.eventIdentifier
+        :eventIndex= props.eventIndex
         :configuration=item>
       </EventVariableTabs>
     </div>
@@ -90,6 +92,7 @@ const props = defineProps({
   configuration: Object,
   nodeNumber: {type: Number, required: true },
   eventIdentifier: {type: String, required: true },
+  eventIndex: {type: Number, required: true }
 })
 
 const store = inject('store')

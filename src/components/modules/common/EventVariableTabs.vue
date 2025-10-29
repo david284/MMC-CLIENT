@@ -22,7 +22,8 @@
               <EventVariables
                 :configuration = tab.items
                 :nodeNumber = props.nodeNumber
-                :eventIdentifier = props.eventIdentifier>
+                :eventIdentifier = props.eventIdentifier
+                :eventIndex= props.eventIndex>
               </EventVariables>
             </q-card-section>
           </div>
@@ -33,10 +34,10 @@
 
   </div>
 </template>
-  
+
 
   <script setup>
-  
+
   // composition API - uses ref()
 
   import { inject, ref, onMounted } from 'vue'
@@ -46,6 +47,7 @@
     configuration: Object,
     nodeNumber: {type: Number, required: true },
     eventIdentifier: {type: String, required: true },
+    eventIndex: {type: Number, required: true }
   })
 
     const tabPanels = ref()
@@ -62,4 +64,3 @@
 
 
   </script>
-  
