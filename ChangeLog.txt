@@ -1,9 +1,10 @@
 Version 0.15.0
   Added REQUEST_NODE_EVENT_BY_INDEX
   Added TestDialog under develop flag
-  Added Send NERD 7 Send NENRD under develop flag
+  Added Send NERD & Send NENRD under develop flag
   Added requestAllEventsByIndex utility function
-  Added getter getEvents_useNENRD
+  Added getter node_descriptor_useNENRD
+  added getter node_descriptor_useEventIndex
 
 Version 0.14.0
   Added 'show events only' to BusTraffic side bar
