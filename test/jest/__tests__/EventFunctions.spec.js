@@ -5,7 +5,7 @@ import cbusLib from "cbuslibrary"
 
 let name = "UNIT TEST"
 
-  let store = {
+  let mock_store = {
     "state":{
       "nodeDescriptors":{"1":{ "events":{"numberOfEvents": 3}}}
     },
@@ -13,13 +13,42 @@ let name = "UNIT TEST"
       node_descriptor_numberOfEvents(nodeNumber){
         if (nodeNumber == 1){return 3}
         if (nodeNumber == 2){return 9}
+      },
+      node_descriptor_useEventIndex(nodeNumber){
+        return mock_store.useEventIndex
       }
     },
     "methods":{
       request_all_node_events_by_index(nodeNumber, numberOfEvents){
-      utils.timeStampedLog(name + `: request_all_node_events_by_index: ${nodeNumber} ${numberOfEvents}`)
+        utils.timeStampedLog(name + `: request_all_node_events_by_index: ${nodeNumber} ${numberOfEvents}`)
+      },
+      event_teach_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex, eventVariableValue, reLoad, linkedVariableList){
+        let data = {
+          "nodeNumber": nodeNumber,
+          "eventIdentifier": eventIdentifier,
+          "eventVariableIndex": eventVariableIndex,
+          "eventVariableValue": parseInt(eventVariableValue),
+          "reLoad": reLoad,
+          "linkedVariableList": linkedVariableList
+        }
+        utils.timeStampedLog(name + `: EVENT_TEACH_BY_IDENTIFIER : ${JSON.stringify (data, null, " ")} `)
+        mock_store.mock_store_result = true
+      },
+      event_teach_by_index(nodeNumber, eventIndex, eventVariableIndex, eventVariableValue, reLoad, linkedVariableList){
+        let data = {
+          "nodeNumber": nodeNumber,
+          "eventIndex": eventIndex,
+          "eventVariableIndex": eventVariableIndex,
+          "eventVariableValue": parseInt(eventVariableValue),
+          "reLoad": reLoad,
+          "linkedVariableList": linkedVariableList
+        }
+        utils.timeStampedLog(name + `: event_teach_by_index : ${JSON.stringify (data, null, " ") } `)
+        mock_store.mock_store_result = true
       }
-    }
+    },
+    mock_store_result: false,
+    useEventIndex: false
   }
 
 
@@ -124,7 +153,7 @@ describe('EventFunctions Test', () => {
   //
   it('requestAllEventsByIndex_1', () => {
     utils.timeStampedLog(name + `: requestAllEventsByIndex`)
-    let result = EventFunctions.requestAllEventsByIndex(store, 1)
+    let result = EventFunctions.requestAllEventsByIndex(mock_store, 1)
     //utils.timeStampedLog(`getEventDetails ASOF3 Result: ${JSON.stringify(result)}`)
     expect(result).toEqual(8)
   });
@@ -133,9 +162,45 @@ describe('EventFunctions Test', () => {
   //
   it('requestAllEventsByIndex_2', () => {
     utils.timeStampedLog(name + `: requestAllEventsByIndex`)
-    let result = EventFunctions.requestAllEventsByIndex(store, 2)
+    let result = EventFunctions.requestAllEventsByIndex(mock_store, 2)
     //utils.timeStampedLog(`getEventDetails ASOF3 Result: ${JSON.stringify(result)}`)
     expect(result).toEqual(9)
+  });
+
+  //
+  //
+  it('eventTeach_1', () => {
+    mock_store.mock_store_result = false
+    mock_store.useEventIndex = false
+    utils.timeStampedLog(name + `: eventTeach_1`)
+    let result = EventFunctions.eventTeach(
+      mock_store,
+      1,        // nodeNumber,
+      '2',      // eventIdentifier,
+      3,        // eventIndex,
+      4,        // eventVariableIndex,
+      5,        // eventVariableValue,
+      {},       // configuration
+    )
+    expect(mock_store.mock_store_result).toEqual(true)
+  });
+
+  //
+  //
+  it('eventTeach_2', () => {
+    mock_store.mock_store_result = false
+    mock_store.useEventIndex = true
+    utils.timeStampedLog(name + `: eventTeach_2`)
+    let result = EventFunctions.eventTeach(
+      mock_store,
+      1,        // nodeNumber,
+      '2',      // eventIdentifier,
+      3,        // eventIndex,
+      4,        // eventVariableIndex,
+      5,        // eventVariableValue,
+      {},       // configuration
+    )
+    expect(mock_store.mock_store_result).toEqual(true)
   });
 
 });

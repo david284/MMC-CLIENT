@@ -106,15 +106,38 @@ const methods = {
   //
   // reLoad false to surpress reLoading of variables after writing - like when restoring node
   event_teach_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex, eventVariableValue, reLoad, linkedVariableList){
-    utils.timeStampedLog(name + `: event_teach_by_identifier : ${nodeNumber} ${eventIdentifier} ${eventVariableIndex} ${eventVariableValue} ${JSON.stringify(linkedVariableList)} `)
-    socket.emit('EVENT_TEACH_BY_IDENTIFIER',{
-      "nodeNumber": nodeNumber,
-      "eventIdentifier": eventIdentifier,
-      "eventVariableIndex": eventVariableIndex,
-      "eventVariableValue": parseInt(eventVariableValue),
-      "reLoad": reLoad,
-      "linkedVariableList": linkedVariableList
-    })
+    try{
+      let data = {
+        "nodeNumber": nodeNumber,
+        "eventIdentifier": eventIdentifier,
+        "eventVariableIndex": eventVariableIndex,
+        "eventVariableValue": parseInt(eventVariableValue),
+        "reLoad": reLoad,
+        "linkedVariableList": linkedVariableList
+      }
+      utils.timeStampedLog(name + `: EVENT_TEACH_BY_IDENTIFIER : ${JSON.stringify (data)} `)
+      socket.emit('EVENT_TEACH_BY_IDENTIFIER', data)
+    } catch (err) {
+      utils.timeStampedLog(name + `: EVENT_TEACH_BY_IDENTIFIER : ${err} `)
+    }
+  },
+  //
+  // reLoad false to surpress reLoading of variables after writing - like when restoring node
+  event_teach_by_index(nodeNumber, eventIndex, eventVariableIndex, eventVariableValue, reLoad, linkedVariableList){
+    try {
+      let data = {
+        "nodeNumber": nodeNumber,
+        "eventIndex": eventIndex,
+        "eventVariableIndex": eventVariableIndex,
+        "eventVariableValue": parseInt(eventVariableValue),
+        "reLoad": reLoad,
+        "linkedVariableList": linkedVariableList
+      }
+      utils.timeStampedLog(name + `: EVENT_TEACH_BY_INDEX : ${JSON.stringify (data)} `)
+      socket.emit('EVENT_TEACH_BY_INDEX', data)
+    } catch (err) {
+      utils.timeStampedLog(name + `: EVENT_TEACH_BY_INDEX : ${err} `)
+    }
   },
   //
   import_module_descriptor(nodeNumber, moduleDescriptor) {

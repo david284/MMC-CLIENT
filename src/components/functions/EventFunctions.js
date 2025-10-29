@@ -1,6 +1,7 @@
 
 import {inject} from "vue";
 import * as utils from "components/functions/utils.js"
+import {getLinkedEventVariables} from "components/modules/common/commonFunctions.js"
 
 const name = "EventFunctions"
 
@@ -165,5 +166,37 @@ export function requestAllEventsByIndex (store, nodeNumber) {
     return numberOfEvents   // for unit test
   } catch (err){
     utils.timeStampedLog(name + `: requestAllEventsByIndex ${err}`)
+  }
+}
+
+
+export function eventTeach (
+  store,
+  nodeNumber,
+  eventIdentifier,
+  eventIndex,
+  eventVariableIndex,
+  eventVariableValue,
+  configuration) {
+  if (store.getters.node_descriptor_useEventIndex(nodeNumber) == true){
+    // use eventIndex
+    store.methods.event_teach_by_index(
+      nodeNumber,
+      eventIndex,
+      eventVariableIndex,
+      eventVariableValue,
+      true,
+      getLinkedEventVariables(configuration)
+    )
+  } else {
+    // use eventIdentifier
+    store.methods.event_teach_by_identifier(
+      nodeNumber,
+      eventIdentifier,
+      eventVariableIndex,
+      eventVariableValue,
+      true,
+      getLinkedEventVariables(configuration)
+    )
   }
 }
