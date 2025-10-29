@@ -132,7 +132,6 @@ import eventTeachDialog from "components/dialogs/EventTeachDialog"
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import EventsByNodeViewInfoDialog from "components/dialogs/EventsByNodeViewInfoDialog"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
-import {timeStampedLog} from "components/functions/utils.js"
 
 
 const $q = useQuasar()
@@ -156,7 +155,6 @@ const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref('')
 const eventMode = ref('Event')
 
-
 const props = defineProps({
   nodeNumber: {type: Number, required: true }
 })
@@ -175,25 +173,29 @@ const columns = [
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
 ]
 
-
+//
 // need to know if selected node changed
 const selected_node = computed(() =>{
   return props.nodeNumber
 })
+
+//
+//
 watch(selected_node, () => {
-  //timeStampedLog(name + `: WATCH selected_node`)
+  //utils.timeStampedLog(name + `: WATCH selected_node ${props.nodeNumber}`)
   if (props.nodeNumber){
     update_rows()
   }
 })
 
 
+//
 // need to know if new bus events received
 const busEvents = computed(() =>{
   return Object.values(store.state.busEvents)
 })
 watch(busEvents, () => {
-  //timeStampedLog(name + `: WATCH busEvents`)
+  //utils.timeStampedLog(name + `: WATCH busEvents`)
   if (props.nodeNumber){
     update_rows()
   }
@@ -206,7 +208,7 @@ const layoutUpdated = computed(() => {
 })
 
 watch(layoutUpdated, () => {
-  //timeStampedLog(name + `: WATCH: layoutUpdated`)
+  //utils.timeStampedLog(name + `: WATCH: layoutUpdated`)
   if (props.nodeNumber){
     update_rows()
   }
@@ -219,19 +221,24 @@ const nodesUpdated = computed(() => {
 })
 
 watch(nodesUpdated, () => {
-  //timeStampedLog(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
+  //utils.timeStampedLog(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
   if (props.nodeNumber){
+    if (store.getters.node_descriptor_useEventIndex(props.nodeNumber) == true){
+      eventMode.value = "Index"
+    } else {
+      eventMode.value = "Event"
+    }
     update_rows()
   }
 })
 
 
 const update_rows = () => {
-  timeStampedLog(name + `: update_rows: node ${props.nodeNumber} `)
+  utils.timeStampedLog(name + `: update_rows: node ${props.nodeNumber} `)
   rows.value = []
   try{
     if (eventMode.value == "Event"){
-      timeStampedLog(name + `: update_rows: node ${props.nodeNumber} `)
+      utils.timeStampedLog(name + `: update_rows: node ${props.nodeNumber} `)
       // do stored events for this node first.....
       var storedEventsNI = Object.values(store.state.nodes[props.nodeNumber].storedEventsNI)
       storedEventsNI.forEach(event => {
@@ -302,14 +309,14 @@ const update_rows = () => {
       update_rows_indexed()
     }
   } catch (err) {
-    timeStampedLog(name + `: update_rows: ${err} `)
+    utils.timeStampedLog(name + `: update_rows: ${err} `)
   }
 }
 
 
 const update_rows_indexed = () => {
   try{
-    timeStampedLog(name + `: update_rows_indexed: node ${props.nodeNumber} `)
+    utils.timeStampedLog(name + `: update_rows_indexed: node ${props.nodeNumber} `)
     var eventsByIndex = Object.values(store.state.nodes[props.nodeNumber].eventsByIndex)
     eventsByIndex.forEach(event => {
       var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
@@ -337,31 +344,31 @@ const update_rows_indexed = () => {
     // sort rows by eventIdentifier, not eventIndex
     rows.value.sort(function(a, b){return (a.eventIndex < b.eventIndex)? -1 : 1;});
   } catch(err){
-    timeStampedLog(name + `: update_rows_indexed: ${err} `)
+    utils.timeStampedLog(name + `: update_rows_indexed: ${err} `)
   }
 }
 
 
 onBeforeMount(() => {
-  //timeStampedLog(name + ": onBeforeMount")
+  utils.timeStampedLog(name + ": onBeforeMount")
   getSettings()
   if (props.nodeNumber){
     update_rows()
   }
 })
 
-/*
+
 onMounted(() => {
-  timeStampedLog(name + ": onMounted")
+  utils.timeStampedLog(name + ": onMounted")
 })
 
 onUpdated(() => {
-  timeStampedLog(name + ": onUpdated")
+  utils.timeStampedLog(name + ": onUpdated")
 })
-*/
+
 
 const getEventVariables = async (eventIdentifier, eventIndex) => {
-  timeStampedLog(name + `: getEventVariables: ${eventIdentifier} ${eventIndex}`)
+  utils.timeStampedLog(name + `: getEventVariables: ${eventIdentifier} ${eventIndex}`)
   //
   WaitingOnBusTrafficDialogReturn.value =''
   WaitingOnBusTrafficMessage.value = "Loading Event Variables"
@@ -413,7 +420,7 @@ const getSettings = () => {
 //
 //
 store.eventBus.on('LAYOUT_DATA', () => {
-//  timeStampedLog(name + ': LAYOUT_DATA')
+//  utils.timeStampedLog(name + ': LAYOUT_DATA')
   getSettings()
 })
 
@@ -428,7 +435,7 @@ Click event handlers
 //
 //
 const clickAddEvent = () => {
-  timeStampedLog(name + `: clickAddEvent`)
+  utils.timeStampedLog(name + `: clickAddEvent`)
   if(store.state.nodes[props.nodeNumber].eventSpaceLeft > 0 ) {
     showAddEventDialog.value = true
   } else {
@@ -447,14 +454,14 @@ const clickAddEvent = () => {
 //
 //
 const clickAdvanced = () => {
-  timeStampedLog(name + `: clickAdvanced`)
+  utils.timeStampedLog(name + `: clickAdvanced`)
   showAdvancedEventDialog.value = true
 }
 
 //
 //
 const clickDelete = (eventIdentifier) => {
-  timeStampedLog(name + `: clickDelete`)
+  utils.timeStampedLog(name + `: clickDelete`)
   const result = $q.notify({
     message: 'Are you sure you want to delete event ' + store.getters.event_name(eventIdentifier),
     timeout: 0,
@@ -462,7 +469,7 @@ const clickDelete = (eventIdentifier) => {
     color: 'primary',
     actions: [
       { label: 'YES', color: 'white', handler: async () => {
-        timeStampedLog(`removeEvent ` + props.nodeNumber + ' ' + eventIdentifier)
+        utils.timeStampedLog(`removeEvent ` + props.nodeNumber + ' ' + eventIdentifier)
         store.methods.remove_event(props.nodeNumber, eventIdentifier)
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
@@ -473,7 +480,7 @@ const clickDelete = (eventIdentifier) => {
 //
 //
 const click_enableEventIdentifier = () => {
-  timeStampedLog(name + `: click_enableEventIdentifier ${store.state.layout.settings.enableEventIdentifier}`)
+  utils.timeStampedLog(name + `: click_enableEventIdentifier ${store.state.layout.settings.enableEventIdentifier}`)
   utils.setVisibleColumn(visibleColumns.value, "eventIdentifier", store.state.layout.settings.enableEventIdentifier)
   store.state.update_layout_needed = true
 }
@@ -481,7 +488,7 @@ const click_enableEventIdentifier = () => {
 //
 //
 const click_enableEventIndex = () => {
-  timeStampedLog(name + `: click_enableEventIndex ${store.state.layout.settings.EventsByNodeView.enableEventIndex}`)
+  utils.timeStampedLog(name + `: click_enableEventIndex ${store.state.layout.settings.EventsByNodeView.enableEventIndex}`)
   utils.setVisibleColumn(visibleColumns.value, "eventIndex", store.state.layout.settings.EventsByNodeView.enableEventIndex)
   store.state.update_layout_needed = true
 }
@@ -489,7 +496,7 @@ const click_enableEventIndex = () => {
 //
 //
 const click_enableEventGroup = () => {
-  timeStampedLog(name + `: click_enableEventGroup ${store.state.layout.settings.enableEventGroup}`)
+  utils.timeStampedLog(name + `: click_enableEventGroup ${store.state.layout.settings.enableEventGroup}`)
   utils.setVisibleColumn(visibleColumns.value, "eventGroup", store.state.layout.settings.enableEventGroup)
   store.state.update_layout_needed = true
 }
@@ -497,7 +504,7 @@ const click_enableEventGroup = () => {
 //
 //
 const clickEventName = (eventIdentifier) => {
-  timeStampedLog(name + `: clickEventName ` + eventIdentifier)
+  utils.timeStampedLog(name + `: clickEventName ` + eventIdentifier)
   selected_event_Identifier.value = eventIdentifier
   newEventName.value = store.getters.event_name(eventIdentifier)
   showNameEventDialog.value = true;
@@ -506,14 +513,14 @@ const clickEventName = (eventIdentifier) => {
 //
 //
 const clickInfo = () => {
-  timeStampedLog(name + `: clickInfo`)
+  utils.timeStampedLog(name + `: clickInfo`)
   showEventsByNodeViewInfoDialog.value = true
 }
 
 //
 //
 const clickRefresh = () => {
-  timeStampedLog(name + `: clickRefresh`)
+  utils.timeStampedLog(name + `: clickRefresh`)
   if (eventMode.value == "Index"){
     eventFunctions.requestAllEventsByIndex(store, props.nodeNumber)
   } else {
@@ -525,7 +532,7 @@ update_rows()
 //
 //
 const clickSendOff = (eventIdentifier) => {
-  timeStampedLog (name + ": send OFF " + eventIdentifier)
+  utils.timeStampedLog (name + ": send OFF " + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
   var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
   if (eventNodeNumber == 0) {
@@ -538,7 +545,7 @@ const clickSendOff = (eventIdentifier) => {
 //
 //
 const clickSendOn = (eventIdentifier) => {
-  timeStampedLog (name + ": send ON " + eventIdentifier)
+  utils.timeStampedLog (name + ": send ON " + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
   var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
   if (eventNodeNumber == 0) {
@@ -551,7 +558,7 @@ const clickSendOn = (eventIdentifier) => {
 //
 //
 const clickTeach = (eventIndentifier) => {
-  timeStampedLog(name + `: clickTeach`)
+  utils.timeStampedLog(name + `: clickTeach`)
   selected_event_Identifier.value = eventIndentifier
   showEventTeachDialog.value = true
 }
@@ -560,7 +567,7 @@ const clickTeach = (eventIndentifier) => {
 //
 //
 const clickToggleEventMode = () => {
-  timeStampedLog(name + `: clickToggleEventMode`)
+  utils.timeStampedLog(name + `: clickToggleEventMode`)
   eventMode.value = (eventMode.value == 'Event') ? 'Index' : 'Event'
   update_rows()
 }
@@ -568,7 +575,7 @@ const clickToggleEventMode = () => {
 //
 //
 const clickToggleViewMode = () => {
-  timeStampedLog(name + `: clickToggleViewMode`)
+  utils.timeStampedLog(name + `: clickToggleViewMode`)
   switch(store.state.events_view_mode){
     case 'all':
       store.state.events_view_mode = 'short'
@@ -591,7 +598,7 @@ const clickToggleViewMode = () => {
 //
 //
 const clickVariables = async (eventIdentifier, eventIndex) => {
-  timeStampedLog(name + `: clickVariables: node ${props.nodeNumber} event ${eventIdentifier}`)
+  utils.timeStampedLog(name + `: clickVariables: node ${props.nodeNumber} event ${eventIdentifier}`)
   selected_event_Identifier.value = eventIdentifier
   await getEventVariables(eventIdentifier, eventIndex)
   showEventVariablesDialog.value = true

@@ -494,6 +494,14 @@ const getters = {
       return ""
     }
   },
+  node_descriptor_useEventIndex(nodeNumber){
+    try{
+      utils.timeStampedLog(name + `: node_descriptor_useEventIndex ${ JSON.stringify(state.nodeDescriptors[nodeNumber].events) }`)
+      return state.nodeDescriptors[nodeNumber].events.useEventIndex
+    } catch{
+      return false
+    }
+  },
   node_descriptor_useNENRD(nodeNumber){
     try{
       return state.nodeDescriptors[nodeNumber].events.useNENRD
