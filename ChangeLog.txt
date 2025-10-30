@@ -5,6 +5,7 @@ Version 0.15.0
   Added requestAllEventsByIndex utility function
   Added getter node_descriptor_useNENRD
   added getter node_descriptor_useEventIndex
+  added event_teach_by_index used when useEventIndex is true
 
 Version 0.14.0
   Added 'show events only' to BusTraffic side bar
