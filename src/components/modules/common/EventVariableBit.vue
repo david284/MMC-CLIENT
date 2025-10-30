@@ -70,16 +70,6 @@ const update_checked = () => {
     getLinkedEventVariables(props.configuration)
     )
 
-  /*
-  store.methods.event_teach_by_identifier(
-    props.nodeNumber,
-    props.eventIdentifier,
-    props.eventVariableIndex,
-    byteValue,
-    true,
-    getLinkedEventVariables(props.configuration)
-    )
-    */
 }
 
 //console.log(`EventVariableBit ` + eventVariableValue.value)

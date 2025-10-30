@@ -24,6 +24,7 @@
 import {inject, ref, onMounted, computed, watch} from "vue";
 import {overloadedLabel} from "components/modules/common/CommonLogicParsers.js";
 import {getLinkedEventVariables} from "components/modules/common/commonFunctions.js"
+import * as EventFunctions from "components/functions/EventFunctions.js"
 
 const props = defineProps({
   "nodeNumber": {
@@ -33,6 +34,10 @@ const props = defineProps({
   "eventIdentifier": {
     type: String,
     required: true
+  },
+  "eventIndex": {
+    type: Number,
+    default: 0
   },
   "eventVariableIndex": {
     type: Number,
@@ -89,14 +94,17 @@ const update_variable = (newValue) => {
 
   //console.log(`EventVariableSelect: byteValue ${byteValue}`);
 
-  store.methods.event_teach_by_identifier(
+  EventFunctions.eventTeach(
+    store,
     props.nodeNumber,
     props.eventIdentifier,
+    props.eventIndex,
     props.eventVariableIndex,
     byteValue,
     true,
     getLinkedEventVariables(props.configuration)
   )
+
 }
 
 onMounted(() => {
