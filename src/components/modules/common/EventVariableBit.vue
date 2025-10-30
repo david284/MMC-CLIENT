@@ -14,33 +14,17 @@
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
 import {getLinkedEventVariables} from "components/modules/common/commonFunctions.js"
+import * as EventFunctions from "components/functions/EventFunctions.js"
 
 const name = "EventVariableBit"
 const props = defineProps({
-  "nodeNumber": {
-    type: Number,
-    required: true
-  },
-  "eventIdentifier": {
-    type: String,
-    required: true
-  },
-  "eventVariableIndex": {
-    type: Number,
-    required: true
-  },
-  "bit": {
-    type: Number,
-    required: true
-  },
-  "label": {
-    type: String,
-    required: false
-  },
-  configuration: {
-    type: Object,
-    required: true
-  }
+  nodeNumber: { type: Number, required: true },
+  eventIdentifier: { type: String, required: true },
+  eventIndex: { type: Number, required: true },
+  eventVariableIndex: { type: Number, required: true },
+  bit: { type: Number, required: true },
+  label: { type: String, required: false },
+  configuration: { type: Object,  required: true }
 })
 
 const store = inject('store')
@@ -74,6 +58,19 @@ const update_checked = () => {
     byteValue = byteValue & ~bitArray[props.bit]									// clear bit by 'and-ing' inverse bit value
   }
   //console.log(`EventVariableBit update_checked-2 ${checked.value} ${byteValue}`)
+
+  EventFunctions.eventTeach(
+    store,
+    props.nodeNumber,
+    props.eventIdentifier,
+    props.eventIndex,
+    props.eventVariableIndex,
+    byteValue,
+    true,
+    getLinkedEventVariables(props.configuration)
+    )
+
+  /*
   store.methods.event_teach_by_identifier(
     props.nodeNumber,
     props.eventIdentifier,
@@ -82,6 +79,7 @@ const update_checked = () => {
     true,
     getLinkedEventVariables(props.configuration)
     )
+    */
 }
 
 //console.log(`EventVariableBit ` + eventVariableValue.value)

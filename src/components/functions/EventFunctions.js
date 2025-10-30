@@ -177,15 +177,17 @@ export function eventTeach (
   eventIndex,
   eventVariableIndex,
   eventVariableValue,
+  reLoad,
   configuration) {
   if (store.getters.node_descriptor_useEventIndex(nodeNumber) == true){
     // use eventIndex
     store.methods.event_teach_by_index(
       nodeNumber,
+      eventIdentifier,
       eventIndex,
       eventVariableIndex,
       eventVariableValue,
-      true,
+      reLoad,
       getLinkedEventVariables(configuration)
     )
   } else {
@@ -195,7 +197,7 @@ export function eventTeach (
       eventIdentifier,
       eventVariableIndex,
       eventVariableValue,
-      true,
+      reLoad,
       getLinkedEventVariables(configuration)
     )
   }

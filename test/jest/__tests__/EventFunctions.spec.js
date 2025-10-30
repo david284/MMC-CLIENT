@@ -34,9 +34,10 @@ let name = "UNIT TEST"
         utils.timeStampedLog(name + `: EVENT_TEACH_BY_IDENTIFIER : ${JSON.stringify (data, null, " ")} `)
         mock_store.mock_store_result = true
       },
-      event_teach_by_index(nodeNumber, eventIndex, eventVariableIndex, eventVariableValue, reLoad, linkedVariableList){
+      event_teach_by_index(nodeNumber, eventIdentifier, eventIndex, eventVariableIndex, eventVariableValue, reLoad, linkedVariableList){
         let data = {
           "nodeNumber": nodeNumber,
+          "eventIdentifier": eventIdentifier,
           "eventIndex": eventIndex,
           "eventVariableIndex": eventVariableIndex,
           "eventVariableValue": parseInt(eventVariableValue),
@@ -175,12 +176,13 @@ describe('EventFunctions Test', () => {
     utils.timeStampedLog(name + `: eventTeach_1`)
     let result = EventFunctions.eventTeach(
       mock_store,
-      1,        // nodeNumber,
-      '2',      // eventIdentifier,
-      3,        // eventIndex,
-      4,        // eventVariableIndex,
-      5,        // eventVariableValue,
-      {},       // configuration
+      1,                // nodeNumber,
+      "00000002",       // eventIdentifier,
+      3,                // eventIndex,
+      4,                // eventVariableIndex,
+      5,                // eventVariableValue,
+      true,             // reload
+      {"linkedVariables": {"EV": [ 20, 21] } },       // configuration
     )
     expect(mock_store.mock_store_result).toEqual(true)
   });
@@ -193,12 +195,13 @@ describe('EventFunctions Test', () => {
     utils.timeStampedLog(name + `: eventTeach_2`)
     let result = EventFunctions.eventTeach(
       mock_store,
-      1,        // nodeNumber,
-      '2',      // eventIdentifier,
-      3,        // eventIndex,
-      4,        // eventVariableIndex,
-      5,        // eventVariableValue,
-      {},       // configuration
+      1,                // nodeNumber,
+      "00000002",       // eventIdentifier,
+      3,                // eventIndex,
+      4,                // eventVariableIndex,
+      5,                // eventVariableValue,
+      true,             // reload
+      {"linkedVariables": {"EV": [ 20, 21] } },       // configuration
     )
     expect(mock_store.mock_store_result).toEqual(true)
   });

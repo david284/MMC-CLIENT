@@ -5,6 +5,7 @@
        <EventVariableBitArray v-if="(item.type=='EventVariableBitArray') && (isVisible(item))"
         :nodeNumber = "props.nodeNumber"
         :eventIdentifier = "props.eventIdentifier"
+        :eventIndex = "props.eventIndex"
         :eventVariableIndex=item.eventVariableIndex
         :bitCollection = item.bitCollection
         :displayTitle="item.displayTitle"
@@ -14,6 +15,7 @@
       <EventVariableBitSingle v-if="(item.type=='EventVariableBitSingle') && (isVisible(item))"
         :nodeNumber = "props.nodeNumber"
         :eventIdentifier = "props.eventIdentifier"
+        :eventIndex = "props.eventIndex"
         :eventVariableIndex=item.eventVariableIndex
         :bit = "item.bit"
         :displayTitle="item.displayTitle"
@@ -29,6 +31,7 @@
       <EventVariableNumber v-if="(item.type=='EventVariableNumber') && (isVisible(item))"
         :node-number=props.nodeNumber
         :eventIdentifier = "props.eventIdentifier"
+        :eventIndex = "props.eventIndex"
         :eventVariableIndex= "item.eventVariableIndex"
         :displayTitle="item.displayTitle"
         :displaySubTitle="item.displaySubTitle"
@@ -44,6 +47,7 @@
       <EventVariableSelect v-if="(item.type=='EventVariableSelect') && (isVisible(item))"
         :nodeNumber="props.nodeNumber"
         :eventIdentifier = "props.eventIdentifier"
+        :eventIndex = "props.eventIndex"
         :eventVariableIndex= "item.eventVariableIndex"
         :bitMask = "item.bitMask"
         :displayTitle="item.displayTitle"
@@ -54,6 +58,7 @@
       <EventVariableSlider v-if="(item.type=='EventVariableSlider') && (isVisible(item))"
         :node-number="props.nodeNumber"
         :eventIdentifier = "props.eventIdentifier"
+        :eventIndex = "props.eventIndex"
         :eventVariableIndex= "item.eventVariableIndex"
         :displayTitle="item.displayTitle"
         :displaySubTitle = "item.displaySubTitle"

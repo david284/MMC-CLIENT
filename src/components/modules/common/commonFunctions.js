@@ -1,5 +1,6 @@
 
 const name = "CommonFunctions"
+import * as utils from "components/functions/utils.js"
 
 
 function getBitMask(startBit, endBit){
@@ -99,8 +100,12 @@ export function  setByteVariable (byteVariable, newValue, scaling, offset, start
 
 export function getLinkedEventVariables(configuration){
   let linkedVariables = undefined
-  if (configuration.linkedVariables != undefined){
-    linkedVariables = (configuration.linkedVariables.EV != undefined) ? configuration.linkedVariables.EV : undefined
+  try{
+    if (configuration.linkedVariables != undefined){
+      linkedVariables = (configuration.linkedVariables.EV != undefined) ? configuration.linkedVariables.EV : undefined
+    }
+  } catch (err) {
+    utils.timeStampedLog (name + `: getLinkedEventVariables ${err}` )
   }
   return linkedVariables
 }

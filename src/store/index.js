@@ -123,10 +123,11 @@ const methods = {
   },
   //
   // reLoad false to surpress reLoading of variables after writing - like when restoring node
-  event_teach_by_index(nodeNumber, eventIndex, eventVariableIndex, eventVariableValue, reLoad, linkedVariableList){
+  event_teach_by_index(nodeNumber, eventIdentifier, eventIndex, eventVariableIndex, eventVariableValue, reLoad, linkedVariableList){
     try {
       let data = {
         "nodeNumber": nodeNumber,
+        "eventIdentifier": eventIdentifier,
         "eventIndex": eventIndex,
         "eventVariableIndex": eventVariableIndex,
         "eventVariableValue": parseInt(eventVariableValue),

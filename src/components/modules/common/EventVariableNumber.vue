@@ -29,6 +29,7 @@ import {inject, ref, onMounted, computed, watch} from "vue";
 import {setByteVariable} from "components/modules/common/commonFunctions.js"
 import {getDisplayValue} from "components/modules/common/commonFunctions.js"
 import {getLinkedEventVariables} from "components/modules/common/commonFunctions.js"
+import * as EventFunctions from "components/functions/EventFunctions.js"
 
 const name = "EventVariableNumber"
 
@@ -40,6 +41,10 @@ const props = defineProps({
   "eventIdentifier": {
     type: String,
     required: true
+  },
+  "eventIndex": {
+    type: Number,
+    default: 0
   },
   "eventVariableIndex": {
     type: Number,
@@ -166,15 +171,18 @@ const update_event = (newValue) => {
     props.startBit,
     props.endBit
   )
-  //
-  store.methods.event_teach_by_identifier(
+
+  EventFunctions.eventTeach(
+    store,
     props.nodeNumber,
     props.eventIdentifier,
+    props.eventIndex,
     props.eventVariableIndex,
     byteValue,
     true,
     getLinkedEventVariables(props.configuration)
   )
+
   // update display value
   eventValue.value = getDisplayValue(eventVariableValue.value,
     props.displayScale,

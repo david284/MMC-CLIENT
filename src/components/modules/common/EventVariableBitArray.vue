@@ -13,6 +13,7 @@
             :nodeNumber=nodeNumber
             :eventVariableIndex=eventVariableIndex
             :eventIdentifier=eventIdentifier
+            :eventIndex=eventIndex
             :bit=item.bitPosition
             :label=item.label
             :configuration=configuration
@@ -20,7 +21,7 @@
         </div>
       </q-card-section>
      </q-card-section>
- 
+
   </q-card>
 </template>
 
@@ -31,33 +32,14 @@ import { inject, onMounted } from "vue";
 const store = inject('store')
 
 const props = defineProps({
-  "nodeNumber": {
-    type: Number,
-    required: true
-  },
-  "eventIdentifier": {
-    type: String,
-    required: true
-  },
-  "eventVariableIndex": {
-    type: Number,
-    required: true
-  },
-  bitCollection: {
-    required: true
-  },
-  displayTitle: {
-    type: String,
-    required: false
-  },
-  displaySubTitle: {
-    type: String,
-    default: ""
-  },
-  configuration: {
-    type: Object,
-    required: true
-  }
+  nodeNumber: { type: Number, required: true },
+  eventIdentifier: { type: String, required: true },
+  eventIndex: {type: Number, required: true },
+  eventVariableIndex: { type: Number, required: true },
+  bitCollection: { required: true },
+  displayTitle: { type: String, required: false },
+  displaySubTitle: { type: String, default: "" },
+  configuration: { type: Object, required: true }
 })
 
 

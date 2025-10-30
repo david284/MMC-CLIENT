@@ -54,7 +54,7 @@
           <q-card-section class="q-pa-none" v-if="showRawVariables">
             <EventRawVariables
               :nodeNumber = nodeNumber
-              :eventIdentifier = props.eventIdentifier
+              :eventIdentifier = eventIdentifier
             />
             <q-separator />
           </q-card-section>
@@ -155,7 +155,7 @@ const props = defineProps({
   modelValue: { type: Boolean, required: true },
   nodeNumber: {type: Number, default: 0 },
   eventIdentifier: {type: String, required: true },
-  eventIndex: {type: Number, required: true },
+  eventIndex: {type: Number, default: 0 },
   newEvent:  { type: Boolean, default: false }
 })
 

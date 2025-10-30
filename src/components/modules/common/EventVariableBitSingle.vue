@@ -10,6 +10,7 @@
       <EventVariableBit
         :nodeNumber=nodeNumber
         :eventIdentifier=eventIdentifier
+        :eventIndex=eventIndex
         :eventVariableIndex=eventVariableIndex
         :bit=bit
         :configuration=configuration
@@ -34,6 +35,10 @@ const props = defineProps({
   },
   "eventIdentifier": {
     type: String,
+    required: true
+  },
+  "eventIndex": {
+    type: Number,
     required: true
   },
   "eventVariableIndex": {
