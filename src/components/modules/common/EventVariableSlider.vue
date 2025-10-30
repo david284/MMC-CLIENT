@@ -29,13 +29,13 @@
         <q-space />
         <q-space />
         <q-space />
-<!-- 
+<!--
         <q-card-section flat class = "row no-margin q-pa-none">
           <div v-if="(outputOnWrite)">
             <q-btn dense size="sm" label="Test" @click="clickTest()" no-caps/>
           </div>
         </q-card-section>
- -->        
+ -->
         <q-space />
         <q-space />
         <q-space />
@@ -56,6 +56,7 @@
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
 import {getLinkedEventVariables} from "components/modules/common/commonFunctions.js"
+import * as EventFunctions from "components/functions/EventFunctions.js"
 
 const props = defineProps({
   "nodeNumber": {
@@ -65,6 +66,10 @@ const props = defineProps({
   "eventIdentifier": {
     type: String,
     required: true
+  },
+  "eventIndex": {
+    type: Number,
+    default: 0
   },
   "eventVariableIndex": {
     type: Number,
@@ -162,14 +167,18 @@ const sliderValue = computed({
 
       error.value = false
       error_message.value = ''
-      store.methods.event_teach_by_identifier(
-        props.nodeNumber, 
-        props.eventIdentifier, 
-        props.eventVariableIndex, 
+
+      EventFunctions.eventTeach(
+        store,
+        props.nodeNumber,
+        props.eventIdentifier,
+        props.eventIndex,
+        props.eventVariableIndex,
         newByteValue,
         true,
         getLinkedEventVariables(props.configuration)
       )
+
     } else {
       console.log(name + `: Invalid Value : ${newValue}`)
       error_message.value = 'Invalid Value'
