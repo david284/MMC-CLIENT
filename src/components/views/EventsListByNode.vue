@@ -1,8 +1,11 @@
 <template>
   <div style="height: 35vh;">
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
-      <div class="text-h6">
+      <div class="text-h6" v-if="(eventMode=='Event')">
         Events for node :  {{ store.getters.node_name(props.nodeNumber) }}
+      </div>
+      <div class="text-h6" v-if="(eventMode=='Index')">
+        Slots for node :  {{ store.getters.node_name(props.nodeNumber) }}
       </div>
       <template v-slot:action>
         <q-btn class="q-mx-xs  q-my-none" size="sm" color="black" no-caps
@@ -20,7 +23,8 @@
             <q-icon size="sm" name="search"/>
         </q-input>
         &nbsp;&nbsp;
-        <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
+        <q-btn v-if="(eventMode=='Event')" class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
+        <q-btn v-if="(eventMode=='Index')" class="q-mx-xs q-my-none" color="blue" size="sm" label="Activate Slot" @click="clickActivateSlot()"/>
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Advanced" @click="clickAdvanced()"/>
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
         <q-btn square unelevated color="primary" icon="settings">
@@ -41,8 +45,49 @@
       </template>
     </q-banner>
 
-    <div class="full-width" >
+    <div class="full-width">
+
     <q-table
+      v-if="(eventMode=='Index')"
+      class="events-list-by-node-table"
+      bordered
+      dense
+      :rows=rows
+      :columns="slot_columns"
+      :filter="filter"
+      row-key="eventIdentifier"
+      virtual-scroll
+      :rows-per-page-options="[0]"
+      :virtual-scroll-sticky-size-start="0"
+      :visible-columns="visibleColumns"
+      hide-bottom
+    >
+      <template v-slot:body="props">
+        <q-tr :props="props" :class="selected_event_Identifier==props.row.eventIdentifier?'bg-blue-1':'bg-white'" class="q-my-none q-py-none">
+          <q-td key="eventIndex" :props="props">{{ props.row.eventIndex }}</q-td>
+          <q-td key="eventIdentifier" :props="props">{{ props.row.eventIdentifier }}</q-td>
+          <q-td key="eventName" :props="props">{{ props.row.eventName}}</q-td>
+          <q-td key="eventGroup" :props="props">{{ props.row.eventGroup }}</q-td>
+          <q-td key="nodeNumber" :props="props">{{ props.row.nodeNumber }}</q-td>
+          <q-td key="eventNumber" :props="props">{{ props.row.eventNumber }}</q-td>
+          <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td>
+          <q-td key="source" :props="props">{{ props.row.source }}</q-td>
+          <q-td key="actions" :props="props">
+            <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Event" no-caps/>
+            <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
+            <q-btn dense class="q-mx-xs" outline :disabled="!props.row.storedEvent" color="primary" size="md" label="Variables"
+            @click="clickVariables(props.row.eventIdentifier, props.row.eventIndex)" no-caps/>
+            <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
+            <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.eventIdentifier)" no-caps>send ON</q-btn>
+            <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.eventIdentifier)" no-caps>send OFF</q-btn>
+            <q-btn dense class="q-mx-xs" outline size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier)" no-caps/>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+
+    <q-table
+      v-if="(eventMode=='Event')"
       class="events-list-by-node-table"
       bordered
       dense
@@ -79,6 +124,10 @@
       </template>
     </q-table>
     </div>
+
+    <ActivateSlotDialog v-model='showActivateSlotDialog'
+      :nodeNumber = nodeNumber
+    />
 
     <AddEventDialog v-model='showAddEventDialog'
       :nodeNumber = nodeNumber
@@ -125,6 +174,7 @@ import {computed, inject, ref, watch, onBeforeMount, onMounted, onUpdated} from 
 import { date, useQuasar, scroll } from 'quasar'
 import * as utils from "components/functions/utils.js"
 import * as eventFunctions from "components/functions/EventFunctions.js"
+import ActivateSlotDialog from "components/dialogs/ActivateSlotDialog"
 import AddEventDialog from "components/dialogs/AddEventDialog"
 import advancedEventsDialog from "components/dialogs/AdvancedEventsDialog"
 import sendEventDialog from "components/dialogs/SendEventDialog"
@@ -140,6 +190,7 @@ const store = inject('store')
 const name = "EventsListByNode"
 const rows = ref([])
 const filter = ref('')
+const showActivateSlotDialog = ref(false)
 const showAddEventDialog = ref(false)
 const showAdvancedEventDialog = ref(false)
 const showWaitingOnBusTrafficDialog = ref(false)
@@ -170,6 +221,18 @@ const columns = [
   {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Event node', align: 'left', sortable: true},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event number', align: 'left', sortable: true},
   {name: 'eventIndex', field: 'eventIndex', label: 'Index', align: 'left', sortable: true},
+  {name: 'eventType', field: 'eventType', required: true, label: 'Type', align: 'left', sortable: true},
+  {name: 'source', field: 'source', required: true, label: 'Source', align: 'left', sortable: true},
+  {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
+]
+
+const slot_columns = [
+  {name: 'eventIndex', field: 'eventIndex', label: 'Slot', align: 'left', sortable: true},
+  {name: 'eventIdentifier', field: 'eventIdentifier', label: 'Identifier', align: 'left', sortable: true},
+  {name: 'eventName', field: 'eventName', required: true, label: 'Name', align: 'left', sortable: true},
+  {name: 'eventGroup', field: 'eventGroup', label: 'Group', align: 'left', sortable: true},
+  {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Event node', align: 'left', sortable: true},
+  {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event number', align: 'left', sortable: true},
   {name: 'eventType', field: 'eventType', required: true, label: 'Type', align: 'left', sortable: true},
   {name: 'source', field: 'source', required: true, label: 'Source', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
@@ -343,7 +406,7 @@ const update_rows_indexed = () => {
         rows.value.push(output)
       }
     })
-    // sort rows by eventIdentifier, not eventIndex
+    // sort rows by eventIndex
     rows.value.sort(function(a, b){return (a.eventIndex < b.eventIndex)? -1 : 1;});
   } catch(err){
     utils.timeStampedLog(name + `: update_rows_indexed: ${err} `)
@@ -433,6 +496,13 @@ store.eventBus.on('LAYOUT_DATA', () => {
 Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
+
+//
+//
+const clickActivateSlot = () => {
+  utils.timeStampedLog(name + `: clickActivateSlot`)
+  showActivateSlotDialog.value = true
+}
 
 //
 //
