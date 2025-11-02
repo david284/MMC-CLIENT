@@ -154,6 +154,7 @@ import {inject, ref, onBeforeMount, onMounted, computed, watch} from "vue"
 import { date, useQuasar, scroll } from 'quasar'
 import * as utils from "components/functions/utils.js"
 import * as eventFunctions from "components/functions/EventFunctions.js"
+import cbusLib from "cbuslibrary"
 import {NodeParametersLoaded} from "components/functions/NodeFunctions.js"
 import {timeStampedLog} from "components/functions/utils.js"
 import EventsListByNode from "components/views/EventsListByNode"
@@ -529,6 +530,19 @@ const click_enableStoredEvents = (nodeNumber) => {
 //
 const clickEvents = async (nodeNumber) => {
   timeStampedLog(name + `: clickEvents: node ` + nodeNumber)
+
+  // re-assert FCU compatibility on or off
+  try {
+    let ModeNumber = 0x11   // Turn off FCU compatibility
+    if (store.state.layout.connectionDetails.FCU_Compatibility == true){
+        ModeNumber = 0x10   // Turn on FCU compatibility
+    }
+    let commandString = cbusLib.encodeMODE(0, ModeNumber)
+    store.methods.send_cbus_message(commandString)
+  } catch (err){
+    console.log(name + `: backupNode ${err}`)
+  }
+
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   await checkNodeParameters(nodeNumber)
   await checkNodeVariables(nodeNumber)
@@ -618,6 +632,17 @@ const clickRefresh = () => {
 //
 const clickVariables = async (nodeNumber) => {
   timeStampedLog(name + `: clickVariables: node ` + nodeNumber)
+  // re-assert FCU compatibility on or off
+  try {
+    let ModeNumber = 0x11   // Turn off FCU compatibility
+    if (store.state.layout.connectionDetails.FCU_Compatibility == true){
+        ModeNumber = 0x10   // Turn on FCU compatibility
+    }
+    let commandString = cbusLib.encodeMODE(0, ModeNumber)
+    store.methods.send_cbus_message(commandString)
+  } catch (err){
+    console.log(name + `: backupNode ${err}`)
+  }
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   await checkNodeParameters(nodeNumber)
   await select_node_row(nodeNumber)

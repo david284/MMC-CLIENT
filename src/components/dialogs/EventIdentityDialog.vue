@@ -66,7 +66,7 @@ const new_event_Identifier = ref("") // Dialog will complain if null
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
   nodeNumber: {type: Number, required: true },
-  eventIndex: {type: Number, required: true }
+  eventIndex: {type: Number, default: 0 }
 
 })
 

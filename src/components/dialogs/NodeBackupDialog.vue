@@ -36,6 +36,7 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import {sleep} from "components/functions/utils.js"
+import cbusLib from "cbuslibrary"
 import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
 
@@ -81,6 +82,18 @@ const backupNode = async () => {
   var successState = false
   var result = ''
   var notifyType = 'negative'
+
+  // re-assert FCU compatibility on or off
+  try {
+    let ModeNumber = 0x11   // Turn off FCU compatibility
+    if (store.state.layout.connectionDetails.FCU_Compatibility == true){
+        ModeNumber = 0x10   // Turn on FCU compatibility
+    }
+    let commandString = cbusLib.encodeMODE(0, ModeNumber)
+    store.methods.send_cbus_message(commandString)
+  } catch (err){
+    console.log(name + `: backupNode ${err}`)
+  }
 
   // refresh event indexes in advance of needing it
   backupStatus.value = "refresh event variables"
@@ -169,9 +182,9 @@ const loadEventVariables = async () => {
     showWaitingOnBusTrafficDialog.value = true
     // now request all the event variables for all events for this node
     store.methods.requestAllEventVariablesForNode(props.nodeNumber)
-    // wait for variables to load - allow up to 2 minutes
+    // wait for variables to load - allow up to 5 minutes
     var startTime = Date.now()
-    while ((Date.now() - startTime) < 120000){
+    while ((Date.now() - startTime) < 300000){
       if (WaitingOnBusTrafficDialogReturn.value.length > 0)
       {
         result = true  // success if we exit early
