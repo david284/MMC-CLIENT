@@ -8,7 +8,7 @@
         Slots for node :  {{ store.getters.node_name(props.nodeNumber) }}
       </div>
       <template v-slot:action>
-        <q-btn class="q-mx-xs  q-my-none" size="sm" color="black" no-caps
+        <q-btn class="q-mx-xs q-my-none" v-if="store.state.develop" size="sm" color="black" no-caps
           @click="clickToggleEventMode()">
           {{eventMode}}
         </q-btn>
