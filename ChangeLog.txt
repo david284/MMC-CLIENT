@@ -8,6 +8,7 @@ Version 0.15.0
   added event_teach_by_index used when useEventIndex is true
   added ActivateSlotDialog
   added EventIdentityDialog
+  added re-assert FCU_compatibility to NodesView & NodeBackupDialog
 
 Version 0.14.0
   Added 'show events only' to BusTraffic side bar
