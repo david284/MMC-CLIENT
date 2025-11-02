@@ -34,7 +34,7 @@
             <q-tr :props="props" class="q-my-none q-py-none">
               <q-td key="eventIndex" :props="props">{{ props.row.eventIndex }}</q-td>
               <q-td key="actions" :props="props">
-                <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Event" no-caps/>
+                <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Event" no-caps @click="clickEvent(props.row.eventIndex)"/>
               </q-td>
             </q-tr>
           </template>
@@ -44,6 +44,13 @@
     </q-card>
 
   </q-dialog>
+
+  <EventIdentityDialog v-model="showEventIdentityDialog"
+    :nodeNumber=nodeNumber
+    :eventIndex=selected_event_index
+  />
+
+
 </template>
 
 
@@ -52,10 +59,14 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import * as utils from "components/functions/utils.js"
 import * as eventFunctions from "components/functions/EventFunctions.js"
+import EventIdentityDialog from "components/dialogs/EventIdentityDialog"
+
 
 const store = inject('store')
 const name = "ActivateSlotDialog"
 const rows = ref([])
+const selected_event_index = ref()
+const showEventIdentityDialog = ref(false)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -80,6 +91,18 @@ const model = computed({
 watch(model, () => {
   console.log(name + `: WATCH model`)
   update_rows()
+})
+
+// watch if any nodes change
+const nodesUpdated = computed(() => {
+  return store.state.nodes.updateTimestamp
+})
+
+watch(nodesUpdated, () => {
+  //utils.timeStampedLog(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
+  if (props.nodeNumber){
+    update_rows()
+  }
 })
 
 
@@ -125,6 +148,13 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
+//
+//
+const clickEvent = (eventIndex) => {
+  utils.timeStampedLog(name + `: clickEvent: eventIndex ${eventIndex}`)
+  selected_event_index.value = eventIndex
+  showEventIdentityDialog.value = true
+}
 
 
 </script>

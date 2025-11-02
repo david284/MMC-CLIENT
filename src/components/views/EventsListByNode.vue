@@ -73,7 +73,7 @@
           <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td>
           <q-td key="source" :props="props">{{ props.row.source }}</q-td>
           <q-td key="actions" :props="props">
-            <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Event" no-caps/>
+            <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Event" @click="clickEvent(props.row.eventIndex)" no-caps/>
             <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
             <q-btn dense class="q-mx-xs" outline :disabled="!props.row.storedEvent" color="primary" size="md" label="Variables"
             @click="clickVariables(props.row.eventIdentifier, props.row.eventIndex)" no-caps/>
@@ -141,6 +141,11 @@
       :eventIdentifier = selected_event_Identifier
     />
 
+    <EventIdentityDialog v-model="showEventIdentityDialog"
+      :nodeNumber=nodeNumber
+      :eventIndex=selected_event_index
+    />
+
     <eventTeachDialog v-model='showEventTeachDialog'
       :eventIdentifier = selected_event_Identifier
     />
@@ -154,7 +159,7 @@
     <eventVariablesDialog v-model='showEventVariablesDialog'
         :nodeNumber = nodeNumber
         :eventIdentifier = selected_event_Identifier
-        :eventIndex = selected_event_Index
+        :eventIndex = selected_event_index
       />
 
       <EventsByNodeViewInfoDialog v-model='showEventsByNodeViewInfoDialog'/>
@@ -177,11 +182,12 @@ import * as eventFunctions from "components/functions/EventFunctions.js"
 import ActivateSlotDialog from "components/dialogs/ActivateSlotDialog"
 import AddEventDialog from "components/dialogs/AddEventDialog"
 import advancedEventsDialog from "components/dialogs/AdvancedEventsDialog"
-import sendEventDialog from "components/dialogs/SendEventDialog"
-import nameEventDialog from "components/dialogs/NameEventDialog"
+import EventIdentityDialog from "components/dialogs/EventIdentityDialog"
+import EventsByNodeViewInfoDialog from "components/dialogs/EventsByNodeViewInfoDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
-import EventsByNodeViewInfoDialog from "components/dialogs/EventsByNodeViewInfoDialog"
+import nameEventDialog from "components/dialogs/NameEventDialog"
+import sendEventDialog from "components/dialogs/SendEventDialog"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
 
 
@@ -201,12 +207,14 @@ const showNameEventDialog = ref(false)
 const showSendEventDialog = ref(false)
 const newEventName = ref()
 const selected_event_Identifier = ref("") // Dialog will complain if null
-const selected_event_Index = ref()
+const selected_event_index = ref()
 const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
 const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref('')
 const eventMode = ref('Event')
+const showEventIdentityDialog = ref(false)
+
 
 const props = defineProps({
   nodeNumber: {type: Number, required: true }
@@ -393,17 +401,20 @@ const update_rows_indexed = () => {
         ((store.state.events_view_mode == 'named') && (store.state.layout.eventDetails[event.eventIdentifier].name.length == ''))) {
         // don't add this node as we've elected to not display it
       } else {
-        let output = {}
-        output['eventIdentifier'] = event.eventIdentifier
-        output['eventName'] = store.getters.event_name(event.eventIdentifier)
-        output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
-        output['nodeNumber'] = eventNodeNumber
-        output['eventIndex'] = event.eventIndex
-        output['eventNumber'] = eventNumber
-        output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
-        output['storedEvent'] = true
-        output['source'] = "stored event"
-        rows.value.push(output)
+        // don't add if no eventIdentifier - inactive
+        if (event.eventIdentifier != "00000000"){
+          let output = {}
+          output['eventIdentifier'] = event.eventIdentifier
+          output['eventName'] = store.getters.event_name(event.eventIdentifier)
+          output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
+          output['nodeNumber'] = eventNodeNumber
+          output['eventIndex'] = event.eventIndex
+          output['eventNumber'] = eventNumber
+          output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
+          output['storedEvent'] = true
+          output['source'] = "stored event"
+          rows.value.push(output)
+        }
       }
     })
     // sort rows by eventIndex
@@ -575,6 +586,15 @@ const click_enableEventGroup = () => {
 
 //
 //
+const clickEvent = (eventIndex) => {
+  utils.timeStampedLog(name + `: clickEvent: eventIndex ${eventIndex}`)
+  selected_event_index.value = eventIndex
+  showEventIdentityDialog.value = true
+}
+
+
+//
+//
 const clickEventName = (eventIdentifier) => {
   utils.timeStampedLog(name + `: clickEventName ` + eventIdentifier)
   selected_event_Identifier.value = eventIdentifier
@@ -672,7 +692,7 @@ const clickToggleViewMode = () => {
 const clickVariables = async (eventIdentifier, eventIndex) => {
   utils.timeStampedLog(name + `: clickVariables: node ${props.nodeNumber} event ${eventIdentifier}`)
   selected_event_Identifier.value = eventIdentifier
-  selected_event_Index.value = eventIndex
+  selected_event_index.value = eventIndex
   await getEventVariables(eventIdentifier, eventIndex)
   showEventVariablesDialog.value = true
 }
