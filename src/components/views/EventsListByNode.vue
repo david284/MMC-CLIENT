@@ -401,19 +401,22 @@ const update_rows_indexed = () => {
         ((store.state.events_view_mode == 'named') && (store.state.layout.eventDetails[event.eventIdentifier].name.length == ''))) {
         // don't add this node as we've elected to not display it
       } else {
-        // don't add if no eventIdentifier - inactive
-        if (event.eventIdentifier != "00000000"){
-          let output = {}
-          output['eventIdentifier'] = event.eventIdentifier
-          output['eventName'] = store.getters.event_name(event.eventIdentifier)
-          output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
-          output['nodeNumber'] = eventNodeNumber
-          output['eventIndex'] = event.eventIndex
-          output['eventNumber'] = eventNumber
-          output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
-          output['storedEvent'] = true
-          output['source'] = "stored event"
-          rows.value.push(output)
+        // don't add if event index 0
+        if (event.eventIndex > 0){
+          // don't add if no eventIdentifier - inactive
+          if (event.eventIdentifier != "00000000"){
+            let output = {}
+            output['eventIdentifier'] = event.eventIdentifier
+            output['eventName'] = store.getters.event_name(event.eventIdentifier)
+            output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
+            output['nodeNumber'] = eventNodeNumber
+            output['eventIndex'] = event.eventIndex
+            output['eventNumber'] = eventNumber
+            output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
+            output['storedEvent'] = true
+            output['source'] = "stored event"
+            rows.value.push(output)
+          }
         }
       }
     })

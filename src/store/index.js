@@ -521,14 +521,14 @@ const getters = {
   node_descriptor_useEventIndex(nodeNumber){
     try{
       utils.timeStampedLog(name + `: node_descriptor_useEventIndex ${ JSON.stringify(state.nodeDescriptors[nodeNumber].events) }`)
-      return state.nodeDescriptors[nodeNumber].events.useEventIndex
+      return state.nodeDescriptors[nodeNumber].useEventIndex
     } catch{
       return false
     }
   },
   node_descriptor_useNENRD(nodeNumber){
     try{
-      return state.nodeDescriptors[nodeNumber].events.useNENRD
+      return state.nodeDescriptors[nodeNumber].useNENRD
     } catch{
       return false
     }
@@ -537,7 +537,7 @@ const getters = {
   node_descriptor_numberOfEvents(nodeNumber){
     try{
       utils.timeStampedLog(name + `: node_descriptor_numberOfEvents ${state.nodeDescriptors[nodeNumber].events.numberOfEvents}`)
-      return state.nodeDescriptors[nodeNumber].events.numberOfEvents
+      return state.nodeDescriptors[nodeNumber].numberOfEvents
     } catch{
       return 0
     }
