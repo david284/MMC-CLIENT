@@ -82,13 +82,13 @@
           </q-td>
           <q-td key="actions">
             <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Events"
-              :disabled="!props.row.status" @click="clickEvents(props.row.nodeNumber)" no-caps/>
+              @click="clickEvents(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="md" label="Name"
               @click="clickNameNode(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="md" label="Parameters"
               @click="clickParameters(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline color="primary" size="md" label="Variables"
-              :disabled="!props.row.status" @click="clickVariables(props.row.nodeNumber)" no-caps/>
+              @click="clickVariables(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline v-if="(!props.row.vlcb)" disabled color="primary" size="md" label="CBUS"
               @click="clickVLCB(props.row.nodeNumber)" no-caps/>
             <q-btn dense class="q-mx-xs q-my-none" outline v-if="(props.row.vlcb)" color="primary" size="md" label="VLCB"
@@ -545,15 +545,18 @@ const clickEvents = async (nodeNumber) => {
 
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   await checkNodeParameters(nodeNumber)
-  await checkNodeVariables(nodeNumber)
-  if (store.getters.node_descriptor_useNENRD(nodeNumber)) {
-    eventFunctions.requestAllEventsByIndex(store, nodeNumber)
-  } else {
-    store.methods.request_all_node_events(nodeNumber)
-  }
-  await select_node_row(nodeNumber)
-  if (store.state.nodes_view_mode == 'full'){
-    showNodeEventsDialog.value = true
+  // check if parameters have been fully retrieved
+  if(NodeParametersLoaded(store, nodeNumber)){
+    await checkNodeVariables(nodeNumber)
+    if (store.getters.node_descriptor_useNENRD(nodeNumber)) {
+      eventFunctions.requestAllEventsByIndex(store, nodeNumber)
+    } else {
+      store.methods.request_all_node_events(nodeNumber)
+    }
+    await select_node_row(nodeNumber)
+    if (store.state.nodes_view_mode == 'full'){
+      showNodeEventsDialog.value = true
+    }
   }
 }
 
@@ -590,13 +593,14 @@ const clickNameNode = async (nodeNumber) => {
 const clickNodeAdvanced = async (nodeNumber) => {
   timeStampedLog(name + `: clickNodeAdvanced`)
   selected_nodeNumber.value = nodeNumber    // used to highlight row
-  if (store.state.nodes[nodeNumber].status) {
-    await checkNodeParameters(nodeNumber)
+  await checkNodeParameters(nodeNumber)
+  // check if parameters have been fully retrieved
+  if(NodeParametersLoaded(store, nodeNumber)){
+    await select_node_row(nodeNumber)
+    selectedNode.value = nodeNumber
+    showAdvancedNodeDialog.value=true
+    timeStampedLog(name + ': clickAdvanced: node' + store.state.selected_node)
   }
-  await select_node_row(nodeNumber)
-  selectedNode.value = nodeNumber
-  showAdvancedNodeDialog.value=true
-  timeStampedLog(name + ': clickAdvanced: node' + store.state.selected_node)
 }
 
 //
@@ -645,13 +649,16 @@ const clickVariables = async (nodeNumber) => {
   }
   selected_nodeNumber.value = nodeNumber    // used to highlight row
   await checkNodeParameters(nodeNumber)
-  await select_node_row(nodeNumber)
-  if ((nodeNumber == 1000) && store.state.develop){
-    showiFrameDialog.value = true
-  } else {
+  // check if parameters have been fully retrieved
+  if(NodeParametersLoaded(store, nodeNumber)){
+    await select_node_row(nodeNumber)
+    if ((nodeNumber == 1000) && store.state.develop){
+      showiFrameDialog.value = true
+    } else {
       await checkNodeVariables(nodeNumber)
       showNodeVariablesDialog.value = true
     }
+  }
 }
 
 //
