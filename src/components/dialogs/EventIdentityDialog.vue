@@ -16,8 +16,8 @@
 
       <q-card-section>
         <div class="q-gutter-sm">
-          <q-radio v-model="eventType" val='long' label="Long event" />
-          <q-radio v-model="eventType" val='short' label="Short event" />
+          <q-radio v-model="eventType" val='long' label="Long event" @click="clickLongEvent()" />
+          <q-radio v-model="eventType" val='short' label="Short event" @click="clickShortEvent()" />
         </div>
       </q-card-section>
       <div>
@@ -112,7 +112,6 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
-
 //
 //
 const clickAddEventIdentifier = () => {
@@ -139,6 +138,20 @@ const clickAddEventIdentifier = () => {
       store.methods.request_all_node_events(props.nodeNumber)
     }
 
+}
+
+//
+//
+const clickLongEvent = () => {
+  utils.timeStampedLog(name + `: clickLongEvent`)
+  newEventNodeNumber.value = props.nodeNumber
+}
+
+//
+//
+const clickShortEvent = () => {
+  utils.timeStampedLog(name + `: clickShortEvent`)
+  newEventNodeNumber.value = 0
 }
 
 </script>
