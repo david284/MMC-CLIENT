@@ -533,6 +533,13 @@ const getters = {
       return false
     }
   },
+  node_descriptor_useSwitchTeach1(nodeNumber){
+    try{
+      return state.nodeDescriptors[nodeNumber].useSwitchTeach1
+    } catch{
+      return false
+    }
+  },
   //
   node_descriptor_numberOfEvents(nodeNumber){
     try{

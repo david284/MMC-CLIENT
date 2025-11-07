@@ -8,17 +8,20 @@
         Slots for node :  {{ store.getters.node_name(props.nodeNumber) }}
       </div>
       <template v-slot:action>
+        <q-btn class="q-mx-xs q-my-none" v-if="store.getters.node_descriptor_useSwitchTeach1(props.nodeNumber)"
+         size="sm" color="blue" label="Switch Teach" no-caps @click="clickSwitchTeach1()">
+        </q-btn>
         <q-btn class="q-mx-xs q-my-none" v-if="store.state.develop" size="sm" color="black" no-caps
           @click="clickToggleEventMode()">
           {{eventMode}}
         </q-btn>
         <q-btn class="q-mx-xs  q-my-none" size="sm" color="blue" label="Toggle"  no-caps
           @click="clickToggleViewMode()" />
-        <div class="text-h6" style="min-width: 250px">view {{ store.state.events_view_mode }} events</div>
+        <div class="text-h6" style="min-width: 200px">view {{ store.state.events_view_mode }} events</div>
         <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
             @click="clickInfo()" />
-        <q-space/>
-        &nbsp;&nbsp;&nbsp;&nbsp;
+
+        &nbsp;&nbsp;
         <q-input class="input-box" bg-color="grey-3" style="width: 200px;" filled dense borderless debounce="300" v-model="filter" placeholder="Search">
             <q-icon size="sm" name="search"/>
         </q-input>
@@ -125,6 +128,20 @@
     </q-table>
     </div>
 
+    <q-dialog v-model="showSwitchTeach1Dialog" persistent>
+      <q-card style="min-width: 350px">
+        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+          <div class="text-h6">Switch Teach</div>
+          <template v-slot:action>
+            <q-btn flat color="white" size="md" label="Close" @click="clickSwitchTeach1Close(props.nodeNumber)" v-close-popup/>
+          </template>
+        </q-banner>
+        <q-card-section>
+          <div class="text-h6">Operate the switch to be taught</div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
     <ActivateSlotDialog v-model='showActivateSlotDialog'
       :nodeNumber = nodeNumber
     />
@@ -179,6 +196,7 @@ import {computed, inject, ref, watch, onBeforeMount, onMounted, onUpdated} from 
 import { date, useQuasar, scroll } from 'quasar'
 import * as utils from "components/functions/utils.js"
 import * as eventFunctions from "components/functions/EventFunctions.js"
+import cbusLib from "cbuslibrary"
 import ActivateSlotDialog from "components/dialogs/ActivateSlotDialog"
 import AddEventDialog from "components/dialogs/AddEventDialog"
 import advancedEventsDialog from "components/dialogs/AdvancedEventsDialog"
@@ -214,6 +232,7 @@ const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref('')
 const eventMode = ref('Event')
 const showEventIdentityDialog = ref(false)
+const showSwitchTeach1Dialog = ref(false)
 
 
 const props = defineProps({
@@ -503,6 +522,21 @@ store.eventBus.on('LAYOUT_DATA', () => {
   getSettings()
 })
 
+store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
+  //utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : opcode ' + data.json.opCode)
+  if (showSwitchTeach1Dialog.value){
+    var opCode = data.json.opCode
+    // check for ACON1 or ACOF1 event
+    if ((opCode == 'B0')
+      || (opCode == 'B1')
+      )
+    {
+      selected_event_index.value = data.json.data1
+      utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : ACON1/ACOF1 event - switch ${selected_event_index.value}`)
+      showEventIdentityDialog.value = true
+    }
+  }
+})
 
 
 /*/////////////////////////////////////////////////////////////////////////////
@@ -648,6 +682,25 @@ const clickSendOn = (eventIdentifier) => {
   } else {
     store.methods.long_on_event(eventNodeNumber, eventNumber)
   }
+}
+
+//
+//
+const clickSwitchTeach1 = (nodeNumber) => {
+  utils.timeStampedLog (name + `: clickSwitchTeach1 ${nodeNumber}`)
+  let commandString = cbusLib.encodeNNLRN(props.nodeNumber)
+  // put into learn mode
+  store.methods.send_cbus_message(commandString)
+  showSwitchTeach1Dialog.value = true
+}
+
+//
+//
+const clickSwitchTeach1Close = (nodeNumber) => {
+  utils.timeStampedLog (name + `: clickSwitchTeach1Close ${nodeNumber}`)
+  // take out of learn mode
+  let commandString = cbusLib.encodeNNULN(props.nodeNumber)
+  store.methods.send_cbus_message(commandString)
 }
 
 //
