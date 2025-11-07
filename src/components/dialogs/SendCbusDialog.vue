@@ -74,10 +74,10 @@
         </q-card-section>
 
     </q-card>
-    
+
   </q-dialog>
 
- 
+
 
 </template>
 
@@ -95,7 +95,7 @@ const $q = useQuasar()
 const name = "SendCbusDialog"
 const opCode = ref()
 const dataLength = ref()
-const data = ref([])
+const data = ref(['0','0','0','0','0','0','0'])
 const commandString = ref()
 const sendEnabled = ref(false)
 let opCodeDecimal = undefined
@@ -113,18 +113,6 @@ const model = computed({
       get() { return props.modelValue },
       set(newValue) { emit('update:modelValue', newValue) }
     })
-
-//
-//
-watch (model, () => {
-  if (model.value == true){
-    opCode.value = undefined
-    dataLength.value = undefined
-    data.value = ['0','0','0','0','0','0','0']
-    commandString.value = undefined
-  }
-})
-
 
 //
 //
@@ -158,7 +146,7 @@ watch (opCode, () => {
     if (opCodeDecimal > 0 ) { sendEnabled.value = true}
     console.log(name + `: data length ${dataLength.value}`)
   } catch(err){
-    console.log(name + `: Watch opCode ${err}`)    
+    console.log(name + `: Watch opCode ${err}`)
   }
 })
 
