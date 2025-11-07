@@ -337,22 +337,17 @@ const update_rows = () => {
         var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
         var eventNumber = parseInt(event.eventIdentifier.substr(4, 4), 16)
         //
-        // we use events_view_mode to decide which events we want to exclude from being displayed
-        if (((store.state.events_view_mode == 'short') && (eventNodeNumber > 0)) ||
-          ((store.state.events_view_mode == 'long') && (eventNodeNumber == 0)) ||
-          ((store.state.events_view_mode == 'named') && (store.state.layout.eventDetails[event.eventIdentifier].name.length == ''))) {
-          // don't add this node as we've elected to not display it
-        } else {
-          let output = {}
-          output['eventIdentifier'] = event.eventIdentifier
-          output['eventName'] = store.getters.event_name(event.eventIdentifier)
-          output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
-          output['nodeNumber'] = eventNodeNumber
-          output['eventIndex'] = event.eventIndex
-          output['eventNumber'] = eventNumber
-          output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
-          output['storedEvent'] = true
-          output['source'] = "stored event"
+        let output = {}
+        output['eventIdentifier'] = event.eventIdentifier
+        output['eventName'] = store.getters.event_name(event.eventIdentifier)
+        output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
+        output['nodeNumber'] = eventNodeNumber
+        output['eventIndex'] = event.eventIndex
+        output['eventNumber'] = eventNumber
+        output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
+        output['storedEvent'] = true
+        output['source'] = "stored event"
+        if (isEventVisible(event.eventIdentifier)){
           rows.value.push(output)
         }
       })
@@ -391,7 +386,9 @@ const update_rows = () => {
             output['eventType'] = busEvent.type
             output['storedEvent'] = false
             output['source'] = "bus event"
-            rows.value.push(output)
+            if (isEventVisible(event.eventIdentifier)){
+              rows.value.push(output)
+            }
           }
         }
       })
@@ -409,22 +406,48 @@ const update_rows = () => {
 const update_rows_indexed = () => {
   try{
     utils.timeStampedLog(name + `: update_rows_indexed: node ${props.nodeNumber} `)
+    // first get any 'indexed events'
+    if (store.state.layout.nodeDetails[props.nodeNumber].indexedEvents != undefined){
+      var LayoutNodeEvents = Object.values(store.state.layout.nodeDetails[props.nodeNumber].indexedEvents)
+      LayoutNodeEvents.forEach(event => {
+        var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
+        var eventNumber = parseInt(event.eventIdentifier.substr(4, 4), 16)
+        let output = {}
+        output['eventIdentifier'] = event.eventIdentifier
+        output['eventName'] = store.getters.event_name(event.eventIdentifier)
+        output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
+        output['nodeNumber'] = eventNodeNumber
+        output['eventIndex'] = event.eventIndex
+        output['eventNumber'] = eventNumber
+        output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
+        output['storedEvent'] = false
+        output['source'] = "saved index"
+        if (isEventVisible(event.eventIdentifier)){
+          rows.value.push(output)
+        }
+      })
+    }
+
     var eventsByIndex = Object.values(store.state.nodes[props.nodeNumber].eventsByIndex)
     eventsByIndex.forEach(event => {
       var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
       var eventNumber = parseInt(event.eventIdentifier.substr(4, 4), 16)
+      //check if it's already in the list
+      let alreadyInList = false
+      rows.value.forEach(rowEvent => {
+        if (rowEvent.eventIndex == event.eventIndex ){
+          alreadyInList = true
+          rowEvent.eventIdentifier = event.eventIdentifier
+          rowEvent.source = "stored event"
+        }
+      })
       //
-      // we use events_view_mode to decide which events we want to exclude from being displayed
-      if (((store.state.events_view_mode == 'short') && (eventNodeNumber > 0)) ||
-        ((store.state.events_view_mode == 'long') && (eventNodeNumber == 0)) ||
-        ((store.state.events_view_mode == 'named') && (store.state.layout.eventDetails[event.eventIdentifier].name.length == ''))) {
-        // don't add this node as we've elected to not display it
-      } else {
+      if (alreadyInList == false){
         // don't add if event index 0
         if (event.eventIndex > 0){
           // don't add if no eventIdentifier - inactive
           if (event.eventIdentifier != "00000000"){
-            let output = {}
+              let output = {}
             output['eventIdentifier'] = event.eventIdentifier
             output['eventName'] = store.getters.event_name(event.eventIdentifier)
             output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
@@ -434,7 +457,9 @@ const update_rows_indexed = () => {
             output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
             output['storedEvent'] = true
             output['source'] = "stored event"
-            rows.value.push(output)
+            if (isEventVisible(event.eventIdentifier)){
+              rows.value.push(output)
+            }
           }
         }
       }
@@ -444,6 +469,21 @@ const update_rows_indexed = () => {
   } catch(err){
     utils.timeStampedLog(name + `: update_rows_indexed: ${err} `)
   }
+}
+
+//
+//
+const isEventVisible = (eventIdentifier) => {
+  // extract eventNodeNumber from eventIdentifier
+  var eventNodeNumber = parseInt(eventIdentifier.substr(0, 4), 16)
+  // we use events_view_mode to decide which events we want to exclude from being displayed
+  if (((store.state.events_view_mode == 'short') && (eventNodeNumber > 0)) ||
+    ((store.state.events_view_mode == 'long') && (eventNodeNumber == 0)) ||
+    ((store.state.events_view_mode == 'named') && (store.state.layout.eventDetails[eventIdentifier].name.length == ''))) {
+      return false
+    } else {
+      return true
+    }
 }
 
 
@@ -655,7 +695,7 @@ const clickRefresh = () => {
   } else {
     store.methods.request_all_node_events(props.nodeNumber)
   }
-update_rows()
+  update_rows()
 }
 
 //

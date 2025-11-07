@@ -136,6 +136,9 @@ const methods = {
       }
       utils.timeStampedLog(name + `: EVENT_TEACH_BY_INDEX : ${JSON.stringify (data)} `)
       socket.emit('EVENT_TEACH_BY_INDEX', data)
+      // lets store this against the node in the layout
+      // as the index is specific to the node
+      setters.addIndexedEventToLayoutNode(nodeNumber, eventIndex, eventIdentifier)
     } catch (err) {
       utils.timeStampedLog(name + `: EVENT_TEACH_BY_INDEX : ${err} `)
     }
@@ -653,6 +656,22 @@ const setters = {
       state.layout.eventDetails[eventIdentifier] = {}
       state.layout.eventDetails[eventIdentifier].colour = "black"
       state.layout.eventDetails[eventIdentifier].group = ""
+    }
+  },
+  //
+  // Events
+  addIndexedEventToLayoutNode(nodeNumber, eventIndex, eventIdentifier){
+    try{
+      utils.timeStampedLog(name + `: setters: addIndexedEventToLayoutNode: ${nodeNumber} ${eventIndex} ${eventIdentifier}`)
+      if (state.layout.nodeDetails[nodeNumber] != undefined){
+        if (state.layout.nodeDetails[nodeNumber].indexedEvents == undefined){
+          state.layout.nodeDetails[nodeNumber].indexedEvents = {}
+        }
+        state.layout.nodeDetails[nodeNumber].indexedEvents[eventIndex] = {"eventIndex": eventIndex, "eventIdentifier": eventIdentifier}
+        state.update_layout_needed = true
+      }
+    } catch (err){
+      utils.timeStampedLog(name + `: setters: addIndexedEventToLayoutNode: ${err}`)
     }
   },
   event_name(eventIdentifier, eventName) {
