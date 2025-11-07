@@ -27,9 +27,10 @@
             </q-select>
             <div class="q-pa-xs q-gutter-sm">
               <q-btn color="negative"
-                  label="Teach"
-                  @click="clickTeachEvent()"
-                  no-caps/>
+                :disabled="disableEventTeach"
+                label="Teach"
+                @click="clickTeachEvent()"
+                no-caps/>
             </div>
           </q-card-section>
           </q-card>
@@ -104,14 +105,19 @@ const $q = useQuasar()
 const store = inject('store')
 const name = 'EventTeachDialog'
 
-const selected_event_Identifier = ref("") // Dialog will complain if null
-const selected_event_node = ref() // Dialog will complain if null
+const selected_event_Identifier = ref("")
+const selected_event_node = ref()
 const showEventVariablesDialog = ref(false)
 const isNewEvent = ref(false)
 const showWaitingOnBusTrafficDialog = ref(false)
 const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref('')
+const disableEventTeach = ref(true)
 
+const newNode = ref()
+const availableNodes = ref([])
+const taughtNodes = ref([])
+const teRows = ref([])
 
 
 const props = defineProps({
@@ -132,13 +138,34 @@ watch(model, () => {
   newNode.value = ''
 })
 
+//
+//
+watch(newNode, () => {
+  timeStampedLog(name + `: WATCH newNode ${newNode.value}`)
+  // get node number from input value
+  var array = newNode.value.split(':')
+  var nodeNumberToBeTaught = parseInt(array[0])
+  timeStampedLog(name + `: WATCH newNode: nodeNumberToBeTaught ${nodeNumberToBeTaught}`)
+  if (nodeNumberToBeTaught){
+    if (store.getters.node_descriptor_useEventIndex(nodeNumberToBeTaught)){
+      disableEventTeach.value = true
+      $q.notify({
+        message: 'Cannot teach this module from here',
+        caption: 'select node from nodes view instead',
+        timeout: 2000,
+        type: 'warning',
+        position: 'center',
+        actions: [ { label: 'Dismiss' } ]
+      })
 
+    } else {
+      disableEventTeach.value = false
+    }
+  }
+})
 
-const newNode = ref()
-const availableNodes = ref([])
-const taughtNodes = ref([])
-const teRows = ref([])
-
+//
+//
 const teColumns = [
   {name: 'number', field: 'number', required: true, label: 'Number', align: 'left', sortable: true},
   {name: 'name', field: 'name', required: true, label: 'Name', align: 'left', sortable: true},
