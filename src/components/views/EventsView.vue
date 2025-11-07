@@ -216,28 +216,30 @@ const update_events_table = () => {
   let events = store.state.layout.eventDetails
   // order by eventIdentifier
   for (let eventIdentifier of Object.keys(events).sort()) {
-    var nodeNumber = parseInt(eventIdentifier.substring(0, 4), 16)
-    if (store.state.event_view_status[eventIdentifier] == undefined){
-      store.state.event_view_status[eventIdentifier] = 'unknown'
-    }
-    //
-    // we use events_view_mode to decide which events we want to exclude from being displayed
-    if (((store.state.events_view_mode == 'short') && (nodeNumber > 0)) ||
-      ((store.state.events_view_mode == 'long') && (nodeNumber == 0)) ||
-      ((store.state.events_view_mode == 'named') && (events[eventIdentifier].name == ''))) {
-      // don't add this node as we've elected to not display it
-    } else {
-      let output = {}
-      output['eventIdentifier'] = eventIdentifier
-      output['nodeNumber'] = nodeNumber
-      output['eventNumber'] = parseInt(eventIdentifier.slice(4,8), 16)
-      output['type'] = nodeNumber == 0 ? "short" : "long"
-      output['name'] = store.getters.event_name(eventIdentifier)
-      output['colour'] = events[eventIdentifier].colour
-      output['eventGroup'] = events[eventIdentifier].group
-      output['status'] = store.state.event_view_status[eventIdentifier]
-      output['linkedNodeCount'] = getLinkedNodesCount(eventIdentifier)
-      displayEventListLocal.push(output)
+    if (eventIdentifier.length == 8){
+      var nodeNumber = parseInt(eventIdentifier.substring(0, 4), 16)
+      if (store.state.event_view_status[eventIdentifier] == undefined){
+        store.state.event_view_status[eventIdentifier] = 'unknown'
+      }
+      //
+      // we use events_view_mode to decide which events we want to exclude from being displayed
+      if (((store.state.events_view_mode == 'short') && (nodeNumber > 0)) ||
+        ((store.state.events_view_mode == 'long') && (nodeNumber == 0)) ||
+        ((store.state.events_view_mode == 'named') && (events[eventIdentifier].name == ''))) {
+        // don't add this node as we've elected to not display it
+      } else {
+        let output = {}
+        output['eventIdentifier'] = eventIdentifier
+        output['nodeNumber'] = nodeNumber
+        output['eventNumber'] = parseInt(eventIdentifier.slice(4,8), 16)
+        output['type'] = nodeNumber == 0 ? "short" : "long"
+        output['name'] = store.getters.event_name(eventIdentifier)
+        output['colour'] = events[eventIdentifier].colour
+        output['eventGroup'] = events[eventIdentifier].group
+        output['status'] = store.state.event_view_status[eventIdentifier]
+        output['linkedNodeCount'] = getLinkedNodesCount(eventIdentifier)
+        displayEventListLocal.push(output)
+      }
     }
   }
 //  utils.timeStampedLog(name + ": eventlist " + JSON.stringify(displayEventListLocal))

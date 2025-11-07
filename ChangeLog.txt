@@ -14,6 +14,7 @@ Version 0.15.0
   Block teach node if useEventIndex
   send CBUS message now keeps last values
   block edit variables & delete if useEventIndex unless in Node View
+  added eventIdentifier validation to Events View
 
 Version 0.14.0
   Added 'show events only' to BusTraffic side bar
