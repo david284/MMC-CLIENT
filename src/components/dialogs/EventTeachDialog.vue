@@ -59,6 +59,7 @@
                   <!-- <q-td key="index" :props="props">{{ props.row.eventIndex }}</q-td> -->
                   <q-td key="actions" :props="props">
                     <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Variables"
+                    v-if="props.row.editVariables"
                     @click="clickVariables(props.row.number, props.row.eventIdentifier)" no-caps/>
                   </q-td>
 
@@ -202,7 +203,13 @@ const update_taught_nodes = async () => {
               if (event.eventIdentifier == props.eventIdentifier) {
                 taughtNodes.value.push(node.nodeNumber)
                 var nodeName = store.getters.node_name(node.nodeNumber)
-                teRows.value.push({"number" : node.nodeNumber, "name" : nodeName, "eventIndex":event.eventIndex, "eventIdentifier":event.eventIdentifier})
+                teRows.value.push({
+                  "number" : node.nodeNumber,
+                  "name" : nodeName,
+                  "eventIndex":event.eventIndex,
+                  "eventIdentifier":event.eventIdentifier,
+                  "editVariables" : !store.getters.node_descriptor_useEventIndex(node.nodeNumber)
+                })
               }
             })
           }

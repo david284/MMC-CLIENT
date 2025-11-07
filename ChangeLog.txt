@@ -13,6 +13,7 @@ Version 0.15.0
   Added SwitchTeach1 (for CANACE3/CANACE3C)
   Block teach node if useEventIndex
   send CBUS message now keeps last values
+  block edit variables & delete if useEventIndex unless in Node View
 
 Version 0.14.0
   Added 'show events only' to BusTraffic side bar

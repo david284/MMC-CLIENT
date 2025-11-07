@@ -22,8 +22,11 @@
                 <q-td key="group" :props="props">{{ props.row.group }}</q-td>
                 <q-td key="actions" :props="props">
                   <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Variables"
+                    v-if="props.row.editVariables"
                     @click="clickVariables(props.row.nodeNumber)" no-caps/>
-                  <q-btn dense class="q-mx-xs" outline size="md" color="negative" label="Delete" @click="clickDelete(props.row.nodeNumber)" no-caps/>
+                  <q-btn dense class="q-mx-xs" outline size="md" color="negative" label="Delete"
+                    v-if="props.row.allowDelete"
+                  @click="clickDelete(props.row.nodeNumber)" no-caps/>
                 </q-td>
               </q-tr>
             </template>
@@ -95,7 +98,9 @@ const update_nodes_table = async () => {
     teRows.value.push({
       "nodeNumber" : nodeNumber,
       "name" : nodeName,
-      "group" : store.getters.node_group(nodeNumber)
+      "group" : store.getters.node_group(nodeNumber),
+      "editVariables" : !store.getters.node_descriptor_useEventIndex(nodeNumber),
+      "allowDelete": !store.getters.node_descriptor_useEventIndex(nodeNumber)
     })
   })
 }
