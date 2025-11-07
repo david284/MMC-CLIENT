@@ -10,7 +10,7 @@ Version 0.15.0
   added EventIdentityDialog
   added re-assert FCU_compatibility to NodesView & NodeBackupDialog
   check if parameters loaded rather than disable buttons
-  Added SwitchTeach1
+  Added SwitchTeach1 (for CANACE3/CANACE3C)
 
 Version 0.14.0
   Added 'show events only' to BusTraffic side bar
