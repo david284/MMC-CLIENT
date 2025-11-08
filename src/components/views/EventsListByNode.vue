@@ -79,7 +79,8 @@
             <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Event" @click="clickEvent(props.row.eventIndex)" no-caps/>
             <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
             <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Variables"
-            @click="clickVariables(props.row.eventIdentifier, props.row.eventIndex)" no-caps/>
+              v-if="props.row.editVariables"
+              @click="clickVariables(props.row.eventIdentifier, props.row.eventIndex)" no-caps/>
             <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
             <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.eventIdentifier)" no-caps>send ON</q-btn>
             <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.eventIdentifier)" no-caps>send OFF</q-btn>
@@ -117,7 +118,8 @@
           <q-td key="actions" :props="props">
             <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
             <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Variables"
-            @click="clickVariables(props.row.eventIdentifier, props.row.eventIndex)" no-caps/>
+              v-if="props.row.editVariables"
+              @click="clickVariables(props.row.eventIdentifier, props.row.eventIndex)" no-caps/>
             <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
             <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.eventIdentifier)" no-caps>send ON</q-btn>
             <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.eventIdentifier)" no-caps>send OFF</q-btn>
@@ -345,7 +347,7 @@ const update_rows = () => {
         output['eventIndex'] = event.eventIndex
         output['eventNumber'] = eventNumber
         output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
-        output['storedEvent'] = true
+        output['editVariables'] = (store.state.nodes[props.nodeNumber].parameters[5] > 0) ? true : false
         output['source'] = "stored event"
         if (isEventVisible(event.eventIdentifier)){
           rows.value.push(output)
@@ -384,7 +386,7 @@ const update_rows = () => {
             output['nodeNumber'] = busEvent.nodeNumber
             output['eventNumber'] = busEvent.eventNumber
             output['eventType'] = busEvent.type
-            output['storedEvent'] = false
+            output['editVariables'] = (store.state.nodes[props.nodeNumber].parameters[5] > 0) ? true : false
             output['source'] = "bus event"
             if (isEventVisible(event.eventIdentifier)){
               rows.value.push(output)
@@ -420,7 +422,7 @@ const update_rows_indexed = () => {
         output['eventIndex'] = event.eventIndex
         output['eventNumber'] = eventNumber
         output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
-        output['storedEvent'] = false
+        output['editVariables'] = (store.state.nodes[props.nodeNumber].parameters[5] > 0) ? true : false
         output['source'] = "saved index"
         if (isEventVisible(event.eventIdentifier)){
           rows.value.push(output)
@@ -455,7 +457,7 @@ const update_rows_indexed = () => {
             output['eventIndex'] = event.eventIndex
             output['eventNumber'] = eventNumber
             output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
-            output['storedEvent'] = true
+            output['editVariables'] = (store.state.nodes[props.nodeNumber].parameters[5] > 0) ? true : false
             output['source'] = "stored event"
             if (isEventVisible(event.eventIdentifier)){
               rows.value.push(output)
