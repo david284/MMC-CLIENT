@@ -408,65 +408,66 @@ const update_rows = () => {
 const update_rows_indexed = () => {
   try{
     utils.timeStampedLog(name + `: update_rows_indexed: node ${props.nodeNumber} `)
-    // first get any 'indexed events'
-    if (store.state.layout.nodeDetails[props.nodeNumber].indexedEvents != undefined){
-      var LayoutNodeEvents = Object.values(store.state.layout.nodeDetails[props.nodeNumber].indexedEvents)
-      LayoutNodeEvents.forEach(event => {
-        var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
-        var eventNumber = parseInt(event.eventIdentifier.substr(4, 4), 16)
-        let output = {}
-        output['eventIdentifier'] = event.eventIdentifier
-        output['eventName'] = store.getters.event_name(event.eventIdentifier)
-        output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
-        output['nodeNumber'] = eventNodeNumber
-        output['eventIndex'] = event.eventIndex
-        output['eventNumber'] = eventNumber
-        output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
-        output['editVariables'] = (store.state.nodes[props.nodeNumber].parameters[5] > 0) ? true : false
-        output['source'] = "saved index"
-        if (isEventVisible(event.eventIdentifier)){
-          rows.value.push(output)
-        }
-      })
-    }
-
+    //
+    // first add all reported events to list
     var eventsByIndex = Object.values(store.state.nodes[props.nodeNumber].eventsByIndex)
     eventsByIndex.forEach(event => {
       var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
       var eventNumber = parseInt(event.eventIdentifier.substr(4, 4), 16)
-      //check if it's already in the list
-      let alreadyInList = false
-      rows.value.forEach(rowEvent => {
-        if (rowEvent.eventIndex == event.eventIndex ){
-          alreadyInList = true
-          rowEvent.eventIdentifier = event.eventIdentifier
-          rowEvent.source = "stored event"
-        }
-      })
-      //
-      if (alreadyInList == false){
-        // don't add if event index 0
-        if (event.eventIndex > 0){
-          // don't add if no eventIdentifier - inactive
-          if (event.eventIdentifier != "00000000"){
-              let output = {}
-            output['eventIdentifier'] = event.eventIdentifier
-            output['eventName'] = store.getters.event_name(event.eventIdentifier)
-            output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
-            output['nodeNumber'] = eventNodeNumber
-            output['eventIndex'] = event.eventIndex
-            output['eventNumber'] = eventNumber
-            output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
-            output['editVariables'] = (store.state.nodes[props.nodeNumber].parameters[5] > 0) ? true : false
-            output['source'] = "stored event"
-            if (isEventVisible(event.eventIdentifier)){
-              rows.value.push(output)
-            }
+      // don't add if event index 0
+      if (event.eventIndex > 0){
+        // don't add if no eventIdentifier - inactive
+        if (event.eventIdentifier != "00000000"){
+            let output = {}
+          output['eventIdentifier'] = event.eventIdentifier
+          output['eventName'] = store.getters.event_name(event.eventIdentifier)
+          output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
+          output['nodeNumber'] = eventNodeNumber
+          output['eventIndex'] = event.eventIndex
+          output['eventNumber'] = eventNumber
+          output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
+          output['editVariables'] = (store.state.nodes[props.nodeNumber].parameters[5] > 0) ? true : false
+          output['source'] = "stored event"
+          if (isEventVisible(event.eventIdentifier)){
+            rows.value.push(output)
           }
         }
       }
     })
-    // sort rows by eventIndex
+    //
+    // now add any 'indexed events' if they aren't already in the list
+    if (store.state.layout.nodeDetails[props.nodeNumber].indexedEvents != undefined){
+      var LayoutNodeEvents = Object.values(store.state.layout.nodeDetails[props.nodeNumber].indexedEvents)
+      LayoutNodeEvents.forEach(event => {
+          // ok, now check if it already exists
+        let alreadyInList = false
+        rows.value.forEach(rowEvent => {
+          if (rowEvent.eventIndex == event.eventIndex ){
+            alreadyInList = true
+          }
+        })
+        // so, if it's not already in the list, then add it
+        if (alreadyInList == false){
+          var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
+          var eventNumber = parseInt(event.eventIdentifier.substr(4, 4), 16)
+          let output = {}
+          output['eventIdentifier'] = event.eventIdentifier
+          output['eventName'] = store.getters.event_name(event.eventIdentifier)
+          output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
+          output['nodeNumber'] = eventNodeNumber
+          output['eventIndex'] = event.eventIndex
+          output['eventNumber'] = eventNumber
+          output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
+          output['editVariables'] = (store.state.nodes[props.nodeNumber].parameters[5] > 0) ? true : false
+          output['source'] = "saved index"
+          if (isEventVisible(event.eventIdentifier)){
+            rows.value.push(output)
+          }
+        }
+      })
+    }
+    //
+    // finally, sort rows by eventIndex
     rows.value.sort(function(a, b){return (a.eventIndex < b.eventIndex)? -1 : 1;});
   } catch(err){
     utils.timeStampedLog(name + `: update_rows_indexed: ${err} `)
