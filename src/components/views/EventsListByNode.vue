@@ -84,7 +84,7 @@
             <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
             <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.eventIdentifier)" no-caps>send ON</q-btn>
             <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.eventIdentifier)" no-caps>send OFF</q-btn>
-            <q-btn dense class="q-mx-xs" outline size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier)" no-caps/>
+            <q-btn dense class="q-mx-xs" outline size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier, props.row.eventIndex)" no-caps/>
           </q-td>
         </q-tr>
       </template>
@@ -123,7 +123,7 @@
             <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
             <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.eventIdentifier)" no-caps>send ON</q-btn>
             <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.eventIdentifier)" no-caps>send OFF</q-btn>
-            <q-btn dense class="q-mx-xs" outline size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier)" no-caps/>
+            <q-btn dense class="q-mx-xs" outline size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier, props.row.eventIndex)" no-caps/>
           </q-td>
         </q-tr>
       </template>
@@ -622,8 +622,8 @@ const clickAdvanced = () => {
 
 //
 //
-const clickDelete = (eventIdentifier) => {
-  utils.timeStampedLog(name + `: clickDelete`)
+const clickDelete = (eventIdentifier, eventIndex) => {
+  utils.timeStampedLog(name + `: clickDelete ${eventIdentifier} ${eventIndex}`)
   const result = $q.notify({
     message: 'Are you sure you want to delete event ' + store.getters.event_name(eventIdentifier),
     timeout: 0,
@@ -632,7 +632,7 @@ const clickDelete = (eventIdentifier) => {
     actions: [
       { label: 'YES', color: 'white', handler: async () => {
         utils.timeStampedLog(`removeEvent ` + props.nodeNumber + ' ' + eventIdentifier)
-        store.methods.remove_event(props.nodeNumber, eventIdentifier)
+        store.methods.remove_event(props.nodeNumber, eventIdentifier, eventIndex)
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
     ]

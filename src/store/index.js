@@ -185,7 +185,13 @@ const methods = {
     socket.emit('QUERY_ALL_NODES')
   },
   //
-  remove_event(nodeNumber, eventName) {
+  remove_event(nodeNumber, eventName, eventIndex) {
+    utils.timeStampedLog(name + `: remove_event: ${nodeNumber} ${eventName} ${eventIndex}`)
+    try {
+    delete state.layout.nodeDetails[nodeNumber].indexedEvents[eventIndex]
+    } catch(err){ utils.timeStampedLog(name + `: remove_event: ${err}`) }
+    utils.timeStampedLog(name + `: remove_event: ${JSON.stringify(state.layout.nodeDetails[nodeNumber].indexedEvents, null, " ")} `)
+    utils.timeStampedLog(name + `: REMOVE_EVENT`)
     socket.emit('REMOVE_EVENT', {
         "nodeNumber": nodeNumber,
         "eventName": eventName
