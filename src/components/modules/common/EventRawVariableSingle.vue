@@ -18,6 +18,8 @@
 <script setup>
 import {inject, ref, onMounted, computed, watch} from "vue";
 import {decToHex} from "components/functions/utils.js"
+import * as EventFunctions from "components/functions/EventFunctions.js"
+import {getLinkedEventVariables} from "components/modules/common/commonFunctions.js"
 
 const name = "EventRawVariableSingle"
 
@@ -30,6 +32,10 @@ const props = defineProps({
     type: String,
     required: true
   },
+  "eventIndex": {
+    type: Number,
+    required: true
+  },
   "eventVariableIndex": {
     type: Number,
     required: true
@@ -37,6 +43,9 @@ const props = defineProps({
   "numberBase":{
     type: String,
     default: 'decimal'
+  },
+  configuration: {
+    type: Object
   }
 })
 
@@ -90,7 +99,18 @@ const update_variable = (displayValue) => {
     } else {
       error_message.value = ''
       error.value = false
-      store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex, newValue)
+
+      EventFunctions.eventTeach(
+        store,
+        props.nodeNumber,
+        props.eventIdentifier,
+        props.eventIndex,
+        props.eventVariableIndex,
+        newValue,
+        true,
+        getLinkedEventVariables(props.configuration)
+        )
+
 //      setDisplayVariable(variableValue.value)
     }
   } catch (err){

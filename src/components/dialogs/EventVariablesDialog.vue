@@ -55,6 +55,8 @@
             <EventRawVariables
               :nodeNumber = nodeNumber
               :eventIdentifier = eventIdentifier
+              :eventIndex = props.eventIndex
+              :configuration = processedEventVariableDescriptor
             />
             <q-separator />
           </q-card-section>
@@ -119,6 +121,8 @@
 
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
 import { useQuasar, useTimeout } from 'quasar'
+import * as EventFunctions from "components/functions/EventFunctions.js"
+import {getLinkedEventVariables} from "components/modules/common/commonFunctions.js"
 import {sleep} from "components/functions/utils.js"
 import {timeStampedLog} from "components/functions/utils.js"
 import {createNewEvent} from "components/functions/EventFunctions.js"
@@ -295,7 +299,18 @@ const clickClose = async () => {
         createNewEvent (store, props.nodeNumber, props.eventIdentifier)
         eventVariableValue = 0
       }
-      store.methods.event_teach_by_identifier(props.nodeNumber, props.eventIdentifier, 1, eventVariableValue)
+
+      EventFunctions.eventTeach(
+        store,
+        props.nodeNumber,
+        props.eventIdentifier,
+        props.eventIndex,
+        1,
+        eventVariableValue,
+        true,
+        getLinkedEventVariables(variablesDescriptor.value)
+      )
+
       await sleep(250)
       store.methods.request_all_node_events(props.nodeNumber)
     } catch (err){

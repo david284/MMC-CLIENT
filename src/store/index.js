@@ -523,8 +523,14 @@ const getters = {
   },
   node_descriptor_useEventIndex(nodeNumber){
     try{
-      utils.timeStampedLog(name + `: node_descriptor_useEventIndex ${ JSON.stringify(state.nodeDescriptors[nodeNumber].events) }`)
-      return state.nodeDescriptors[nodeNumber].useEventIndex
+      if ( state.nodeDescriptors[nodeNumber].useEventIndex == true ){
+        utils.timeStampedLog(name + `: node_descriptor_useEventIndex: true`)
+        return true
+      } else{
+        // anything else is false
+        utils.timeStampedLog(name + `: node_descriptor_useEventIndex: false`)
+        return false
+      }
     } catch{
       return false
     }

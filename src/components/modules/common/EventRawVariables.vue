@@ -18,6 +18,8 @@
       :eventVariableIndex="n"
       :nodeNumber="props.nodeNumber"
       :eventIdentifier = props.eventIdentifier
+      :eventIndex=eventIndex
+      :configuration=configuration
       v-for="n in store.state.nodes[props.nodeNumber].parameters[5]"
       :key="n"
       :numberBase=numberBase>
@@ -37,7 +39,9 @@ const numberBase = ref('decimal')
 
 const props = defineProps({
   nodeNumber: {type: Number, default: 0 },
-  eventIdentifier: {type: String, required: true }
+  eventIdentifier: {type: String, required: true },
+  eventIndex: { type: Number, required: true },
+  configuration: { type: Object}
 })
 
 /*/////////////////////////////////////////////////////////////////////////////
