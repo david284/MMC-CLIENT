@@ -207,7 +207,7 @@ export async function eventDelete (
 }
 
 //
-//
+// get higher of number of events from either MDF or node parameters
 //
 export function getNumberOfIndexedEvents (store, nodeNumber){
 try{
@@ -218,7 +218,7 @@ try{
       // param 4 is number of events supported
       numberOfEvents = store.state.nodes[nodeNumber].parameters[4]
     }
-    utils.timeStampedLog(name + `: getNumberOfIndexedEvents: node ${nodeNumber} numberOfEvents ${numberOfEvents}`)
+    //utils.timeStampedLog(name + `: getNumberOfIndexedEvents: node ${nodeNumber} numberOfEvents ${numberOfEvents}`)
     return numberOfEvents
   } catch (err) {
     utils.timeStampedLog(name + `: getNumberOfIndexedEvents: ${err}`)

@@ -7,10 +7,15 @@ let name = "UNIT TEST"
 
   let mock_store = {
     "state":{
-      "nodeDescriptors":{"1":{ "events":{"numberOfEvents": 3}}}
+      nodes:{
+        "1":{ parameters:{"4": 5} },
+        "2":{ parameters:{"4": 5} }
+      },
+      nodeDescriptors:{"1":{ events:{numberOfEvents: 3}}}
     },
     "getters":{
       node_descriptor_numberOfEvents(nodeNumber){
+        utils.timeStampedLog(name + `: node_descriptor_numberOfEvents: ${nodeNumber}`)
         if (nodeNumber == 1){return 3}
         if (nodeNumber == 2){return 9}
       },
@@ -153,10 +158,10 @@ describe('EventFunctions Test', () => {
   //
   //
   it('requestAllEventsByIndex_1', () => {
-    utils.timeStampedLog(name + `: requestAllEventsByIndex`)
+    utils.timeStampedLog(name + `: requestAllEventsByIndex_1`)
     let result = EventFunctions.requestAllEventsByIndex(mock_store, 1)
-    //utils.timeStampedLog(`getEventDetails ASOF3 Result: ${JSON.stringify(result)}`)
-    expect(result).toEqual(8)
+    utils.timeStampedLog(`requestAllEventsByIndex_1 Result: ${JSON.stringify(result)}`)
+    expect(result).toEqual(5)
   });
 
   //
@@ -164,6 +169,15 @@ describe('EventFunctions Test', () => {
   it('requestAllEventsByIndex_2', () => {
     utils.timeStampedLog(name + `: requestAllEventsByIndex`)
     let result = EventFunctions.requestAllEventsByIndex(mock_store, 2)
+    //utils.timeStampedLog(`getEventDetails ASOF3 Result: ${JSON.stringify(result)}`)
+    expect(result).toEqual(9)
+  });
+
+  //
+  //
+  it('getNumberOfIndexedEvents', () => {
+    utils.timeStampedLog(name + `: getNumberOfIndexedEvents`)
+    let result = EventFunctions.getNumberOfIndexedEvents(mock_store, 2)
     //utils.timeStampedLog(`getEventDetails ASOF3 Result: ${JSON.stringify(result)}`)
     expect(result).toEqual(9)
   });
