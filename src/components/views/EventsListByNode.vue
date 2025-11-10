@@ -27,7 +27,7 @@
         </q-input>
         &nbsp;&nbsp;
         <q-btn v-if="(eventMode=='Event')" class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
-        <q-btn v-if="(eventMode=='Index')" class="q-mx-xs q-my-none" color="blue" size="sm" label="Activate Slot" @click="clickActivateSlot()"/>
+        <q-btn v-if="enableActivateSlot" class="q-mx-xs q-my-none" color="blue" size="sm" label="Activate Slot" @click="clickActivateSlot()"/>
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Advanced" @click="clickAdvanced()"/>
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
         <q-btn square unelevated color="primary" icon="settings">
@@ -233,6 +233,7 @@ const selected_event_number = ref(0) // Dialog will complain if null
 const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref('')
 const eventMode = ref('Event')
+const enableActivateSlot = ref(false)
 const showEventIdentityDialog = ref(false)
 const showSwitchTeach1Dialog = ref(false)
 
@@ -323,6 +324,13 @@ watch(nodesUpdated, () => {
       eventMode.value = "Event"
     }
     update_rows()
+    // logical AND
+    if((store.state.nodes[props.nodeNumber].VLCB) && (eventMode.value == "Index")){
+      enableActivateSlot.value = true
+    } else {
+      enableActivateSlot.value = false
+    }
+
   }
 })
 
@@ -623,7 +631,7 @@ const clickAdvanced = () => {
 
 //
 //
-const clickDelete = (eventIdentifier, eventIndex) => {
+const clickDelete = async (eventIdentifier, eventIndex) => {
   utils.timeStampedLog(name + `: clickDelete ${eventIdentifier} ${eventIndex}`)
   const result = $q.notify({
     message: 'Are you sure you want to delete event ' + store.getters.event_name(eventIdentifier),
@@ -633,7 +641,7 @@ const clickDelete = (eventIdentifier, eventIndex) => {
     actions: [
       { label: 'YES', color: 'white', handler: async () => {
         utils.timeStampedLog(`removeEvent ` + props.nodeNumber + ' ' + eventIdentifier)
-        store.methods.remove_event(props.nodeNumber, eventIdentifier, eventIndex)
+        await eventFunctions.eventDelete(store, props.nodeNumber, eventIdentifier, eventIndex)
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
     ]

@@ -70,7 +70,7 @@
                 <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
                 <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.eventIdentifier)" no-caps>send ON</q-btn>
                 <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.eventIdentifier)" no-caps>send OFF</q-btn>
-                <q-btn dense class="q-mx-xs" outline size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier)" no-caps/>
+                <q-btn dense class="q-mx-xs" outline size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier, props.row.eventIndex)" no-caps/>
               </q-td>
             </q-tr>
           </template>
@@ -124,6 +124,7 @@
 import {computed, inject, ref, watch, onBeforeMount, onMounted, onUpdated} from "vue"
 import { useQuasar } from 'quasar'
 import * as utils from "components/functions/utils.js"
+import * as eventFunctions from "components/functions/EventFunctions.js"
 import AddEventDialog from "components/dialogs/AddEventDialog"
 import advancedEventsDialog from "components/dialogs/AdvancedEventsDialog"
 import sendEventDialog from "components/dialogs/SendEventDialog"
@@ -400,7 +401,7 @@ const clickAdvanced = () => {
 }
 
 
-const clickDelete = (eventIdentifier) => {
+const clickDelete = async (eventIdentifier, eventIndex) => {
   utils.timeStampedLog(name + `: clickDelete`)
   const result = $q.notify({
     message: 'Are you sure you want to delete event ' + store.getters.event_name(eventIdentifier),
@@ -410,7 +411,7 @@ const clickDelete = (eventIdentifier) => {
     actions: [
       { label: 'YES', color: 'white', handler: async () => {
         utils.timeStampedLog(`removeEvent ` + props.nodeNumber + ' ' + eventIdentifier)
-        store.methods.remove_event(props.nodeNumber, eventIdentifier)
+        await eventFunctions.eventDelete(store, props.nodeNumber, eventIdentifier, eventIndex)
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
     ]

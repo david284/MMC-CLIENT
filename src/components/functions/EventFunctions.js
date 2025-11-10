@@ -148,24 +148,80 @@ export function getEventDetails (cbusMsg) {
 
 
 //
-// checks if cbus message is an ON or OFF event
+// requests all events using indexes
 //
 export function requestAllEventsByIndex (store, nodeNumber) {
-  //utils.timeStampedLog(name + `: requestAllEventsByIndex: nodeNumber ${nodeNumber}`)
   try{
-    let numberOfEvents = store.getters.node_descriptor_numberOfEvents(nodeNumber)
-    // will return 0 if descriptor doesn't have numberOfEvents defined
-    if(numberOfEvents == 0){
-      // param 4 is number of events supported
-      numberOfEvents = store.state.nodes[nodeNumber].parameters[4]
-    }
-    // always request at least 8
-    if((numberOfEvents < 8 ) || (numberOfEvents == undefined)){ numberOfEvents = 8 }
-    //utils.timeStampedLog(name + `: requestAllEventsByIndex: numberOfEvents ${numberOfEvents}`)
+    let numberOfEvents = getNumberOfIndexedEvents(store, nodeNumber)
+    utils.timeStampedLog(name + `: requestAllEventsByIndex: nodeNumber ${nodeNumber} count ${numberOfEvents}`)
     store.methods.request_all_node_events_by_index(nodeNumber, numberOfEvents)
     return numberOfEvents   // for unit test
   } catch (err){
     utils.timeStampedLog(name + `: requestAllEventsByIndex ${err}`)
+  }
+}
+
+//
+//
+//
+export async function eventDelete (
+  store,
+  nodeNumber,
+  eventIdentifier,
+  eventIndex
+){
+  try{
+    utils.timeStampedLog (name + `: eventDelete ${nodeNumber} ${eventIdentifier} ${eventIndex} `)
+    if (store.getters.node_descriptor_useEventIndex(nodeNumber) == true){
+      // use eventIndex
+      if (eventIndex != undefined){
+        let newEventIdentifier = utils.decToHex(nodeNumber, 4) + utils.decToHex(eventIndex, 4)
+        if(store.state.nodes[nodeNumber].VLCB == true){
+          newEventIdentifier = "00000000"
+        }
+        store.methods.event_teach_by_index(
+          nodeNumber,
+          newEventIdentifier,
+          eventIndex,
+          0,
+          0,
+          false
+          // don't need linked variables as we're just changing the event identifier
+        )
+      }
+      await utils.sleep(500)
+      requestAllEventsByIndex(store, nodeNumber)
+    } else {
+      // use eventIdentifier - this does a refresh anyway
+      store.methods.remove_event(nodeNumber, eventIdentifier, eventIndex)
+    }
+    try{
+      // remove from indexedEvents (it if exists)
+      delete store.state.layout.nodeDetails[nodeNumber].indexedEvents[eventIndex]
+    } catch (err){
+      //utils.timeStampedLog (name + `: eventDelete: indexedEvents Delete ${err} `)
+    }
+  } catch (err) {
+    utils.timeStampedLog (name + `: eventDelete ${err} `)
+  }
+}
+
+//
+//
+//
+export function getNumberOfIndexedEvents (store, nodeNumber){
+try{
+    let numberOfEvents = store.getters.node_descriptor_numberOfEvents(nodeNumber)
+    // will return 0 if descriptor doesn't have numberOfEvents defined
+    // use whichever is higher
+    if(store.state.nodes[nodeNumber].parameters[4] > numberOfEvents){
+      // param 4 is number of events supported
+      numberOfEvents = store.state.nodes[nodeNumber].parameters[4]
+    }
+    utils.timeStampedLog(name + `: getNumberOfIndexedEvents: node ${nodeNumber} numberOfEvents ${numberOfEvents}`)
+    return numberOfEvents
+  } catch (err) {
+    utils.timeStampedLog(name + `: getNumberOfIndexedEvents: ${err}`)
   }
 }
 

@@ -188,7 +188,6 @@ const methods = {
   remove_event(nodeNumber, eventName, eventIndex) {
     utils.timeStampedLog(name + `: remove_event: ${nodeNumber} ${eventName} ${eventIndex}`)
     try {
-    delete state.layout.nodeDetails[nodeNumber].indexedEvents[eventIndex]
     } catch(err){ utils.timeStampedLog(name + `: remove_event: ${err}`) }
     utils.timeStampedLog(name + `: remove_event: ${JSON.stringify(state.layout.nodeDetails[nodeNumber].indexedEvents, null, " ")} `)
     utils.timeStampedLog(name + `: REMOVE_EVENT`)
@@ -558,8 +557,12 @@ const getters = {
   //
   node_descriptor_numberOfEvents(nodeNumber){
     try{
-      utils.timeStampedLog(name + `: node_descriptor_numberOfEvents ${state.nodeDescriptors[nodeNumber].events.numberOfEvents}`)
-      return state.nodeDescriptors[nodeNumber].numberOfEvents
+      let value = 0
+      if (state.nodeDescriptors[nodeNumber].numberOfEvents){
+        value =  state.nodeDescriptors[nodeNumber].numberOfEvents
+      }
+      utils.timeStampedLog(name + `: node_descriptor_numberOfEvents  node ${nodeNumber} number ${value}`)
+      return value
     } catch{
       return 0
     }
