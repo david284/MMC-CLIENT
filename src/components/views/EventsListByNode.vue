@@ -76,7 +76,7 @@
           <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td>
           <q-td key="source" :props="props">{{ props.row.source }}</q-td>
           <q-td key="actions" :props="props">
-            <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Event" @click="clickEvent(props.row.eventIndex)" no-caps/>
+            <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Event" @click="clickEvent(props.row.eventIndex, props.row.eventIdentifier)" no-caps/>
             <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
             <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Variables"
               v-if="props.row.editVariables"
@@ -163,6 +163,7 @@
     <EventIdentityDialog v-model="showEventIdentityDialog"
       :nodeNumber=nodeNumber
       :eventIndex=selected_event_index
+      :eventIdentifier = selected_event_Identifier
     />
 
     <eventTeachDialog v-model='showEventTeachDialog'
@@ -583,7 +584,11 @@ store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
       )
     {
       selected_event_index.value = data.json.data1
+      selected_event_Identifier.value = data.json.eventIdentifier
       utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : ACON1/ACOF1 event - switch ${selected_event_index.value}`)
+      // lets store this against the node in the layout
+      // as the index is specific to the node
+      store.setters.addIndexedEventToLayoutNode(props.nodeNumber, selected_event_index.value, selected_event_Identifier.value)
       showEventIdentityDialog.value = true
     }
   }
@@ -674,9 +679,10 @@ const click_enableEventGroup = () => {
 
 //
 //
-const clickEvent = (eventIndex) => {
+const clickEvent = (eventIndex, eventIdentifier) => {
   utils.timeStampedLog(name + `: clickEvent: eventIndex ${eventIndex}`)
   selected_event_index.value = eventIndex
+  selected_event_Identifier.value = eventIdentifier
   showEventIdentityDialog.value = true
 }
 

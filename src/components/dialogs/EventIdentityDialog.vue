@@ -66,8 +66,8 @@ const new_event_Identifier = ref("") // Dialog will complain if null
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
   nodeNumber: {type: Number, required: true },
-  eventIndex: {type: Number, default: 0 }
-
+  eventIndex: {type: Number, default: 0 },
+  eventIdentifier: {type: String, default: "0000000" }
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -80,19 +80,14 @@ const model = computed({
 // model changes when Dialog opened & closed
 watch(model, () => {
   console.log(name + `: WATCH model`)
-  if (model.value){
-    let slot = store.state.nodes[props.nodeNumber].eventsByIndex[props.eventIndex]
-    if (slot != undefined){
-      let eventIdentifier = store.state.nodes[props.nodeNumber].eventsByIndex[props.eventIndex].eventIdentifier
-      if (eventIdentifier != undefined){
-        newEventNodeNumber.value = parseInt(eventIdentifier.substring(0, 4), 16)
-        newEventNumber.value = parseInt(eventIdentifier.substring(4, 8), 16)
-        if (newEventNodeNumber.value == 0){
-          eventType.value = 'short'
-        } else {
-          eventType.value = 'long'
-        }
-      }
+  if (model.value == true){
+    utils.timeStampedLog(name + `: watch model: ${props.eventIdentifier}`)
+    newEventNodeNumber.value = parseInt(props.eventIdentifier.substring(0, 4), 16)
+    newEventNumber.value = parseInt(props.eventIdentifier.substring(4, 8), 16)
+    if (newEventNodeNumber.value == 0){
+      eventType.value = 'short'
+    } else {
+      eventType.value = 'long'
     }
   }
 })
