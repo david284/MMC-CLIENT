@@ -229,7 +229,6 @@ const showSendEventDialog = ref(false)
 const newEventName = ref()
 const selected_event_Identifier = ref("") // Dialog will complain if null
 const selected_event_index = ref()
-const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
 const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref('')

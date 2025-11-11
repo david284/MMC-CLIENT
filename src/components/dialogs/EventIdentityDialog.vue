@@ -60,7 +60,6 @@ const newEventNodeNumber = ref()
 const newEventNumber = ref()
 const addEventEnabled = ref(true)
 const eventType = ref()
-const new_event_Identifier = ref("") // Dialog will complain if null
 
 
 const props = defineProps({
