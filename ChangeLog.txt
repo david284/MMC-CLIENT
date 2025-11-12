@@ -1,4 +1,7 @@
 Version 0.15.0
+  Fixed issue in EventsListByNode not displaying bus events
+
+Version 0.15.0
   Added REQUEST_NODE_EVENT_BY_INDEX
   Added TestDialog under develop flag
   Added Send NERD & Send NENRD under develop flag
