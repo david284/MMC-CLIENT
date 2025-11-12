@@ -396,7 +396,7 @@ const update_rows = () => {
             output['eventType'] = busEvent.type
             output['editVariables'] = (store.state.nodes[props.nodeNumber].parameters[5] > 0) ? true : false
             output['source'] = "bus event"
-            if (isEventVisible(event.eventIdentifier)){
+            if (isEventVisible(eventIdentifier)){
               rows.value.push(output)
             }
           }
