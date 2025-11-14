@@ -58,8 +58,8 @@ describe('utils Test', () => {
 
   //
   //
-  it('channelToken test', () => {
-    console.log("unit_test: channelToken test BEGIN")
+  it('replaceChannelTokens test', () => {
+    console.log("unit_test: replaceChannelTokens test BEGIN")
     let jsonObj = {test1: "${chaNNel1} green",
       test2: "${channel2",
       test3: "${CHANNEL **3**} red",
@@ -68,12 +68,48 @@ describe('utils Test', () => {
     }
     let nodeNumber = 1
     let result = utils.replaceChannelTokens(store, jsonObj, nodeNumber)
-    console.log('unit_test: channelToken: result = ' + JSON.stringify(result))
+    console.log('unit_test: replaceChannelTokens: result = ' + JSON.stringify(result))
     expect(result.test1).toMatch(/switch/);
     expect(result.test3).toMatch(/turnout/);
-    console.log("unit_test: channelToken test END")
+    console.log("unit_test: replaceChannelTokens test END")
   });
 
+
+  //
+  //
+  it('extractMDFTokens test', () => {
+    console.log("unit_test: extractMDFTokens test BEGIN")
+    let jsonObj = {test1: "${chaNNel1} green",
+      test2: "${channel2",
+      test3: "${CHANNEL **3**} red",
+      test4: "${channel4",
+      test5: "${CHANNEL9} red",
+      test6: "${CHANNEL2} red",
+      test6: "${palette2} red",
+      test7: "text"
+    }
+    let result = utils.extractMDFTokens(store, jsonObj)
+    console.log('unit_test: extractMDFTokens: result = ' + JSON.stringify(result, null, " "))
+    console.log("unit_test: extractMDFTokens test END")
+  });
+
+  //
+  //
+  it('getListOfTokens test', () => {
+    console.log("unit_test: getListOfTokens test BEGIN")
+    let jsonObj = {test1: "${chaNNel1} green",
+      test2: "${channel2",
+      test3: "${CHANNEL **3**} red",
+      test4: "${channel4",
+      test5: "${CHANNEL9} red",
+      test6: "${CHANNEL2} red",
+      test6: "${palette2} red",
+      test7: "text"
+    }
+    let result = utils.getListOfTokens(jsonObj)
+    console.log('unit_test: getListOfTokens: result = ' + JSON.stringify(result, null, " "))
+    console.log("unit_test: getListOfTokens test END")
+  });
 
 
 });

@@ -10,25 +10,23 @@ This is the web front end to the MMC-SERVER backend
 npm install
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+## Start the app in development mode (hot-code reloading, error reporting, etc.)
 
 ```bash
 quasar dev
 ```
 
-### Run Jest unit tests
+## Run Jest unit tests
 
-```bash
-npm run test:unit
-```
+see[ readme tests](readme tests.md)
 
-### Lint the files
+## Lint the files
 
 ```bash
 npm run lint
 ```
 
-### Build the app for production
+## Build the app for production
 
 ```bash
 quasar build

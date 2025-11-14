@@ -1,4 +1,81 @@
+import { setMaxListeners } from "stream"
+
 const name = "utils"
+
+//
+// Get every instance of tokens into a list
+//
+export function getListOfTokens(jsonObj){
+  try{
+    timeStampedLog(name + `: getListOfTokens: start`)
+    let list =[]
+    let jsonString = JSON.stringify(jsonObj).toLowerCase()
+    const startToken = "${"
+    const endToken = "}"
+    var searchIndex = 0
+    var indexTokenStart = 0;
+    //
+    while((indexTokenStart = jsonString.indexOf(startToken, searchIndex)) > 0) {
+      timeStampedLog(name + `: getListOfTokens: indexTokenStart = ${indexTokenStart}`)
+      searchIndex = indexTokenStart + 1   // move searchIndex on
+      //
+      // look for next '}' - must be a final '}' if valid json, so should always get a value for this
+      let indexTokenEnd = jsonString.indexOf(endToken, indexTokenStart)
+      timeStampedLog(name + `: getNextToken: indexTokenEnd ${indexTokenEnd}`)
+      //
+      // check that the next '}' is in the actual field, which should be contained within quote marks
+      // so look for next string quote mark, as that should be the end of the token value
+      let endOfField = jsonString.indexOf('"', searchIndex)
+      if (endOfField > 0){
+        // a quote mark should follow the ending '}' - e.g. "${chaNNel1} green"
+        // if quote mark is before this ending char, then ending char missing, so skip
+        // if endOfField == -1, then not found, so don't run this test (should never happen)
+        if (indexTokenEnd > endOfField) {
+          timeStampedLog(name + `: missing ending token - skipping ${indexTokenEnd} ${endOfField}` )
+          continue
+        }
+      }
+      // ok, if we get here, then we must have a valid token sequence
+      let token = jsonString.substring(indexTokenStart, indexTokenEnd + 1)
+      timeStampedLog(name + `: getListOfTokens: token ${token} : ${indexTokenStart} ${indexTokenEnd}`)
+      list.push(token)
+    }
+    //
+    return list
+  } catch (err){
+    timeStampedLog(name + `: getListOfTokens: ${err}`)
+  }
+}
+
+//
+// get all tokens from json
+// then reduce to single instance of each token, plus highest number
+//
+export function extractMDFTokens(store, jsonObj) {
+  try {
+    timeStampedLog(name + `: extractMDFTokens:`)
+    let allTokens = getListOfTokens(jsonObj)
+    //
+    //
+    let list = []
+    allTokens.forEach(token => {
+      let tokenName = token.replace(/[0-9,$,{,}]/g, '')
+      let tokenNumber = token.replace(/[^0-9]/g, "")
+      timeStampedLog(name + `: extractMDFTokens: tokenName ${tokenName} tokenNumber ${tokenNumber}`)
+      let i = list.find(({ name }) => name === tokenName);
+      timeStampedLog(name + `: extractMDFTokens: find ${JSON.stringify(i)}`)
+      if (i == undefined) {
+        list.push({name:tokenName, number: tokenNumber})
+      } else {
+        if (tokenNumber > i.number) {i.number = tokenNumber}
+      }
+    })
+    return list
+    //
+  } catch (err) {
+    timeStampedLog(name + `: extractMDFTokens: ${err}`)
+  }
+}
 
 
 //
