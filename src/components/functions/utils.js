@@ -7,7 +7,7 @@ const name = "utils"
 //
 export function getListOfTokens(jsonString){
   try{
-    timeStampedLog(name + `: getListOfTokens: start`)
+    //timeStampedLog(name + `: getListOfTokens: start`)
     let list =[]
     const startToken = "${"
     const endToken = "}"
@@ -15,12 +15,12 @@ export function getListOfTokens(jsonString){
     var indexTokenStart = 0;
     //
     while((indexTokenStart = jsonString.indexOf(startToken, searchIndex)) > 0) {
-      timeStampedLog(name + `: getListOfTokens: indexTokenStart = ${indexTokenStart}`)
+      //timeStampedLog(name + `: getListOfTokens: indexTokenStart = ${indexTokenStart}`)
       searchIndex = indexTokenStart + 1   // move searchIndex on
       //
       // look for next '}' - must be a final '}' if valid json, so should always get a value for this
       let indexTokenEnd = jsonString.indexOf(endToken, indexTokenStart)
-      timeStampedLog(name + `: getNextToken: indexTokenEnd ${indexTokenEnd}`)
+      //timeStampedLog(name + `: getNextToken: indexTokenEnd ${indexTokenEnd}`)
       //
       // check that the next '}' is in the actual field, which should be contained within quote marks
       // so look for next string quote mark, as that should be the end of the token value
@@ -36,7 +36,7 @@ export function getListOfTokens(jsonString){
       }
       // ok, if we get here, then we must have a valid token sequence
       let token = jsonString.substring(indexTokenStart, indexTokenEnd + 1)
-      timeStampedLog(name + `: getListOfTokens: token ${token} : ${indexTokenStart} ${indexTokenEnd}`)
+      //timeStampedLog(name + `: getListOfTokens: token ${token} : ${indexTokenStart} ${indexTokenEnd}`)
       list.push(token)
     }
     //
@@ -50,29 +50,34 @@ export function getListOfTokens(jsonString){
 // get all tokens from json
 // then reduce to single instance of each token, plus highest number
 //
-export function extractMDFTokens(store, jsonObj) {
+export function extractMDFTokens(jsonObj) {
   try {
-    timeStampedLog(name + `: extractMDFTokens:`)
-    let jsonString = JSON.stringify(jsonObj)
-    let allTokens = getListOfTokens(jsonString)
-    //
-    //
+    //timeStampedLog(name + `: extractMDFTokens:`)
+    if (jsonObj != undefined){
+      timeStampedLog(name + `: extractMDFTokens: module: ${jsonObj.moduleName}`)
+      let jsonString = JSON.stringify(jsonObj)
+      //timeStampedLog(name + `: extractMDFTokens: jsonString ${jsonString}`)
+      let allTokens = getListOfTokens(jsonString)
+      //
+      //
 
-    let list = []
-    allTokens.forEach(token => {
-      let tokenName = token.replace(/[0-9,$,{,}]/g, '')
-      let tokenNumber = token.replace(/[^0-9]/g, "")
-      timeStampedLog(name + `: extractMDFTokens: tokenName ${tokenName} tokenNumber ${tokenNumber}`)
-      let i = list.find(({ name }) => name === tokenName.toLowerCase());
-      timeStampedLog(name + `: extractMDFTokens: find ${JSON.stringify(i)}`)
-      if (i == undefined) {
-        list.push({name:tokenName.toLowerCase(), number: tokenNumber})
-      } else {
-        if (tokenNumber > i.number) {i.number = tokenNumber}
-      }
-    })
-    return list
-    //
+      let list = []
+      allTokens.forEach(token => {
+        let tokenName = token.replace(/[0-9,$,{,}]/g, '')
+        let tokenNumber = token.replace(/[^0-9]/g, "")
+        //timeStampedLog(name + `: extractMDFTokens: tokenName ${tokenName} tokenNumber ${tokenNumber}`)
+        let i = list.find(({ name }) => name === tokenName.toLowerCase());
+        //timeStampedLog(name + `: extractMDFTokens: find ${JSON.stringify(i)}`)
+        if (i == undefined) {
+          list.push({name:tokenName.toLowerCase(), number: tokenNumber})
+        } else {
+          if (tokenNumber > i.number) {i.number = tokenNumber}
+        }
+      })
+      //timeStampedLog(name + `: extractMDFTokens: list ${JSON.stringify(list)}`)
+      return list
+      //
+    }
   } catch (err) {
     timeStampedLog(name + `: extractMDFTokens: ${err}`)
   }
@@ -99,7 +104,7 @@ export function replaceChannelTokens(store, jsonObj, nodeNumber) {
           // get channel name
       if (token.toLowerCase().includes("channel")){
         let channelName = store.getters.node_channel_name(nodeNumber, tokenNumber)
-        timeStampedLog(name + `: replaceChannelTokens: token ${token} name ${channelName}`)
+        //timeStampedLog(name + `: replaceChannelTokens: token ${token} name ${channelName}`)
         // now replace full token with channel Name
         //timeStampedLog(name + ":replace " + token + ' with '+ channelName)
         jsonString = jsonString.replace(token, channelName)
@@ -107,7 +112,7 @@ export function replaceChannelTokens(store, jsonObj, nodeNumber) {
     })
     //
     try{
-      timeStampedLog(name + `: END_replaceChannelTokens: node ${nodeNumber}`)
+      //timeStampedLog(name + `: END_replaceChannelTokens: node ${nodeNumber}`)
       return JSON.parse(jsonString)
     } catch(err) {
       timeStampedLog(name + ": replaceChannelTokens: parsing result " + err)
@@ -117,7 +122,6 @@ export function replaceChannelTokens(store, jsonObj, nodeNumber) {
     timeStampedLog(name + `: replaceChannelTokens: ${err}`)
   }
 }
-
 
 //
 // usage: import {sleep} from "components/functions/utils.js"

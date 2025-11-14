@@ -88,7 +88,7 @@ describe('utils Test', () => {
       test6: "${palette2} red",
       test7: "text"
     }
-    let result = utils.extractMDFTokens(store, jsonObj)
+    let result = utils.extractMDFTokens(jsonObj)
     console.log('unit_test: extractMDFTokens: result = ' + JSON.stringify(result, null, " "))
     expect(result[0].name).toMatch("channel");
     expect(result[0].number).toMatch("9");

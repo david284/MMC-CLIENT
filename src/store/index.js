@@ -999,6 +999,7 @@ socket.on("NODE_DESCRIPTOR", (data) => {
     state.nodeDescriptors[nodeNumber] = moduleDescriptor
     const store = {"state":state}
     state.layout.nodeDetails[nodeNumber].numberOfChannels = getNumberOfChannels(store, nodeNumber)
+    state.layout.nodeDetails[nodeNumber].tokenList = utils.extractMDFTokens(moduleDescriptor)
     state.MDFupdateTimestamp = Date.now()
   } catch (err) {
     utils.timeStampedLog(name + `: RECEIVED NODE_DESCRIPTOR: ${err} `)
