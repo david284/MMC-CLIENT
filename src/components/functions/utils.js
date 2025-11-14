@@ -5,11 +5,10 @@ const name = "utils"
 //
 // Get every instance of tokens into a list
 //
-export function getListOfTokens(jsonObj){
+export function getListOfTokens(jsonString){
   try{
     timeStampedLog(name + `: getListOfTokens: start`)
     let list =[]
-    let jsonString = JSON.stringify(jsonObj).toLowerCase()
     const startToken = "${"
     const endToken = "}"
     var searchIndex = 0
@@ -54,18 +53,20 @@ export function getListOfTokens(jsonObj){
 export function extractMDFTokens(store, jsonObj) {
   try {
     timeStampedLog(name + `: extractMDFTokens:`)
-    let allTokens = getListOfTokens(jsonObj)
+    let jsonString = JSON.stringify(jsonObj)
+    let allTokens = getListOfTokens(jsonString)
     //
     //
+
     let list = []
     allTokens.forEach(token => {
       let tokenName = token.replace(/[0-9,$,{,}]/g, '')
       let tokenNumber = token.replace(/[^0-9]/g, "")
       timeStampedLog(name + `: extractMDFTokens: tokenName ${tokenName} tokenNumber ${tokenNumber}`)
-      let i = list.find(({ name }) => name === tokenName);
+      let i = list.find(({ name }) => name === tokenName.toLowerCase());
       timeStampedLog(name + `: extractMDFTokens: find ${JSON.stringify(i)}`)
       if (i == undefined) {
-        list.push({name:tokenName, number: tokenNumber})
+        list.push({name:tokenName.toLowerCase(), number: tokenNumber})
       } else {
         if (tokenNumber > i.number) {i.number = tokenNumber}
       }
@@ -86,49 +87,35 @@ export function extractMDFTokens(store, jsonObj) {
 //   Replace with channel name for that node & channel
 //
 export function replaceChannelTokens(store, jsonObj, nodeNumber) {
-  let jsonString = JSON.stringify(jsonObj)
-  let result = null
-  var searchIndex = 0
-  var indexTokenStart = 0;
-  var startToken = "${channel"
-  var endToken = "}"
-  timeStampedLog(name + `: BEGIN_replaceChannelTokens: node ${nodeNumber}`)
-  while((indexTokenStart = jsonString.toLowerCase().indexOf(startToken, searchIndex)) > 0) {
-    searchIndex = indexTokenStart + 1
-    // look for next '}'
-    // it's not valid JSON if there isn't a final '}', so should always get a value for this
-    let indexTokenEnd = jsonString.indexOf(endToken, indexTokenStart)
+  try {
+    timeStampedLog(name + `: replaceChannelTokens:`)
+    let jsonString = JSON.stringify(jsonObj)
+    let allTokens = getListOfTokens(jsonString)
     //
-    // check that the next '}' is in the actual field, which should be contained within quote marks
-    // so look for next string quote mark, as that should be the end of the token value
-    let endOfField = jsonString.indexOf('"', searchIndex)
-    if (endOfField > 0){
-      // if quote mark is before this ending char, then ending char missing, so skip
-      // if endOfField == -1, then not found, so don't run this test (should never happen)
-      if (indexTokenEnd > endOfField) {
-        timeStampedLog(name + `: missing ending token - skipping ${indexTokenEnd} ${endOfField}` )
-        continue
+    // now have list of all tokens
+    allTokens.forEach(token => {
+      // extract channel number
+      let tokenNumber = token.replace(/[^0-9]/g, "")
+          // get channel name
+      if (token.toLowerCase().includes("channel")){
+        let channelName = store.getters.node_channel_name(nodeNumber, tokenNumber)
+        timeStampedLog(name + `: replaceChannelTokens: token ${token} name ${channelName}`)
+        // now replace full token with channel Name
+        //timeStampedLog(name + ":replace " + token + ' with '+ channelName)
+        jsonString = jsonString.replace(token, channelName)
       }
+    })
+    //
+    try{
+      timeStampedLog(name + `: END_replaceChannelTokens: node ${nodeNumber}`)
+      return JSON.parse(jsonString)
+    } catch(err) {
+      timeStampedLog(name + ": replaceChannelTokens: parsing result " + err)
     }
-    // ok, if we get here, then we must have a valid token sequence
-    let channelToken = jsonString.substring(indexTokenStart, indexTokenEnd + 1)
-    // extract channel number
-    let channelNumber = channelToken.replace(/[^0-9]/g, "")
-    // get channel name
-    let channelName = store.getters.node_channel_name(nodeNumber, channelNumber)
-    //timeStampedLog(name + ":channelName " + channelName)
-    // now replace full token with channel Name
-    //timeStampedLog(name + ":replace " + channelToken + ' with '+ channelName)
-    jsonString = jsonString.replace(channelToken, channelName)
-    //await sleep(1)
+    //
+  } catch (err){
+    timeStampedLog(name + `: replaceChannelTokens: ${err}`)
   }
-  try{
-    result = JSON.parse(jsonString)
-  } catch(err) {
-    timeStampedLog(name + ": replaceChannelTokens: " + err)
-  }
-  timeStampedLog(name + `: END_replaceChannelTokens: node ${nodeNumber}`)
-	return result
 }
 
 

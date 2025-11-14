@@ -106,7 +106,7 @@ describe('utils Test', () => {
       test6: "${palette2} red",
       test7: "text"
     }
-    let result = utils.getListOfTokens(jsonObj)
+    let result = utils.getListOfTokens(JSON.stringify(jsonObj))
     console.log('unit_test: getListOfTokens: result = ' + JSON.stringify(result, null, " "))
     console.log("unit_test: getListOfTokens test END")
   });
