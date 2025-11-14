@@ -90,6 +90,12 @@ describe('utils Test', () => {
     }
     let result = utils.extractMDFTokens(store, jsonObj)
     console.log('unit_test: extractMDFTokens: result = ' + JSON.stringify(result, null, " "))
+    expect(result[0].name).toMatch("channel");
+    expect(result[0].number).toMatch("9");
+    expect(result[1].name).toMatch("channel ****");
+    expect(result[1].number).toMatch("3");
+    expect(result[2].name).toMatch("palette");
+    expect(result[2].number).toMatch("2");
     console.log("unit_test: extractMDFTokens test END")
   });
 
@@ -108,6 +114,10 @@ describe('utils Test', () => {
     }
     let result = utils.getListOfTokens(JSON.stringify(jsonObj))
     console.log('unit_test: getListOfTokens: result = ' + JSON.stringify(result, null, " "))
+    expect(result[0]).toMatch("${chaNNel1}");
+    expect(result[1]).toMatch("${CHANNEL **3**}");
+    expect(result[2]).toMatch("${CHANNEL9}");
+    expect(result[3]).toMatch("${palette2}");
     console.log("unit_test: getListOfTokens test END")
   });
 
