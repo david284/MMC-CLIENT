@@ -126,7 +126,7 @@ const clickAddEventIdentifier = () => {
       true,
     )
 
-    if (store.getters.node_descriptor_useNENRD(props.nodeNumber)) {
+    if (store.getters.node_useNENRD(props.nodeNumber)) {
       eventFunctions.requestAllEventsByIndex(store, props.nodeNumber)
     } else {
       store.methods.request_all_node_events(props.nodeNumber)

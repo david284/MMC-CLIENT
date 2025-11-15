@@ -172,7 +172,7 @@ export async function eventDelete (
 ){
   try{
     utils.timeStampedLog (name + `: eventDelete ${nodeNumber} ${eventIdentifier} ${eventIndex} `)
-    if (store.getters.node_descriptor_useEventIndex(nodeNumber) == true){
+    if (store.getters.node_useEventIndex(nodeNumber) == true){
       // use eventIndex
       if (eventIndex != undefined){
         let newEventIdentifier = utils.decToHex(nodeNumber, 4) + utils.decToHex(eventIndex, 4)
@@ -211,7 +211,7 @@ export async function eventDelete (
 //
 export function getNumberOfIndexedEvents (store, nodeNumber){
 try{
-    let numberOfEvents = store.getters.node_descriptor_numberOfEvents(nodeNumber)
+    let numberOfEvents = store.getters.node_numberOfEvents(nodeNumber)
     // will return 0 if descriptor doesn't have numberOfEvents defined
     // use whichever is higher
     if(store.state.nodes[nodeNumber].parameters[4] > numberOfEvents){
@@ -235,7 +235,7 @@ export function eventTeach (
   eventVariableValue,
   reLoad,
   configuration) {
-  if (store.getters.node_descriptor_useEventIndex(nodeNumber) == true){
+  if (store.getters.node_useEventIndex(nodeNumber) == true){
     // use eventIndex
     store.methods.event_teach_by_index(
       nodeNumber,

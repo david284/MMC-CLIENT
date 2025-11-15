@@ -526,42 +526,65 @@ const getters = {
       return ""
     }
   },
-  node_descriptor_useEventIndex(nodeNumber){
+  node_useEventIndex(nodeNumber){
     try{
       if ( state.nodeDescriptors[nodeNumber].useEventIndex == true ){
-        utils.timeStampedLog(name + `: node_descriptor_useEventIndex: true`)
+        utils.timeStampedLog(name + `: node_useEventIndex: MDF true`)
         return true
-      } else{
+      } else if(state.nodes[nodeNumber].moduleInfo.useEventIndex) {
+        utils.timeStampedLog(name + `: node_useEventIndex: moduleInfo.useEventIndex true`)
+        return true
+      } else {
         // anything else is false
-        utils.timeStampedLog(name + `: node_descriptor_useEventIndex: false`)
+        utils.timeStampedLog(name + `: node_useEventIndex: false`)
         return false
       }
     } catch{
       return false
     }
   },
-  node_descriptor_useNENRD(nodeNumber){
+  node_useNENRD(nodeNumber){
     try{
-      return state.nodeDescriptors[nodeNumber].useNENRD
-    } catch{
+      if (state.nodeDescriptors[nodeNumber].useNENRD){
+        utils.timeStampedLog(name + `: node_useNENRD: MDF true`)
+        return true
+      } else if(state.nodes[nodeNumber].moduleInfo.useNENRD) {
+        utils.timeStampedLog(name + `: node_useNENRD: moduleInfo.useNENRD true`)
+        return true
+      } else {
+        return false
+      }
+    } catch {
       return false
     }
   },
-  node_descriptor_useSwitchTeach1(nodeNumber){
+  node_useSwitchTeach1(nodeNumber){
     try{
-      return state.nodeDescriptors[nodeNumber].useSwitchTeach1
-    } catch{
+      if (state.nodeDescriptors[nodeNumber].useSwitchTeach1){
+        utils.timeStampedLog(name + `: node_useSwitchTeach1: MDF true`)
+        return true
+      } else if(state.nodes[nodeNumber].moduleInfo.useSwitchTeach1) {
+        utils.timeStampedLog(name + `: node_useSwitchTeach1: moduleInfo.useSwitchTeach1 true`)
+        return true
+      } else {
+        return false
+      }
+    } catch {
       return false
     }
   },
   //
-  node_descriptor_numberOfEvents(nodeNumber){
+  node_numberOfEvents(nodeNumber){
     try{
       let value = 0
       if (state.nodeDescriptors[nodeNumber].numberOfEvents){
         value =  state.nodeDescriptors[nodeNumber].numberOfEvents
+        utils.timeStampedLog(name + `: node_numberOfEvents: MDF ${value}`)
+      } else if (state.nodes[nodeNumber].moduleInfo.numberOfEvents != undefined) {
+        value = state.nodes[nodeNumber].moduleInfo.numberOfEvents
+        utils.timeStampedLog(name + `: node_numberOfEvents: moduleInfo.numberOfEvents ${value}`)
       }
-      utils.timeStampedLog(name + `: node_descriptor_numberOfEvents  node ${nodeNumber} number ${value}`)
+      utils.timeStampedLog(name + `: node_numberOfEvents  node ${nodeNumber} number ${value}`)
       return value
     } catch{
       return 0

@@ -1,4 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
+import each from 'jest-each';
 
 import * as utils from "components/functions/utils.js"
 
@@ -47,12 +48,17 @@ describe('utils Test', () => {
 
 
   //
+  // TimeStampToText test
   //
-  it('TimeStampToText test', () => {
-    console.log("TimeStampToText test BEGIN")
-    let result = utils.TimeStampToText("202411092105")
-    console.log('overloadedLabel: result = ' + result)
-    expect(result).toBe("2024/11/09 21:05")
+  each([
+    [0, ""],
+    [0x7FFFFFFFFF, "5497/55/81 38:87"],
+    [202411092105, "2024/11/09 21:05"]
+  ]).test('TimeStampToText test %s %s', (a, expected) => {
+    console.log(`TimeStampToText test BEGIN ${a} ${expected}`)
+    let result = utils.TimeStampToText(a.toString())
+    console.log('TimeStampToText: result = ' + result)
+    expect(result).toBe(expected)
     console.log("TimeStampToText test END")
   });
 

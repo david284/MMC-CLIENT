@@ -548,7 +548,7 @@ const clickEvents = async (nodeNumber) => {
   // check if parameters have been fully retrieved
   if(NodeParametersLoaded(store, nodeNumber)){
     await checkNodeVariables(nodeNumber)
-    if (store.getters.node_descriptor_useNENRD(nodeNumber)) {
+    if (store.getters.node_useNENRD(nodeNumber)) {
       eventFunctions.requestAllEventsByIndex(store, nodeNumber)
     } else {
       store.methods.request_all_node_events(nodeNumber)

@@ -8,7 +8,7 @@
         Slots for node :  {{ store.getters.node_name(props.nodeNumber) }}
       </div>
       <template v-slot:action>
-        <q-btn class="q-mx-xs q-my-none" v-if="store.getters.node_descriptor_useSwitchTeach1(props.nodeNumber)"
+        <q-btn class="q-mx-xs q-my-none" v-if="store.getters.node_useSwitchTeach1(props.nodeNumber)"
          size="sm" color="blue" label="Switch Teach" no-caps @click="clickSwitchTeach1()">
         </q-btn>
         <q-btn class="q-mx-xs q-my-none" v-if="store.state.develop" size="sm" color="black" no-caps
@@ -318,7 +318,7 @@ const nodesUpdated = computed(() => {
 watch(nodesUpdated, () => {
   //utils.timeStampedLog(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
   if (props.nodeNumber){
-    if (store.getters.node_descriptor_useEventIndex(props.nodeNumber) == true){
+    if (store.getters.node_useEventIndex(props.nodeNumber) == true){
       eventMode.value = "Index"
     } else {
       eventMode.value = "Event"

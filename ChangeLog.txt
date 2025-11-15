@@ -1,6 +1,8 @@
 Version 0.16.0
   added getListOfTokens & extractMDFTokens
   updated readme tests.md
+  Now uses values for "useEventIndex", "useNENRD", "numberOfEvents" & "useSwitchTeach1"
+  from mergConfig as well as MDF
 
 Version 0.15.1
   Fixed issue in EventsListByNode not displaying bus events

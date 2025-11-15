@@ -99,8 +99,8 @@ const update_nodes_table = async () => {
       "nodeNumber" : nodeNumber,
       "name" : nodeName,
       "group" : store.getters.node_group(nodeNumber),
-      "editVariables" : !store.getters.node_descriptor_useEventIndex(nodeNumber),
-      "allowDelete": !store.getters.node_descriptor_useEventIndex(nodeNumber)
+      "editVariables" : !store.getters.node_useEventIndex(nodeNumber),
+      "allowDelete": !store.getters.node_useEventIndex(nodeNumber)
     })
   })
 }

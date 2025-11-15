@@ -8,6 +8,18 @@
             Node Variables for node :  {{ store.getters.node_name(nodeNumber) }}
           </div>
           <template v-slot:action>
+          <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="names">
+            <q-menu auto-close>
+              <q-list style="min-width: 100px">
+                <div v-for="item in store.state.layout.nodeDetails[nodeNumber].tokenList" :key="item">
+                  <q-item>
+                    <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" :label=item.name
+                      @click="clickNamesMenu(item.name, item.number)" />
+                  </q-item>
+                </div>
+              </q-list>
+            </q-menu>
+          </q-btn>
             <q-btn v-if="(!numberOfChannels==0)" class="q-mx-xs q-my-none" color="blue" size="sm"
               label="channel names" @click="clickChannelNames()"/>
             <q-btn color="cyan-1" size="sm" text-color="black"
@@ -86,7 +98,6 @@
     message = "Waiting on Node Variables"
   />
 
-
 </template>
 
 /*/////////////////////////////////////////////////////////////////////////////
@@ -97,7 +108,6 @@ and then only made visible when this dialog is selected for a specific node
 - only then can the variables be populated, not when initially created
 
 /////////////////////////////////////////////////////////////////////////////*/
-
 
 <script setup>
 
@@ -112,7 +122,6 @@ import NodeRawVariables from "components/modules/common/NodeRawVariables"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
 import { replaceChannelTokens } from "../functions/utils";
 import { getNumberOfChannels } from "../functions/NodeFunctions";
-
 
 const $q = useQuasar()
 const { registerTimeout } = useTimeout()
@@ -306,6 +315,20 @@ const clickManageModuleDescriptor = () => {
   store.methods.request_matching_mdf_list(props.nodeNumber, "USER")
   store.methods.request_matching_mdf_list(props.nodeNumber, "SYSTEM")
   showMDFDialog.value = true
+}
+
+
+//
+//
+const clickNamesMenu = (name, number) => {
+  timeStampedLog(name + `: clickNamesMenu ${name} ${number}`)
+  if (name.toLowerCase().includes("channel")){
+    if (number > 0){
+      timeStampedLog(name + `: clickNamesMenu ${name} enabled`)
+      showNodeChannelNamesDialog.value = true
+    }
+  }
+
 }
 
 //

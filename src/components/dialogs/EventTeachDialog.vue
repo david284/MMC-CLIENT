@@ -148,7 +148,7 @@ watch(newNode, () => {
   var nodeNumberToBeTaught = parseInt(array[0])
   timeStampedLog(name + `: WATCH newNode: nodeNumberToBeTaught ${nodeNumberToBeTaught}`)
   if (nodeNumberToBeTaught){
-    if (store.getters.node_descriptor_useEventIndex(nodeNumberToBeTaught)){
+    if (store.getters.node_useEventIndex(nodeNumberToBeTaught)){
       disableEventTeach.value = true
       $q.notify({
         message: 'Cannot teach this module from here',
@@ -208,7 +208,7 @@ const update_taught_nodes = async () => {
                   "name" : nodeName,
                   "eventIndex":event.eventIndex,
                   "eventIdentifier":event.eventIdentifier,
-                  "editVariables" : !store.getters.node_descriptor_useEventIndex(node.nodeNumber)
+                  "editVariables" : !store.getters.node_useEventIndex(node.nodeNumber)
                 })
               }
             })

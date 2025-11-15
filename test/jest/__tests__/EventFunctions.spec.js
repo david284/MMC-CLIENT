@@ -14,12 +14,12 @@ let name = "UNIT TEST"
       nodeDescriptors:{"1":{ events:{numberOfEvents: 3}}}
     },
     "getters":{
-      node_descriptor_numberOfEvents(nodeNumber){
-        utils.timeStampedLog(name + `: node_descriptor_numberOfEvents: ${nodeNumber}`)
+      node_numberOfEvents(nodeNumber){
+        utils.timeStampedLog(name + `: node_numberOfEvents: ${nodeNumber}`)
         if (nodeNumber == 1){return 3}
         if (nodeNumber == 2){return 9}
       },
-      node_descriptor_useEventIndex(nodeNumber){
+      node_useEventIndex(nodeNumber){
         return mock_store.useEventIndex
       }
     },
