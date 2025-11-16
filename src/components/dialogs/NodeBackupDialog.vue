@@ -34,10 +34,10 @@
 <script setup>
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
-import { date, useQuasar, scroll } from 'quasar'
-import {sleep} from "components/functions/utils.js"
+import { useQuasar } from 'quasar'
+import * as utils from "components/functions/utils.js"
+import * as eventFunctions from "components/functions/EventFunctions.js"
 import cbusLib from "cbuslibrary"
-import {refreshEventIndexes} from "components/functions/EventFunctions.js"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
 
 
@@ -97,7 +97,7 @@ const backupNode = async () => {
 
   // refresh event indexes in advance of needing it
   backupStatus.value = "refresh event variables"
-  await refreshEventIndexes(store, props.nodeNumber)
+  await eventFunctions.refreshEventIndexes(store, props.nodeNumber)
   let startTime = Date.now()
 
   //
@@ -112,7 +112,7 @@ const backupNode = async () => {
   // wait until enough time elapsed for refresh indexes
   backupStatus.value = "waiting for events"
   while ((Date.now() - startTime) < 1000) {
-    await sleep(100)
+    await utils.sleep(100)
   }
 
   if (successState){
@@ -163,7 +163,7 @@ const loadNodeVariables = async () => {
       result = true  // success if we exit early
       break
     }
-    await sleep (100)
+    await utils.sleep (100)
   }
   showWaitingOnBusTrafficDialog.value = false
   return result
@@ -181,7 +181,16 @@ const loadEventVariables = async () => {
     WaitingOnBusTrafficDialogReturn.value =''
     showWaitingOnBusTrafficDialog.value = true
     // now request all the event variables for all events for this node
-    store.methods.requestAllEventVariablesForNode(props.nodeNumber)
+    if (store.getters.node_useEventIndex(props.nodeNumber) == true){
+      eventFunctions.requestAllEventsByIndex(store, props.nodeNumber)
+      /*
+      for (var i=1; i <= store.getters.node_numberOfEvents(props.nodeNumber); i++){
+        store.methods.request_event_variables_by_index(props.nodeNumber, i)
+      }
+        */
+    } else {
+      store.methods.requestAllEventVariablesForNode(props.nodeNumber)
+    }
     // wait for variables to load - allow up to 5 minutes
     var startTime = Date.now()
     while ((Date.now() - startTime) < 300000){
@@ -190,7 +199,7 @@ const loadEventVariables = async () => {
         result = true  // success if we exit early
         break
       }
-      await sleep (100)
+      await utils.sleep (100)
     }
     showWaitingOnBusTrafficDialog.value = false
   } catch (err) {

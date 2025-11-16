@@ -190,7 +190,7 @@
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { useQuasar } from 'quasar'
-import {sleep} from "components/functions/utils.js"
+import * as utils from "components/functions/utils.js"
 import NodeBackupDialog from "components/dialogs/NodeBackupDialog"
 
 const $q = useQuasar()
@@ -232,7 +232,7 @@ const model = computed({
 
 // model changes when Dialog opened & closed
 watch(model, () => {
-  //console.log(name + `: WATCH model`)
+  //utils.timeStampedLog(name + `: WATCH model`)
   if (model.value){
     backupFilename.value = undefined
     ready.value = false
@@ -251,7 +251,7 @@ const restoredData = computed(() => {
 })
 
 watch(restoredData, () => {
-  //console.log(name + `: WATCH restoredData`)
+  //utils.timeStampedLog(name + `: WATCH restoredData`)
   try {
     restoredNode.value = restoredData.value.backupNode
     moduleName.value = restoredNode.value.moduleName
@@ -259,7 +259,7 @@ watch(restoredData, () => {
     numberOfEvents.value = restoredNode.value.eventCount
     numberOfEVs.value = restoredNode.value.parameters[5]
   } catch (err) {
-    console.log(name + `: WATCH restoredData ` + err)
+    utils.timeStampedLog(name + `: WATCH restoredData ` + err)
     restoredNode.value = {}
     moduleName.value = ""
     numberOfNVs.value = ""
@@ -277,20 +277,22 @@ const backupList = computed(() => {
 
 // need to update when new layout added
 watch(backupList, () => {
-  //console.log(name + `: WATCH backupList`)
+  //utils.timeStampedLog(name + `: WATCH backupList`)
   updateBackupList()
 })
 
 const updateBackupList = () => {
   teRows.value = []
   backupList.value.forEach(backup => {
-    //console.log(name + `: update ` + backup)
+    //utils.timeStampedLog(name + `: update ` + backup)
     teRows.value.push({"backup" : backup})
   })
 }
 
+//
+//
 const restoreNodeVariables = async () => {
-  console.log(name + ': restoreNodeVariables')
+  utils.timeStampedLog(name + ': restoreNodeVariables')
   restoreStatus.value = "restoring Node Variables"
   inProgress.value = true
   try{
@@ -300,53 +302,97 @@ const restoreNodeVariables = async () => {
       if (index > 0)
       {
         let variable = nodeVariables[index]
-        console.log(name + `: restoreNodeVariables: ${index} ${variable}` )
+        utils.timeStampedLog(name + `: restoreNodeVariables: ${index} ${variable}` )
         let reLoad = false  // don't reLoad variables after teaching
         store.methods.update_node_variable(props.nodeNumber, index, variable, reLoad)
-        await sleep(100)  // allow a little time between requests
+        await utils.sleep(100)  // allow a little time between requests
       }
     }
   } catch (err){
-    console.log(name + ': restoreNodeVariables: ' + err)
+    utils.timeStampedLog(name + ': restoreNodeVariables: ' + err)
   }
 
-  await sleep(2000)
+  await utils.sleep(2000)
 
   while ((Date.now() - store.state.cbusTrafficTimeStamp) < 500) {
-    await sleep(100)
+    await utils.sleep(100)
   }
   inProgress.value = false
 }
 
-const restoreEvents = async () => {
-  console.log(name + ': restoreEvents')
+//
+//
+const restoreEventsByIdentifier = async () => {
+  utils.timeStampedLog(name + ': restoreEventsByIdentifier')
   inProgress.value = true
   try{
     // first remove all existing events - even if there's no events in the backup
     restoreStatus.value = "erasing Events"
     store.methods.delete_all_events(props.nodeNumber)
-    await sleep(2000)  // allow a little time for this to take effect
+    await utils.sleep(2000)  // allow a little time for this to take effect
     //
     restoreStatus.value = "restoring Events & Variables"
+    //
     // don't use forEach, as couldn't get it to work with async/await
     var storedEventsNI = restoredNode.value.storedEventsNI
-    console.log(name + `: restoreEventVariables: storedEventsNI ${JSON.stringify(storedEventsNI)}` )
+    utils.timeStampedLog(name + `: restoreEventsByIdentifier: storedEventsNI ${JSON.stringify(storedEventsNI)}` )
     for(const eventIdentifier in storedEventsNI){
-      console.log(name + ': restoreEvents: ' + eventIdentifier)
+      utils.timeStampedLog(name + ': restoreEventsByIdentifier: ' + eventIdentifier)
       await restoreEventVariables(eventIdentifier)
     }
   } catch (err){
-    console.log(name + ': restoreEvents: ' + err)
+    utils.timeStampedLog(name + `: restoreEventsByIdentifier: ${err}`)
   }
-  await sleep(2000)
+  await utils.sleep(2000)
   while ((Date.now() - store.state.cbusTrafficTimeStamp) < 1000) {
-    await sleep(100)
+    await utils.sleep(100)
   }
   inProgress.value = false
 }
 
+//
+//
+const restoreEventsByIndex = async () => {
+  utils.timeStampedLog(name + ': restoreEventsByIndex')
+  inProgress.value = true
+  try{
+    // first remove all existing events - even if there's no events in the backup
+    restoreStatus.value = "erasing Events"
+    store.methods.delete_all_events(props.nodeNumber)
+    await utils.sleep(2000)  // allow a little time for this to take effect
+    //
+    restoreStatus.value = "restoring Events & Variables"
+    // node uses indexed events
+    for(const index in restoredNode.value.eventsByIndex){
+      utils.timeStampedLog(name + `: restoreEvents: eventIndex ${index}` )
+      let defaultEventIdentifier = utils.decToHex(props.nodeNumber, 4) + utils.decToHex(index, 4)
+      let newEventIdentifier = restoredNode.value.eventsByIndex[index].eventIdentifier
+      if (newEventIdentifier != defaultEventIdentifier){
+        // default entry, so don't bother writing back
+        utils.timeStampedLog(name + `: restoreEventsByIndex: ${index} default ${defaultEventIdentifier} new ${newEventIdentifier} ` )
+      } else {
+        // modified entry, so need to write it
+        utils.timeStampedLog(name + `: restoreEventsByIndex: ${index} default ${defaultEventIdentifier}` )
+      }
+      // does it support event variables? (param 5)
+      if (store.state.nodes[props.nodeNumber].parameters[5] > 0){
+        utils.timeStampedLog(name + `: restoreEventsByIndex: ******* Indexed variables - not supported ******** ` )
+      }
+    }
+  } catch (err){
+    utils.timeStampedLog(name + `: restoreEventsByIndex: ${err}`)
+  }
+  await utils.sleep(2000)
+  while ((Date.now() - store.state.cbusTrafficTimeStamp) < 1000) {
+    await utils.sleep(100)
+  }
+  inProgress.value = false
+}
+
+//
+//
 const restoreEventVariables = async (eventIdentifier) => {
-  //console.log(name + ': restoreEventVariables ' + eventIdentifier)
+  //utils.timeStampedLog(name + ': restoreEventVariables ' + eventIdentifier)
   try{
     let eventVariables = restoredNode.value.storedEventsNI[eventIdentifier].variables
     // ensure variables are restored in ascending index order
@@ -354,14 +400,14 @@ const restoreEventVariables = async (eventIdentifier) => {
       if (index > 0)
       {
         let variable = restoredNode.value.storedEventsNI[eventIdentifier].variables[index]
-        //console.log(name + `: restoreEventVariables: ${index} ${variable}` )
+        //utils.timeStampedLog(name + `: restoreEventVariables: ${index} ${variable}` )
         let reLoad = false  // don't reLoad variables after teaching
         store.methods.event_teach_by_identifier(props.nodeNumber, eventIdentifier, index, variable, reLoad)
-        await sleep(200)  // allow a little time between requests
+        await utils.sleep(200)  // allow a little time between requests
       }
     }
   } catch (err){
-    console.log(name + ': restoreEventVariables: ' + err)
+    utils.timeStampedLog(name + ': restoreEventVariables: ' + err)
   }
 }
 
@@ -402,19 +448,19 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 const actionUpload = async() => {
-  console.log(name + `: actionUpload`)
+  utils.timeStampedLog(name + `: actionUpload`)
 
   var result = {}
   if (uploadFile.value){
     var fileName = uploadFile.value.name
-    console.log(name + ': selected filename ' + fileName)
+    utils.timeStampedLog(name + ': selected filename ' + fileName)
     let reader = new FileReader();
     reader.readAsText(uploadFile.value)
     reader.onload = async function() {
       try{
         var resultOBJ = JSON.parse(reader.result)
         store.methods.save_node_backup(props.nodeNumber, resultOBJ.backupNode)
-        await sleep(500)
+        await utils.sleep(500)
         store.methods.request_node_backups_list(store.state.layout.layoutDetails.title, props.nodeNumber)
       } catch(e){
         $q.notify({
@@ -429,21 +475,21 @@ const actionUpload = async() => {
     }
     uploadFile.value=null
   } else {
-    console.log(name + `: actionUpload: uploadFile no value `)
+    utils.timeStampedLog(name + `: actionUpload: uploadFile no value `)
   }
 }
 
 //
 //
 const clickBackup = async() => {
-  console.log(name + `: clickBackup`)
+  utils.timeStampedLog(name + `: clickBackup`)
   showNodeBackupDialog.value = true
 }
 
 //
 //
 const clickChangeFilename = async() => {
-  console.log(name + `: clickChangeFilename ${oldFilename.value} ${newFilename.value}`)
+  utils.timeStampedLog(name + `: clickChangeFilename ${oldFilename.value} ${newFilename.value}`)
   if (newFilename.value.length > 0){
     // rename_node_backup should invoke a new list to be returned
     store.methods.rename_node_backup(store.state.layout.layoutDetails.title, props.nodeNumber, oldFilename.value, newFilename.value)
@@ -455,7 +501,7 @@ const clickChangeFilename = async() => {
 //
 //
 const clickBackupList = (row) => {
-  console.log(name + ': clickBackupList on ', row)
+  utils.timeStampedLog(name + ': clickBackupList on ', row)
   backupFilename.value = row
   store.methods.request_node_backup(store.state.layout.layoutDetails.title, props.nodeNumber, backupFilename.value)
   ready.value = true
@@ -465,7 +511,7 @@ const clickBackupList = (row) => {
 //
 //
 const clickDelete = (fileName) => {
-  console.log(name + ': clickDelete ', fileName)
+  utils.timeStampedLog(name + ': clickDelete ', fileName)
   const result = $q.notify({
     message: 'Are you sure you want to delete backup ' + fileName,
     timeout: 0,
@@ -477,7 +523,7 @@ const clickDelete = (fileName) => {
           store.state.layout.layoutDetails.title,
           props.nodeNumber,
           fileName)
-        await sleep(50)     // allow a bit of a delay for the change
+        await utils.sleep(50)     // allow a bit of a delay for the change
         store.methods.request_node_backups_list(store.state.layout.layoutDetails.title, props.nodeNumber)
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
@@ -486,7 +532,7 @@ const clickDelete = (fileName) => {
 }
 
 const clickDownload = async () => {
-  console.log(name + `: clickDownload ${backupFilename.value}`)
+  utils.timeStampedLog(name + `: clickDownload ${backupFilename.value}`)
 
   let text = JSON.stringify(store.state.restoredData, null, "  ")
 
@@ -505,7 +551,7 @@ const clickDownload = async () => {
 //
 //
 const clickUpload = () => {
-  console.log(name + `: clickImport`)
+  utils.timeStampedLog(name + `: clickImport`)
   showUploadDialog.value = true
 
   //store.methods.save_node_backup(props.nodeNumber, store.state.nodes[props.nodeNumber])
@@ -516,23 +562,27 @@ const clickUpload = () => {
 //
 const clickRestore = async (row) => {
   ready.value = false
-  console.log(name + ': clickRestore')
+  utils.timeStampedLog(name + ': clickRestore')
   // check the module name matches
   if (moduleName.value == store.getters.module_name(props.nodeNumber)) {
     restoreStatus.value = "restore in progress"
     await restoreNodeVariables()
-    await restoreEvents()
+    if (store.getters.node_useEventIndex(props.nodeNumber) == true)  {
+      await restoreEventsByIndex()
+    } else {
+      await restoreEventsByIdentifier()
+    }
     // now lets reset the node
     restoreStatus.value = "node resetting"
     store.methods.reset_node(props.nodeNumber)
     // allow 2 seconds for module to restart
-    await sleep(2000)
+    await utils.sleep(2000)
     // now lets refresh all node variables
     store.methods.request_all_node_variables(
       props.nodeNumber,
       store.state.nodes[props.nodeNumber].parameters[6]
     )
-    await sleep(1000)
+    await utils.sleep(1000)
     // now lets refresh all events
     store.methods.request_all_node_events(props.nodeNumber)
     restoreStatus.value = "restore complete\n(select a backup to run again)"
@@ -554,7 +604,7 @@ const clickRestore = async (row) => {
 //
 //
 const clickToggleBackupJSON = () => {
-  console.log(name + `: clickToggleBackupJSON`)
+  utils.timeStampedLog(name + `: clickToggleBackupJSON`)
   showNodeJSON.value  = showNodeJSON.value ? false : true
 }
 

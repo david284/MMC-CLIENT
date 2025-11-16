@@ -552,6 +552,7 @@ const getters = {
         utils.timeStampedLog(name + `: node_useNENRD: moduleInfo.useNENRD true`)
         return true
       } else {
+        utils.timeStampedLog(name + `: node_useNENRD: false`)
         return false
       }
     } catch {
