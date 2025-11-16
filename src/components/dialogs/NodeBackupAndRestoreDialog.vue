@@ -191,6 +191,7 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { useQuasar } from 'quasar'
 import * as utils from "components/functions/utils.js"
+import * as eventFunctions from "components/functions/EventFunctions.js"
 import NodeBackupDialog from "components/dialogs/NodeBackupDialog"
 
 const $q = useQuasar()
@@ -367,12 +368,21 @@ const restoreEventsByIndex = async () => {
       utils.timeStampedLog(name + `: restoreEvents: eventIndex ${index}` )
       let defaultEventIdentifier = utils.decToHex(props.nodeNumber, 4) + utils.decToHex(index, 4)
       let newEventIdentifier = restoredNode.value.eventsByIndex[index].eventIdentifier
-      if (newEventIdentifier != defaultEventIdentifier){
-        // default entry, so don't bother writing back
-        utils.timeStampedLog(name + `: restoreEventsByIndex: ${index} default ${defaultEventIdentifier} new ${newEventIdentifier} ` )
+      if (newEventIdentifier == defaultEventIdentifier){
+        // matches default entry, so don't bother writing back
+        utils.timeStampedLog(name + `: restoreEventsByIndex: ${index} default ${defaultEventIdentifier}` )
       } else {
         // modified entry, so need to write it
-        utils.timeStampedLog(name + `: restoreEventsByIndex: ${index} default ${defaultEventIdentifier}` )
+        utils.timeStampedLog(name + `: restoreEventsByIndex: ${index} default ${defaultEventIdentifier} new ${newEventIdentifier}` )
+        // we're just updating the eventIdentifier here, so event variable index & value set to 0
+        store.methods.event_teach_by_index(
+          props.nodeNumber,
+          newEventIdentifier,
+          index,
+          0,
+          0,
+          false,
+        )
       }
       // does it support event variables? (param 5)
       if (store.state.nodes[props.nodeNumber].parameters[5] > 0){
@@ -584,7 +594,11 @@ const clickRestore = async (row) => {
     )
     await utils.sleep(1000)
     // now lets refresh all events
-    store.methods.request_all_node_events(props.nodeNumber)
+    if (store.getters.node_useNENRD(props.nodeNumber)) {
+      eventFunctions.requestAllEventsByIndex(store, props.nodeNumber)
+    } else {
+      store.methods.request_all_node_events(props.nodeNumber)
+    }
     restoreStatus.value = "restore complete\n(select a backup to run again)"
   } else {
     const result = $q.notify({
