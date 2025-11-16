@@ -3,6 +3,7 @@ Version 0.16.0
   updated readme tests.md
   Now uses values for "useEventIndex", "useNENRD", "numberOfEvents" & "useSwitchTeach1"
   from mergConfig as well as MDF
+  Updated backup & restore to support CANACE3(C) that uses indexed events
 
 Version 0.15.1
   Fixed issue in EventsListByNode not displaying bus events
