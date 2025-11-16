@@ -151,6 +151,7 @@ const clickAccept = () => {
     store.methods.set_node_number(newNodeNumber.value)
     // setting name will trigger layoutdetails update & create entry if it doesn't exist
     store.setters.node_name(newNodeNumber.value, newNodeName.value)
+    store.setters.node_group(newNodeNumber.value, newGroupName.value)
     model.value = false // close dialog
   } else {
     const result = $q.notify({
@@ -159,7 +160,7 @@ const clickAccept = () => {
       position: 'center',
       color: 'primary',
       actions: [
-        { label: 'YES', color: 'white', handler: async () => { 
+        { label: 'YES', color: 'white', handler: async () => {
           store.methods.set_node_number(newNodeNumber.value)
           // setting name will trigger layoutdetails update & create entry if it doesn't exist
           store.setters.node_name(newNodeNumber.value, newNodeName.value)
