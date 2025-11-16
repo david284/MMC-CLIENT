@@ -53,6 +53,8 @@
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import * as utils from "components/functions/utils.js"
 import * as eventFunctions from "components/functions/EventFunctions.js"
+import cbusLib from "cbuslibrary"
+
 
 const store = inject('store')
 const name = "EventIdentityDialog"
@@ -108,7 +110,7 @@ Click event handlers
 
 //
 //
-const clickAddEventIdentifier = () => {
+const clickAddEventIdentifier = async () => {
   utils.timeStampedLog(name + `: clickAddEventIdentifier`)
 
   if (eventType.value == 'short'){newEventNodeNumber.value = 0}
@@ -118,19 +120,18 @@ const clickAddEventIdentifier = () => {
   utils.timeStampedLog(name + `: clickAddEventIdentifier: entered_event_identifier ${entered_event_identifier} `)
 
   store.methods.event_teach_by_index(
-      props.nodeNumber,
-      entered_event_identifier,
-      props.eventIndex,
-      0,
-      0,
-      true,
-    )
+    props.nodeNumber,
+    entered_event_identifier,
+    props.eventIndex,
+    0,
+    0,
+    true,
+  )
 
-    if (store.getters.node_useNENRD(props.nodeNumber)) {
-      eventFunctions.requestAllEventsByIndex(store, props.nodeNumber)
-    } else {
-      store.methods.request_all_node_events(props.nodeNumber)
-    }
+  await utils.sleep(500)
+  // send a single NENRD to refresh the event ID back from the node
+  let commandString = cbusLib.encodeNENRD(props.nodeNumber, props.eventIndex)
+  store.methods.send_cbus_message(commandString)
 
 }
 
