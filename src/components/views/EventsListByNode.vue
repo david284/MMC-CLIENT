@@ -255,7 +255,7 @@ const columns = [
 ]
 
 const slot_columns = [
-  {name: 'eventIndex', field: 'eventIndex', label: 'Slot', align: 'left', sortable: true},
+  {name: 'eventIndex', field: 'eventIndex', label: 'Index', align: 'left', sortable: true},
   {name: 'eventIdentifier', field: 'eventIdentifier', label: 'Identifier', align: 'left', sortable: true},
   {name: 'eventName', field: 'eventName', required: true, label: 'Name', align: 'left', sortable: true},
   {name: 'eventGroup', field: 'eventGroup', label: 'Group', align: 'left', sortable: true},
