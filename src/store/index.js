@@ -531,15 +531,19 @@ const getters = {
       if ( state.nodeDescriptors[nodeNumber].useEventIndex == true ){
         utils.timeStampedLog(name + `: node_useEventIndex: MDF true`)
         return true
-      } else if(state.nodes[nodeNumber].moduleInfo.useEventIndex) {
+      } else if (state.nodes[nodeNumber].moduleInfo.useEventIndex == true) {
         utils.timeStampedLog(name + `: node_useEventIndex: moduleInfo.useEventIndex true`)
+        return true
+      } else if (getters.node_useSlots(nodeNumber) == true) {
+        utils.timeStampedLog(name + `: node_useEventIndex: useSlots true`)
         return true
       } else {
         // anything else is false
         utils.timeStampedLog(name + `: node_useEventIndex: false`)
         return false
       }
-    } catch{
+    } catch (err) {
+      utils.timeStampedLog(name + `: node_useEventIndex: ${err}`)
       return false
     }
   },
@@ -555,7 +559,26 @@ const getters = {
         utils.timeStampedLog(name + `: node_useNENRD: false`)
         return false
       }
-    } catch {
+    } catch (err) {
+      utils.timeStampedLog(name + `: node_useNENRD: ${err}`)
+      return false
+    }
+  },
+  node_useSlots(nodeNumber){
+    try{
+      if ( state.nodeDescriptors[nodeNumber].useSlots == true ){
+        utils.timeStampedLog(name + `: node_useSlots: MDF true`)
+        return true
+      } else if(state.nodes[nodeNumber].moduleInfo.useSlots) {
+        utils.timeStampedLog(name + `: node_useSlots: moduleInfo.useSlots true`)
+        return true
+      } else {
+        // anything else is false
+        utils.timeStampedLog(name + `: node_useSlots: false`)
+        return false
+      }
+    } catch (err) {
+      utils.timeStampedLog(name + `: node_useSlots: ${err}`)
       return false
     }
   },
@@ -570,7 +593,8 @@ const getters = {
       } else {
         return false
       }
-    } catch {
+    } catch (err) {
+      utils.timeStampedLog(name + `: node_useSwitchTeach1: ${err}`)
       return false
     }
   },

@@ -210,6 +210,6 @@ export function setVisibleColumn (visibleColumns, columnName, enableState) {
       visibleColumns.splice(index, 1)
     }
   }
-  timeStampedLog(name + `: setVisibleColumn: ${visibleColumns}`)
+  //timeStampedLog(name + `: setVisibleColumn: ${visibleColumns}`)
 }
 

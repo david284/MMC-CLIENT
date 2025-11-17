@@ -1,11 +1,8 @@
 <template>
   <div style="height: 35vh;">
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
-      <div class="text-h6" v-if="(eventMode=='Event')">
-        Events for node :  {{ store.getters.node_name(props.nodeNumber) }}
-      </div>
-      <div class="text-h6" v-if="(eventMode=='Index')">
-        Slots for node :  {{ store.getters.node_name(props.nodeNumber) }}
+      <div class="text-h6">
+        {{ bannerTitle }} for node :  {{ store.getters.node_name(props.nodeNumber) }}
       </div>
       <template v-slot:action>
         <q-btn class="q-mx-xs q-my-none" v-if="store.getters.node_useSwitchTeach1(props.nodeNumber)"
@@ -236,6 +233,7 @@ const eventMode = ref('Event')
 const enableActivateSlot = ref(false)
 const showEventIdentityDialog = ref(false)
 const showSwitchTeach1Dialog = ref(false)
+const bannerTitle = ref("")
 
 
 const props = defineProps({
@@ -322,6 +320,11 @@ watch(nodesUpdated, () => {
       eventMode.value = "Index"
     } else {
       eventMode.value = "Event"
+    }
+    if (store.getters.node_useSlots(props.nodeNumber) == true){
+      bannerTitle.value = "Slots"
+    } else {
+      bannerTitle.value = "Events"
     }
     update_rows()
     // logical AND
