@@ -8,7 +8,7 @@
             Node Variables for node :  {{ store.getters.node_name(nodeNumber) }}
           </div>
           <template v-slot:action>
-          <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="names">
+          <q-btn v-if="(store.state.develop)" class="q-mx-xs q-my-none" color="blue" size="sm" label="names">
             <q-menu auto-close>
               <q-list style="min-width: 100px">
                 <div v-for="item in store.state.layout.nodeDetails[nodeNumber].tokenList" :key="item">

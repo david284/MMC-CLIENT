@@ -142,26 +142,29 @@ watch(model, () => {
 //
 //
 watch(newNode, () => {
-  timeStampedLog(name + `: WATCH newNode ${newNode.value}`)
-  // get node number from input value
-  var array = newNode.value.split(':')
-  var nodeNumberToBeTaught = parseInt(array[0])
-  timeStampedLog(name + `: WATCH newNode: nodeNumberToBeTaught ${nodeNumberToBeTaught}`)
-  if (nodeNumberToBeTaught){
-    if (store.getters.node_useEventIndex(nodeNumberToBeTaught)){
-      disableEventTeach.value = true
-      $q.notify({
-        message: 'Cannot teach this module from here',
-        caption: 'select node from nodes view instead',
-        timeout: 2000,
-        type: 'warning',
-        position: 'center',
-        actions: [ { label: 'Dismiss' } ]
-      })
-
-    } else {
-      disableEventTeach.value = false
+  try {
+    timeStampedLog(name + `: WATCH newNode ${newNode.value}`)
+    // get node number from input value
+    var array = newNode.value.split(':')
+    var nodeNumberToBeTaught = parseInt(array[0])
+    timeStampedLog(name + `: WATCH newNode: nodeNumberToBeTaught ${nodeNumberToBeTaught}`)
+    if (nodeNumberToBeTaught){
+      if (store.getters.node_useEventIndex(nodeNumberToBeTaught)){
+        disableEventTeach.value = true
+        $q.notify({
+          message: 'Cannot teach this module from here',
+          caption: 'select node from nodes view instead',
+          timeout: 2000,
+          type: 'warning',
+          position: 'center',
+          actions: [ { label: 'Dismiss' } ]
+        })
+      } else {
+        disableEventTeach.value = false
+      }
     }
+  } catch (err){
+    timeStampedLog(name + `: WATCH newNode ${err}`)
   }
 })
 
