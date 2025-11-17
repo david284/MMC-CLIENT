@@ -34,6 +34,7 @@ Version 0.14.0
   Added "Archive now" to LogsDialog
   JsonLogic (JLL) operators (keys) now forced to lowercase
   Added interval between selecting layouts to avoid over overwriting layput data
+  names menu in NodesVariablesDialog now behind develop flag
 
 Version 0.13.0
   Generate internal event when receiving LAYOUT_DATA
