@@ -4,7 +4,7 @@ import jcc from 'json-case-convertor'
 
 //
 //  {
-//    "nv": 72, 
+//    "nv": 72,
 //    "labels": [
 //      {"value": 1, "label": "TRIGGER_INVERTED"},
 //      {"value": 2, "label": "NORMAL"}
@@ -34,7 +34,7 @@ export function overloadedLabel (nodeNumber, element, store) {
 // The use of argument3 is depenadant on the specific logic case (as defined by the logic variable)
 // So check the individual logic cases to see if it's necessary, and what it should contain
 //
-export function parseLogicElement (nodeNumber, logic, store, argument3) {
+export function parseLogicElement (nodeNumber, logic, store, argument3, eventIndex) {
   var result = true
 
   //logic for event variable bits
@@ -79,12 +79,12 @@ export function parseLogicElement (nodeNumber, logic, store, argument3) {
 //    console.log(`parseLogicElement: nv result = ` + result)
   }
 
-  // 
+  //
   // call to use jsonLogic
   //
   if (logic.JLL != undefined){
     let Logic = new mfdLogic.mdfLogic()
-    result = Logic.evaluate(store.state.nodes[nodeNumber], logic.JLL, argument3)
+    result = Logic.evaluate(store.state.nodes[nodeNumber], logic.JLL, argument3, eventIndex)
   }
 
 
@@ -149,7 +149,7 @@ export function jsonLogicTest (node, logicExpression) {
     return result
   } catch(err){
     console.log("jsonLogicTest " + err)
-    return false 
+    return false
   }
 }
   */

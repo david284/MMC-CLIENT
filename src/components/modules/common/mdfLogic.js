@@ -64,11 +64,11 @@ export class mdfLogic {
 
   //
   // main method to evaluate expression
-  // will always need node & lociexpression to evaluate
+  // will always need node & logic expression to evaluate
   // will only need eventIdentifier if EV or EVbit operators used
   // added jcc library to convert all logic operations to lower case
   //
-  evaluate(node, logicExpression, eventIdentifier){
+  evaluate(node, logicExpression, eventIdentifier, eventIndex){
     this.node = node
     this.eventIdentifier = eventIdentifier
     // ensure all operations (keys) are lower case

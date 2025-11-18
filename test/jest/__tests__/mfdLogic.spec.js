@@ -1,6 +1,10 @@
 import { describe, expect, it } from '@jest/globals';
+import each from 'jest-each';
+import * as utils from "components/functions/utils.js"
 
 import * as logic from "components/modules/common/mdfLogic.js";
+
+let name = "UNIT TEST"
 
 describe('mfdLogic Test', () => {
 
@@ -19,31 +23,28 @@ describe('mfdLogic Test', () => {
     "variables": { "0": 3, "1": 5, "2": 4, "3": 3 }
   }
 
-  it('EVparse_true', () => {
-    let expression = { "==" : [ {"EV" : [2]}, 4] }
-    expect(myLogic.evaluate(node, expression, '11112222')).toBe(true)
+  //
+  //
+  each([
+    [{ "==" : [ {"EV" : [2]}, 4] }, true],
+    [{ "==" : [ {"ev" : [2]}, 4] }, true],
+    [{ "==" : [ {"EV" : [3]}, 4] }, false]
+  ]).test('EVparse test %s %s', (expression, expected) => {
+    utils.timeStampedLog (name + `: EVparse test BEGIN ${JSON.stringify(expression)} ${expected}`)
+    expect(myLogic.evaluate(node, expression, '11112222')).toBe(expected)
+    utils.timeStampedLog (name + " EVparse test END")
   });
 
-  it('evparse_true', () => {
-    let expression = { "==" : [ {"ev" : [2]}, 4] }
-    expect(myLogic.evaluate(node, expression, '11112222')).toBe(true)
+  //
+  //
+  each([
+    [{ "==" : [ {"EVbit" : [1, 0]}, true] }, true],
+    [{ "==" : [ {"EVbit" : [3, 3]}, true] }, false]
+  ]).test('EVbitParse test %s %s', (expression, expected) => {
+    utils.timeStampedLog (name + `: EVbitParse test BEGIN ${JSON.stringify(expression)} ${expected}`)
+    expect(myLogic.evaluate(node, expression, '11112222')).toBe(expected)
+    utils.timeStampedLog (name + " EVbitParse test END")
   });
-
-  it('EVparse_false', () => {
-    let expression = { "==" : [ {"EV" : [3]}, 4] }
-    expect(myLogic.evaluate(node, expression, '11112222')).toBe(false)
-  });
-
-  it('EVbitParse_true', () => {
-    let expression = { "==" : [ {"EVbit" : [1, 0]}, true] }
-    expect(myLogic.evaluate(node, expression, '11112222')).toBe(true)
-  });
-
-  it('EVbitParse_false', () => {
-    let expression = { "==" : [ {"EVbit" : [3, 3]}, true] }
-    expect(myLogic.evaluate(node, expression, '11112222')).toBe(false)
-  });
-
 
   //---------------------------------------------------------------------------
   // node parameter logic
@@ -51,29 +52,28 @@ describe('mfdLogic Test', () => {
   node.parameters[1] = 7
   node.parameters[2] = 1
 
-  it('NPparse_true', () => {
-    let expression = { "==" : [ {"NP" : [1]}, 7] }
-    expect(myLogic.evaluate(node, expression)).toBe(true)
+
+  //
+  //
+  each([
+    [{ "==" : [ {"NP" : [1]}, 7] }, true],
+    [{ "==" : [ {"NP" : [1]}, 8] }, false]
+  ]).test('NPparse test %s %s', (expression, expected) => {
+    utils.timeStampedLog (name + `: NPparse test BEGIN ${JSON.stringify(expression)} ${expected}`)
+    expect(myLogic.evaluate(node, expression)).toBe(expected)
+    utils.timeStampedLog (name + " NPparse test END")
   });
 
-
-  it('NPparse_false', () => {
-    let expression = { "==" : [ {"NP" : [1]}, 8] }
-    expect(myLogic.evaluate(node, expression)).toBe(false)
+  //
+  //
+  each([
+    [{ "==" : [ {"NPbit" : [1, 2]}, true] }, true],
+    [{ "==" : [ {"NPbit" : [2, 1]}, true] }, false]
+  ]).test('NPbitParse test %s %s', (expression, expected) => {
+    utils.timeStampedLog (name + `: NPbitParse test BEGIN ${JSON.stringify(expression)} ${expected}`)
+    expect(myLogic.evaluate(node, expression)).toBe(expected)
+    utils.timeStampedLog (name + " NPbitParse test END")
   });
-
-
-  it('NPbitParse_true', () => {
-    let expression = { "==" : [ {"NPbit" : [1, 2]}, true] }
-    expect(myLogic.evaluate(node, expression)).toBe(true)
-  });
-
-
-  it('NPbitParse_false', () => {
-    let expression = { "==" : [ {"NPbit" : [2, 1]}, true] }
-    expect(myLogic.evaluate(node, expression)).toBe(false)
-  });
-
 
   //---------------------------------------------------------------------------
   // node variable logic
@@ -81,28 +81,30 @@ describe('mfdLogic Test', () => {
   node.nodeVariables[1] = 9
   node.nodeVariables[2] = 1
 
-  it('NVparse_true', () => {
-    let expression = { "==" : [ {"NV" : [1]}, 9] }
-    expect(myLogic.evaluate(node, expression)).toBe(true)
+  //
+  //
+  each([
+    [{ "==" : [ {"NV" : [1]}, 9] }, true],
+    [{ "==" : [ {"nv" : [1]}, 9] }, true],
+    [{ "==" : [ {"NV" : [1]}, 8] }, false]
+  ]).test('NVparse test %s %s', (expression, expected) => {
+    utils.timeStampedLog (name + `: NVparse test BEGIN ${JSON.stringify(expression)} ${expected}`)
+    expect(myLogic.evaluate(node, expression)).toBe(expected)
+    utils.timeStampedLog (name + `: NVparse test END`)
   });
 
 
-  it('NVparse_false', () => {
-    let expression = { "==" : [ {"NV" : [1]}, 8] }
-    expect(myLogic.evaluate(node, expression)).toBe(false)
+  //
+  //
+  each([
+    [{ "==" : [ {"NVbit" : [1, 3]}, true] }, true],
+    [{ "==" : [ {"NVbit" : [1, 2]}, true] }, false]
+  ]).test('NVbit test %s %s', (expression, expected) => {
+    utils.timeStampedLog (name + `: NVbit test BEGIN ${JSON.stringify(expression)} ${expected}`)
+    expect(myLogic.evaluate(node, expression)).toBe(expected)
+    utils.timeStampedLog (name + `: NVbit test END`)
   });
 
-
-  it('NVbitParse_true', () => {
-    let expression = { "==" : [ {"NVbit" : [1, 3]}, true] }
-    expect(myLogic.evaluate(node, expression)).toBe(true)
-  });
-
-
-  it('NVbitParse_false', () => {
-    let expression = { "==" : [ {"NVbit" : [1, 2]}, true] }
-    expect(myLogic.evaluate(node, expression)).toBe(false)
-  });
 
   //---------------------------------------------------------------------------
   // Nested logic
@@ -126,20 +128,16 @@ describe('mfdLogic Test', () => {
 
   node.nodeVariables[5] = 7
 
-// EV1 = 5
-// NV5 = 7
-//
-  it('DH_parse_true', () => {
-    let expression = { "in" : [ { "NV": {"EV" : 1}}, [5,6,7] ] }
-    expect(myLogic.evaluate(node, expression, '11112222')).toBe(true)
-  });
-
   // EV1 = 5
   // NV5 = 7
   //
-  it('DH_parse_false', () => {
-    let expression = { "in" : [ { "NV": {"EV" : 1}}, [5,6] ] }
-    expect(myLogic.evaluate(node, expression, '11112222')).toBe(false)
+  each([
+    [{ "in" : [ { "NV": {"EV" : 1}}, [5,6,7] ] }, true],
+    [{ "in" : [ { "NV": {"EV" : 1}}, [5,6] ] }, false]
+  ]).test('DH_parse test %s %s', (expression, expected) => {
+    utils.timeStampedLog (name + `: DH_parse test BEGIN ${JSON.stringify(expression)} ${expected}`)
+    expect(myLogic.evaluate(node, expression, '11112222')).toBe(expected)
+    utils.timeStampedLog (name + `: DH_parse test END`)
   });
 
 
