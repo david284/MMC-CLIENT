@@ -13,6 +13,7 @@ export class mdfLogic {
     //
 
     var EVoperator = function(a){
+      //console.log(`mdfLogic.parse EVoperator ${this.eventIdentifier} ${a}`)
       return this.node.storedEventsNI[this.eventIdentifier].variables[a]
     }.bind(this);
     jsonLogic.add_operation("ev", EVoperator);
@@ -68,15 +69,15 @@ export class mdfLogic {
   // will only need eventIdentifier if EV or EVbit operators used
   // added jcc library to convert all logic operations to lower case
   //
-  evaluate(node, logicExpression, eventIdentifier, eventIndex){
-    this.node = node
+  evaluate(store, nodeNumber, logicExpression, eventIdentifier, eventIndex){
+    this.node = store.state.nodes[nodeNumber]
     this.eventIdentifier = eventIdentifier
     // ensure all operations (keys) are lower case
     let lowercaseLogicExpression = jcc.lowerCaseKeys(logicExpression)
-    //console.log("mdfLogic.parse " + JSON.stringify(node))
+    //console.log("mdfLogic.parse " + JSON.stringify(this.node))
     //console.log("mdfLogic.parse " + JSON.stringify(lowercaseLogicExpression))
     //console.log("mdfLogic.parse " + eventIdentifier)
-    try{
+//    try{
       let result = jsonLogic.apply(lowercaseLogicExpression)
       /*
       console.log("mdfLogic.parse:"
@@ -84,10 +85,12 @@ export class mdfLogic {
         + ' result: ' + result )
       */
       return result
+      /*
     } catch(err){
       console.log("mdfLogic.parse " + err)
       return false
     }
+      */
   }
 
 }

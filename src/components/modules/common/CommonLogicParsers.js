@@ -84,7 +84,7 @@ export function parseLogicElement (nodeNumber, logic, store, argument3, eventInd
   //
   if (logic.JLL != undefined){
     let Logic = new mfdLogic.mdfLogic()
-    result = Logic.evaluate(store.state.nodes[nodeNumber], logic.JLL, argument3, eventIndex)
+    result = Logic.evaluate(store, nodeNumber, logic.JLL, argument3, eventIndex)
   }
 
 
