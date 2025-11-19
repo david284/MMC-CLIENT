@@ -10,26 +10,43 @@ describe('mfdLogic Test', () => {
 
   let myLogic = new logic.mdfLogic()
 
-  let store = {
+  let nodeNumber = 1
+
+  // create mock store structure
+  let mock_store = {
     state:{
       nodes:{
         "1":{
-          parameters:[],
-          nodeVariables:[],
-          storedEventsNI:{}
+          parameters:{"1":7, "2": 1},
+          nodeVariables:{"1":9, "2":1, "5":7},
+          eventsByIndex:{
+            "2":{
+              eventindex: 2,
+              eventIdentifier: "11112222",
+              variables: { "0": 1, "1": 2, "2": 6, "3": 7 }
+            }
+          },
+          storedEventsNI:{
+            '11112222':{
+              eventIdentifier: "11112222",
+              variables: { "0": 3, "1": 5, "2": 4, "3": 3 }
+            }
+          }
         }
       }
-    }
+    },
+    "getters":{
+      node_useEventIndex(nodeNumber){
+        //utils.timeStampedLog (name + `: node_useEventIndex  ${mock_store.useEventIndex}`)
+        return mock_store.useEventIndex
+      }
+    },
+    useEventIndex: false
   }
-
 
   //---------------------------------------------------------------------------
   // event variable logic
   //---------------------------------------------------------------------------
-  store.state.nodes[1].storedEventsNI['11112222'] = {
-    "eventIdentifier": "11112222",
-    "variables": { "0": 3, "1": 5, "2": 4, "3": 3 }
-  }
 
   //
   //
@@ -39,29 +56,72 @@ describe('mfdLogic Test', () => {
     [{ "==" : [ {"EV" : [3]}, 4] }, false]
   ]).test('EVparse test %s %s', (expression, expected) => {
     utils.timeStampedLog (name + `: EVparse test BEGIN ${JSON.stringify(expression)} ${expected}`)
-    let nodeNumber = 1
-    expect(myLogic.evaluate(store, nodeNumber, expression, '11112222')).toBe(expected)
-    utils.timeStampedLog (name + " EVparse test END")
+    expect(myLogic.evaluate(mock_store, nodeNumber, expression, '11112222')).toBe(expected)
+    utils.timeStampedLog (name + ": EVparse test END")
   });
 
   //
   //
   each([
-    [{ "==" : [ {"EVbit" : [1, 0]}, true] }, true],
+    [{ "==" : [ {"EV" : [2]}, 6] }, true],
+    [{ "==" : [ {"ev" : [2]}, 6] }, true],
+    [{ "==" : [ {"EV" : [3]}, 9] }, false]
+  ]).test('indexedEV test %s %s', (expression, expected) => {
+    utils.timeStampedLog (name + `: indexedEV test BEGIN ${JSON.stringify(expression)} ${expected}`)
+    mock_store.useEventIndex = true
+    let eventIndex = 2
+    expect(myLogic.evaluate(mock_store, nodeNumber, expression, '11112222', eventIndex)).toBe(expected)
+    mock_store.useEventIndex = false
+    utils.timeStampedLog (name + ": indexedEV test END")
+  });
+
+  //
+  // EV1 is 5 - bits 0 & 2
+  // EV3 is 3 - bits 0 & 1
+  each([
+    [{ "==" : [ {"EVbit" : [1, 2]}, true] }, true],
     [{ "==" : [ {"EVbit" : [3, 3]}, true] }, false]
   ]).test('EVbitParse test %s %s', (expression, expected) => {
     utils.timeStampedLog (name + `: EVbitParse test BEGIN ${JSON.stringify(expression)} ${expected}`)
-    let nodeNumber = 1
-    expect(myLogic.evaluate(store, nodeNumber, expression, '11112222')).toBe(expected)
-    utils.timeStampedLog (name + " EVbitParse test END")
+    expect(myLogic.evaluate(mock_store, nodeNumber, expression, '11112222')).toBe(expected)
+    utils.timeStampedLog (name + ": EVbitParse test END")
   });
+
+  //
+  // indexed EV1 is 2
+  // indexed EV3 is 7
+  each([
+    [{ "==" : [ {"EVbit" : [1, 1]}, true] }, true],
+    [{ "==" : [ {"EVbit" : [3, 4]}, true] }, false]
+  ]).test('indexedEVbit test %s %s', (expression, expected) => {
+    utils.timeStampedLog (name + `: indexedEVbit test BEGIN ${JSON.stringify(expression)} ${expected}`)
+    mock_store.useEventIndex = true
+    let eventIndex = 2
+    expect(myLogic.evaluate(mock_store, nodeNumber, expression, '11112222', eventIndex)).toBe(expected)
+    mock_store.useEventIndex = false
+    utils.timeStampedLog (name + ": indexedEVbit test END")
+  });
+
+  //---------------------------------------------------------------------------
+  // event index logic
+  //---------------------------------------------------------------------------
+
+  //
+  //
+  each([
+    [{ "==" : [ {"index":null}, 4] }, true],
+    [{ "==" : [ {"index":null}, 5] }, false]
+  ]).test('INDEX test %s %s', (expression, expected) => {
+    utils.timeStampedLog (name + `: INDEX test BEGIN ${JSON.stringify(expression)} ${expected}`)
+    let eventIndex = 4
+    expect(myLogic.evaluate(mock_store, nodeNumber, expression, '11112222', eventIndex)).toBe(expected)
+    utils.timeStampedLog (name + ": INDEX test END")
+  });
+
 
   //---------------------------------------------------------------------------
   // node parameter logic
   //---------------------------------------------------------------------------
-  store.state.nodes[1].parameters[1] = 7
-  store.state.nodes[1].parameters[2] = 1
-
 
   //
   //
@@ -70,9 +130,8 @@ describe('mfdLogic Test', () => {
     [{ "==" : [ {"NP" : [1]}, 8] }, false]
   ]).test('NPparse test %s %s', (expression, expected) => {
     utils.timeStampedLog (name + `: NPparse test BEGIN ${JSON.stringify(expression)} ${expected}`)
-    let nodeNumber = 1
-    expect(myLogic.evaluate(store, nodeNumber, expression, '11112222')).toBe(expected)
-    utils.timeStampedLog (name + " NPparse test END")
+    expect(myLogic.evaluate(mock_store, nodeNumber, expression, '11112222')).toBe(expected)
+    utils.timeStampedLog (name + ": NPparse test END")
   });
 
   //
@@ -82,16 +141,13 @@ describe('mfdLogic Test', () => {
     [{ "==" : [ {"NPbit" : [2, 1]}, true] }, false]
   ]).test('NPbitParse test %s %s', (expression, expected) => {
     utils.timeStampedLog (name + `: NPbitParse test BEGIN ${JSON.stringify(expression)} ${expected}`)
-    let nodeNumber = 1
-    expect(myLogic.evaluate(store, nodeNumber, expression, '11112222')).toBe(expected)
-    utils.timeStampedLog (name + " NPbitParse test END")
+    expect(myLogic.evaluate(mock_store, nodeNumber, expression, '11112222')).toBe(expected)
+    utils.timeStampedLog (name + ": NPbitParse test END")
   });
 
   //---------------------------------------------------------------------------
   // node variable logic
   //---------------------------------------------------------------------------
-  store.state.nodes[1].nodeVariables[1] = 9
-  store.state.nodes[1].nodeVariables[2] = 1
 
   //
   //
@@ -101,8 +157,7 @@ describe('mfdLogic Test', () => {
     [{ "==" : [ {"NV" : [1]}, 8] }, false]
   ]).test('NVparse test %s %s', (expression, expected) => {
     utils.timeStampedLog (name + `: NVparse test BEGIN ${JSON.stringify(expression)} ${expected}`)
-    let nodeNumber = 1
-    expect(myLogic.evaluate(store, nodeNumber, expression, '11112222')).toBe(expected)
+    expect(myLogic.evaluate(mock_store, nodeNumber, expression, '11112222')).toBe(expected)
     utils.timeStampedLog (name + `: NVparse test END`)
   });
 
@@ -114,8 +169,7 @@ describe('mfdLogic Test', () => {
     [{ "==" : [ {"NVbit" : [1, 2]}, true] }, false]
   ]).test('NVbit test %s %s', (expression, expected) => {
     utils.timeStampedLog (name + `: NVbit test BEGIN ${JSON.stringify(expression)} ${expected}`)
-    let nodeNumber = 1
-    expect(myLogic.evaluate(store, nodeNumber, expression, '11112222')).toBe(expected)
+    expect(myLogic.evaluate(mock_store, nodeNumber, expression, '11112222')).toBe(expected)
     utils.timeStampedLog (name + `: NVbit test END`)
   });
 
@@ -131,17 +185,8 @@ describe('mfdLogic Test', () => {
         { "==" : [ {"NV" : [2]}, 1] }
       ]
     }
-    let nodeNumber = 1
-    expect(myLogic.evaluate(store, nodeNumber, expression, '11112222')).toBe(true)
+    expect(myLogic.evaluate(mock_store, nodeNumber, expression, '11112222')).toBe(true)
   });
-
-
-  store.state.nodes[1].storedEventsNI['11112222'] = {
-    "eventIdentifier": "11112222",
-    "variables": { "0": 3, "1": 5, "2": 4, "3": 3 }
-  }
-
-  store.state.nodes[1].nodeVariables[5] = 7
 
   // EV1 = 5
   // NV5 = 7
@@ -151,8 +196,7 @@ describe('mfdLogic Test', () => {
     [{ "in" : [ { "NV": {"EV" : 1}}, [5,6] ] }, false]
   ]).test('DH_parse test %s %s', (expression, expected) => {
     utils.timeStampedLog (name + `: DH_parse test BEGIN ${JSON.stringify(expression)} ${expected}`)
-    let nodeNumber = 1
-    expect(myLogic.evaluate(store, nodeNumber, expression, '11112222')).toBe(expected)
+    expect(myLogic.evaluate(mock_store, nodeNumber, expression, '11112222')).toBe(expected)
     utils.timeStampedLog (name + `: DH_parse test END`)
   });
 
