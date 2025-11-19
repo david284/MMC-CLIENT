@@ -6,7 +6,7 @@
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
           <div class="text-h6">
-            Slot {{eventIndex}} Event Identity
+            Event Identity for {{bannerTitle}} {{eventIndex}}
           </div>
           <template v-slot:action>
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
@@ -62,6 +62,7 @@ const newEventNodeNumber = ref()
 const newEventNumber = ref()
 const addEventEnabled = ref(true)
 const eventType = ref()
+const bannerTitle = ref()
 
 
 const props = defineProps({
@@ -89,6 +90,12 @@ watch(model, () => {
       eventType.value = 'short'
     } else {
       eventType.value = 'long'
+    }
+    if (store.getters.node_useSlots(props.nodeNumber) == true){
+      //bannerTitle.value = "Slot"
+      bannerTitle.value = "Index"
+    } else {
+      bannerTitle.value = "Index"
     }
   }
 })
