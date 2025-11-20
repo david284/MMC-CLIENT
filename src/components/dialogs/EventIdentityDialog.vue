@@ -36,7 +36,7 @@
         </div>
       <div v-if="(eventType != null)">
         <q-card-actions align="right" class="text-primary">
-          <q-btn v-if="(addEventEnabled)" label="Add Event" @click="clickAddEventIdentifier()" v-close-popup/>
+          <q-btn v-if="(addEventEnabled)" label="Save Event" @click="clickSaveEvent()" v-close-popup/>
         </q-card-actions>
       </div>
 
@@ -119,7 +119,7 @@ Click event handlers
 
 //
 //
-const clickAddEventIdentifier = async () => {
+const clickSaveEvent = async () => {
   utils.timeStampedLog(name + `: clickAddEventIdentifier`)
 
   if (eventType.value == 'short'){newEventNodeNumber.value = 0}
@@ -142,6 +142,19 @@ const clickAddEventIdentifier = async () => {
     let commandString = cbusLib.encodeNENRD(props.nodeNumber, props.eventIndex)
     store.methods.send_cbus_message(commandString)
   } else {
+    // teach EV1
+    store.methods.event_teach_by_identifier(
+      props.nodeNumber,
+      entered_event_identifier,
+      1,
+      1)
+    // now EV2
+    store.methods.event_teach_by_identifier(
+      props.nodeNumber,
+      entered_event_identifier,
+      2,
+      props.eventIndex)
+
     // need to display event variables dialog
     selected_event_Identifier.value = entered_event_identifier
     showEventVariablesDialog.value = true
