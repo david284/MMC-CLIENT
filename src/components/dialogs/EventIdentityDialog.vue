@@ -6,7 +6,7 @@
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
           <div class="text-h6">
-            Event Identity for {{bannerTitle}} {{eventIndex}}
+            Event Identity for {{ bannerText }} {{eventIndex}}
           </div>
           <template v-slot:action>
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
@@ -44,6 +44,11 @@
 
   </q-dialog>
 
+  <EventVariablesDialog v-model='showEventVariablesDialog'
+    :nodeNumber = nodeNumber
+    :eventIdentifier = selected_event_Identifier
+    :eventIndex = eventIndex
+  />
 
 </template>
 
@@ -54,6 +59,7 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import * as utils from "components/functions/utils.js"
 import * as eventFunctions from "components/functions/EventFunctions.js"
 import cbusLib from "cbuslibrary"
+import EventVariablesDialog from "components/dialogs/EventVariablesDialog"
 
 
 const store = inject('store')
@@ -62,14 +68,16 @@ const newEventNodeNumber = ref()
 const newEventNumber = ref()
 const addEventEnabled = ref(true)
 const eventType = ref()
-const bannerTitle = ref()
+const showEventVariablesDialog = ref(false)
+const selected_event_Identifier = ref()
 
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
   nodeNumber: {type: Number, required: true },
   eventIndex: {type: Number, default: 0 },
-  eventIdentifier: {type: String, default: "0000000" }
+  eventIdentifier: {type: String, default: "0000000" },
+  bannerText: {type: String, default: "index"}
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -90,12 +98,6 @@ watch(model, () => {
       eventType.value = 'short'
     } else {
       eventType.value = 'long'
-    }
-    if (store.getters.node_useSlots(props.nodeNumber) == true){
-      //bannerTitle.value = "Slot"
-      bannerTitle.value = "Index"
-    } else {
-      bannerTitle.value = "Index"
     }
   }
 })
@@ -126,20 +128,24 @@ const clickAddEventIdentifier = async () => {
 
   utils.timeStampedLog(name + `: clickAddEventIdentifier: entered_event_identifier ${entered_event_identifier} `)
 
-  store.methods.event_teach_by_index(
-    props.nodeNumber,
-    entered_event_identifier,
-    props.eventIndex,
-    0,
-    0,
-    true,
-  )
-
-  await utils.sleep(500)
-  // send a single NENRD to refresh the event ID back from the node
-  let commandString = cbusLib.encodeNENRD(props.nodeNumber, props.eventIndex)
-  store.methods.send_cbus_message(commandString)
-
+  if (store.getters.node_useEventIndex(props.nodeNumber) == true){
+    store.methods.event_teach_by_index(
+      props.nodeNumber,
+      entered_event_identifier,
+      props.eventIndex,
+      0,
+      0,
+      true,
+    )
+    await utils.sleep(500)
+    // send a single NENRD to refresh the event ID back from the node
+    let commandString = cbusLib.encodeNENRD(props.nodeNumber, props.eventIndex)
+    store.methods.send_cbus_message(commandString)
+  } else {
+    // need to display event variables dialog
+    selected_event_Identifier.value = entered_event_identifier
+    showEventVariablesDialog.value = true
+  }
 }
 
 //

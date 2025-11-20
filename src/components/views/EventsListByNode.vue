@@ -6,7 +6,10 @@
       </div>
       <template v-slot:action>
         <q-btn class="q-mx-xs q-my-none" v-if="store.getters.node_useSwitchTeach1(props.nodeNumber)"
-         size="sm" color="blue" label="Switch Teach" no-caps @click="clickSwitchTeach1()">
+         size="sm" color="blue" label="Switch Teach" no-caps @click="clickSwitchTeach()">
+        </q-btn>
+        <q-btn class="q-mx-xs q-my-none" v-if="store.getters.node_useSwitchTeach2(props.nodeNumber)"
+         size="sm" color="blue" label="Switch Teach" no-caps @click="clickSwitchTeach()">
         </q-btn>
         <q-btn class="q-mx-xs q-my-none" v-if="store.state.develop" size="sm" color="black" no-caps
           @click="clickToggleEventMode()">
@@ -127,12 +130,12 @@
     </q-table>
     </div>
 
-    <q-dialog v-model="showSwitchTeach1Dialog" persistent>
+    <q-dialog v-model="showSwitchTeachDialog" persistent>
       <q-card style="min-width: 350px">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
           <div class="text-h6">Switch Teach</div>
           <template v-slot:action>
-            <q-btn flat color="white" size="md" label="Close" @click="clickSwitchTeach1Close(props.nodeNumber)" v-close-popup/>
+            <q-btn flat color="white" size="md" label="Close" @click="clickSwitchTeachClose(props.nodeNumber)" v-close-popup/>
           </template>
         </q-banner>
         <q-card-section>
@@ -159,8 +162,9 @@
 
     <EventIdentityDialog v-model="showEventIdentityDialog"
       :nodeNumber=nodeNumber
-      :eventIndex=selected_event_index
+      :eventIndex=selected_switch
       :eventIdentifier = selected_event_Identifier
+      :bannerText = eventIdentityDialogText
     />
 
     <eventTeachDialog v-model='showEventTeachDialog'
@@ -232,8 +236,10 @@ const WaitingOnBusTrafficMessage = ref('')
 const eventMode = ref('Event')
 const enableActivateSlot = ref(false)
 const showEventIdentityDialog = ref(false)
-const showSwitchTeach1Dialog = ref(false)
+const showSwitchTeachDialog = ref(false)
 const bannerTitle = ref("")
+const selected_switch = ref()
+const eventIdentityDialogText = ref()
 
 
 const props = defineProps({
@@ -577,21 +583,32 @@ store.eventBus.on('LAYOUT_DATA', () => {
 })
 
 store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
-  //utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : opcode ' + data.json.opCode)
-  if (showSwitchTeach1Dialog.value){
+  utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : opcode ' + data.json.opCode)
+  if (showSwitchTeachDialog.value){
     var opCode = data.json.opCode
-    // check for ACON1 or ACOF1 event
-    if ((opCode == 'B0')
-      || (opCode == 'B1')
-      )
-    {
-      selected_event_index.value = data.json.data1
-      selected_event_Identifier.value = data.json.eventIdentifier
-      utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : ACON1/ACOF1 event - switch ${selected_event_index.value}`)
-      // lets store this against the node in the layout
-      // as the index is specific to the node
-      store.setters.addIndexedEventToLayoutNode(props.nodeNumber, selected_event_index.value, selected_event_Identifier.value)
-      showEventIdentityDialog.value = true
+    utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : opcode #2 ${opCode}` )
+    eventIdentityDialogText.value = "switch"
+    if (store.getters.node_useSwitchTeach1(props.nodeNumber)){
+      // check for ACON1 or ACOF1 event
+      if ((opCode == 'B0') || (opCode == 'B1') )
+      {
+        selected_switch.value = data.json.data1
+        selected_event_Identifier.value = data.json.eventIdentifier
+        utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : ACON1/ACOF1 event - switch ${selected_switch.value}`)
+        // lets store this against the node in the layout
+        // as the index is specific to the node
+        store.setters.addIndexedEventToLayoutNode(props.nodeNumber, data.json.data1, selected_event_Identifier.value)
+        showEventIdentityDialog.value = true
+      }
+    } else if (store.getters.node_useSwitchTeach2(props.nodeNumber)){
+      // check for ARON1 or AROF1 event
+      if ((opCode == 'B3') || (opCode == 'B4') )
+      {
+        selected_switch.value = data.json.data1
+        selected_event_Identifier.value = data.json.eventIdentifier
+        utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : ARON1/AROF1 event - switch ${selected_switch.value}`)
+        showEventIdentityDialog.value = true
+      }
     }
   }
 })
@@ -685,6 +702,7 @@ const clickEvent = (eventIndex, eventIdentifier) => {
   utils.timeStampedLog(name + `: clickEvent: eventIndex ${eventIndex}`)
   selected_event_index.value = eventIndex
   selected_event_Identifier.value = eventIdentifier
+  eventIdentityDialogText.value = "index"
   showEventIdentityDialog.value = true
 }
 
@@ -745,18 +763,18 @@ const clickSendOn = (eventIdentifier) => {
 
 //
 //
-const clickSwitchTeach1 = (nodeNumber) => {
-  utils.timeStampedLog (name + `: clickSwitchTeach1 ${nodeNumber}`)
+const clickSwitchTeach = () => {
+  utils.timeStampedLog (name + `: clickSwitchTeach: node ${props.nodeNumber}`)
   let commandString = cbusLib.encodeNNLRN(props.nodeNumber)
   // put into learn mode
   store.methods.send_cbus_message(commandString)
-  showSwitchTeach1Dialog.value = true
+  showSwitchTeachDialog.value = true
 }
 
 //
 //
-const clickSwitchTeach1Close = (nodeNumber) => {
-  utils.timeStampedLog (name + `: clickSwitchTeach1Close ${nodeNumber}`)
+const clickSwitchTeachClose = (nodeNumber) => {
+  utils.timeStampedLog (name + `: clickSwitchTeachClose ${nodeNumber}`)
   // take out of learn mode
   let commandString = cbusLib.encodeNNULN(props.nodeNumber)
   store.methods.send_cbus_message(commandString)

@@ -598,6 +598,22 @@ const getters = {
       return false
     }
   },
+  node_useSwitchTeach2(nodeNumber){
+    try{
+      if (state.nodeDescriptors[nodeNumber].useSwitchTeach2){
+        utils.timeStampedLog(name + `: node_useSwitchTeach2: MDF true`)
+        return true
+      } else if(state.nodes[nodeNumber].moduleInfo.useSwitchTeach2) {
+        utils.timeStampedLog(name + `: node_useSwitchTeach2: moduleInfo.useSwitchTeach1 true`)
+        return true
+      } else {
+        return false
+      }
+    } catch (err) {
+      utils.timeStampedLog(name + `: node_useSwitchTeach2: ${err}`)
+      return false
+    }
+  },
   //
   node_numberOfEvents(nodeNumber){
     try{
