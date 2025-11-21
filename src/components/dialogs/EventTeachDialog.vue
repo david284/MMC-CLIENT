@@ -87,6 +87,34 @@
     @WaitingOnBusTrafficDialogEvent="WaitingOnBusTrafficDialogReturn = $event"
   />
 
+  <q-dialog v-model="showSelectNodeIndex" persistent>
+    <q-card  class="q-pa-none q-ma-none" style="min-width: 350px">
+      <q-card-section class="q-pa-none q-ma-none">
+        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
+          <div class="text-h6"> {{ store.getters.node_name(selected_event_node) }}</div>
+          <template v-slot:action>
+            <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+          </template>
+        </q-banner>
+      </q-card-section>
+      <q-card-section class="q-py-none q-ma-none">
+        <div class="text-h6">
+          enter index number between 1 and {{store.getters.node_numberOfEvents(selected_event_node)}}
+        </div>
+      </q-card-section>
+      <q-card-section class="q-pt-none">
+        <q-input dense v-model="nodeIndexNumber" autofocus />
+      </q-card-section>
+      <q-card-section class="q-pt-none">
+        <q-btn color="negative" label="Teach" no-caps
+          @click="clickTeachIndex(selected_event_node, nodeIndexNumber)" v-close-popup/>
+      </q-card-section>
+
+    </q-card>
+  </q-dialog>
+
+
+
 </template>
 
 
@@ -114,11 +142,13 @@ const showWaitingOnBusTrafficDialog = ref(false)
 const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref('')
 const disableEventTeach = ref(true)
+const showSelectNodeIndex = ref(false)
 
 const newNode = ref()
 const availableNodes = ref([])
 const taughtNodes = ref([])
 const teRows = ref([])
+const nodeIndexNumber = ref()
 
 
 const props = defineProps({
@@ -147,21 +177,10 @@ watch(newNode, () => {
     // get node number from input value
     var array = newNode.value.split(':')
     var nodeNumberToBeTaught = parseInt(array[0])
+    selected_event_node.value = nodeNumberToBeTaught
     timeStampedLog(name + `: WATCH newNode: nodeNumberToBeTaught ${nodeNumberToBeTaught}`)
     if (nodeNumberToBeTaught){
-      if (store.getters.node_useEventIndex(nodeNumberToBeTaught)){
-        disableEventTeach.value = true
-        $q.notify({
-          message: 'Cannot teach this module from here',
-          caption: 'select node from nodes view instead',
-          timeout: 2000,
-          type: 'warning',
-          position: 'center',
-          actions: [ { label: 'Dismiss' } ]
-        })
-      } else {
-        disableEventTeach.value = false
-      }
+      disableEventTeach.value = false
     }
   } catch (err){
     timeStampedLog(name + `: WATCH newNode ${err}`)
@@ -334,37 +353,59 @@ Click event handlers
 
 const clickTeachEvent = async () => {
   timeStampedLog(name + `: clickTeachEvent: ${newNode.value} : ${props.eventIdentifier}`)
+  disableEventTeach.value = true
   if (newNode.value != "") {
     // get node number from input value
     var array = newNode.value.split(':')
     var nodeNumberToBeTaught = parseInt(array[0])
     selected_event_node.value = nodeNumberToBeTaught
 
-    if(store.state.nodes[nodeNumberToBeTaught].eventSpaceLeft > 0){
-      await checkNodeParameters(nodeNumberToBeTaught)
-      await checkNodeVariables(nodeNumberToBeTaught)
-      createNewEvent(store, nodeNumberToBeTaught, props.eventIdentifier)
-
-      selected_event_Identifier.value = props.eventIdentifier
-      isNewEvent.value=true
-      showEventVariablesDialog.value = true
+    if (store.getters.node_useEventIndex(nodeNumberToBeTaught)){
+      // ok - indexed events, so need extra step
+      showSelectNodeIndex.value = true
     } else {
-      const result = $q.notify({
-        message: 'no event space left',
-        timeout: 0,
-        position: 'center',
-        color: 'primary',
-        actions: [
-          { label: 'dismiss', color: 'white', handler: () => { /* ... */ } }
-        ]
-      })
-    }
+      if(store.state.nodes[nodeNumberToBeTaught].eventSpaceLeft > 0){
+        await checkNodeParameters(nodeNumberToBeTaught)
+        await checkNodeVariables(nodeNumberToBeTaught)
+        createNewEvent(store, nodeNumberToBeTaught, props.eventIdentifier)
 
+        selected_event_Identifier.value = props.eventIdentifier
+        isNewEvent.value=true
+        showEventVariablesDialog.value = true
+      } else {
+        const result = $q.notify({
+          message: 'no event space left',
+          timeout: 0,
+          position: 'center',
+          color: 'primary',
+          actions: [
+            { label: 'dismiss', color: 'white', handler: () => { /* ... */ } }
+          ]
+        })
+      }
+    }
     newNode.value = undefined
   }
 }
 
+//
+//
+const clickTeachIndex = async (nodeNumber, eventIndex) => {
+  timeStampedLog(name + `: clickTeachIndex: node ${nodeNumber} index ${eventIndex} event ${props.eventIdentifier}` )
 
+    store.methods.event_teach_by_index(
+      nodeNumber,
+      props.eventIdentifier,
+      eventIndex,
+      0,
+      0,
+      true,
+    )
+
+}
+
+//
+//
 const clickVariables = async (nodeNumber, eventIdentifier) => {
   let intNodeNumber = parseInt(nodeNumber)
   timeStampedLog(name + `: clickVariables ` + intNodeNumber + ' ' + eventIdentifier)
