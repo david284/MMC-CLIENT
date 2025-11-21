@@ -7,6 +7,7 @@ Version 0.16.0
   Fixed issue with not setting group in add new node
   added useSlots property
   Amended jsonLogic EV operators to support indexed events
+  Amended EventTeachDialog to support indexed events
 
 Version 0.15.1
   Fixed issue in EventsListByNode not displaying bus events
