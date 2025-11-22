@@ -258,3 +258,22 @@ export function eventTeach (
     )
   }
 }
+
+export function getEventVariable (
+  store,
+  nodeNumber,
+  eventIdentifier,
+  eventIndex,
+  eventVariableIndex)
+{
+  try {
+    if (store.getters.node_useEventIndex(nodeNumber) == true){
+      // use eventIndex
+        return store.getters.event_variable_by_index(nodeNumber, eventIndex, eventVariableIndex)
+    } else {
+        return store.getters.event_variable_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex)
+    }
+  } catch (err){
+    utils.timeStampedLog(name + `: getEventVariable: ${err}`)
+  }
+}

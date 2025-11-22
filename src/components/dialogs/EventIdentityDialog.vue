@@ -75,8 +75,8 @@ const selected_event_Identifier = ref()
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
   nodeNumber: {type: Number, required: true },
-  eventIndex: {type: Number, default: 0 },
-  eventIdentifier: {type: String, default: "0000000" },
+  eventIndex: {default: 0 },
+  eventIdentifier: {default: "0000000" },
   bannerText: {type: String, default: "index"}
 })
 

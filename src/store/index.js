@@ -506,6 +506,16 @@ const getters = {
       return 0
     }
   },
+  //
+  event_variable_by_index(nodeNumber, eventIndex, eventVariableIndex){
+    //utils.timeStampedLog(name + `: event_variable_by_index: ${nodeNumber} ${eventIdentifier} ${eventVariableIndex}`)
+    try{
+      return state.nodes[nodeNumber].eventsByIndex[eventIndex].variables[eventVariableIndex]
+    } catch (err){
+      // don't worry if can't read, as may have not yet filled in storedEventsNI structure
+      return 0
+    }
+  },
   module_name(nodeNumber){
     try{
       if (state.nodes[nodeNumber].moduleName){

@@ -148,7 +148,8 @@ const displayValue = computed(() =>{
 
 const sliderValue = computed({
   get() {
-    return ((store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex) & bitMask.value) >> props.startBit)
+    return EventFunctions.getEventVariable(store, props.nodeNumber, props.eventIdentifier, props.eventIndex, props.eventVariableIndex)
+    //return ((store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex) & bitMask.value) >> props.startBit)
   },
   set(newValue) {
     // get previous value, as starting point for updated byte value

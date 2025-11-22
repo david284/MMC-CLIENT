@@ -162,7 +162,7 @@
 
     <EventIdentityDialog v-model="showEventIdentityDialog"
       :nodeNumber=nodeNumber
-      :eventIndex=selected_switch
+      :eventIndex=selected_event_index
       :eventIdentifier = selected_event_Identifier
       :bannerText = eventIdentityDialogText
     />
@@ -238,7 +238,6 @@ const enableActivateSlot = ref(false)
 const showEventIdentityDialog = ref(false)
 const showSwitchTeachDialog = ref(false)
 const bannerTitle = ref("")
-const selected_switch = ref()
 const eventIdentityDialogText = ref()
 
 
@@ -583,18 +582,18 @@ store.eventBus.on('LAYOUT_DATA', () => {
 })
 
 store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
-  utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : opcode ' + data.json.opCode)
+  //utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : opcode ' + data.json.opCode)
   if (showSwitchTeachDialog.value){
     var opCode = data.json.opCode
-    utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : opcode #2 ${opCode}` )
+    //utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : opcode #2 ${opCode}` )
     eventIdentityDialogText.value = "switch"
     if (store.getters.node_useSwitchTeach1(props.nodeNumber)){
       // check for ACON1 or ACOF1 event
       if ((opCode == 'B0') || (opCode == 'B1') )
       {
-        selected_switch.value = data.json.data1
+        selected_event_index.value = data.json.data1
         selected_event_Identifier.value = data.json.eventIdentifier
-        utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : ACON1/ACOF1 event - switch ${selected_switch.value}`)
+        utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : ACON1/ACOF1 event - switch ${selected_event_index.value}`)
         // lets store this against the node in the layout
         // as the index is specific to the node
         store.setters.addIndexedEventToLayoutNode(props.nodeNumber, data.json.data1, selected_event_Identifier.value)
@@ -604,9 +603,9 @@ store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
       // check for ARON1 or AROF1 event
       if ((opCode == 'B3') || (opCode == 'B4') )
       {
-        selected_switch.value = data.json.data1
+        selected_event_index.value = data.json.data1
         selected_event_Identifier.value = data.json.eventIdentifier
-        utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : ARON1/AROF1 event - switch ${selected_switch.value}`)
+        utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : ARON1/AROF1 event - switch ${selected_event_index.value}`)
         showEventIdentityDialog.value = true
       }
     }

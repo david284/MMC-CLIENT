@@ -58,7 +58,8 @@ const displayVariable = ref()
 //
 //
 const variableValue = computed(() => {
-  return store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
+  return EventFunctions.getEventVariable(store, props.nodeNumber, props.eventIdentifier, props.eventIndex, props.eventVariableIndex)
+  //return store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
 })
 
 //

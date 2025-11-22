@@ -77,7 +77,7 @@
 
   <eventVariablesDialog v-model='showEventVariablesDialog'
     :nodeNumber = selected_event_node
-    :eventIdentifier = selected_event_Identifier
+    :eventIdentifier = eventIdentifier
     :eventIndex = selected_event_index
     :newEvent = isNewEvent
   />
@@ -135,7 +135,6 @@ const $q = useQuasar()
 const store = inject('store')
 const name = 'EventTeachDialog'
 
-const selected_event_Identifier = ref("")
 const selected_event_node = ref()
 const selected_event_index = ref()
 const showEventVariablesDialog = ref(false)
@@ -376,7 +375,6 @@ const clickTeachEvent = async () => {
         await checkNodeVariables(nodeNumberToBeTaught)
         createNewEvent(store, nodeNumberToBeTaught, props.eventIdentifier)
 
-        selected_event_Identifier.value = props.eventIdentifier
         isNewEvent.value=true
         showEventVariablesDialog.value = true
       } else {
@@ -399,7 +397,7 @@ const clickTeachEvent = async () => {
 //
 const clickTeachIndex = async (nodeNumber, eventIndex) => {
   timeStampedLog(name + `: clickTeachIndex: node ${nodeNumber} index ${eventIndex} event ${props.eventIdentifier}` )
-  selected_event_index.value = eventIndex
+  selected_event_index.value = parseInt(eventIndex)
   // update event id - doesn't need event variable
   store.methods.event_teach_by_index(
     nodeNumber,
@@ -424,7 +422,6 @@ const clickVariables = async (nodeNumber, eventIdentifier) => {
   let intNodeNumber = parseInt(nodeNumber)
   timeStampedLog(name + `: clickVariables ` + intNodeNumber + ' ' + eventIdentifier)
   selected_event_node.value = intNodeNumber
-  selected_event_Identifier.value = eventIdentifier
   isNewEvent.value=false
   await checkNodeParameters(intNodeNumber)
   await checkNodeVariables(intNodeNumber)

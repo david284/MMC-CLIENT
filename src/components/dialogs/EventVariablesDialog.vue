@@ -55,7 +55,7 @@
             <EventRawVariables
               :nodeNumber = nodeNumber
               :eventIdentifier = eventIdentifier
-              :eventIndex = props.eventIndex
+              :eventIndex = eventIndex
               :configuration = processedEventVariableDescriptor
             />
             <q-separator />
@@ -158,7 +158,7 @@ var DialogOpenedTimestamp = Date.now()
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
   nodeNumber: {type: Number, default: 0 },
-  eventIdentifier: {type: String, required: true },
+  eventIdentifier: {required: true },
   eventIndex: {default: 0 },
   newEvent:  { type: Boolean, default: false }
 })
