@@ -89,7 +89,7 @@ const model = computed({
 
 // model changes when Dialog opened & closed
 watch(model, () => {
-  console.log(name + `: WATCH model`)
+  //console.log(name + `: WATCH model`)
   update_rows()
 })
 
@@ -113,10 +113,10 @@ onMounted(() => {
 })
 
 const update_rows = () => {
-  utils.timeStampedLog(name + `: update_rows: node ${props.nodeNumber} `)
+  //utils.timeStampedLog(name + `: update_rows: node ${props.nodeNumber} `)
   rows.value = []
   try{
-    utils.timeStampedLog(name + `: update_rows: node ${props.nodeNumber} `)
+    //utils.timeStampedLog(name + `: update_rows: node ${props.nodeNumber} `)
     let numberOfEvents = store.state.nodes[props.nodeNumber].parameters[4]
     for (let i=1; i<= numberOfEvents; i++){
       //let event = store.state.nodes[props.nodeNumber].eventsByIndex[i]

@@ -539,17 +539,17 @@ const getters = {
   node_useEventIndex(nodeNumber){
     try{
       if ( state.nodeDescriptors[nodeNumber].useEventIndex == true ){
-        utils.timeStampedLog(name + `: node_useEventIndex: MDF true`)
+        //utils.timeStampedLog(name + `: node_useEventIndex: MDF true`)
         return true
       } else if (state.nodes[nodeNumber].moduleInfo.useEventIndex == true) {
-        utils.timeStampedLog(name + `: node_useEventIndex: moduleInfo.useEventIndex true`)
+        //utils.timeStampedLog(name + `: node_useEventIndex: moduleInfo.useEventIndex true`)
         return true
       } else if (getters.node_useSlots(nodeNumber) == true) {
-        utils.timeStampedLog(name + `: node_useEventIndex: useSlots true`)
+        //utils.timeStampedLog(name + `: node_useEventIndex: useSlots true`)
         return true
       } else {
         // anything else is false
-        utils.timeStampedLog(name + `: node_useEventIndex: false`)
+        //utils.timeStampedLog(name + `: node_useEventIndex: false`)
         return false
       }
     } catch (err) {
@@ -577,14 +577,14 @@ const getters = {
   node_useSlots(nodeNumber){
     try{
       if ( state.nodeDescriptors[nodeNumber].useSlots == true ){
-        utils.timeStampedLog(name + `: node_useSlots: MDF true`)
+        //utils.timeStampedLog(name + `: node_useSlots: MDF true`)
         return true
       } else if(state.nodes[nodeNumber].moduleInfo.useSlots) {
-        utils.timeStampedLog(name + `: node_useSlots: moduleInfo.useSlots true`)
+        //utils.timeStampedLog(name + `: node_useSlots: moduleInfo.useSlots true`)
         return true
       } else {
         // anything else is false
-        utils.timeStampedLog(name + `: node_useSlots: false`)
+        //utils.timeStampedLog(name + `: node_useSlots: false`)
         return false
       }
     } catch (err) {

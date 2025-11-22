@@ -344,11 +344,11 @@ watch(nodesUpdated, () => {
 
 
 const update_rows = () => {
-  utils.timeStampedLog(name + `: update_rows: node ${props.nodeNumber} `)
+  //utils.timeStampedLog(name + `: update_rows: node ${props.nodeNumber} `)
   rows.value = []
   try{
     if (eventMode.value == "Event"){
-      utils.timeStampedLog(name + `: update_rows: node ${props.nodeNumber} `)
+      //utils.timeStampedLog(name + `: update_rows: node ${props.nodeNumber} `)
       // do stored events for this node first.....
       var storedEventsNI = Object.values(store.state.nodes[props.nodeNumber].storedEventsNI)
       storedEventsNI.forEach(event => {
@@ -423,7 +423,7 @@ const update_rows = () => {
 
 const update_rows_indexed = () => {
   try{
-    utils.timeStampedLog(name + `: update_rows_indexed: node ${props.nodeNumber} `)
+    //utils.timeStampedLog(name + `: update_rows_indexed: node ${props.nodeNumber} `)
     //
     // first add all reported events to list
     var eventsByIndex = Object.values(store.state.nodes[props.nodeNumber].eventsByIndex)
@@ -507,7 +507,7 @@ const isEventVisible = (eventIdentifier) => {
 
 
 onBeforeMount(() => {
-  utils.timeStampedLog(name + ": onBeforeMount")
+  //utils.timeStampedLog(name + ": onBeforeMount")
   getSettings()
   if (props.nodeNumber){
     update_rows()
@@ -516,16 +516,16 @@ onBeforeMount(() => {
 
 
 onMounted(() => {
-  utils.timeStampedLog(name + ": onMounted")
+  //utils.timeStampedLog(name + ": onMounted")
 })
 
 onUpdated(() => {
-  utils.timeStampedLog(name + ": onUpdated")
+  //utils.timeStampedLog(name + ": onUpdated")
 })
 
 
 const getEventVariables = async (eventIdentifier, eventIndex) => {
-  utils.timeStampedLog(name + `: getEventVariables: ${eventIdentifier} ${eventIndex}`)
+  //utils.timeStampedLog(name + `: getEventVariables: ${eventIdentifier} ${eventIndex}`)
   //
   WaitingOnBusTrafficDialogReturn.value =''
   WaitingOnBusTrafficMessage.value = "Loading Event Variables"
