@@ -78,6 +78,7 @@
   <eventVariablesDialog v-model='showEventVariablesDialog'
     :nodeNumber = selected_event_node
     :eventIdentifier = selected_event_Identifier
+    :eventIndex = selected_event_index
     :newEvent = isNewEvent
   />
 
@@ -136,6 +137,7 @@ const name = 'EventTeachDialog'
 
 const selected_event_Identifier = ref("")
 const selected_event_node = ref()
+const selected_event_index = ref()
 const showEventVariablesDialog = ref(false)
 const isNewEvent = ref(false)
 const showWaitingOnBusTrafficDialog = ref(false)
@@ -173,14 +175,16 @@ watch(model, () => {
 //
 watch(newNode, () => {
   try {
-    timeStampedLog(name + `: WATCH newNode ${newNode.value}`)
-    // get node number from input value
-    var array = newNode.value.split(':')
-    var nodeNumberToBeTaught = parseInt(array[0])
-    selected_event_node.value = nodeNumberToBeTaught
-    timeStampedLog(name + `: WATCH newNode: nodeNumberToBeTaught ${nodeNumberToBeTaught}`)
-    if (nodeNumberToBeTaught){
-      disableEventTeach.value = false
+    if (newNode.value != undefined){
+      timeStampedLog(name + `: WATCH newNode ${newNode.value}`)
+      // get node number from input value
+      var array = newNode.value.split(':')
+      var nodeNumberToBeTaught = parseInt(array[0])
+      if (nodeNumberToBeTaught){
+        selected_event_node.value = nodeNumberToBeTaught
+        disableEventTeach.value = false
+        timeStampedLog(name + `: WATCH newNode: nodeNumberToBeTaught ${nodeNumberToBeTaught}`)
+      }
     }
   } catch (err){
     timeStampedLog(name + `: WATCH newNode ${err}`)
@@ -261,7 +265,10 @@ const update_available_nodes = () =>{
       // don't add node if event already taught to this node
       for (var index in taughtNodes.value){
         if (taughtNodes.value[index] == nodeNumber){
-          addNode = false
+          // but don't prevent being added if it's an indexed teaching node
+          if (store.getters.node_useEventIndex(nodeNumber) == false){
+            addNode = false
+          }
         }
       }
       //
@@ -392,16 +399,23 @@ const clickTeachEvent = async () => {
 //
 const clickTeachIndex = async (nodeNumber, eventIndex) => {
   timeStampedLog(name + `: clickTeachIndex: node ${nodeNumber} index ${eventIndex} event ${props.eventIdentifier}` )
-
-    store.methods.event_teach_by_index(
-      nodeNumber,
-      props.eventIdentifier,
-      eventIndex,
-      0,
-      0,
-      true,
-    )
-
+  selected_event_index.value = eventIndex
+  // update event id - doesn't need event variable
+  store.methods.event_teach_by_index(
+    nodeNumber,
+    props.eventIdentifier,
+    eventIndex,
+    0,
+    0,
+    true,
+  )
+  await checkNodeParameters(nodeNumber)
+  //
+  if (store.getters.node_numberOfEventVariables(nodeNumber) > 0){
+    await checkNodeVariables(nodeNumber)
+    isNewEvent.value=true
+    showEventVariablesDialog.value = true
+  }
 }
 
 //

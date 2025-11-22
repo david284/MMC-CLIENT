@@ -159,7 +159,7 @@ const props = defineProps({
   modelValue: { type: Boolean, required: true },
   nodeNumber: {type: Number, default: 0 },
   eventIdentifier: {type: String, required: true },
-  eventIndex: {type: Number, default: 0 },
+  eventIndex: {default: 0 },
   newEvent:  { type: Boolean, default: false }
 })
 

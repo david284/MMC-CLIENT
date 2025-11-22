@@ -616,8 +616,8 @@ const getters = {
   },
   //
   node_numberOfEvents(nodeNumber){
+    let value = 0
     try{
-      let value = 0
       if (state.nodeDescriptors[nodeNumber].numberOfEvents){
         value =  state.nodeDescriptors[nodeNumber].numberOfEvents
         utils.timeStampedLog(name + `: node_numberOfEvents: MDF ${value}`)
@@ -625,12 +625,27 @@ const getters = {
         value = state.nodes[nodeNumber].moduleInfo.numberOfEvents
         utils.timeStampedLog(name + `: node_numberOfEvents: moduleInfo.numberOfEvents ${value}`)
       }
-      utils.timeStampedLog(name + `: node_numberOfEvents  node ${nodeNumber} number ${value}`)
-      return value
     } catch(err){
       utils.timeStampedLog(name + `: node_numberOfEvents  ${err}`)
-      return 0
+      utils.timeStampedLog(name + `: node_numberOfEvents  node ${nodeNumber} number ${value}`)
     }
+    return value
+  },
+  //
+  node_numberOfEventVariables(nodeNumber){
+    let value = 0
+    try{
+      if (state.nodes[nodeNumber].parameters[5] != undefined) {
+        value = state.nodes[nodeNumber].parameters[5]
+        utils.timeStampedLog(name + `: node_numberOfEventVariables: parameters[5] ${value}`)
+      } else {
+        utils.timeStampedLog(name + `: node_numberOfEventVariables: node ${nodeNumber} parameters[5] undefined`)
+      }
+    } catch(err){
+      utils.timeStampedLog(name + `: node_numberOfEventVariables  ${err}`)
+      utils.timeStampedLog(name + `: node_numberOfEventVariables  node ${nodeNumber} number ${value}`)
+    }
+    return value
   },
   //
   node_can_id(nodeNumber){
