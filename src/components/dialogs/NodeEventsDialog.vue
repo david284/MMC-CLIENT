@@ -5,10 +5,16 @@
 
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
         <div class="text-h6">
-          Events for node :  {{ store.getters.node_name(props.nodeNumber) }}
+          {{ bannerTitle }} for node :  {{ store.getters.node_name(props.nodeNumber) }}
         </div>
         <template v-slot:action>
-          <q-btn class="q-mx-xs  q-my-none" size="sm" color="blue" label="Toggle"  no-caps
+          <q-btn class="q-mx-xs q-my-none" v-if="store.getters.node_useSwitchTeach1(props.nodeNumber)"
+          size="sm" color="blue" label="Switch Teach" no-caps @click="clickSwitchTeach()">
+          </q-btn>
+         <q-btn class="q-mx-xs q-my-none" v-if="store.getters.node_useSwitchTeach2(props.nodeNumber)"
+         size="sm" color="blue" label="Switch Teach" no-caps @click="clickSwitchTeach()">
+        </q-btn>
+         <q-btn class="q-mx-xs  q-my-none" size="sm" color="blue" label="Toggle"  no-caps
             @click="clickToggleViewMode()" />
           <div class="text-h6" style="min-width: 200px">view {{ store.state.events_view_mode }} events</div>
           <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
@@ -16,7 +22,8 @@
           <q-input class="input-box" bg-color="grey-3" style="width: 150px;" filled dense borderless debounce="300" v-model="filter" placeholder="Search">
               <q-icon size="sm" name="search"/>
           </q-input>
-          <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
+          <q-btn v-if="(eventMode=='Event')" class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
+          <q-btn v-if="enableActivateSlot" class="q-mx-xs q-my-none" color="blue" size="sm" label="Activate Slot" @click="clickActivateSlot()"/>
           <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Advanced" @click="clickAdvanced()"/>
           <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
           <q-btn square unelevated color="primary" icon="settings">
@@ -39,7 +46,49 @@
       </q-banner>
 
       <div class="full-width">
+
         <q-table
+          v-if="(eventMode=='Index')"
+          class="nodeEventsDialog-table"
+          bordered
+          dense
+          :rows=rows
+          :columns="indexed_columns"
+          :filter="filter"
+          row-key="eventIdentifier"
+          virtual-scroll
+          :rows-per-page-options="[0]"
+          :virtual-scroll-sticky-size-start="0"
+          :visible-columns="visibleColumns"
+          hide-bottom
+        >
+          <template v-slot:body="props">
+            <q-tr :props="props" :class="selected_event_Identifier==props.row.eventIdentifier?'bg-blue-1':'bg-white'" class="q-my-none q-py-none">
+              <q-td key="eventIndex" :props="props">{{ props.row.eventIndex }}</q-td>
+              <q-td key="eventIdentifier" :props="props">{{ props.row.eventIdentifier }}</q-td>
+              <q-td key="eventName" :props="props">{{ props.row.eventName}}</q-td>
+              <q-td key="eventGroup" :props="props">{{ props.row.eventGroup }}</q-td>
+              <q-td key="nodeNumber" :props="props">{{ props.row.nodeNumber }}</q-td>
+              <q-td key="eventNumber" :props="props">{{ props.row.eventNumber }}</q-td>
+              <q-td key="eventType" :props="props">{{ props.row.eventType }}</q-td>
+              <q-td key="source" :props="props">{{ props.row.source }}</q-td>
+              <q-td key="actions" :props="props">
+                <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Event" @click="clickEvent(props.row.eventIndex, props.row.eventIdentifier)" no-caps/>
+                <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
+                <q-btn dense class="q-mx-xs" outline color="primary" size="md" label="Variables"
+                  v-if="props.row.editVariables"
+                  @click="clickVariables(props.row.eventIdentifier, props.row.eventIndex)" no-caps/>
+                <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
+                <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.eventIdentifier)" no-caps>send ON</q-btn>
+                <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.eventIdentifier)" no-caps>send OFF</q-btn>
+                <q-btn dense class="q-mx-xs" outline size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier, props.row.eventIndex)" no-caps/>
+              </q-td>
+            </q-tr>
+          </template>
+        </q-table>
+
+        <q-table
+          v-if="(eventMode=='Event')"
           class="nodeEventsDialog-table"
           bordered
           dense
@@ -79,12 +128,22 @@
 
     </q-card>
 
+    <ActivateSlotDialog v-model='showActivateSlotDialog'
+      :nodeNumber = nodeNumber
+    />
     <AddEventDialog v-model='showAddEventDialog'
       :nodeNumber = nodeNumber
     />
 
     <advancedEventsDialog v-model='showAdvancedEventDialog'
       :nodeNumber = nodeNumber
+    />
+
+    <EventIdentityDialog v-model="showEventIdentityDialog"
+      :nodeNumber=nodeNumber
+      :eventIndex=selected_event_index
+      :eventIdentifier = selected_event_Identifier
+      :bannerText = eventIdentityDialogText
     />
 
     <nameEventDialog v-model='showNameEventDialog'
@@ -114,6 +173,20 @@
         @WaitingOnBusTrafficDialogEvent="WaitingOnBusTrafficDialogReturn = $event"
       />
 
+      <q-dialog v-model="showSwitchTeachDialog" persistent>
+        <q-card style="min-width: 350px">
+          <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+            <div class="text-h6">Switch Teach</div>
+            <template v-slot:action>
+              <q-btn flat color="white" size="md" label="Close" @click="clickSwitchTeachClose(props.nodeNumber)" v-close-popup/>
+            </template>
+          </q-banner>
+          <q-card-section>
+            <div class="text-h6">Operate the switch to be taught</div>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
+
     </q-dialog>
 
 </template>
@@ -125,15 +198,17 @@ import {computed, inject, ref, watch, onBeforeMount, onMounted, onUpdated} from 
 import { useQuasar } from 'quasar'
 import * as utils from "components/functions/utils.js"
 import * as eventFunctions from "components/functions/EventFunctions.js"
+import cbusLib from "cbuslibrary"
+import ActivateSlotDialog from "components/dialogs/ActivateSlotDialog"
 import AddEventDialog from "components/dialogs/AddEventDialog"
 import advancedEventsDialog from "components/dialogs/AdvancedEventsDialog"
+import EventIdentityDialog from "components/dialogs/EventIdentityDialog"
 import sendEventDialog from "components/dialogs/SendEventDialog"
 import nameEventDialog from "components/dialogs/NameEventDialog"
 import eventTeachDialog from "components/dialogs/EventTeachDialog"
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import EventsByNodeViewInfoDialog from "components/dialogs/EventsByNodeViewInfoDialog"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
-
 
 const $q = useQuasar()
 const store = inject('store')
@@ -152,10 +227,21 @@ const newEventName = ref()
 const selected_event_Identifier = ref("") // Dialog will complain if null
 const selected_event_node = ref(0) // Dialog will complain if null
 const selected_event_number = ref(0) // Dialog will complain if null
+const selected_event_index = ref()
 var eventType = ref()
 const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref('')
 const visibleColumns = ref([])
+const showSwitchTeachDialog = ref(false)
+const eventMode = ref('Event')
+const bannerTitle = ref("")
+const eventIdentityDialogText = ref()
+const enableActivateSlot = ref(false)
+const showActivateSlotDialog = ref(false)
+const showEventIdentityDialog = ref(false)
+
+
+
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -179,6 +265,18 @@ const columns = [
   {name: 'eventIndex', field: 'eventIndex', label: 'Index', align: 'left', sortable: true},
   {name: 'eventType', field: 'eventType', required: true, label: 'Event type', align: 'left', sortable: true},
   {name: 'source', field: 'source', required: true, label: 'Event source', align: 'left', sortable: true},
+  {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
+]
+
+const indexed_columns = [
+  {name: 'eventIndex', field: 'eventIndex', label: 'Index', align: 'left', sortable: true},
+  {name: 'eventIdentifier', field: 'eventIdentifier', label: 'Identifier', align: 'left', sortable: true},
+  {name: 'eventName', field: 'eventName', required: true, label: 'Name', align: 'left', sortable: true},
+  {name: 'eventGroup', field: 'eventGroup', label: 'Group', align: 'left', sortable: true},
+  {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Event node', align: 'left', sortable: true},
+  {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event number', align: 'left', sortable: true},
+  {name: 'eventType', field: 'eventType', required: true, label: 'Type', align: 'left', sortable: true},
+  {name: 'source', field: 'source', required: true, label: 'Source', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
 ]
 
@@ -228,7 +326,23 @@ const nodesUpdated = computed(() => {
 watch(nodesUpdated, () => {
   //utils.timeStampedLog(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
   if (props.nodeNumber){
+    if (store.getters.node_useEventIndex(props.nodeNumber) == true){
+      eventMode.value = "Index"
+    } else {
+      eventMode.value = "Event"
+    }
+    if (store.getters.node_useSlots(props.nodeNumber) == true){
+      bannerTitle.value = "Slots"
+    } else {
+      bannerTitle.value = "Events"
+    }
     update_rows()
+    // logical AND
+    if((store.state.nodes[props.nodeNumber].VLCB) && (eventMode.value == "Index")){
+      enableActivateSlot.value = true
+    } else {
+      enableActivateSlot.value = false
+    }
   }
 })
 
@@ -237,18 +351,13 @@ const update_rows = () => {
 //  utils.timeStampedLog(name + ': update_rows ' + props.nodeNumber)
   rows.value = []
   try{
-    // do stored events for this node first.....
-    var storedEventsNI = Object.values(store.state.nodes[props.nodeNumber].storedEventsNI)
-    storedEventsNI.forEach(event => {
-      var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
-      var eventNumber = parseInt(event.eventIdentifier.substr(4, 4), 16)
-      //
-      // we use events_view_mode to decide which events we want to exclude from being displayed
-      if (((store.state.events_view_mode == 'short') && (eventNodeNumber > 0)) ||
-        ((store.state.events_view_mode == 'long') && (eventNodeNumber == 0)) ||
-        ((store.state.events_view_mode == 'named') && (store.state.layout.eventDetails[event.eventIdentifier].name.length == ''))) {
-        // don't add this node as we've elected to not display it
-      } else {
+    if (eventMode.value == "Event"){
+      // do stored events for this node first.....
+      var storedEventsNI = Object.values(store.state.nodes[props.nodeNumber].storedEventsNI)
+      storedEventsNI.forEach(event => {
+        var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
+        var eventNumber = parseInt(event.eventIdentifier.substr(4, 4), 16)
+        //
         let output = {}
         output['eventIdentifier'] = event.eventIdentifier
         output['eventName'] = store.getters.event_name(event.eventIdentifier)
@@ -259,53 +368,144 @@ const update_rows = () => {
         output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
         output['storedEvent'] = true
         output['source'] = "stored event"
-        rows.value.push(output)
+        if (isEventVisible(event.eventIdentifier)){
+          rows.value.push(output)
+        }
+      })
+
+      // now add bus events... but not if already in the list
+      // need to be careful with short events
+      var busEvents = Object.values(store.state.busEvents)
+      busEvents.forEach(busEvent => {
+        if (busEvent.nodeNumber == props.nodeNumber){
+          // ok, it's an event matching this node
+          // lets see if it's already in the stored events...
+          // we need to match long and short events differently
+          var alreadyInList = false
+          var eventIdentifier = busEvent.eventIdentifier
+
+          // for short events, we need to drop the nodenumber to find a match
+          // as 'short' stored events will always have 0 as node number
+          if (busEvent.type == 'short'){
+            eventIdentifier = '0000' + eventIdentifier.substr(4,4)
+          }
+
+          // now find if we have a match
+          storedEventsNI.forEach(event => {
+            if(eventIdentifier == event.eventIdentifier){
+              alreadyInList = true
+            }
+          })
+
+          if (alreadyInList == false){
+            let output = {}
+            output['eventIdentifier'] = eventIdentifier
+            output['eventName'] = store.getters.event_name(eventIdentifier)
+            output['eventGroup'] = store.getters.event_group(eventIdentifier)
+            output['nodeNumber'] = busEvent.nodeNumber
+            output['eventNumber'] = busEvent.eventNumber
+            output['eventType'] = busEvent.type
+            output['storedEvent'] = false
+            output['source'] = "bus event"
+            if (isEventVisible(eventIdentifier)){
+              rows.value.push(output)
+            }
+          }
+        }
+      })
+      // sort rows by eventIdentifier, not eventIndex
+      rows.value.sort(function(a, b){return (a.eventIdentifier < b.eventIdentifier)? -1 : 1;});
+    } else {
+      update_rows_indexed()
+    }
+  } catch {
+    utils.timeStampedLog(name + `: update_rows: ${err} `)
+  }
+}
+
+const update_rows_indexed = () => {
+  try{
+    //utils.timeStampedLog(name + `: update_rows_indexed: node ${props.nodeNumber} `)
+    //
+    // first add all reported events to list
+    var eventsByIndex = Object.values(store.state.nodes[props.nodeNumber].eventsByIndex)
+    eventsByIndex.forEach(event => {
+      var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
+      var eventNumber = parseInt(event.eventIdentifier.substr(4, 4), 16)
+      // don't add if event index 0
+      if (event.eventIndex > 0){
+        // don't add if no eventIdentifier - inactive
+        if (event.eventIdentifier != "00000000"){
+            let output = {}
+          output['eventIdentifier'] = event.eventIdentifier
+          output['eventName'] = store.getters.event_name(event.eventIdentifier)
+          output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
+          output['nodeNumber'] = eventNodeNumber
+          output['eventIndex'] = event.eventIndex
+          output['eventNumber'] = eventNumber
+          output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
+          output['editVariables'] = (store.state.nodes[props.nodeNumber].parameters[5] > 0) ? true : false
+          output['source'] = "stored event"
+          if (isEventVisible(event.eventIdentifier)){
+            rows.value.push(output)
+          }
+        }
       }
     })
-
-    // now add bus events... but not if already in the list
-    // need to be careful with short events
-    var busEvents = Object.values(store.state.busEvents)
-    busEvents.forEach(busEvent => {
-      if (busEvent.nodeNumber == props.nodeNumber){
-        // ok, it's an event matching this node
-        // lets see if it's already in the stored events...
-        // we need to match long and short events differently
-        var alreadyInList = false
-        var eventIdentifier = busEvent.eventIdentifier
-
-        // for short events, we need to drop the nodenumber to find a match
-        // as 'short' stored events will always have 0 as node number
-        if (busEvent.type == 'short'){
-          eventIdentifier = '0000' + eventIdentifier.substr(4,4)
-        }
-
-        // now find if we have a match
-        storedEventsNI.forEach(event => {
-          if(eventIdentifier == event.eventIdentifier){
+    //
+    // now add any 'indexed events' if they aren't already in the list
+    if (store.state.layout.nodeDetails[props.nodeNumber].indexedEvents != undefined){
+      var LayoutNodeEvents = Object.values(store.state.layout.nodeDetails[props.nodeNumber].indexedEvents)
+      LayoutNodeEvents.forEach(event => {
+          // ok, now check if it already exists
+        let alreadyInList = false
+        rows.value.forEach(rowEvent => {
+          if (rowEvent.eventIndex == event.eventIndex ){
             alreadyInList = true
           }
         })
-
+        // so, if it's not already in the list, then add it
         if (alreadyInList == false){
+          var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
+          var eventNumber = parseInt(event.eventIdentifier.substr(4, 4), 16)
           let output = {}
-          output['eventIdentifier'] = eventIdentifier
-          output['eventName'] = store.getters.event_name(eventIdentifier)
-          output['eventGroup'] = store.getters.event_group(eventIdentifier)
-          output['nodeNumber'] = busEvent.nodeNumber
-          output['eventNumber'] = busEvent.eventNumber
-          output['eventType'] = busEvent.type
-          output['storedEvent'] = false
-          output['source'] = "bus event"
-          rows.value.push(output)
+          output['eventIdentifier'] = event.eventIdentifier
+          output['eventName'] = store.getters.event_name(event.eventIdentifier)
+          output['eventGroup'] = store.getters.event_group(event.eventIdentifier)
+          output['nodeNumber'] = eventNodeNumber
+          output['eventIndex'] = event.eventIndex
+          output['eventNumber'] = eventNumber
+          output['eventType'] = eventNodeNumber == 0 ? "short" : "long"
+          output['editVariables'] = (store.state.nodes[props.nodeNumber].parameters[5] > 0) ? true : false
+          output['source'] = "saved index"
+          if (isEventVisible(event.eventIdentifier)){
+            rows.value.push(output)
+          }
         }
-      }
-    })
-    // sort rows by eventIdentifier, not eventIndex
-    rows.value.sort(function(a, b){return (a.eventIdentifier < b.eventIdentifier)? -1 : 1;});
-  } catch {}
+      })
+    }
+    //
+    // finally, sort rows by eventIndex
+    rows.value.sort(function(a, b){return (a.eventIndex < b.eventIndex)? -1 : 1;});
+  } catch(err){
+    utils.timeStampedLog(name + `: update_rows_indexed: ${err} `)
+  }
 }
 
+//
+//
+const isEventVisible = (eventIdentifier) => {
+  // extract eventNodeNumber from eventIdentifier
+  var eventNodeNumber = parseInt(eventIdentifier.substr(0, 4), 16)
+  // we use events_view_mode to decide which events we want to exclude from being displayed
+  if (((store.state.events_view_mode == 'short') && (eventNodeNumber > 0)) ||
+    ((store.state.events_view_mode == 'long') && (eventNodeNumber == 0)) ||
+    ((store.state.events_view_mode == 'named') && (store.state.layout.eventDetails[eventIdentifier].name.length == ''))) {
+      return false
+    } else {
+      return true
+    }
+}
 
 onBeforeMount(() => {
   //utils.timeStampedLog(name + ": onBeforeMount")
@@ -370,6 +570,37 @@ store.eventBus.on('LAYOUT_DATA', () => {
   getSettings()
 })
 
+store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
+  //utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : opcode ' + data.json.opCode)
+  if (showSwitchTeachDialog.value){
+    var opCode = data.json.opCode
+    //utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : opcode #2 ${opCode}` )
+    eventIdentityDialogText.value = "switch"
+    if (store.getters.node_useSwitchTeach1(props.nodeNumber)){
+      // check for ACON1 or ACOF1 event
+      if ((opCode == 'B0') || (opCode == 'B1') )
+      {
+        selected_event_index.value = data.json.data1
+        selected_event_Identifier.value = data.json.eventIdentifier
+        utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : ACON1/ACOF1 event - switch ${selected_event_index.value}`)
+        // lets store this against the node in the layout
+        // as the index is specific to the node
+        store.setters.addIndexedEventToLayoutNode(props.nodeNumber, data.json.data1, selected_event_Identifier.value)
+        showEventIdentityDialog.value = true
+      }
+    } else if (store.getters.node_useSwitchTeach2(props.nodeNumber)){
+      // check for ARON1 or AROF1 event
+      if ((opCode == 'B3') || (opCode == 'B4') )
+      {
+        selected_event_index.value = data.json.data1
+        selected_event_Identifier.value = data.json.eventIdentifier
+        utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : ARON1/AROF1 event - switch ${selected_event_index.value}`)
+        showEventIdentityDialog.value = true
+      }
+    }
+  }
+})
+
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -377,6 +608,15 @@ Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
 
+//
+//
+const clickActivateSlot = () => {
+  utils.timeStampedLog(name + `: clickActivateSlot`)
+  showActivateSlotDialog.value = true
+}
+
+//
+//
 const clickAddEvent = () => {
   utils.timeStampedLog(name + `: clickAddEvent`)
   if(store.state.nodes[props.nodeNumber].eventSpaceLeft > 0 ) {
@@ -394,13 +634,15 @@ const clickAddEvent = () => {
   }
 }
 
-
+//
+//
 const clickAdvanced = () => {
   utils.timeStampedLog(name + `: clickAdvanced`)
   showAdvancedEventDialog.value = true
 }
 
-
+//
+//
 const clickDelete = async (eventIdentifier, eventIndex) => {
   utils.timeStampedLog(name + `: clickDelete`)
   const result = $q.notify({
@@ -451,18 +693,33 @@ const clickEventName = (eventIdentifier) => {
   showNameEventDialog.value = true;
 }
 
+//
+//
+const clickEvent = (eventIndex, eventIdentifier) => {
+  utils.timeStampedLog(name + `: clickEvent: eventIndex ${eventIndex}`)
+  selected_event_index.value = eventIndex
+  selected_event_Identifier.value = eventIdentifier
+  eventIdentityDialogText.value = "index"
+  showEventIdentityDialog.value = true
+}
 
+//
+//
 const clickInfo = () => {
   utils.timeStampedLog(name + `: clickInfo`)
   showEventsByNodeViewInfoDialog.value = true
 }
 
+//
+//
 const clickRefresh = () => {
   utils.timeStampedLog(name + `: clickRefresh`)
   store.methods.request_all_node_events(props.nodeNumber)
 update_rows()
 }
 
+//
+//
 const clickSendOff = (eventIdentifier) => {
   utils.timeStampedLog (name + ": send OFF " + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
@@ -474,7 +731,8 @@ const clickSendOff = (eventIdentifier) => {
   }
 }
 
-
+//
+//
 const clickSendOn = (eventIdentifier) => {
   utils.timeStampedLog (name + ": send ON " + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
@@ -486,14 +744,35 @@ const clickSendOn = (eventIdentifier) => {
   }
 }
 
+//
+//
+const clickSwitchTeach = () => {
+  utils.timeStampedLog (name + `: clickSwitchTeach: node ${props.nodeNumber}`)
+  showSwitchTeachDialog.value = true
+  let commandString = cbusLib.encodeNNLRN(props.nodeNumber)
+  // put into learn mode
+  store.methods.send_cbus_message(commandString)
+}
 
+//
+//
+const clickSwitchTeachClose = (nodeNumber) => {
+  utils.timeStampedLog (name + `: clickSwitchTeachClose ${nodeNumber}`)
+  // take out of learn mode
+  let commandString = cbusLib.encodeNNULN(props.nodeNumber)
+  store.methods.send_cbus_message(commandString)
+}
+
+//
+//
 const clickTeach = (eventIndentifier) => {
   utils.timeStampedLog(name + `: clickTeach`)
   selected_event_Identifier.value = eventIndentifier
   showEventTeachDialog.value = true
 }
 
-
+//
+//
 const clickToggleViewMode = () => {
   utils.timeStampedLog(name + `: clickToggleViewMode`)
   switch(store.state.events_view_mode){
@@ -515,6 +794,8 @@ const clickToggleViewMode = () => {
   update_rows()
 }
 
+//
+//
 const clickVariables = async (eventIdentifier) => {
   utils.timeStampedLog(name + `: clickVariables: node ` + props.nodeNumber)
   selected_event_Identifier.value = eventIdentifier

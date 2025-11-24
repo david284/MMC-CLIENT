@@ -6,7 +6,7 @@
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
           <div class="text-h6">
-            Event Identity for {{ bannerText }} {{eventIndex}}
+            Event for {{ bannerText }} {{eventIndex}}
           </div>
           <template v-slot:action>
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>

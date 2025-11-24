@@ -56,7 +56,7 @@
       bordered
       dense
       :rows=rows
-      :columns="slot_columns"
+      :columns="indexed_columns"
       :filter="filter"
       row-key="eventIdentifier"
       virtual-scroll
@@ -259,7 +259,7 @@ const columns = [
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
 ]
 
-const slot_columns = [
+const indexed_columns = [
   {name: 'eventIndex', field: 'eventIndex', label: 'Index', align: 'left', sortable: true},
   {name: 'eventIdentifier', field: 'eventIdentifier', label: 'Identifier', align: 'left', sortable: true},
   {name: 'eventName', field: 'eventName', required: true, label: 'Name', align: 'left', sortable: true},
