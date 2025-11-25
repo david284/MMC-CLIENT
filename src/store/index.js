@@ -528,13 +528,22 @@ const getters = {
     }
   },
   module_version(nodeNumber){
+    let result = ""
     try{
       if (state.nodes[nodeNumber].moduleVersion){
-        return state.nodes[nodeNumber].moduleVersion
+        result = state.nodes[nodeNumber].moduleVersion
+        // now get beta/patch number
+        let param20 = state.nodes[nodeNumber].parameters[20]
+        if (state.nodes[nodeNumber].VLCB){
+          result += param20
+        } else {
+          if (param20 >0){
+            result += " B" + param20
+          }
+        }
       }
-    } catch{
-      return ""
-    }
+    } catch{ }
+    return result
   },
   node_useEventIndex(nodeNumber){
     try{
