@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 35vh;">
+  <div>
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
       <div class="text-h6">
         {{ bannerTitle }} for node :  {{ store.getters.node_name(props.nodeNumber) }}
@@ -45,6 +45,7 @@
             </q-list>
           </q-menu>
         </q-btn>
+        <q-btn v-if="isDialog" flat color="white" size="md" label="Close" @click="clickClose()" v-close-popup/>
       </template>
     </q-banner>
 
@@ -52,7 +53,7 @@
 
     <q-table
       v-if="(eventMode=='Index')"
-      class="events-list-by-node-table"
+      :class=tableClass
       bordered
       dense
       :rows=rows
@@ -92,7 +93,7 @@
 
     <q-table
       v-if="(eventMode=='Event')"
-      class="events-list-by-node-table"
+      :class=tableClass
       bordered
       dense
       :rows=rows
@@ -242,8 +243,21 @@ const eventIdentityDialogText = ref()
 
 
 const props = defineProps({
-  nodeNumber: {type: Number, required: true }
+  nodeNumber: {type: Number, required: true },
+  isDialog: {type: Boolean, default: false}
 })
+
+//
+//
+const tableClass = computed(() => {
+  utils.timeStampedLog(name + `: computed isDialog ${props.isDialog}`)
+  if(props.isDialog) {
+    return "events-list-by-node-table-full"
+  } else {
+    return"events-list-by-node-table"
+  }
+})
+
 
 const visibleColumns = ref([])
 
@@ -654,6 +668,12 @@ const clickAdvanced = () => {
 
 //
 //
+const clickClose = () => {
+  utils.timeStampedLog(name + `: clickClose`)
+}
+
+//
+//
 const clickDelete = async (eventIdentifier, eventIndex) => {
   utils.timeStampedLog(name + `: clickDelete ${eventIdentifier} ${eventIndex}`)
   const result = $q.notify({
@@ -834,7 +854,34 @@ const clickVariables = async (eventIdentifier, eventIndex) => {
 <style lang="sass">
 .events-list-by-node-table
   /* height or max-height is important */
-  height: 42vh
+  height: 41vh
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    /* otherwise you see the table scrolling underneath the header */
+    background-color: $blue-grey-1
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
+
+.events-list-by-node-table-full
+  /* height or max-height is important */
+  height: 85vh
 
   .q-table__top,
   .q-table__bottom,

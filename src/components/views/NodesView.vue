@@ -108,10 +108,11 @@
         :nodeNumber = selectedNode
       />
 
-
+      <div style="height:35vh;">
       <EventsListByNode v-if="((selected_node_valid == true) && (store.state.nodes_view_mode=='split'))"
         :nodeNumber = store.state.selected_node
       />
+      </div>
 
       <nameNodeDialog v-model='showNameNodeDialog'
         :nodeNumber = store.state.selected_node
