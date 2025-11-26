@@ -164,6 +164,21 @@ export function requestAllEventsByIndex (store, nodeNumber) {
 //
 //
 //
+export async function deleteAllEvents (store, nodeNumber){
+  try{
+    store.methods.delete_all_events(nodeNumber)
+    await utils.sleep(500)
+    if (store.getters.node_useNENRD(nodeNumber) == true){
+      requestAllEventsByIndex(store, nodeNumber)
+    }
+  } catch (err){
+    utils.timeStampedLog (name + `: deleteAllEvents ${err} `)
+  }
+}
+
+//
+//
+//
 export async function eventDelete (
   store,
   nodeNumber,

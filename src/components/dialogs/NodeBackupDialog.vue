@@ -183,11 +183,10 @@ const loadEventVariables = async () => {
     // now request all the event variables for all events for this node
     if (store.getters.node_useEventIndex(props.nodeNumber) == true){
       eventFunctions.requestAllEventsByIndex(store, props.nodeNumber)
-      /*
+      // now get variables for each event
       for (var i=1; i <= store.getters.node_numberOfEvents(props.nodeNumber); i++){
         store.methods.request_event_variables_by_index(props.nodeNumber, i)
       }
-        */
     } else {
       store.methods.requestAllEventVariablesForNode(props.nodeNumber)
     }

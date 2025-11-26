@@ -70,7 +70,7 @@ const deleteAllEvents = () => {
     color: 'primary',
     actions: [
       { label: 'YES', color: 'white', handler: async () => {
-        store.methods.delete_all_events(props.nodeNumber)
+        eventFunctions.deleteAllEvents(store, props.nodeNumber)
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
     ]
