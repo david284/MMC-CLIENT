@@ -182,9 +182,14 @@ const loadEventVariables = async () => {
     showWaitingOnBusTrafficDialog.value = true
     // now request all the event variables for all events for this node
     if (store.getters.node_useEventIndex(props.nodeNumber) == true){
+      utils.timeStampedLog(name + `: loadEventVariables: node_useEventIndex`)
       eventFunctions.requestAllEventsByIndex(store, props.nodeNumber)
+      await utils.sleep(500)
       // now get variables for each event
-      for (var i=1; i <= store.getters.node_numberOfEvents(props.nodeNumber); i++){
+      let eventCount = store.getters.node_numberOfEvents(props.nodeNumber)
+      utils.timeStampedLog(name + `: loadEventVariables: events ${eventCount}`)
+      for (var i=1; i <= eventCount; i++){
+        utils.timeStampedLog(name + `: loadEventVariables: variables index ${i}`)
         store.methods.request_event_variables_by_index(props.nodeNumber, i)
       }
     } else {

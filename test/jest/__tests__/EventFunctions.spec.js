@@ -161,7 +161,7 @@ describe('EventFunctions Test', () => {
     utils.timeStampedLog(name + `: requestAllEventsByIndex_1`)
     let result = EventFunctions.requestAllEventsByIndex(mock_store, 1)
     utils.timeStampedLog(`requestAllEventsByIndex_1 Result: ${JSON.stringify(result)}`)
-    expect(result).toEqual(5)
+    expect(result).toEqual(3)
   });
 
   //
@@ -173,14 +173,6 @@ describe('EventFunctions Test', () => {
     expect(result).toEqual(9)
   });
 
-  //
-  //
-  it('getNumberOfIndexedEvents', () => {
-    utils.timeStampedLog(name + `: getNumberOfIndexedEvents`)
-    let result = EventFunctions.getNumberOfIndexedEvents(mock_store, 2)
-    //utils.timeStampedLog(`getEventDetails ASOF3 Result: ${JSON.stringify(result)}`)
-    expect(result).toEqual(9)
-  });
 
   //
   //

@@ -152,7 +152,7 @@ export function getEventDetails (cbusMsg) {
 //
 export function requestAllEventsByIndex (store, nodeNumber) {
   try{
-    let numberOfEvents = getNumberOfIndexedEvents(store, nodeNumber)
+    let numberOfEvents = store.getters.node_numberOfEvents(nodeNumber)
     utils.timeStampedLog(name + `: requestAllEventsByIndex: nodeNumber ${nodeNumber} count ${numberOfEvents}`)
     store.methods.request_all_node_events_by_index(nodeNumber, numberOfEvents)
     return numberOfEvents   // for unit test
@@ -220,26 +220,6 @@ export async function eventDelete (
     utils.timeStampedLog (name + `: eventDelete ${err} `)
   }
 }
-
-//
-// get higher of number of events from either MDF or node parameters
-//
-export function getNumberOfIndexedEvents (store, nodeNumber){
-try{
-    let numberOfEvents = store.getters.node_numberOfEvents(nodeNumber)
-    // will return 0 if descriptor doesn't have numberOfEvents defined
-    // use whichever is higher
-    if(store.state.nodes[nodeNumber].parameters[4] > numberOfEvents){
-      // param 4 is number of events supported
-      numberOfEvents = store.state.nodes[nodeNumber].parameters[4]
-    }
-    //utils.timeStampedLog(name + `: getNumberOfIndexedEvents: node ${nodeNumber} numberOfEvents ${numberOfEvents}`)
-    return numberOfEvents
-  } catch (err) {
-    utils.timeStampedLog(name + `: getNumberOfIndexedEvents: ${err}`)
-  }
-}
-
 
 export function eventTeach (
   store,

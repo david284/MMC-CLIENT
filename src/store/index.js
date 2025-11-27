@@ -634,6 +634,9 @@ const getters = {
     }
   },
   //
+  // get number of events
+  // try MDF, then value in mergConfig, then value reported in params
+  //
   node_numberOfEvents(nodeNumber){
     let value = 0
     try{
@@ -643,6 +646,11 @@ const getters = {
       } else if (state.nodes[nodeNumber].moduleInfo.numberOfEvents != undefined) {
         value = state.nodes[nodeNumber].moduleInfo.numberOfEvents
         utils.timeStampedLog(name + `: node_numberOfEvents: moduleInfo.numberOfEvents ${value}`)
+      }
+      // check params for number of events, use whichever is higher
+      if(store.state.nodes[nodeNumber].parameters[4] > value){
+        // param 4 is number of events supported
+        value = store.state.nodes[nodeNumber].parameters[4]
       }
     } catch(err){
       utils.timeStampedLog(name + `: node_numberOfEvents  ${err}`)
