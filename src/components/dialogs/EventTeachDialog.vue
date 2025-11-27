@@ -100,7 +100,7 @@
       </q-card-section>
       <q-card-section class="q-py-none q-ma-none">
         <div class="text-h6">
-          enter index number between 1 and {{store.getters.node_numberOfEvents(selected_event_node)}}
+          enter index number between 1 and {{store.getters.node_eventCapacity(selected_event_node)}}
         </div>
       </q-card-section>
       <q-card-section class="q-pt-none">
