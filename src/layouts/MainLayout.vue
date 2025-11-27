@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh lpR fFf">
 
-    <q-header class="row bg-primary text-white no-margin no-padding" style="height: 6vh;">
+    <q-header class="row bg-primary text-white no-margin no-padding" style="height: 7vh;">
       <q-toolbar class="col no-margin no-padding">
 
         <q-btn flat dense icon="menu">

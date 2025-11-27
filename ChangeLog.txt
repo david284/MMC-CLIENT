@@ -1,3 +1,9 @@
+Version 0.17.0
+  Added node_useSwitchTeach2
+  Amended EventTeachDialog to support indexed events
+  Added support for event variables for indexed events
+  nodeEventsDialog now uses EventsListByNode
+
 Version 0.16.0
   added getListOfTokens & extractMDFTokens
   updated readme tests.md
