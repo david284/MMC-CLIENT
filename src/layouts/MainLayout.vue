@@ -1,10 +1,10 @@
 <template>
   <q-layout view="hHh lpR fFf">
 
-    <q-header class="row bg-primary text-white no-margin no-padding" style="height: 7vh;">
+    <q-header class="row bg-primary text-white no-margin no-padding">
       <q-toolbar class="col no-margin no-padding">
 
-        <q-btn flat dense icon="menu">
+        <q-btn flat dense size="md" icon="menu" class="no-margin no-padding">
           <q-menu auto-close>
             <q-list style="min-width: 100px">
               <q-item clickable @click="clickExport()">
@@ -43,7 +43,7 @@
 
         <q-toolbar-title style="min-height: 0;" class="no-margin no-padding">
           <div class="text-h6 no-margin no-padding">
-            MMC
+            &nbsp; MMC  &nbsp; {{ packageInfo.version }}
             </div>
           </q-toolbar-title>
 
@@ -59,25 +59,25 @@
       </q-toolbar>
 
       <q-toolbar class="col no-margin q-py-none">
-        <div class="text-h6 float-right">
+        <div class="float-right">
           <q-btn size="md" color="secondary" label="Bus Events" @click="clickBusEventsView()" no-caps/>
         </div>
       </q-toolbar>
       <q-toolbar class="col no-margin q-py-none">
-        <div class="text-h6 float-right">
+        <div class="float-right">
           <q-btn size="md" color="secondary" label="Events view" @click="clickEventsView()" no-caps/>
         </div>
       </q-toolbar>
       <q-toolbar class="col no-margin q-py-none">
-        <div class="text-h6 float-right">
+        <div class="float-right">
           <q-btn size="md" color="secondary" label="Nodes view" @click="clickNodesView()" no-caps/>
         </div>
       </q-toolbar>
 
       <q-toolbar class="col no-margin q-py-none">
         <q-space />
-        <div class="text-h6 float-right">
-          <q-btn square unelevated color="primary" icon="settings">
+        <div class="float-right">
+          <q-btn square unelevated size="md" color="primary" icon="settings">
             <q-menu auto-close>
               <q-list style="min-width: 100px">
                 <q-item>
@@ -205,6 +205,7 @@
 
 import {computed, inject, onBeforeMount, onMounted, onUpdated, ref, watch} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
+import packageInfo from './../../package.json';
 import * as utils from "components/functions/utils.js"
 import * as EventFunctions from "components/functions/EventFunctions.js"
 import nodesView from "components/views/NodesView"

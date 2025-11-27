@@ -854,7 +854,7 @@ const clickVariables = async (eventIdentifier, eventIndex) => {
 <style lang="sass">
 .events-list-by-node-table
   /* height or max-height is important */
-  height: 41vh
+  height: 40vh
 
   .q-table__top,
   .q-table__bottom,
