@@ -569,6 +569,7 @@ const clickViewMode = () => {
   } else {
     tableStyle.value = "nodes-view-full-table"
   }
+  selected_node_valid.value = false
 }
 
 //
