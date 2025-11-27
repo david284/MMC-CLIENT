@@ -105,17 +105,13 @@ onMounted(() => {
 
 onUpdated(() =>{
 //  console.log(name + ` OnUpdated`)
-  // check if this module actually supports any stored events
-  if(store.state.nodes[store.state.selected_node].parameters[4] == 0) {
-    addEventEnabled.value == false
-  }
   newNodeNumber.value = null
   newEventNumber.value = null
   eventType.value = null
   // check if this module actually supports any stored events
-  if(store.state.nodes[store.state.selected_node].parameters[4] == 0) {
+  if(store.getters.node_eventCapacity(store.state.selected_node) == 0) {
     addEventEnabled.value = false
-//    console.log(name + ` OnUpdated - addEvent disabled `)
+    //console.log(name + ` OnUpdated - addEvent disabled `)
   }
 })
 
@@ -132,8 +128,8 @@ const clickAddEvent = () => {
   // need to create an eventIdentifier from entered values
   new_event_Identifier.value = parseInt(newNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
                + parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
-  
-  createNewEvent(store, store.state.selected_node, new_event_Identifier.value)             
+
+  createNewEvent(store, store.state.selected_node, new_event_Identifier.value)
 
   showEventVariablesDialog.value = true
 }

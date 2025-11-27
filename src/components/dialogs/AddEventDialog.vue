@@ -232,7 +232,7 @@ onUpdated(() =>{
 //  console.log(name + ` OnUpdated`)
   // check if this module actually supports any stored events
   if (props.nodeNumber != undefined){
-    if(store.state.nodes[props.nodeNumber].parameters[4] == 0) {
+    if(store.getters.node_eventCapacity(props.nodeNumber) == 0) {
       storedEventsSupported.value == false
     }
   }

@@ -117,7 +117,7 @@ const update_rows = () => {
   rows.value = []
   try{
     //utils.timeStampedLog(name + `: update_rows: node ${props.nodeNumber} `)
-    let numberOfEvents = store.state.nodes[props.nodeNumber].parameters[4]
+    let numberOfEvents = store.getters.node_eventCapacity(props.nodeNumber)
     for (let i=1; i<= numberOfEvents; i++){
       //let event = store.state.nodes[props.nodeNumber].eventsByIndex[i]
       //var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
