@@ -1,13 +1,13 @@
 <template>
 
-  <q-dialog v-model='model' persistent> 
+  <q-dialog v-model='model' persistent>
     <q-card style="min-width: 700px">
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
           Parameter Information for {{ store.getters.node_name(props.nodeNumber) }}
         </div>
         <template v-slot:action>
-          <q-btn color="cyan-1" size="sm" text-color="black" 
+          <q-btn color="cyan-1" size="sm" text-color="black"
             label="manage Module Descriptor" @click="clickManageModuleDescriptor()"/>
           <q-btn flat color="white" size="md" label="Close" v-close-popup/>
         </template>
@@ -62,12 +62,16 @@
         <node-parameter Name="Interface"
                         :Value="store.state.nodes[props.nodeNumber].interfaceName">
         </node-parameter>
-        <node-parameter Name="Firmware Version"
-                        :Value="store.state.nodes[props.nodeNumber].parameters[7] +
-							String.fromCharCode(store.state.nodes[props.nodeNumber].parameters[2])">
+        <node-parameter v-if="(store.state.nodes[props.nodeNumber].VLCB)" Name="Firmware Version"
+                        :Value="store.state.nodes[props.nodeNumber].moduleVersion
+                        + store.state.nodes[props.nodeNumber].parameters[20]">
         </node-parameter>
-        <node-parameter Name="Beta Version"
-                        :Value=store.state.nodes[props.nodeNumber].parameters[20]>
+        <node-parameter v-if="(!store.state.nodes[props.nodeNumber].VLCB)" Name="Firmware Version"
+                        :Value="store.state.nodes[props.nodeNumber].moduleVersion">
+        </node-parameter>
+        <node-parameter v-if="(!store.state.nodes[props.nodeNumber].VLCB)"
+          Name="Beta Version"
+          :Value=store.state.nodes[props.nodeNumber].parameters[20]>
         </node-parameter>
         <node-parameter Name="Module Descriptor Filename"
                         :Value="moduleDescriptorFilename">
@@ -82,16 +86,16 @@
         </div>
 
         <div class="q-pa-none row">
-          <NodeParameterRaw 
+          <NodeParameterRaw
                         :nodeNumber = nodeNumber
                         :parameterIndex = i
                         v-for="(n, i) in (store.state.nodes[props.nodeNumber].parameters[0] + 1)"
                         :key = i>
           </NodeParameterRaw>
         </div>
-  
+
       </q-card-section>
- 
+
     </q-card>
   </q-dialog>
 

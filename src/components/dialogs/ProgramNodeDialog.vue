@@ -167,7 +167,7 @@ var cpuType = undefined
 //
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
-  nodeNumber: { type: Number },
+  nodeNumber: { type: Number, default: 0 },
   mode: {type: String, default: "NORMAL" }
 })
 
@@ -343,15 +343,15 @@ store.eventBus.on('FIRMWARE_INFO', (data) => {
 
 
 onBeforeMount(() => {
-  timeStampedLog( name + `: onBeforeMount node ${props.nodeNumber}` )
+  //timeStampedLog( name + `: onBeforeMount node ${props.nodeNumber}` )
 })
 
 onMounted(() => {
-  timeStampedLog( name + `: onMounted node ${props.nodeNumber}` )
+  //timeStampedLog( name + `: onMounted node ${props.nodeNumber}` )
 })
 
 onUpdated(() =>{
-  timeStampedLog( name + `: onUpdated node ${props.nodeNumber}` )
+  //timeStampedLog( name + `: onUpdated node ${props.nodeNumber}` )
 })
 
 

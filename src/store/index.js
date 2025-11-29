@@ -665,8 +665,10 @@ const getters = {
       } catch {}
       if (value == 0) {
         try {
-          value = state.nodes[nodeNumber].moduleInfo.numberOfEvents
-          utils.timeStampedLog(name + `: node_numberOfEvents: moduleInfo.numberOfEvents ${value}`)
+          if (state.nodes[nodeNumber].moduleInfo.numberOfEvents != undefined){
+            value = state.nodes[nodeNumber].moduleInfo.numberOfEvents
+            utils.timeStampedLog(name + `: node_numberOfEvents: moduleInfo.numberOfEvents ${value}`)
+          }
         } catch {}
       }
       // now check eventCount, use whichever is higher
@@ -844,7 +846,7 @@ const setters = {
     //utils.timeStampedLog(name + `: addNodeToLayout: ${nodeNumber} ${moduleIdentifer} ${moduleName}`)
     if (nodeNumber != undefined){
       if (nodeNumber in state.layout.nodeDetails === false){
-        utils.timeStampedLog(name + `: addNodeToLayout: nodeNumber: ${nodeNumber}`)
+        //utils.timeStampedLog(name + `: addNodeToLayout: nodeNumber: ${nodeNumber}`)
         state.layout.nodeDetails[nodeNumber] = {}
         state.layout.nodeDetails[nodeNumber].colour = "black"
         state.layout.nodeDetails[nodeNumber].group = ""
@@ -852,14 +854,14 @@ const setters = {
       }
       if (moduleIdentifer != undefined){
         if (state.layout.nodeDetails[nodeNumber].moduleIdentifer != moduleIdentifer){
-          utils.timeStampedLog(name + `: addNodeToLayout: moduleIdentifier: ${moduleIdentifer}`)
+          //utils.timeStampedLog(name + `: addNodeToLayout: moduleIdentifier: ${moduleIdentifer}`)
           state.layout.nodeDetails[nodeNumber].moduleIdentifer = moduleIdentifer
           state.update_layout_needed = true
         }
       }
       if (moduleName != undefined){
         if (state.layout.nodeDetails[nodeNumber].moduleName != moduleName){
-          utils.timeStampedLog(name + `: addNodeToLayout: moduleName: ${moduleName}`)
+          //utils.timeStampedLog(name + `: addNodeToLayout: moduleName: ${moduleName}`)
           state.layout.nodeDetails[nodeNumber].moduleName = moduleName
           state.update_layout_needed = true
         }
@@ -934,12 +936,15 @@ socket.on('BINARY_FILE', (data) => {
 //
 socket.on('LIST_OF_BACKUPS_FOR_ALL_NODES', (data) => {
   try{
-    utils.timeStampedLog(name + `: RECEIVED LIST_OF_BACKUPS_FOR_ALL_NODES ${JSON.stringify(data)}`)
+    utils.timeStampedLog(name + `: RECEIVED LIST_OF_BACKUPS_FOR_ALL_NODES`)
     for(const node in data){
       // extract node number
       let nodeNumber = node.replace(/[^0-9]/g, "")
       if (nodeNumber != undefined){
-        utils.timeStampedLog(name + `: RECEIVED LIST_OF_BACKUPS_FOR_ALL_NODES: node ${nodeNumber}`)
+        if (nodeNumber in state.layout.nodeDetails === false){
+          setters.addNodeToLayout(nodeNumber)
+        }
+        //utils.timeStampedLog(name + `: RECEIVED LIST_OF_BACKUPS_FOR_ALL_NODES: node ${nodeNumber}`)
         state.layout.nodeDetails[nodeNumber]['backupList'] = data[node]
       }
     }
