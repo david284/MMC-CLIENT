@@ -3,6 +3,7 @@ Version 0.17.0
   Amended EventTeachDialog to support indexed events
   Added support for event variables for indexed events
   nodeEventsDialog now uses EventsListByNode
+  Modified firmware version display to support VLCB patch number, not beta
 
 Version 0.16.0
   added getListOfTokens & extractMDFTokens
