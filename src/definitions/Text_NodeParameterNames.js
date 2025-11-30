@@ -21,5 +21,5 @@ export const NodeParameterNames = [
 	"CPU Manufacturers Code Byte2",		// 17
 	"CPU Manufacturers Code Byte3",		// 18
 	"CPU Manufacturer",					// 19
-	"Beta Release Build Number"			// 20
+	"Beta Release / Patch Number"			// 20
     ];

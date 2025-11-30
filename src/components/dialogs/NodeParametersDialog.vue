@@ -62,16 +62,8 @@
         <node-parameter Name="Interface"
                         :Value="store.state.nodes[props.nodeNumber].interfaceName">
         </node-parameter>
-        <node-parameter v-if="(store.state.nodes[props.nodeNumber].VLCB)" Name="Firmware Version"
-                        :Value="store.state.nodes[props.nodeNumber].moduleVersion
-                        + store.state.nodes[props.nodeNumber].parameters[20]">
-        </node-parameter>
-        <node-parameter v-if="(!store.state.nodes[props.nodeNumber].VLCB)" Name="Firmware Version"
-                        :Value="store.state.nodes[props.nodeNumber].moduleVersion">
-        </node-parameter>
-        <node-parameter v-if="(!store.state.nodes[props.nodeNumber].VLCB)"
-          Name="Beta Version"
-          :Value=store.state.nodes[props.nodeNumber].parameters[20]>
+        <node-parameter Name="Firmware Version"
+                        :Value=moduleVersionString>
         </node-parameter>
         <node-parameter Name="Module Descriptor Filename"
                         :Value="moduleDescriptorFilename">
@@ -128,6 +120,22 @@ const emit = defineEmits(['update:modelValue'])
 const model = computed({
   get() { return props.modelValue },
   set(newValue) { emit('update:modelValue', newValue) }
+})
+
+const moduleVersionString  = computed(() => {
+  try{
+    let value = store.state.nodes[props.nodeNumber].moduleVersion
+    if (store.state.nodes[props.nodeNumber].VLCB){
+      return value + store.state.nodes[props.nodeNumber].parameters[20]
+    } else {
+      if (store.state.nodes[props.nodeNumber].parameters[20] == 0){
+        return value
+      } else {
+       return value + " Beta " + store.state.nodes[props.nodeNumber].parameters[20]
+      }
+    }
+  } catch { return null}
+//  return store.state.nodes[props.nodeNumber].moduleDescriptorFilename
 })
 
 const moduleDescriptorFilename = computed(() => {

@@ -277,7 +277,7 @@ const clearAllSelections = () => {
 // don't process event if dialog not visible
 store.eventBus.on('FIRMWARE_INFO', (data) => {
   if (model.value){
-    //timeStampedLog( name + `: FIRMWARE_INFO event: ${JSON.stringify(data)}` )
+    timeStampedLog( name + `: FIRMWARE_INFO event: ${JSON.stringify(data)}` )
     timeStampedLog( name + `: FIRMWARE_INFO event:` )
     let nodeCpuType = store.state.nodes[props.nodeNumber].parameters[9]
     let nodeModuleType = store.state.nodes[props.nodeNumber].parameters[3]
@@ -286,8 +286,12 @@ store.eventBus.on('FIRMWARE_INFO', (data) => {
     fileVersion.value = data.versionNumber
     fileLoadAddress.value = data.loadAddress
     fileBootable.value = data.bootable
-    if (data.betaNumber > 0){
-      fileVersion.value += ' beta ' + data.betaNumber
+    if (data.flags & 0x40){   // VLCB flag
+      fileVersion.value += data.betaNumber
+    } else {    // not VLCB but CBUS
+      if (data.betaNumber > 0){
+        fileVersion.value += ' beta ' + data.betaNumber
+      }
     }
     showFileInfo.value = true
     // check matching CPU type
