@@ -273,73 +273,77 @@ const clearAllSelections = () => {
   bootModeCheckBoxDisabled.value = false
 }
 
+
 //
 // don't process event if dialog not visible
 store.eventBus.on('FIRMWARE_INFO', (data) => {
   if (model.value){
+    showFileInfo.value = false
     timeStampedLog( name + `: FIRMWARE_INFO event: ${JSON.stringify(data)}` )
-    timeStampedLog( name + `: FIRMWARE_INFO event:` )
-    let nodeCpuType = store.state.nodes[props.nodeNumber].parameters[9]
-    let nodeModuleType = store.state.nodes[props.nodeNumber].parameters[3]
-    fileModuleID.value = "A5" + decToHex(data.moduleID, 2)
-    fileCpuType.value = data.targetCpuType
-    fileVersion.value = data.versionNumber
-    fileLoadAddress.value = data.loadAddress
-    fileBootable.value = data.bootable
-    if (data.flags & 0x40){   // VLCB flag
-      fileVersion.value += data.betaNumber
-    } else {    // not VLCB but CBUS
-      if (data.betaNumber > 0){
-        fileVersion.value += ' beta ' + data.betaNumber
+    //timeStampedLog( name + `: FIRMWARE_INFO event: data ${data.valid}` )
+    if (data.valid == true){
+      let nodeCpuType = store.state.nodes[props.nodeNumber].parameters[9]
+      let nodeModuleType = store.state.nodes[props.nodeNumber].parameters[3]
+      fileModuleID.value = "A5" + decToHex(data.moduleID, 2)
+      fileCpuType.value = data.targetCpuType
+      fileVersion.value = data.versionNumber
+      fileLoadAddress.value = data.loadAddress
+      fileBootable.value = data.bootable
+      if (data.flags & 0x40){   // VLCB flag
+        fileVersion.value += data.betaNumber
+      } else {    // not VLCB but CBUS
+        if (data.betaNumber > 0){
+          fileVersion.value += ' beta ' + data.betaNumber
+        }
       }
-    }
-    showFileInfo.value = true
-    // check matching CPU type
-    if (nodeCpuType != undefined){
-      //timeStampedLog( name + `: FIRMWARE_INFO event: node ${props.nodeNumber} cpuTypes ${fileCpuType.value} ${nodeCpuType}` )
-      if (fileCpuType.value != nodeCpuType){
-        cpuTypeCheckIgnore.value = true
-        cpuTypeCheckBoxDisabled.value = true
-        $q.notify({
-          message: `WARNING: CPU types do not match` ,
-          caption: "PROCEED accepts the mismatch, and forces EEPROM to be programmed, CANCEL clears all selections",
-          timeout: 0,
-          position: 'center',
-          color: 'primary',
-          actions: [
-            { label: 'PROCEED', color: 'white', handler: async () => {
-              timeStampedLog( name + `: FIRMWARE_INFO event: PROCEED` )
-            } },
-            { label: 'CANCEL', color: 'white', handler: () => {
-              timeStampedLog( name + `: FIRMWARE_INFO event: CANCEL` )
-              clearAllSelections()
-            } }
-          ]
-        })
+      showFileInfo.value = true
+      // check matching CPU type
+      if (nodeCpuType != undefined){
+        //timeStampedLog( name + `: FIRMWARE_INFO event: node ${props.nodeNumber} cpuTypes ${fileCpuType.value} ${nodeCpuType}` )
+        if (fileCpuType.value != nodeCpuType){
+          cpuTypeCheckIgnore.value = true
+          cpuTypeCheckBoxDisabled.value = true
+          $q.notify({
+            message: `WARNING: CPU types do not match` ,
+            caption: "PROCEED accepts the mismatch, and forces EEPROM to be programmed, CANCEL clears all selections",
+            timeout: 0,
+            position: 'center',
+            color: 'primary',
+            actions: [
+              { label: 'PROCEED', color: 'white', handler: async () => {
+                timeStampedLog( name + `: FIRMWARE_INFO event: PROCEED` )
+              } },
+              { label: 'CANCEL', color: 'white', handler: () => {
+                timeStampedLog( name + `: FIRMWARE_INFO event: CANCEL` )
+                clearAllSelections()
+              } }
+            ]
+          })
+        }
       }
-    }
-    // check matching module type
-    if (nodeModuleType != undefined){
-      //timeStampedLog( name + `: FIRMWARE_INFO event: node ${props.nodeNumber} module Types ${data.moduleID} ${nodeModuleType}` )
-      if (data.moduleID != nodeModuleType){
-        programEEPROM.value = true
-        programEEPROMCheckBoxDisabled.value = true
-        $q.notify({
-          message: `WARNING: Module types do not match` ,
-          caption: "PROCEED accepts the mismatch, and forces EEPROM to be programmed, CANCEL clears all selections",
-          timeout: 0,
-          position: 'center',
-          color: 'primary',
-          actions: [
-            { label: 'PROCEED', color: 'white', handler: async () => {
-              timeStampedLog( name + `: FIRMWARE_INFO event: PROCEED` )
-            } },
-            { label: 'CANCEL', color: 'white', handler: () => {
-              timeStampedLog( name + `: FIRMWARE_INFO event: CANCEL` )
-              clearAllSelections()
-            } }
-          ]
-        })
+      // check matching module type
+      if (nodeModuleType != undefined){
+        //timeStampedLog( name + `: FIRMWARE_INFO event: node ${props.nodeNumber} module Types ${data.moduleID} ${nodeModuleType}` )
+        if (data.moduleID != nodeModuleType){
+          programEEPROM.value = true
+          programEEPROMCheckBoxDisabled.value = true
+          $q.notify({
+            message: `WARNING: Module types do not match` ,
+            caption: "PROCEED accepts the mismatch, and forces EEPROM to be programmed, CANCEL clears all selections",
+            timeout: 0,
+            position: 'center',
+            color: 'primary',
+            actions: [
+              { label: 'PROCEED', color: 'white', handler: async () => {
+                timeStampedLog( name + `: FIRMWARE_INFO event: PROCEED` )
+              } },
+              { label: 'CANCEL', color: 'white', handler: () => {
+                timeStampedLog( name + `: FIRMWARE_INFO event: CANCEL` )
+                clearAllSelections()
+              } }
+            ]
+          })
+        }
       }
     }
   }
