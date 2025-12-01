@@ -2,7 +2,7 @@
   <div>
     <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
       <div class="text-h6">
-        {{ bannerTitle }} for node :  {{ store.getters.node_name(props.nodeNumber) }}
+        {{ bannerTitle }}:  {{ store.getters.node_name(props.nodeNumber) }}
       </div>
       <template v-slot:action>
         <q-btn class="q-mx-xs q-my-none" v-if="store.getters.node_useSwitchTeach1(props.nodeNumber)"

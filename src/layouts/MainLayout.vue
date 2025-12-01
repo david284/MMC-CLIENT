@@ -2,7 +2,7 @@
   <q-layout view="hHh lpR fFf">
 
     <q-header class="row bg-primary text-white no-margin no-padding">
-      <q-toolbar class="col no-margin no-padding">
+      <q-toolbar class="col no-margin no-padding" style="min-width: 180px">
 
         <q-btn flat dense size="md" icon="menu" class="no-margin no-padding">
           <q-menu auto-close>
@@ -49,14 +49,12 @@
 
       </q-toolbar>
 
-      <q-toolbar class="col no-margin no-padding" style="min-width: 400px">
+      <q-toolbar class="col no-margin no-padding float-right" style="min-width: 400px">
         <q-space />
         <div class="text-h6 no-margin no-padding float-right">{{ layoutDataTitle }}</div>
-      </q-toolbar>
-
-      <q-toolbar class="col no-margin no-padding">
         <q-space />
       </q-toolbar>
+
 
       <q-toolbar class="col no-margin q-py-none">
         <div class="float-right">
