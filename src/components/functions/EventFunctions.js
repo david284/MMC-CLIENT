@@ -146,7 +146,6 @@ export function getEventDetails (cbusMsg) {
   return result
 }
 
-
 //
 // requests all events using indexes
 //
@@ -241,6 +240,7 @@ export function eventTeach (
       reLoad,
       getLinkedEventVariables(configuration)
     )
+    return "index"
   } else {
     // use eventIdentifier
     store.methods.event_teach_by_identifier(
@@ -251,6 +251,7 @@ export function eventTeach (
       reLoad,
       getLinkedEventVariables(configuration)
     )
+    return "identifier"
   }
 }
 
@@ -270,5 +271,38 @@ export function getEventVariable (
     }
   } catch (err){
     utils.timeStampedLog(name + `: getEventVariable: ${err}`)
+  }
+}
+
+//
+// Takes array of event variables for a single event in a specific node
+// it expects both the event identifier and event index
+// And calls the generic eventTeach method, which works out which teaching method to use
+//
+export async function restoreEventVariables (store, nodeNumber, eventIdentifier, eventIndex, eventVariables) {
+  utils.timeStampedLog(name + `: restoreEventVariables: node ${nodeNumber} ${eventIdentifier} ${eventIndex}`)
+  try{
+    // ensure variables are restored in ascending index order
+    for (let index of Object.keys(eventVariables).sort(function(a, b){return a - b})) {
+      if (index > 0)
+      {
+        let variable = eventVariables[index]
+        utils.timeStampedLog(name + `: restoreEventVariables: ${index} ${variable}` )
+        let reLoad = false  // don't reLoad variables after teaching
+        eventTeach(
+          store,
+          nodeNumber,
+          eventIdentifier,
+          eventIndex,
+          index,
+          variable,
+          reLoad)
+        await utils.sleep(100)  // allow a little time between requests
+      }
+    }
+    return true
+  } catch (err){
+    utils.timeStampedLog(name + ': restoreEventVariables: ' + err)
+    return false
   }
 }

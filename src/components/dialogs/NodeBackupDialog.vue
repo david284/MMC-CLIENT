@@ -183,8 +183,6 @@ const loadEventVariables = async () => {
     // now request all the event variables for all events for this node
     if (store.getters.node_useEventIndex(props.nodeNumber) == true){
       utils.timeStampedLog(name + `: loadEventVariables: node_useEventIndex`)
-      eventFunctions.requestAllEventsByIndex(store, props.nodeNumber)
-      await utils.sleep(500)
       // now get variables for each event
       let eventCount = store.getters.node_numberOfEvents(props.nodeNumber)
       utils.timeStampedLog(name + `: loadEventVariables: events ${eventCount}`)

@@ -677,8 +677,8 @@ const getters = {
       } catch {}
     } catch(err){
       utils.timeStampedLog(name + `: node_numberOfEvents  ${err}`)
-      utils.timeStampedLog(name + `: node_numberOfEvents  node ${nodeNumber} number ${value}`)
     }
+    utils.timeStampedLog(name + `: node_numberOfEvents  node ${nodeNumber} number ${value}`)
     return value
   },
   //

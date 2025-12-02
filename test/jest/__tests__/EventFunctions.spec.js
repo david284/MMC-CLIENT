@@ -1,4 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
+import each from 'jest-each';
+
 import * as EventFunctions from "components/functions/EventFunctions.js"
 import * as utils from "components/functions/utils.js"
 import cbusLib from "cbuslibrary"
@@ -20,7 +22,8 @@ let name = "UNIT TEST"
         if (nodeNumber == 2){return 9}
       },
       node_useEventIndex(nodeNumber){
-        return mock_store.useEventIndex
+        if (nodeNumber == 1){return false}
+        if (nodeNumber == 2){return true}
       }
     },
     "methods":{
@@ -37,7 +40,7 @@ let name = "UNIT TEST"
           "linkedVariableList": linkedVariableList
         }
         utils.timeStampedLog(name + `: EVENT_TEACH_BY_IDENTIFIER : ${JSON.stringify (data, null, " ")} `)
-        mock_store.mock_store_result = true
+        mock_store.mock_store_is_called = true
       },
       event_teach_by_index(nodeNumber, eventIdentifier, eventIndex, eventVariableIndex, eventVariableValue, reLoad, linkedVariableList){
         let data = {
@@ -50,11 +53,10 @@ let name = "UNIT TEST"
           "linkedVariableList": linkedVariableList
         }
         utils.timeStampedLog(name + `: event_teach_by_index : ${JSON.stringify (data, null, " ") } `)
-        mock_store.mock_store_result = true
+        mock_store.mock_store_is_called = true
       }
     },
-    mock_store_result: false,
-    useEventIndex: false
+    mock_store_is_called: false
   }
 
 
@@ -173,16 +175,17 @@ describe('EventFunctions Test', () => {
     expect(result).toEqual(9)
   });
 
-
   //
   //
-  it('eventTeach_1', () => {
-    mock_store.mock_store_result = false
-    mock_store.useEventIndex = false
-    utils.timeStampedLog(name + `: eventTeach_1`)
+  each([
+  [1, "identifier"],
+  [2, "index"]
+  ]).test('eventTeach test %s %s', async (nodeNumber, expected) => {
+    utils.timeStampedLog(name + `: eventTeach: node ${nodeNumber} expected ${expected}`)
+    mock_store.mock_store_is_called = false
     let result = EventFunctions.eventTeach(
       mock_store,
-      1,                // nodeNumber,
+      nodeNumber,       // nodeNumber,
       "00000002",       // eventIdentifier,
       3,                // eventIndex,
       4,                // eventVariableIndex,
@@ -190,27 +193,32 @@ describe('EventFunctions Test', () => {
       true,             // reload
       {"linkedVariables": {"EV": [ 20, 21] } },       // configuration
     )
-    expect(mock_store.mock_store_result).toEqual(true)
+    expect(mock_store.mock_store_is_called).toEqual(true)
+    expect(result).toEqual(expected)
   });
+
 
   //
   //
-  it('eventTeach_2', () => {
-    mock_store.mock_store_result = false
-    mock_store.useEventIndex = true
-    utils.timeStampedLog(name + `: eventTeach_2`)
-    let result = EventFunctions.eventTeach(
+  each([
+    [1, "00000001", 1],
+    [2, "00000002", 2]
+  ]).test('restoreEventVariables test %s %s', async (nodeNumber, eventIdentifier, eventIndex) => {
+    console.log (`UNIT TEST: BEGIN restoreEventVariables:`)
+    mock_store.mock_store_is_called = false
+    let eventVariables = {"1":100, "2":200, "3":300, "4":400}
+    let result = await EventFunctions.restoreEventVariables(
       mock_store,
-      1,                // nodeNumber,
-      "00000002",       // eventIdentifier,
-      3,                // eventIndex,
-      4,                // eventVariableIndex,
-      5,                // eventVariableValue,
-      true,             // reload
-      {"linkedVariables": {"EV": [ 20, 21] } },       // configuration
-    )
-    expect(mock_store.mock_store_result).toEqual(true)
+      nodeNumber,
+      eventIdentifier,
+      eventIndex,
+      eventVariables)
+    console.log (`UNIT TEST: restoreEventVariables: node ${nodeNumber} result ${result}`)
+    expect(mock_store.mock_store_is_called).toEqual(true)
+    expect(result).toEqual(true)
+    console.log (`UNIT TEST: END restoreEventVariables:`)
   });
+
 
 });
 

@@ -339,7 +339,10 @@ const restoreEventsByIdentifier = async () => {
     utils.timeStampedLog(name + `: restoreEventsByIdentifier: storedEventsNI ${JSON.stringify(storedEventsNI)}` )
     for(const eventIdentifier in storedEventsNI){
       utils.timeStampedLog(name + ': restoreEventsByIdentifier: ' + eventIdentifier)
-      await restoreEventVariables(eventIdentifier)
+      //await restoreEventVariablesByIdentifier(eventIdentifier)
+      let eventVariables = restoredNode.value.storedEventsNI[eventIdentifier].variables
+      let eventIndex = restoredNode.value.storedEventsNI[eventIdentifier].eventIndex
+      await eventFunctions.restoreEventVariables(store, props.nodeNumber, eventIdentifier, eventIndex, eventVariables )
     }
   } catch (err){
     utils.timeStampedLog(name + `: restoreEventsByIdentifier: ${err}`)
@@ -364,29 +367,33 @@ const restoreEventsByIndex = async () => {
     //
     restoreStatus.value = "restoring Events & Variables"
     // node uses indexed events
-    for(const index in restoredNode.value.eventsByIndex){
-      utils.timeStampedLog(name + `: restoreEvents: eventIndex ${index}` )
-      let defaultEventIdentifier = utils.decToHex(props.nodeNumber, 4) + utils.decToHex(index, 4)
-      let newEventIdentifier = restoredNode.value.eventsByIndex[index].eventIdentifier
+    for(const eventIndex in restoredNode.value.eventsByIndex){
+      utils.timeStampedLog(name + `: restoreEvents: eventIndex ${eventIndex}` )
+      let defaultEventIdentifier = utils.decToHex(props.nodeNumber, 4) + utils.decToHex(eventIndex, 4)
+      let newEventIdentifier = restoredNode.value.eventsByIndex[eventIndex].eventIdentifier
       if (newEventIdentifier == defaultEventIdentifier){
         // matches default entry, so don't bother writing back
-        utils.timeStampedLog(name + `: restoreEventsByIndex: ${index} default ${defaultEventIdentifier}` )
+        utils.timeStampedLog(name + `: restoreEventsByIndex: ${eventIndex} default ${defaultEventIdentifier}` )
       } else {
         // modified entry, so need to write it
-        utils.timeStampedLog(name + `: restoreEventsByIndex: ${index} default ${defaultEventIdentifier} new ${newEventIdentifier}` )
+        utils.timeStampedLog(name + `: restoreEventsByIndex: ${eventIndex} default ${defaultEventIdentifier} new ${newEventIdentifier}` )
         // we're just updating the eventIdentifier here, so event variable index & value set to 0
-        store.methods.event_teach_by_index(
+        eventFunctions.eventTeach(
+          store,
           props.nodeNumber,
           newEventIdentifier,
-          index,
+          eventIndex,
           0,
           0,
           false,
         )
       }
-      // does it support event variables? (param 5)
-      if (store.state.nodes[props.nodeNumber].parameters[5] > 0){
-        utils.timeStampedLog(name + `: restoreEventsByIndex: ******* Indexed variables - not supported ******** ` )
+      // does it support any event variables?
+      if (store.getters.node_eventCapacity(props.nodeNumber) > 0){
+        utils.timeStampedLog(name + `: restoreEventsByIndex: Indexed variables ` )
+        // so lets restore the event variables in the backup for this event
+        let eventVariables = restoredNode.value.eventsByIndex[eventIndex].variables
+        await eventFunctions.restoreEventVariables(store, props.nodeNumber, newEventIdentifier, eventIndex, eventVariables )
       }
     }
   } catch (err){
@@ -399,9 +406,10 @@ const restoreEventsByIndex = async () => {
   inProgress.value = false
 }
 
+
 //
 //
-const restoreEventVariables = async (eventIdentifier) => {
+const restoreEventVariablesByIdentifier = async (eventIdentifier) => {
   //utils.timeStampedLog(name + ': restoreEventVariables ' + eventIdentifier)
   try{
     let eventVariables = restoredNode.value.storedEventsNI[eventIdentifier].variables
