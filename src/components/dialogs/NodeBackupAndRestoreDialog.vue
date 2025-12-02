@@ -2,7 +2,7 @@
   <q-dialog v-model="model" persistent>
 
     <!-- min-width: has no effect on q-dialog -->
-    <q-card  style="min-width: 900px" class="q-pa-none q-ma-none">
+    <q-card  style="min-width: 1000px" class="q-pa-none q-ma-none">
 
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
@@ -26,13 +26,13 @@
       </q-card>
 
       <q-separator/>
-      <div style="max-height: 85vh" class="scroll no-margin no-padding">
+      <div style="max-height: 80vh" class="scroll no-margin no-padding">
 
-      <div class="q-pa-md row" style="max-height: 80vh">
+      <div class="q-pa-md row" style="max-height: 70vh">
 
         <q-card flat inline class="q-pa-none q-ma-none" style="width: 500px">
           <div class="text-h6">Select a backup from the list to download or restore</div>
-          <q-card-section style="max-height: 75vh" class="scroll no-margin q-pa-xs">
+          <q-card-section style="max-height: 70vh" class="scroll no-margin q-pa-xs">
 
             <q-table
               class="restore-node-table"
@@ -637,7 +637,7 @@ const clickToggleBackupJSON = () => {
 <style lang="sass">
 .restore-node-table
   /* height or max-height is important */
-  max-height: 65vh
+  max-height: 55vh
 
   .q-table__top,
   .q-table__bottom,
