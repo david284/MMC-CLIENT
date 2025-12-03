@@ -20,7 +20,6 @@
         <div class="text-h6" style="min-width: 200px">view {{ store.state.events_view_mode }} events</div>
         <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
             @click="clickInfo()" />
-
         &nbsp;&nbsp;
         <q-input class="input-box" bg-color="grey-3" style="width: 200px;" filled dense borderless debounce="300" v-model="filter" placeholder="Search">
             <q-icon size="sm" name="search"/>
@@ -59,7 +58,7 @@
       :rows=rows
       :columns="indexed_columns"
       :filter="filter"
-      row-key="eventIdentifier"
+      row-key="eventIndex"
       virtual-scroll
       :rows-per-page-options="[0]"
       :virtual-scroll-sticky-size-start="0"
@@ -67,7 +66,7 @@
       hide-bottom
     >
       <template v-slot:body="props">
-        <q-tr :props="props" :class="selected_event_Identifier==props.row.eventIdentifier?'bg-blue-1':'bg-white'" class="q-my-none q-py-none">
+        <q-tr :props="props" :class="selected_event_index==props.row.eventIndex?'bg-blue-1':'bg-white'" class="q-my-none q-py-none">
           <q-td key="eventIndex" :props="props">{{ props.row.eventIndex }}</q-td>
           <q-td key="eventIdentifier" :props="props">{{ props.row.eventIdentifier }}</q-td>
           <q-td key="eventName" :props="props">{{ props.row.eventName}}</q-td>
