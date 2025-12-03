@@ -602,11 +602,7 @@ const clickRestore = async (row) => {
     )
     await utils.sleep(1000)
     // now lets refresh all events
-    if (store.getters.node_useNENRD(props.nodeNumber)) {
-      eventFunctions.requestAllEventsByIndex(store, props.nodeNumber)
-    } else {
-      store.methods.request_all_node_events(props.nodeNumber)
-    }
+    eventFunctions.requestAllNodeEvents(store, props.nodeNumber)
     restoreStatus.value = "restore complete\n(select a backup to run again)"
   } else {
     const result = $q.notify({

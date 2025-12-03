@@ -312,7 +312,7 @@ const clickClose = async () => {
       )
 
       await sleep(250)
-      store.methods.request_all_node_events(props.nodeNumber)
+      EventFunctions.requestAllNodeEvents(props.nodeNumber)
     } catch (err){
       timeStampedLog(name + ': clickClose ' + err)
     }

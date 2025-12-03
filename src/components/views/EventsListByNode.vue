@@ -746,11 +746,7 @@ const clickInfo = () => {
 //
 const clickRefresh = () => {
   utils.timeStampedLog(name + `: clickRefresh`)
-  if (store.getters.node_useNENRD(nodeNumber) == true){
-    eventFunctions.requestAllEventsByIndex(store, props.nodeNumber)
-  } else {
-    store.methods.request_all_node_events(props.nodeNumber)
-  }
+  eventFunctions.requestAllNodeEvents(store, props.nodeNumber)
   update_rows()
 }
 

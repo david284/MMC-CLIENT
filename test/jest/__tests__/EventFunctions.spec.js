@@ -24,11 +24,20 @@ let name = "UNIT TEST"
       node_useEventIndex(nodeNumber){
         if (nodeNumber == 1){return false}
         if (nodeNumber == 2){return true}
+      },
+      node_useNENRD(nodeNumber){
+        if (nodeNumber == 1){return false}
+        if (nodeNumber == 2){return true}
       }
     },
     "methods":{
+      request_all_node_events(nodeNumber){
+        utils.timeStampedLog(name + `: request_all_node_events: ${nodeNumber}`)
+        mock_store.mock_store_function = "request_all_node_events"
+      },
       request_all_node_events_by_index(nodeNumber, numberOfEvents){
         utils.timeStampedLog(name + `: request_all_node_events_by_index: ${nodeNumber} ${numberOfEvents}`)
+        mock_store.mock_store_function = "request_all_node_events_by_index"
       },
       event_teach_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex, eventVariableValue, reLoad, linkedVariableList){
         let data = {
@@ -56,7 +65,8 @@ let name = "UNIT TEST"
         mock_store.mock_store_is_called = true
       }
     },
-    mock_store_is_called: false
+    mock_store_is_called: false,
+    mock_store_function: undefined
   }
 
 
@@ -217,6 +227,20 @@ describe('EventFunctions Test', () => {
     expect(mock_store.mock_store_is_called).toEqual(true)
     expect(result).toEqual(true)
     console.log (`UNIT TEST: END restoreEventVariables:`)
+  });
+
+  //
+  // requestAllNodeEvents test
+  //
+  each([
+  [1, "request_all_node_events"],           // node 1 should be useNENRD = false
+  [2, "request_all_node_events_by_index"]   // node 2 should be useNENRD = true
+  ]).test('requestAllNodeEvents test %s %s', async (nodeNumber, expected) => {
+    utils.timeStampedLog(name + `: BEGIN requestAllNodeEvents: node ${nodeNumber} expected ${expected}`)
+    mock_store.mock_store_is_called = false
+    let result = EventFunctions.requestAllNodeEvents( mock_store, nodeNumber )
+    expect(mock_store.mock_store_function).toEqual(expected)
+    utils.timeStampedLog(name + `: END requestAllNodeEvents`)
   });
 
 

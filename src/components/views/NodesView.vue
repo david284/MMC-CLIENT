@@ -547,11 +547,7 @@ const clickEvents = async (nodeNumber) => {
   // check if parameters have been fully retrieved
   if(NodeParametersLoaded(store, nodeNumber)){
     await checkNodeVariables(nodeNumber)
-    if (store.getters.node_useNENRD(nodeNumber)) {
-      eventFunctions.requestAllEventsByIndex(store, nodeNumber)
-    } else {
-      store.methods.request_all_node_events(nodeNumber)
-    }
+    eventFunctions.requestAllNodeEvents(store, nodeNumber)
     await select_node_row(nodeNumber)
     if (store.state.nodes_view_mode == 'full'){
       showNodeEventsDialog.value = true

@@ -5,73 +5,6 @@ import {getLinkedEventVariables} from "components/modules/common/commonFunctions
 
 const name = "EventFunctions"
 
-export function  getEventCount (nodeNumber, store) {
-  utils.timeStampedLog (name + " getEventList " + nodeNumber)
-  var count = Object.keys(getEventslist(nodeNumber, store)).length
-  utils.timeStampedLog (name + " getEventList - count " + count)
-  return count
-}
-
-//
-// always call this with the 'await' prefix
-// this ensures the function can use sleep
-// we want to try to ensure the indexes have been updated before we
-// issue any other event read commands
-//
-export async function refreshEventIndexes (store, nodeNumber, eventIdentifier) {
-  // request all node events in advance of loading events as it refreshes the indexes
-  utils.timeStampedLog (name + ": refreshEventIndexes: Node " + nodeNumber)
-  store.methods.request_all_node_events(nodeNumber)
-}
-
-//
-//
-const getEventslist = (nodeNumber, store) => {
-  var eventsList = []
-
-  // do stored events for this node first.....
-  var events = Object.values(store.state.nodes[nodeNumber].storedEventsNI)
-  events.forEach(event => {
-    var eventNodeNumber = parseInt(event.eventIdentifier.substr(0, 4), 16)
-    let output = {}
-    output['eventIdentifier'] = event.eventIdentifier
-//    output['eventName'] = store.getters.event_name(event.eventIdentifier)
-    output['eventIndex'] = event.eventIndex
-    output['nodeNumber'] = eventNodeNumber
-    output['eventNumber'] = parseInt(event.eventIdentifier.substr(4, 4), 16)
-//    output['eventType'] = getEventType(event.eventIndex)
-    output['storedEvent'] = true
-    eventsList.push(output)
-  })
-
-  // now add bus events... but not if already in the list
-  var busEvents = Object.values(store.state.busEvents)
-  busEvents.forEach(busEvent => {
-    if (busEvent.nodeNumber == nodeNumber){
-      // lets see if it's already in the stored events...
-      var alreadyInList = false
-      events.forEach(event => {
-        if(busEvent.id == event.eventIdentifier){
-          alreadyInList = true
-        }
-      })
-      if (alreadyInList == false){
-        let output = {}
-        output['eventIdentifier'] = busEvent.id
-//        output['eventName'] = store.getters.event_name(busEvent.id)
-        output['nodeNumber'] = busEvent.nodeNumber
-        output['eventNumber'] = busEvent.eventNumber
-        output['storedEvent'] = false
-        eventsList.push(output)
-      }
-    }
-  })
-
-  // sort rows by eventIdentifier, not eventIndex
-  eventsList.sort(function(a, b){return (a.eventIdentifier < b.eventIdentifier)? -1 : 1;});
-  utils.timeStampedLog(name + JSON.stringify(eventsList))
-  return eventsList
-}
 
 //
 //
@@ -101,7 +34,8 @@ export function createNewEvent (store, nodeNumber, eventIdentifier) {
 }
 
 //
-// checks if cbus message is an ON or OFF event
+// checks if cbus message is an ON or OFF accessory event
+// and long or short
 //
 export function getEventDetails (cbusMsg) {
   utils.timeStampedLog(name + ': getEventDetails : opcode ' + cbusMsg.opCode)
@@ -147,7 +81,21 @@ export function getEventDetails (cbusMsg) {
 }
 
 //
+// requests all events
+// needs to decide if it's individual by index (NENRD)
+// or single NERD command
+//
+export function requestAllNodeEvents (store, nodeNumber) {
+  if (store.getters.node_useNENRD(nodeNumber)) {
+    requestAllEventsByIndex(store, nodeNumber)
+  } else {
+    store.methods.request_all_node_events(nodeNumber)
+  }
+}
+
+//
 // requests all events using indexes
+// needs to supply the number of events
 //
 export function requestAllEventsByIndex (store, nodeNumber) {
   try{

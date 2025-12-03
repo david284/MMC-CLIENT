@@ -472,7 +472,7 @@ const clickScanNodes = () => {
   utils.timeStampedLog(name + `: clickScanNodes`)
   var nodeNumberList = Object.keys(store.state.nodes)
   nodeNumberList.forEach(nodeNumber => {
-    store.methods.request_all_node_events(nodeNumber)
+    EventFunctions.requestAllNodeEvents(nodeNumber)
   })
 }
 

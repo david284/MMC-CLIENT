@@ -97,7 +97,7 @@ const backupNode = async () => {
 
   // refresh event indexes in advance of needing it
   backupStatus.value = "refresh event variables"
-  await eventFunctions.refreshEventIndexes(store, props.nodeNumber)
+  eventFunctions.requestAllNodeEvents(store, props.nodeNumber)
   let startTime = Date.now()
 
   //
