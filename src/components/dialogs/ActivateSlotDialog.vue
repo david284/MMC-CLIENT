@@ -15,7 +15,7 @@
       </q-card-section>
 
       <q-card-section class="q-pa-none q-ma-none">
-         Click the associatied Event to activate a particular index
+         Click the associated Event to activate a particular index
       </q-card-section>
 
       <q-card style="max-height: 75vh" class="scroll no-margin q-py-none-xs">
