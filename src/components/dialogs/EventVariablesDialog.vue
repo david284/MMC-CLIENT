@@ -7,9 +7,12 @@
           <div class="text-h6">
             Node: {{ store.getters.node_name(props.nodeNumber)}}
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            Event: {{ store.getters.event_name(props.eventIdentifier) }}
+            <span v-if="(store.getters.node_useEventIndex(nodeNumber))">
+              {{ titleText }}: {{ eventIndex }}
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </span>
+            event: {{ store.getters.event_name(props.eventIdentifier) }}
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <!-- Event index: {{ storedEventsIndex }} -->
           </div>
           <template v-slot:action>
             <q-btn v-if="(!numberOfChannels==0)" class="q-mx-xs q-my-none" color="blue" size="sm"
@@ -154,6 +157,7 @@ const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref('')
 const showNodeBackupDialog = ref(false)
 var DialogOpenedTimestamp = Date.now()
+const titleText = ref()
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -191,7 +195,11 @@ watch(model, () => {
       eventVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].eventVariableInformation
       updateChannelNames()
     }
-
+    if (store.getters.node_useSlots(props.nodeNumber)){
+      titleText.value = "slot"
+    } else {
+      titleText.value = "index"
+    }
     //timeStampedLog(name + `: WATCH model: getNumberOfChannels`)
     numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
   }
