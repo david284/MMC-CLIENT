@@ -35,7 +35,6 @@ const checked = ref(false)
 
 const eventVariableValue = computed(() => {
   return EventFunctions.getEventVariable(store, props.nodeNumber, props.eventIdentifier, props.eventIndex, props.eventVariableIndex)
-  //return store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
 })
 
 watch(eventVariableValue, () => {
@@ -76,7 +75,7 @@ const update_checked = () => {
 //console.log(`EventVariableBit ` + eventVariableValue.value)
 
 onMounted(() => {
-  var initial_value = store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
+  var initial_value = EventFunctions.getEventVariable(store, props.nodeNumber, props.eventIdentifier, props.eventIndex, props.eventVariableIndex)
   checked.value = initial_value & bitArray[props.bit] ? true : false
 })
 

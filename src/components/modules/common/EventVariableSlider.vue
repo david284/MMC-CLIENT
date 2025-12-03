@@ -149,11 +149,10 @@ const displayValue = computed(() =>{
 const sliderValue = computed({
   get() {
     return EventFunctions.getEventVariable(store, props.nodeNumber, props.eventIdentifier, props.eventIndex, props.eventVariableIndex)
-    //return ((store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex) & bitMask.value) >> props.startBit)
   },
   set(newValue) {
     // get previous value, as starting point for updated byte value
-    let newByteValue = store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
+    let newByteValue = EventFunctions.getEventVariable(store, props.nodeNumber, props.eventIdentifier, props.eventIndex, props.eventVariableIndex)
 //    console.log(name +`: OldByteValue : ${newByteValue}`)
 //    console.log(name + `: NewValue : ${newValue}`)
     // not sure we need to do a range check as the slider control uses max & min anyway...

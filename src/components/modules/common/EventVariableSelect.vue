@@ -76,7 +76,6 @@ var items = ref();
 
 const variableValue = computed(() =>{
   return EventFunctions.getEventVariable(store, props.nodeNumber, props.eventIdentifier, props.eventIndex, props.eventVariableIndex)
-  //return store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
 })
 
 watch(variableValue, () => {
@@ -110,7 +109,7 @@ const update_variable = (newValue) => {
 
 onMounted(() => {
   //console.log(name + `: onMounted`)
-  let startValue = store.getters.event_variable_by_identifier(props.nodeNumber, props.eventIdentifier, props.eventVariableIndex)
+  let startValue =  EventFunctions.getEventVariable(store, props.nodeNumber, props.eventIdentifier, props.eventIndex, props.eventVariableIndex)
   selectVariable.value = startValue & props.bitMask
   //console.log(name + `: props: ${JSON.stringify(props)}`)
   items.value = []
