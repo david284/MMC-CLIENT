@@ -31,37 +31,47 @@ export function overloadedLabel (nodeNumber, element, store) {
 
 //
 // the 'logic' variable determines what logic case should be evaluated
-// The use of argument3 is depenadant on the specific logic case (as defined by the logic variable)
-// So check the individual logic cases to see if it's necessary, and what it should contain
 //
-export function parseLogicElement (nodeNumber, logic, store, argument3, eventIndex) {
+export function parseLogicElement (nodeNumber, logic, store, eventIdentifier, eventIndex) {
   var result = true
 
   //logic for event variable bits
-  // in this logic case, argument3 is the event identifier
+  // in this logic case, eventIdentifier is the event identifier
   if (logic.evBit != undefined){
-    if (argument3 != undefined){
-      var eventVariables = store.state.nodes[nodeNumber].storedEventsNI[argument3]
-      if (eventVariables){
-        var value = eventVariables.variables[logic.evBit.index]
-        value = (value & 2 ** logic.evBit.bit) >> logic.evBit.bit
-        result = testCondition(value, logic)
+    if (store.getters.node_useEventIndex(nodeNumber)){
+      if (eventIndex != undefined){
+        var eventVariables = store.state.nodes[nodeNumber].eventsByIndex[eventIndex]
+      } else { console.log(`parseLogicElement: ERROR: evBit - event index not defined `) }
+    } else {
+      if (eventIdentifier != undefined){
+        var eventVariables = store.state.nodes[nodeNumber].storedEventsNI[eventIdentifier]
+      } else { console.log(`parseLogicElement: ERROR: evBit - event eventIdentifier not defined `) }
+    }
+    if (eventVariables){
+      var value = eventVariables.variables[logic.evBit.index]
+      value = (value & 2 ** logic.evBit.bit) >> logic.evBit.bit
+      result = testCondition(value, logic)
 //        console.log(`parseLogicElement: evBit result = ` + result)
-      } else { console.log(`parseLogicElement: ERROR: evBit - event variables undefined ` ) }
-    } else { console.log(`parseLogicElement: ERROR: evBit - event index (argument3) not defined `) }
+    } else { console.log(`parseLogicElement: ERROR: evBit - event variables undefined ` ) }
   }
 
   //logic for event variables
-  // in this logic case, argument3 is the event identifier
+  // in this logic case, eventIdentifier is the event identifier
   if (logic.ev != undefined){
-    if (argument3 != undefined){
-      var eventVariables = store.state.nodes[nodeNumber].storedEventsNI[argument3]
-      if (eventVariables){
-        var value = eventVariables.variables[logic.ev]
-        result = testCondition(value, logic)
-//        console.log(`parseLogicElement: ev result = ` + result)
-      } else { console.log(`parseLogicElement: ERROR: ev - event variables undefined ` ) }
-    } else { console.log(`parseLogicElement: ERROR: ev - event index (argument3) not defined `) }
+    if (store.getters.node_useEventIndex(nodeNumber)){
+      if (eventIndex != undefined){
+        var eventVariables = store.state.nodes[nodeNumber].eventsByIndex[eventIndex]
+      } else { console.log(`parseLogicElement: ERROR: evBit - event index not defined `) }
+    } else {
+      if (eventIdentifier != undefined){
+        var eventVariables = store.state.nodes[nodeNumber].storedEventsNI[eventIdentifier]
+      } else { console.log(`parseLogicElement: ERROR: evBit - event eventIdentifier not defined `) }
+    }
+    if (eventVariables){
+      var value = eventVariables.variables[logic.ev]
+      result = testCondition(value, logic)
+      //console.log(`parseLogicElement: ev result = ` + result)
+    } else { console.log(`parseLogicElement: ERROR: ev - event variables undefined ` ) }
   }
 
   //logic for node variable bits
@@ -84,7 +94,7 @@ export function parseLogicElement (nodeNumber, logic, store, argument3, eventInd
   //
   if (logic.JLL != undefined){
     let Logic = new mfdLogic.mdfLogic()
-    result = Logic.evaluate(store, nodeNumber, logic.JLL, argument3, eventIndex)
+    result = Logic.evaluate(store, nodeNumber, logic.JLL, eventIdentifier, eventIndex)
   }
 
 
