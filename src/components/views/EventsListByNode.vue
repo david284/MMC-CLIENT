@@ -27,7 +27,7 @@
         </q-input>
         &nbsp;&nbsp;
         <q-btn v-if="(eventMode=='Event')" class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
-        <q-btn v-if="enableActivateSlot" class="q-mx-xs q-my-none" color="blue" size="sm" label="Activate Slot" @click="clickActivateSlot()"/>
+        <q-btn v-if="enableActivateSlot" class="q-mx-xs q-my-none" color="blue" size="sm" :label=activateTitle @click="clickActivateSlot()"/>
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Advanced" @click="clickAdvanced()"/>
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
         <q-btn square unelevated color="primary" icon="settings">
@@ -240,7 +240,7 @@ const showEventIdentityDialog = ref(false)
 const showSwitchTeachDialog = ref(false)
 const bannerTitle = ref("")
 const eventIdentityDialogText = ref()
-
+const activateTitle = ref()
 
 const props = defineProps({
   nodeNumber: {type: Number, required: true },
@@ -342,8 +342,10 @@ watch(nodesUpdated, () => {
     }
     if (store.getters.node_useSlots(props.nodeNumber) == true){
       bannerTitle.value = "Slots"
+      activateTitle.value = "activate slot"
     } else {
       bannerTitle.value = "Events"
+      activateTitle.value = "activate index"
     }
     update_rows()
     // logical AND

@@ -6,7 +6,7 @@
       <q-card-section class="q-pa-none q-ma-none">
         <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
           <div class="text-h6">
-            Activate Slot
+            Activate {{ titleText }}
           </div>
           <template v-slot:action>
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
@@ -15,7 +15,7 @@
       </q-card-section>
 
       <q-card-section class="q-pa-none q-ma-none">
-         Click the associatied Event to activate a particular slot
+         Click the associatied Event to activate a particular index
       </q-card-section>
 
       <q-card style="max-height: 75vh" class="scroll no-margin q-py-none-xs">
@@ -67,6 +67,7 @@ const name = "ActivateSlotDialog"
 const rows = ref([])
 const selected_event_index = ref()
 const showEventIdentityDialog = ref(false)
+const titleText = ref()
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -74,7 +75,7 @@ const props = defineProps({
 })
 
 const slot_columns = [
-  {name: 'eventIndex', field: 'eventIndex', label: 'Slot', align: 'left', sortable: true},
+  {name: 'eventIndex', field: 'eventIndex', label: 'Index', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
 ]
 
@@ -90,6 +91,11 @@ const model = computed({
 // model changes when Dialog opened & closed
 watch(model, () => {
   //console.log(name + `: WATCH model`)
+  if (store.getters.node_useSlots(props.nodeNumber)){
+    titleText.value = "slot"
+  } else {
+    titleText.value = "index"
+  }
   update_rows()
 })
 
