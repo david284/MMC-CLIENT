@@ -860,7 +860,9 @@ socket.on('LIST_OF_BACKUPS_FOR_ALL_NODES', (data) => {
       let nodeNumber = node.replace(/[^0-9]/g, "")
       if (nodeNumber != undefined){
         utils.timeStampedLog(name + `: RECEIVED LIST_OF_BACKUPS_FOR_ALL_NODES: node ${nodeNumber}`)
-        state.layout.nodeDetails[nodeNumber]['backupList'] = data[node]
+        if (state.layout.nodeDetails[nodeNumber] != undefined){
+          state.layout.nodeDetails[nodeNumber]['backupList'] = data[node]
+        }
       }
     }
     eventBus.emit('LIST_OF_BACKUPS_FOR_ALL_NODES', data)
