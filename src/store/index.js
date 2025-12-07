@@ -941,9 +941,6 @@ socket.on('LIST_OF_BACKUPS_FOR_ALL_NODES', (data) => {
       // extract node number
       let nodeNumber = node.replace(/[^0-9]/g, "")
       if (nodeNumber != undefined){
-        if (nodeNumber in state.layout.nodeDetails === false){
-          setters.addNodeToLayout(nodeNumber)
-        }
         //utils.timeStampedLog(name + `: RECEIVED LIST_OF_BACKUPS_FOR_ALL_NODES: node ${nodeNumber}`)
         if (state.layout.nodeDetails[nodeNumber] != undefined){
           state.layout.nodeDetails[nodeNumber]['backupList'] = data[node]

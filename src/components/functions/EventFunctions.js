@@ -19,7 +19,6 @@ export function createNewEvent (store, nodeNumber, eventIdentifier) {
     nodeEntry.storedEventsNI[eventIdentifier] = {
         "eventIdentifier": eventIdentifier,
         "eventIndex": 1,
-        "node": nodeNumber,
         "variables": {}
     }
     nodeEntry.storedEventsNI[eventIdentifier].variables[0] = nodeEntry.parameters[5]
