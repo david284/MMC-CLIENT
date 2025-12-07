@@ -16,6 +16,7 @@ Version 0.16.0
   added useSlots property
   Amended jsonLogic EV operators to support indexed events
   Amended EventTeachDialog to support indexed events
+  corrected LIST_OF_BACKUPS_FOR_ALL_NODES
 
 Version 0.15.1
   Fixed issue in EventsListByNode not displaying bus events
