@@ -20,16 +20,21 @@ export function importFCU(file, store, modeValue) {
   //console.log(name + `: ImportFCU: ${JSON.stringify(fcuConfig)}` )
   //
   // import nodes
+  // ignore CAN_SW nodes
   try {
     if (Array.isArray(fcuConfig.MergModuleDataSet.userNodes)) {
       fcuConfig.MergModuleDataSet.userNodes.forEach( node => {
-        addNodeName(store, parseInt(node.nodeNum._text), node.nodeName._text, modeValue)
-        addNodeModulename(store, parseInt(node.nodeNum._text), node.moduleName._text, modeValue)
+        if (node.moduleName._text != "CAN_SW"){
+          addNodeName(store, parseInt(node.nodeNum._text), node.nodeName._text, modeValue)
+          addNodeModulename(store, parseInt(node.nodeNum._text), node.moduleName._text, modeValue)
+        }
       })
     } else{
       let node = fcuConfig.MergModuleDataSet.userNodes
-      addNodeName(store, parseInt(node.nodeNum._text), node.nodeName._text, modeValue)
-      addNodeModulename(store, parseInt(node.nodeNum._text), node.moduleName._text, modeValue)
+      if (node.moduleName._text != "CAN_SW"){
+        addNodeName(store, parseInt(node.nodeNum._text), node.nodeName._text, modeValue)
+        addNodeModulename(store, parseInt(node.nodeNum._text), node.moduleName._text, modeValue)
+      }
     }
   } catch (err) {
     console.log(name + ': ImportFCU: userNodes ' + err )
