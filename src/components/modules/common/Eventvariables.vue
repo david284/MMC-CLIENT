@@ -55,6 +55,15 @@
         :options= "item.options"
         :configuration=item>
       </EventVariableSelect>
+      <EventVariableCollectionSelect v-if="(item.type=='EventVariableCollectionSelect') && (isVisible(item))"
+        :nodeNumber="props.nodeNumber"
+        :eventIdentifier = "props.eventIdentifier"
+        :eventVariableIndex= "item.eventVariableIndex"
+        :displayTitle="item.displayTitle"
+        :displaySubTitle="item.displaySubTitle"
+        :options= "item.options"
+        :configuration=item>
+      </EventVariableCollectionSelect>
       <EventVariableSlider v-if="(item.type=='EventVariableSlider') && (isVisible(item))"
         :node-number="props.nodeNumber"
         :eventIdentifier = "props.eventIdentifier"
@@ -89,6 +98,7 @@ import EventVariableBitSingle from "components/modules/common/EventVariableBitSi
 import EventVariableGroup from "components/modules/common/EventVariableGroup"
 import EventVariableNumber from "components/modules/common/EventVariableNumber"
 import EventVariableSelect from "components/modules/common/EventVariableSelect"
+import EventVariableCollectionSelect from "components/modules/common/EventVariableCollectionSelect"
 import EventVariableSlider from "components/modules/common/EventVariableSlider"
 import EventVariableTabs from "components/modules/common/EventVariableTabs"
 import {parseLogicElement} from "components/modules/common/CommonLogicParsers.js";
