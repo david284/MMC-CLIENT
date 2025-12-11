@@ -58,6 +58,7 @@
       <EventVariableCollectionSelect v-if="(item.type=='EventVariableCollectionSelect') && (isVisible(item))"
         :nodeNumber="props.nodeNumber"
         :eventIdentifier = "props.eventIdentifier"
+        :eventIndex = "props.eventIndex"
         :eventVariableIndex= "item.eventVariableIndex"
         :displayTitle="item.displayTitle"
         :displaySubTitle="item.displaySubTitle"
