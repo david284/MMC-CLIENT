@@ -165,6 +165,7 @@
       :eventIndex=selected_event_index
       :eventIdentifier = selected_event_Identifier
       :bannerText = eventIdentityDialogText
+      :showVariables = eventIdentityShowVariables
     />
 
     <eventTeachDialog v-model='showEventTeachDialog'
@@ -240,6 +241,7 @@ const showSwitchTeachDialog = ref(false)
 const bannerTitle = ref("")
 const eventIdentityDialogText = ref()
 const activateTitle = ref()
+const eventIdentityShowVariables = ref(false)
 
 const props = defineProps({
   nodeNumber: {type: Number, required: true },
@@ -612,6 +614,7 @@ store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
         // lets store this against the node in the layout
         // as the index is specific to the node
         store.setters.addIndexedEventToLayoutNode(props.nodeNumber, data.json.data1, selected_event_Identifier.value)
+        eventIdentityShowVariables.value = true
         showEventIdentityDialog.value = true
       }
     } else if (store.getters.node_useSwitchTeach2(props.nodeNumber)){
@@ -621,6 +624,7 @@ store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
         selected_event_index.value = data.json.data1
         selected_event_Identifier.value = data.json.eventIdentifier
         utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : ARON1/AROF1 event - switch ${selected_event_index.value}`)
+        eventIdentityShowVariables.value = true
         showEventIdentityDialog.value = true
       }
     }
@@ -723,6 +727,7 @@ const clickEvent = (eventIndex, eventIdentifier) => {
   selected_event_index.value = eventIndex
   selected_event_Identifier.value = eventIdentifier
   eventIdentityDialogText.value = "index"
+  eventIdentityShowVariables.value = false  // don't show variables
   showEventIdentityDialog.value = true
 }
 
