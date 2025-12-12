@@ -8,6 +8,7 @@ Version 0.17.0
   corrected LIST_OF_BACKUPS_FOR_ALL_NODES
   Now ignores CAN_SW nodes on FCU import
   Added EventVariableCollectionSelect
+  activateSlot now shows variables
 
 Version 0.16.0
   added getListOfTokens & extractMDFTokens
