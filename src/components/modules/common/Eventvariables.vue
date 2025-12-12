@@ -59,7 +59,7 @@
         :nodeNumber="props.nodeNumber"
         :eventIdentifier = "props.eventIdentifier"
         :eventIndex = "props.eventIndex"
-        :eventVariableIndex= "item.eventVariableIndex"
+        :eventVariableCollection= "item.eventVariableCollection"
         :displayTitle="item.displayTitle"
         :displaySubTitle="item.displaySubTitle"
         :options= "item.options"

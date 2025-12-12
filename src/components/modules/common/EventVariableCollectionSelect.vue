@@ -9,7 +9,7 @@
     <q-card-section style="height: 120px" class="no-margin q-py-none">
       <div class="text-h6">{{ displayTitle }}
         <q-card-section style ="min-width: 10px; height: 10px" class="no-margin no-padding float-right text-caption text-weight-thin">
-          &nbsp; {{ eventVariableIndex.toString() }}
+          &nbsp; {{ eventVariableCollection.toString() }}
         </q-card-section>
       </div>
       <div class="text-subtitle2">{{ displaySubTitle }}</div>
@@ -49,7 +49,7 @@ const props = defineProps({
     type: Number,
     required: true
   },
-  "eventVariableIndex": {
+  "eventVariableCollection": {
     type: Object,
     required: true
   },
@@ -86,9 +86,9 @@ const selectVariable = ref()
  * This builds an array of EV values.
  */
 const variableValue = computed(() =>{
-  //console.log(name +`: computed EVs:`+props.eventVariableIndex);
+  //console.log(name +`: computed EVs:`+props.eventVariableCollection);
   const evv = [];
-  for (const evi of props.eventVariableIndex) {
+  for (const evi of props.eventVariableCollection) {
     var v = EventFunctions.getEventVariable(store, props.nodeNumber, props.eventIdentifier, props.eventIndex, evi)
     if (typeof(v) == 'undefined') v = 0;
     evv.push(v);
@@ -130,14 +130,14 @@ watch(variableValue, () => {
  */
 const update_variable = (newValue) => {
 //console.log(name +`: newValue ${newValue.value} NN=${props.nodeNumber} EN=${props.eventIdentifier}`);
-  for (let i=0; i < props.eventVariableIndex.length; i++) {
-    //console.log(name +`: eventVariableIndex ${props.eventVariableIndex[i]} value ${newValue.value[i]}`);
+  for (let i=0; i < props.eventVariableCollection.length; i++) {
+    //console.log(name +`: eventVariableCollection ${props.eventVariableCollection[i]} value ${newValue.value[i]}`);
     EventFunctions.eventTeach(
       store,
       props.nodeNumber,
       props.eventIdentifier,
       props.eventIndex,
-      props.eventVariableIndex[i],
+      props.eventVariableCollection[i],
       newValue.value[i],
       true,
       getLinkedEventVariables(props.configuration)
@@ -152,7 +152,7 @@ const update_variable = (newValue) => {
 onMounted(() => {
   //console.log(name + `: onMounted`);
   selectVariable.value = [];
-  for (const evi of props.eventVariableIndex) {
+  for (const evi of props.eventVariableCollection) {
     var v = EventFunctions.getEventVariable(store, props.nodeNumber, props.eventIdentifier, props.eventIndex, evi)
     if (typeof(v) == 'undefined') v = 0;
     selectVariable.value.push(v);
