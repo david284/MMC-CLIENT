@@ -48,6 +48,7 @@
   <EventIdentityDialog v-model="showEventIdentityDialog"
     :nodeNumber=nodeNumber
     :eventIndex=selected_event_index
+    :showVariables=true
   />
 
 

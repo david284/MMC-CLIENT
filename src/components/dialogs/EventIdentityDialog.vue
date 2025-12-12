@@ -77,7 +77,8 @@ const props = defineProps({
   nodeNumber: {type: Number, required: true },
   eventIndex: {default: 0 },
   eventIdentifier: {default: "0000000" },
-  bannerText: {type: String, default: "index"}
+  bannerText: {type: String, default: "index"},
+  showVariables: {default: false}
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -154,10 +155,13 @@ const clickSaveEvent = async () => {
       entered_event_identifier,
       2,
       props.eventIndex)
-
-    // need to display event variables dialog
-    selected_event_Identifier.value = entered_event_identifier
-    showEventVariablesDialog.value = true
+  }
+  if(store.getters.node_numberOfEventVariables(props.nodeNumber) > 0){
+    if (props.showVariables){
+      // need to display event variables dialog
+      selected_event_Identifier.value = entered_event_identifier
+      showEventVariablesDialog.value = true
+    }
   }
 }
 
