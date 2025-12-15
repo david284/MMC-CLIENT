@@ -1,5 +1,6 @@
 Version 0.17.1
   Added eventIdentityShowVariables to EventsListByNode
+  replaced requestAllEventsByIndex with requestAllEventsByNENRD
 
 Version 0.17.0
   Added node_useSwitchTeach2
