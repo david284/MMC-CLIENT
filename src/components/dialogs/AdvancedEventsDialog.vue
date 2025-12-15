@@ -84,7 +84,7 @@ const clickSendNERD = () => {
 
 const clickSendNENRD = () => {
   utils.timeStampedLog(name + `: clickSendNENRD ` + props.nodeNumber)
-  eventFunctions.requestAllEventsByIndex(store, props.nodeNumber)
+  eventFunctions.requestAllEventsByNENRD(store, props.nodeNumber)
 }
 
 onBeforeMount(() => {

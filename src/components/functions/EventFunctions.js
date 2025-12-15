@@ -86,7 +86,7 @@ export function getEventDetails (cbusMsg) {
 //
 export function requestAllNodeEvents (store, nodeNumber) {
   if (store.getters.node_useNENRD(nodeNumber)) {
-    requestAllEventsByIndex(store, nodeNumber)
+    requestAllEventsByNENRD(store, nodeNumber)
   } else {
     store.methods.request_all_node_events(nodeNumber)
   }
@@ -96,14 +96,14 @@ export function requestAllNodeEvents (store, nodeNumber) {
 // requests all events using indexes
 // needs to supply the number of events
 //
-export function requestAllEventsByIndex (store, nodeNumber) {
+export function requestAllEventsByNENRD (store, nodeNumber) {
   try{
     let numberOfEvents = store.getters.node_numberOfEvents(nodeNumber)
-    utils.timeStampedLog(name + `: requestAllEventsByIndex: nodeNumber ${nodeNumber} count ${numberOfEvents}`)
+    utils.timeStampedLog(name + `: requestAllEventsByNENRD: nodeNumber ${nodeNumber} count ${numberOfEvents}`)
     store.methods.request_all_node_events_by_index(nodeNumber, numberOfEvents)
     return numberOfEvents   // for unit test
   } catch (err){
-    utils.timeStampedLog(name + `: requestAllEventsByIndex ${err}`)
+    utils.timeStampedLog(name + `: requestAllEventsByNENRD ${err}`)
   }
 }
 
@@ -115,7 +115,7 @@ export async function deleteAllEvents (store, nodeNumber){
     store.methods.delete_all_events(nodeNumber)
     await utils.sleep(500)
     if (store.getters.node_useNENRD(nodeNumber) == true){
-      requestAllEventsByIndex(store, nodeNumber)
+      requestAllEventsByNENRD(store, nodeNumber)
     }
   } catch (err){
     utils.timeStampedLog (name + `: deleteAllEvents ${err} `)
@@ -151,7 +151,7 @@ export async function eventDelete (
         )
       }
       await utils.sleep(500)
-      requestAllEventsByIndex(store, nodeNumber)
+      requestAllNodeEvents(store, nodeNumber)
     } else {
       // use eventIdentifier - this does a refresh anyway
       store.methods.remove_event(nodeNumber, eventIdentifier, eventIndex)

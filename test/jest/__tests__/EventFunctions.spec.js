@@ -169,19 +169,19 @@ describe('EventFunctions Test', () => {
 
   //
   //
-  it('requestAllEventsByIndex_1', () => {
-    utils.timeStampedLog(name + `: requestAllEventsByIndex_1`)
-    let result = EventFunctions.requestAllEventsByIndex(mock_store, 1)
-    utils.timeStampedLog(`requestAllEventsByIndex_1 Result: ${JSON.stringify(result)}`)
+  it('requestAllEventsByNENRD_1', () => {
+    utils.timeStampedLog(name + `: requestAllEventsByNENRD_1`)
+    let result = EventFunctions.requestAllEventsByNENRD(mock_store, 1)
+    utils.timeStampedLog(`requestAllEventsByNENRD_1 Result: ${JSON.stringify(result)}`)
     expect(result).toEqual(3)
   });
 
   //
   //
-  it('requestAllEventsByIndex_2', () => {
-    utils.timeStampedLog(name + `: requestAllEventsByIndex`)
-    let result = EventFunctions.requestAllEventsByIndex(mock_store, 2)
-    //utils.timeStampedLog(`getEventDetails ASOF3 Result: ${JSON.stringify(result)}`)
+  it('requestAllEventsByNENRD_2', () => {
+    utils.timeStampedLog(name + `: requestAllEventsByNENRD_2`)
+    let result = EventFunctions.requestAllEventsByNENRD(mock_store, 2)
+    utils.timeStampedLog(`requestAllEventsByNENRD_2 Result: ${JSON.stringify(result)}`)
     expect(result).toEqual(9)
   });
 
