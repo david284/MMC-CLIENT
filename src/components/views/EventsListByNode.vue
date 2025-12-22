@@ -467,6 +467,11 @@ const update_rows_indexed = () => {
         }
       }
     })
+
+    /*
+    // saved indexed events not needed at this point, so commented out
+    // as it's expect that it will be possible to read
+    // all active events from modules
     //
     // now add any 'indexed events' if they aren't already in the list
     if (store.state.layout.nodeDetails[props.nodeNumber].indexedEvents != undefined){
@@ -499,6 +504,8 @@ const update_rows_indexed = () => {
         }
       })
     }
+    */
+
     //
     // finally, sort rows by eventIndex
     rows.value.sort(function(a, b){return (a.eventIndex < b.eventIndex)? -1 : 1;});
