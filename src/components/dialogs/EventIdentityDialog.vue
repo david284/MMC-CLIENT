@@ -20,25 +20,25 @@
           <q-radio v-model="eventType" val='short' label="Short event" @click="clickShortEvent()" />
         </div>
       </q-card-section>
-      <div>
-        <q-card-section>
-          <div>Node Number</div>
-        </q-card-section>
-        <q-card-section class="q-pt-none">
-          <q-input :disable="(eventType == 'short')" dense v-model="newEventNodeNumber" autofocus />
-        </q-card-section>
-        <q-card-section>
-        <div>Event Number</div>
-          </q-card-section>
-          <q-card-section class="q-pt-none">
-            <q-input dense v-model="newEventNumber" autofocus />
-          </q-card-section>
-        </div>
+
+      <q-card-section class="q-pt-none">
+        <div class="text-h6">Node Number</div>
+        <q-input :disable="(eventType == 'short')" dense v-model="newEventNodeNumber" autofocus />
+      </q-card-section>
+      <q-card-section class="q-pt-none">
+        <div class="text-h6">Event Number</div>
+        <q-input dense v-model="newEventNumber" autofocus />
+      </q-card-section>
+
       <div v-if="(eventType != null)">
         <q-card-actions align="right" class="text-primary">
-          <q-btn v-if="(addEventEnabled)" label="Save Event" @click="clickSaveEvent()" v-close-popup/>
+          <q-btn v-if="(addEventEnabled)" label="Save Event" @click="clickSaveEvent()"/>
         </q-card-actions>
       </div>
+
+      <EventNameAndGroup
+        :eventIdentifier=selected_event_Identifier
+      />
 
     </q-card>
 
@@ -60,6 +60,7 @@ import * as utils from "components/functions/utils.js"
 import * as eventFunctions from "components/functions/EventFunctions.js"
 import cbusLib from "cbuslibrary"
 import EventVariablesDialog from "components/dialogs/EventVariablesDialog"
+import EventNameAndGroup from "components/modules/common/EventNameAndGroup"
 
 
 const store = inject('store')
@@ -70,6 +71,7 @@ const addEventEnabled = ref(true)
 const eventType = ref()
 const showEventVariablesDialog = ref(false)
 const selected_event_Identifier = ref()
+const showEventNameAndGroup = ref(false)
 
 
 const props = defineProps({
@@ -104,6 +106,25 @@ watch(model, () => {
 })
 
 
+watch(newEventNodeNumber, () => {
+  updateEventIdentifier()
+})
+
+
+watch(newEventNumber, () => {
+  updateEventIdentifier()
+})
+
+
+const updateEventIdentifier = () => {
+  let entered_event_identifier = parseInt(newEventNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
+  entered_event_identifier += parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
+  selected_event_Identifier.value = entered_event_identifier
+  utils.timeStampedLog(name + `: updateEventIdentifier ${selected_event_Identifier.value}`)
+}
+
+
+
 onBeforeMount(() => {
 })
 
@@ -126,6 +147,7 @@ const clickSaveEvent = async () => {
   if (eventType.value == 'short'){newEventNodeNumber.value = 0}
   let entered_event_identifier = parseInt(newEventNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
   entered_event_identifier += parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
+  selected_event_Identifier.value = entered_event_identifier
 
   utils.timeStampedLog(name + `: clickAddEventIdentifier: entered_event_identifier ${entered_event_identifier} `)
 
@@ -159,10 +181,10 @@ const clickSaveEvent = async () => {
   if(store.getters.node_numberOfEventVariables(props.nodeNumber) > 0){
     if (props.showVariables){
       // need to display event variables dialog
-      selected_event_Identifier.value = entered_event_identifier
       showEventVariablesDialog.value = true
     }
   }
+  showEventNameAndGroup.value = true
 }
 
 //
