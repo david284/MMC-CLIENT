@@ -56,11 +56,9 @@
             />
         </q-card-section>
 
-        <q-card-section class="q-py-xs q-ma-none">
-          <q-card-actions align="right" class=" q-pa-none q-ma-none">
-            <q-btn :disable="!addEventEnabled" color="blue" label="Add Event" @click="clickAddEvent()"/>
-          </q-card-actions>
-        </q-card-section>
+        <q-card-actions align="right" class="q-py-none q-ma-none">
+          <q-btn :disable="!addEventEnabled" color="blue" label="Add Event" @click="clickAddEvent()"/>
+        </q-card-actions>
 
       </div> <!-- end if storedEventsSupported  -->
 

@@ -21,20 +21,34 @@
         </div>
       </q-card-section>
 
-      <q-card-section class="q-pt-none">
+      <q-card-section class="q-pt-none" style="width: 200px;">
         <div class="text-h6">Node Number</div>
-        <q-input :disable="(eventType == 'short')" dense v-model="newEventNodeNumber" autofocus />
+        <q-input
+          :disable="(eventType != 'long')"
+          class="text-h6"
+          dense
+          v-model="newEventNodeNumber"
+          type="number"
+          autofocus
+          :rules="[ val => val <= 65535 || 'Please use value no greater than 65535']"
+        />
       </q-card-section>
-      <q-card-section class="q-pt-none">
+      <q-card-section class="q-pt-none" style="width: 200px;">
         <div class="text-h6">Event Number</div>
-        <q-input dense v-model="newEventNumber" autofocus />
+        <q-input
+          :disable="(eventType == undefined) "
+          class="text-h6"
+          dense
+          v-model="newEventNumber"
+          type="number"
+          autofocus
+          :rules="[ val => val <= 65535 || 'Please use value no greater than 65535']"
+        />
       </q-card-section>
 
-      <div v-if="(eventType != null)">
-        <q-card-actions align="right" class="text-primary">
-          <q-btn v-if="(addEventEnabled)" label="Save Event" @click="clickSaveEvent()"/>
-        </q-card-actions>
-      </div>
+      <q-card-actions align="right" class="q-py-none q-ma-none">
+        <q-btn :disable="!addEventEnabled" color="blue" label="Save Event" @click="clickSaveEvent()"/>
+      </q-card-actions>
 
       <EventNameAndGroup
         :eventIdentifier=selected_event_Identifier
@@ -70,7 +84,7 @@ const store = inject('store')
 const name = "EventIdentityDialog"
 const newEventNodeNumber = ref()
 const newEventNumber = ref()
-const addEventEnabled = ref(true)
+const addEventEnabled = ref(false)
 const eventType = ref()
 const showEventVariablesDialog = ref(false)
 const selected_event_Identifier = ref()
@@ -106,6 +120,7 @@ watch(model, () => {
     } else {
       eventType.value = 'long'
     }
+  addEventEnabled.value = eventFunctions.EventIdentifierIsValid(props.eventIdentifier)
   }
 })
 
@@ -124,6 +139,7 @@ const updateEventIdentifier = () => {
   let entered_event_identifier = parseInt(newEventNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
   entered_event_identifier += parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
   selected_event_Identifier.value = entered_event_identifier
+  addEventEnabled.value = eventFunctions.EventIdentifierIsValid(selected_event_Identifier.value)
   utils.timeStampedLog(name + `: updateEventIdentifier ${selected_event_Identifier.value}`)
 }
 
@@ -134,7 +150,6 @@ onBeforeMount(() => {
 
 onMounted(() => {
 })
-
 
 
 /*/////////////////////////////////////////////////////////////////////////////
