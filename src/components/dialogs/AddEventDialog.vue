@@ -78,23 +78,7 @@
         :newEvent = true
   />
 
-  <q-dialog v-model='showInfo'>
-    <q-card style="min-width: 800px">
-      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
-        <div class="text-h6">Add event information</div>
-        <template v-slot:action>
-          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
-        </template>
-      </q-banner>
-      <q-card-section class="q-pa-xs q-ma-none">
-        <div class="text-h6">Long Events</div>
-        <div class="text-body">An event consumed by this node will need the node number of the event to be consumed, typically the node number of the node that produces the event</div>
-        <div class="text-body">An event produced by this node typically uses the number of this node, but can be set to any other number</div>
-        <div class="text-h6">Short Events</div>
-        <div class="text-body">The node number for adding short events is always 0</div>
-      </q-card-section>
-    </q-card>
-  </q-dialog>
+  <AddEventInfoDialog v-model='showInfo'/>
 
 </template>
 
@@ -114,6 +98,7 @@ import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from 
 import { date, useQuasar, scroll } from 'quasar'
 import * as utils from "components/functions/utils.js"
 import * as eventFunctions from "components/functions/EventFunctions.js"
+import AddEventInfoDialog from "components/dialogs/AddEventInfoDialog"
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import {createNewEvent} from "components/functions/EventFunctions.js"
 import EventNameAndGroup from "components/modules/common/EventNameAndGroup"

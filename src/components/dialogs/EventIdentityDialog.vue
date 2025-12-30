@@ -8,6 +8,7 @@
             Event for {{ bannerText }} {{eventIndex}}
           </div>
           <template v-slot:action>
+            <q-btn color="info" size="sm" label="Info" @click="clickInfo()"/>
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
           </template>
         </q-banner>
@@ -49,6 +50,8 @@
     :eventIndex = eventIndex
   />
 
+  <AddEventInfoDialog v-model='showInfo'/>
+
 </template>
 
 
@@ -58,6 +61,7 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import * as utils from "components/functions/utils.js"
 import * as eventFunctions from "components/functions/EventFunctions.js"
 import cbusLib from "cbuslibrary"
+import AddEventInfoDialog from "components/dialogs/AddEventInfoDialog"
 import EventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import EventNameAndGroup from "components/modules/common/EventNameAndGroup"
 
@@ -71,6 +75,7 @@ const eventType = ref()
 const showEventVariablesDialog = ref(false)
 const selected_event_Identifier = ref()
 const showEventNameAndGroup = ref(false)
+const showInfo = ref(false)
 
 
 const props = defineProps({
@@ -185,6 +190,14 @@ const clickSaveEvent = async () => {
   }
   showEventNameAndGroup.value = true
 }
+
+//
+//
+const clickInfo = () => {
+  utils.timeStampedLog(name + `: clickInfo`)
+  showInfo.value = true
+}
+
 
 //
 //
