@@ -1,6 +1,5 @@
 <template>
   <q-dialog v-model="model">
-
     <!-- min-width: has no effect on q-dialog -->
     <q-card  style="min-width: 400px" class="q-pa-none q-ma-none">
       <q-card-section class="q-pa-none q-ma-none">

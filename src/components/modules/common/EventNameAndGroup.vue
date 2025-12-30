@@ -25,6 +25,7 @@
 <script setup>
 import {inject, ref, onMounted, onUpdated, computed, watch} from "vue";
 import * as utils from "components/functions/utils.js"
+import * as eventFunctions from "components/functions/EventFunctions.js"
 
 const store = inject('store')
 const name = "EventNameAndGroup"
@@ -45,7 +46,7 @@ const eventIdentifierIn = computed(() => {
 //
 watch(eventIdentifierIn, () => {
   try{
-    if (EventIdentifierIsValid() ) {
+    if (eventFunctions.EventIdentifierIsValid(props.eventIdentifier) ) {
       if (store.state.layout.eventDetails[props.eventIdentifier]) {
         newEventName.value = store.state.layout.eventDetails[props.eventIdentifier].name
         newEventGroup.value = store.state.layout.eventDetails[props.eventIdentifier].group
@@ -83,29 +84,13 @@ onMounted(() => {
     newEventName.value = store.state.layout.eventDetails[props.eventIdentifier].name
     newEventGroup.value = store.state.layout.eventDetails[props.eventIdentifier].group
   }
-  if (EventIdentifierIsValid()){
+  if (eventFunctions.EventIdentifierIsValid(props.eventIdentifier)){
     disableInput.value = false
   } else {
     disableInput.value = true
   }
 })
 
-//
-// need to check that the evbentIdentifier passed in is actually valid
-// so that we don't try setting name & group to an invalid event
-//
-const EventIdentifierIsValid = () => {
-    if ((props.eventIdentifier.length != 8)
-    || (props.eventIdentifier.includes("NAN") )
-    || (props.eventIdentifier == "00000000") ) {
-      // ok, not valid
-      utils.timeStampedLog(name + `: EventIdentifierIsValid: false`)
-      return false
-    } else {
-      utils.timeStampedLog(name + `: EventIdentifierIsValid: true`)
-      return true
-    }
-}
 
 /*/////////////////////////////////////////////////////////////////////////////
 

@@ -253,3 +253,32 @@ export async function restoreEventVariables (store, nodeNumber, eventIdentifier,
     return false
   }
 }
+
+//
+// Checks that the eventIdentifier passed in is actually valid
+// so that we don't try setting name & group to an invalid event
+//
+export function EventIdentifierIsValid(eventIdentifier) {
+  try{
+    if (eventIdentifier){
+      if ((eventIdentifier.length != 8)
+      || (eventIdentifier.includes("NAN") )
+      || (eventIdentifier == "00000000") ) {
+        // ok, not valid
+        utils.timeStampedLog(name + `: EventIdentifierIsValid: false`)
+        return false
+      } else {
+        utils.timeStampedLog(name + `: EventIdentifierIsValid: true`)
+        return true
+      }
+    } else {
+        utils.timeStampedLog(name + `: EventIdentifierIsValid: eventIdentifier not valid`)
+      return false
+    }
+  } catch (err) {
+      utils.timeStampedLog(name + `: EventIdentifierIsValid: ${err}`)
+      utils.timeStampedLog(name + `: EventIdentifierIsValid: false`)
+      return false
+  }
+}
+

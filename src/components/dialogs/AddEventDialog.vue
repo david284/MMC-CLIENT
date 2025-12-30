@@ -1,124 +1,72 @@
 <template>
 
   <q-dialog v-model='model' persistent>
-    <q-card style="width: 600px; min-height: 200px;">
-      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
-        <div class="text-h6">
-          {{ title }}
-        </div>
-        <template v-slot:action>
-          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
-        </template>
-      </q-banner>
-
-      <q-card-section>
-        <div class="text-h6" v-if="(storedEventsSupported == false)">
-          This module does not support any stored events
-        </div>
+    <q-card style="min-width: 400px; min-height: 200px;" class="q-pa-none q-ma-none">
+      <q-card-section class="q-pa-none q-ma-none">
+        <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+          <div class="text-h6">
+            {{ title }}
+          </div>
+          <template v-slot:action>
+            <q-btn color="info" size="sm" label="Info" @click="clickInfo()"/>
+            <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+          </template>
+        </q-banner>
       </q-card-section>
+
+      <div v-if="(storedEventsSupported == false)">
+        <q-card-section>
+          <div class="text-h6">
+            This module does not support any stored events
+          </div>
+        </q-card-section>
+      </div>
 
       <div v-if="(storedEventsSupported)">
 
-        <q-card-section class="q-py-none q-ma-xs row">
-            <q-radio dense v-model="eventType" val='long' label="Long event" />
-            <q-space/>
-            <q-radio dense v-model="eventType" val='short' label="Short event" />
-            <q-space/>
-            <q-space/>
+        <q-card-section>
+          <div class="q-gutter-sm">
+            <q-radio v-model="eventType" val='long' label="Long event" @click="clickLongEvent()" />
+            <q-radio v-model="eventType" val='short' label="Short event" @click="clickShortEvent()" />
+          </div>
         </q-card-section>
 
-        <q-card style="min-height: 280px;">
-
-          <q-card-section style="min-height: 80px;" class="q-pa-xs q-ma-none">
-            <q-card-section v-if="(eventType == 'long')" class="q-pa-none q-ma-none">
-              <div class="text-body">Consumed events will need the number of the node that produces the event</div>
-              <div class="text-body">Events produced by this node will need the number of this node, as well as editing the event variables</div>
-            </q-card-section>
-          </q-card-section>
-
-          <q-card class="q-py-none q-ma-none row">
-
-            <q-card style="width: 200px;">
-              <q-card-section v-if="(eventType == 'long')">
-                <q-card-section class="q-pa-none q-ma-none">
-                  <div class="text-h6">Node Number</div>
-                </q-card-section>
-                <q-card-section class="q-px-xs q-ma-none">
-                  <q-input
-                    dense
-                    v-model="newEventNodeNumber"
-                    type="number"
-                    autofocus
-                    :rules="[ val => val <= 65535 || 'Please use value no greater than 65535']"
-                    />
-                </q-card-section>
-                <q-card-section class="q-pa-none q-ma-none">
-                  <div class="text-h6">Event Number</div>
-                </q-card-section>
-                <q-card-section class="q-px-xs q-ma-none">
-                  <q-input
-                    dense
-                    v-model="newEventNumber"
-                    type="number"
-                    :rules="[ val => val <= 65535 || 'Please use value no greater than 65535']"
-                    />
-                </q-card-section>
-              </q-card-section>
-
-              <q-card-section v-if="(eventType == 'short')">
-                <q-card-section class="q-pa-none q-ma-none">
-                  <div class="text-h6">Device Number</div>
-                </q-card-section>
-                <q-card-section class="q-pa-none q-ma-none">
-                  <q-input
-                    dense
-                    v-model="newEventNumber"
-                    type="number"
-                    autofocus
-                    :rules="[ val => val <= 65535 || 'Please use value no greater than 65535']"
-                    />
-                </q-card-section>
-              </q-card-section>
-            </q-card>
-
-            <q-card-section style="width: 200px;">
-              <q-card-actions v-if="(!addEventEnabled && (eventType != null))" align="right" class="q-pa-none q-ma-none">
-                <q-btn :disable="!eventEntered" color="blue" label="check event" v-close-popup @click="clickCheckEvent()"/>
-              </q-card-actions>
-              <q-card-section v-if="(addEventEnabled)" class="q-pa-none q-ma-none">
-                <div class="text-h6" style="color:dodgerblue;">Event OK</div>
-              </q-card-section>
-            </q-card-section>
-
-          </q-card>
-
-        </q-card>
-
-
-        <q-card-section class="q-py-xs q-ma-none">
-          <div class="text-body">Event Name and Event Group are optional values</div>
-          <div class="text-body">Input will be disabled if previously entered</div>
-          <q-card-section class="q-pa-none q-ma-none">
-            <div class="text-h6">Event Name</div>
-          </q-card-section>
-          <q-card-section class="q-pa-none q-ma-none">
-            <q-input :disable="eventAlreadyExistsInLayoutData" dense v-model="newEventName" />
-          </q-card-section>
-          <q-card-section class="q-pa-none q-ma-none">
-            <div class="text-h6">Event Group</div>
-          </q-card-section>
-          <q-card-section class="q-pa-none q-ma-none">
-            <q-input :disable="eventAlreadyExistsInLayoutData" dense v-model="newEventGroup" />
-          </q-card-section>
+        <q-card-section class="q-pt-none" style="width: 200px;">
+          <div class="text-h6">Node Number</div>
+          <q-input
+            :disable="(eventType != 'long')"
+            class="text-h6"
+            dense
+            v-model="newEventNodeNumber"
+            type="number"
+            autofocus
+            :rules="[ val => val <= 65535 || 'Please use value no greater than 65535']"
+          />
+        </q-card-section>
+        <q-card-section class="q-pt-none" style="width: 200px;">
+          <div class="text-h6">Event Number</div>
+          <q-input
+            :disable="(eventType == undefined) "
+            class="text-h6"
+            dense
+            v-model="newEventNumber"
+            type="number"
+            autofocus
+            :rules="[ val => val <= 65535 || 'Please use value no greater than 65535']"
+            />
         </q-card-section>
 
         <q-card-section class="q-py-xs q-ma-none">
           <q-card-actions align="right" class=" q-pa-none q-ma-none">
-            <q-btn :disable="!addEventEnabled" color="blue" label="Add Event" v-close-popup @click="clickAddEvent()"/>
+            <q-btn :disable="!addEventEnabled" color="blue" label="Add Event" @click="clickAddEvent()"/>
           </q-card-actions>
         </q-card-section>
 
       </div> <!-- end if storedEventsSupported  -->
+
+      <EventNameAndGroup
+        :eventIdentifier=selected_event_Identifier
+      />
 
     </q-card>
   </q-dialog>
@@ -126,9 +74,27 @@
 
   <eventVariablesDialog v-model='showEventVariablesDialog'
         :nodeNumber = nodeNumber
-        :eventIdentifier = new_event_Identifier
+        :eventIdentifier = selected_event_Identifier
         :newEvent = true
   />
+
+  <q-dialog v-model='showInfo'>
+    <q-card style="min-width: 800px">
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+        <div class="text-h6">Add event information</div>
+        <template v-slot:action>
+          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+        </template>
+      </q-banner>
+      <q-card-section class="q-pa-xs q-ma-none">
+        <div class="text-h6">Long Events</div>
+        <div class="text-body">An event consumed by this node will need the number of the node that produces the event</div>
+        <div class="text-body">An event produced by this node typically uses the number of this node, but can be set to any other number</div>
+        <div class="text-h6">Short Events</div>
+        <div class="text-body">The node number for adding short events is always 0</div>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 
 </template>
 
@@ -146,26 +112,26 @@
 
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
+import * as utils from "components/functions/utils.js"
+import * as eventFunctions from "components/functions/EventFunctions.js"
 import eventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import {createNewEvent} from "components/functions/EventFunctions.js"
+import EventNameAndGroup from "components/modules/common/EventNameAndGroup"
+
 
 const store = inject('store')
 const $q = useQuasar()
 const name = "AddEventDialog"
 const newEventNodeNumber = ref()
 const newEventNumber = ref()
-const newEventName = ref()
-const newEventGroup = ref()
 const addEventEnabled = ref(false)
 const eventEntered = ref(false)
 const storedEventsSupported = ref(true)
-const eventAlreadyExistsInLayoutData = ref(false)
 const eventType = ref()
 const showEventVariablesDialog = ref(false)
-const new_event_Identifier = ref("")
 const title = ref('')
-
-var entered_event_identifier = null
+const selected_event_Identifier = ref()
+const showInfo = ref(false)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -185,11 +151,17 @@ const model = computed({
 //
 watch (model, () => {
   if (model.value == true){
+    // reset selection
     eventType.value = undefined
+    newEventNumber.value = undefined
+    newEventNodeNumber.value = undefined
     if (props.nodeNumber == undefined){
       title.value = "Add event"
     } else {
       title.value = "Add event for node " + store.getters.node_name(props.nodeNumber)
+    }
+    if(store.getters.node_eventCapacity(props.nodeNumber) == 0) {
+      storedEventsSupported.value == false
     }
   }
 })
@@ -197,55 +169,46 @@ watch (model, () => {
 //
 //
 watch(newEventNumber, () => {
-//  console.log(name + `: WATCH newEventNumber`)
+//  utils.timeStampedLog(name + `: WATCH newEventNumber`)
   // enable add event button if conditions met
   if ((newEventNodeNumber.value != undefined) || (eventType.value == 'short')) {
     eventEntered.value = true
+    addEventEnabled.value = true
   }
+  if(eventType.value == 'short'){
+    newEventNodeNumber.value = 0
+  }
+  updateEventIdentifier()
 })
 
 //
 //
 watch(newEventNodeNumber, () => {
-//  console.log(name + `: WATCH newEventNodeNumber`)
+  utils.timeStampedLog(name + `: WATCH newEventNodeNumber`)
   // enable add event button if conditions met
   if (newEventNumber.value != undefined) {
     eventEntered.value = true
+    addEventEnabled.value = true
   }
+  updateEventIdentifier()
 })
 
-//
-//
-const checkLayoutData = (eventIdentifier) => {
-  if (eventIdentifier){
-    if (eventIdentifier in store.state.layout.eventDetails){
-      eventAlreadyExistsInLayoutData.value = true
-      newEventName.value = store.getters.event_name(eventIdentifier)
-      newEventGroup.value = store.getters.event_group(eventIdentifier)
-    }
-  }
+const updateEventIdentifier = () => {
+  let entered_event_identifier = parseInt(newEventNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
+  entered_event_identifier += parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
+  selected_event_Identifier.value = entered_event_identifier
+  utils.timeStampedLog(name + `: updateEventIdentifier ${selected_event_Identifier.value}`)
 }
 
 //
 //
 onUpdated(() =>{
-//  console.log(name + ` OnUpdated`)
-  // check if this module actually supports any stored events
-  if (props.nodeNumber != undefined){
-    if(store.getters.node_eventCapacity(props.nodeNumber) == 0) {
-      storedEventsSupported.value == false
-    }
-  }
-  newEventNodeNumber.value = null
-  newEventNumber.value = null
-  newEventName.value = null
-  // don't clear the newEventGroup value from last time as we might want to re-use it
-  eventType.value = null
-  addEventEnabled.value = false
-  eventEntered.value = false
-  eventAlreadyExistsInLayoutData.value = false
+  utils.timeStampedLog(name + ` OnUpdated`)
 })
 
+onMounted(() =>{
+  utils.timeStampedLog(name + ` onMounted`)
+})
 /*/////////////////////////////////////////////////////////////////////////////
 
 Click event handlers
@@ -255,67 +218,53 @@ Click event handlers
 //
 //
 const clickAddEvent = () => {
-  console.log(name + `: clickAddEvent ` + newEventNodeNumber.value + ' ' + newEventNumber.value)
-  //
-  // adding an event to an actual node, create a new event & open variables dialog
-  new_event_Identifier.value = entered_event_identifier
-  if (props.nodeNumber != undefined){
-    if (createNewEvent(store, props.nodeNumber, new_event_Identifier.value)){
-      showEventVariablesDialog.value = true
-    }
-  }
-  //
-  // always add it to Layout Data if it doesn't already exist
-  if (!eventAlreadyExistsInLayoutData.value){
-    store.setters.event_name(new_event_Identifier.value, newEventName.value)
-    store.setters.event_group(new_event_Identifier.value, newEventGroup.value)
-  }
-  model.value = false
-}
-
-//
-//
-const clickCheckEvent = () => {
-  console.log(name + `: clickNext `)
-
-  // to program a short event, the node number must be zero
-  if (eventType.value == 'short'){newEventNodeNumber.value = 0}
-  // need to create an eventIdentifier from entered values
-  entered_event_identifier = parseInt(newEventNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
-  entered_event_identifier += parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
-  console.log(name + `: entered_event_identifier: ` + entered_event_identifier)
-
-  checkLayoutData(entered_event_identifier)
-  console.log(name + `: eventAlreadyExistsInLayoutData: ` + eventAlreadyExistsInLayoutData.value)
-
-  // if event already exists,
-  var displayAlreadyExistsWarning = false
+  utils.timeStampedLog(name + `: clickAddEvent ${props.nodeNumber} ${selected_event_Identifier.value}`)
 
   if (props.nodeNumber){
-    if (store.state.nodes[props.nodeNumber].storedEventsNI[entered_event_identifier] != undefined){
-      displayAlreadyExistsWarning = true
-    }
-  } else {
-    if (eventAlreadyExistsInLayoutData.value){
-      displayAlreadyExistsWarning = true
+    if (store.state.nodes[props.nodeNumber].storedEventsNI[selected_event_Identifier.value] != undefined){
+      const result = $q.notify({
+        message: 'This event already exists on this node',
+        timeout: 0,
+        position: 'center',
+        color: 'primary',
+        actions: [
+          { label: 'dismiss', color: 'white', handler: async () => {  } }
+        ]
+      })
+    } else {
+      //
+      // adding an event to an actual node, create a new event & open variables dialog
+      if (props.nodeNumber != undefined){
+        if (createNewEvent(store, props.nodeNumber, selected_event_Identifier.value)){
+          showEventVariablesDialog.value = true
+        }
+      }
     }
   }
-
-  if ( displayAlreadyExistsWarning ){
-    const result = $q.notify({
-      message: 'This event already exists',
-      timeout: 0,
-      position: 'center',
-      color: 'primary',
-      actions: [
-        { label: 'continue', color: 'white', handler: async () => {  } }
-      ]
-    })
-  } else {
-    // doesn't alread exist so enable
-    addEventEnabled.value = true
-  }
+  //model.value = false
 }
+
+//
+//
+const clickInfo = () => {
+  utils.timeStampedLog(name + `: clickInfo`)
+  showInfo.value = true
+}
+
+//
+//
+const clickLongEvent = () => {
+  utils.timeStampedLog(name + `: clickLongEvent`)
+  newEventNodeNumber.value = props.nodeNumber
+}
+
+//
+//
+const clickShortEvent = () => {
+  utils.timeStampedLog(name + `: clickShortEvent`)
+  newEventNodeNumber.value = 0
+}
+
 
 </script>
 
