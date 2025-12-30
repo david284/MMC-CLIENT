@@ -3,6 +3,7 @@ Version 0.17.1
   replaced requestAllEventsByIndex with requestAllEventsByNENRD
   Commented out 'saved indexes' from EventsListByNode
   Updated AddEventDialog
+  Added AddEventInfoDialog
 
 Version 0.17.0
   Added node_useSwitchTeach2
