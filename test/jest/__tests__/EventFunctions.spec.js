@@ -243,6 +243,25 @@ describe('EventFunctions Test', () => {
     utils.timeStampedLog(name + `: END requestAllNodeEvents`)
   });
 
+  //
+  // EventIdentifierIsValid test
+  //
+  each([
+  ["12345678", true],
+  ["1234567", false],
+  [null, false],
+  [undefined, false],
+  ["12340NAN", false],
+  ["0NAN5678", false],
+  ["12340NaN", false],
+  ["0NaN5678", false]
+  ]).test('EventIdentifierIsValid test %s %s', (eventIdentifier, expected) => {
+    utils.timeStampedLog(name + `: BEGIN EventIdentifierIsValid: eventIdentifier ${eventIdentifier} expected ${expected}`)
+    let result = EventFunctions.EventIdentifierIsValid( eventIdentifier )
+    expect(result).toEqual(expected)
+    utils.timeStampedLog(name + `: END EventIdentifierIsValid`)
+  });
+
 
 });
 

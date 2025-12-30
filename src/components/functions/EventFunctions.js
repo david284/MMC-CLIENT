@@ -262,7 +262,7 @@ export function EventIdentifierIsValid(eventIdentifier) {
   try{
     if (eventIdentifier){
       if ((eventIdentifier.length != 8)
-      || (eventIdentifier.includes("NAN") )
+      || (eventIdentifier.toUpperCase().includes("NAN") )
       || (eventIdentifier == "00000000") ) {
         // ok, not valid
         utils.timeStampedLog(name + `: EventIdentifierIsValid: false`)
