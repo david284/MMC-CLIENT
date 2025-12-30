@@ -108,7 +108,6 @@ const name = "AddEventDialog"
 const newEventNodeNumber = ref()
 const newEventNumber = ref()
 const addEventEnabled = ref(false)
-const eventEntered = ref(false)
 const storedEventsSupported = ref(true)
 const eventType = ref()
 const showEventVariablesDialog = ref(false)
@@ -126,9 +125,9 @@ const emit = defineEmits(['update:modelValue'])
 //
 //
 const model = computed({
-      get() { return props.modelValue },
-      set(newValue) { emit('update:modelValue', newValue) }
-    })
+  get() { return props.modelValue },
+  set(newValue) { emit('update:modelValue', newValue) }
+})
 
 //
 //
@@ -152,12 +151,7 @@ watch (model, () => {
 //
 //
 watch(newEventNumber, () => {
-//  utils.timeStampedLog(name + `: WATCH newEventNumber`)
-  // enable add event button if conditions met
-  if ((newEventNodeNumber.value != undefined) || (eventType.value == 'short')) {
-    eventEntered.value = true
-    addEventEnabled.value = true
-  }
+  //utils.timeStampedLog(name + `: WATCH newEventNumber`)
   if(eventType.value == 'short'){
     newEventNodeNumber.value = 0
   }
@@ -167,12 +161,7 @@ watch(newEventNumber, () => {
 //
 //
 watch(newEventNodeNumber, () => {
-  utils.timeStampedLog(name + `: WATCH newEventNodeNumber`)
-  // enable add event button if conditions met
-  if (newEventNumber.value != undefined) {
-    eventEntered.value = true
-    addEventEnabled.value = true
-  }
+  //utils.timeStampedLog(name + `: WATCH newEventNodeNumber`)
   updateEventIdentifier()
 })
 
@@ -180,17 +169,18 @@ const updateEventIdentifier = () => {
   let entered_event_identifier = parseInt(newEventNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
   entered_event_identifier += parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
   selected_event_Identifier.value = entered_event_identifier
+  addEventEnabled.value = eventFunctions.EventIdentifierIsValid(selected_event_Identifier.value)
   utils.timeStampedLog(name + `: updateEventIdentifier ${selected_event_Identifier.value}`)
 }
 
 //
 //
 onUpdated(() =>{
-  utils.timeStampedLog(name + ` OnUpdated`)
+  //utils.timeStampedLog(name + ` OnUpdated`)
 })
 
 onMounted(() =>{
-  utils.timeStampedLog(name + ` onMounted`)
+  //utils.timeStampedLog(name + ` onMounted`)
 })
 /*/////////////////////////////////////////////////////////////////////////////
 
