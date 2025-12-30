@@ -88,7 +88,7 @@
       </q-banner>
       <q-card-section class="q-pa-xs q-ma-none">
         <div class="text-h6">Long Events</div>
-        <div class="text-body">An event consumed by this node will need the number of the node that produces the event</div>
+        <div class="text-body">An event consumed by this node will need the node number of the event to be consumed, typically the node number of the node that produces the event</div>
         <div class="text-body">An event produced by this node typically uses the number of this node, but can be set to any other number</div>
         <div class="text-h6">Short Events</div>
         <div class="text-body">The node number for adding short events is always 0</div>
