@@ -6,7 +6,7 @@
       </div>
       <template v-slot:action>
         <q-btn class="q-mx-xs q-my-none" size="sm" color="blue" label="Toggle"  no-caps @click="clickToggleViewMode()" />
-        <div class="text-h6" style="min-width: 250px">view {{ store.state.events_view_mode }} events</div>
+        <div class="text-h6" style="min-width: 250px">View {{ store.state.events_view_mode }} events</div>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps @click="clickInfo()" />
         &nbsp;&nbsp;&nbsp;&nbsp;
