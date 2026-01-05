@@ -14,6 +14,8 @@
         <div class="text-body">An event produced by this node typically uses the number of this node, but can be set to any other number</div>
         <div class="text-h6">Short Events</div>
         <div class="text-body">The node number for adding short events is always 0</div>
+        <div class="text-h6">Event name and group</div>
+        <div class="text-body">Any changes to the event name and/or group will take effect immediately, even if the event hasn't been added to the node</div>
       </q-card-section>
     </q-card>
   </q-dialog>
