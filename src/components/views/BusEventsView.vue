@@ -69,8 +69,8 @@
               <q-td key="actions" :props="props">
                 <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Name" @click="clickEventName(props.row.eventIdentifier)" no-caps/>
                 <q-btn dense class="q-mx-xs" outline  size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
-                <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.nodeNumber, props.row.eventIdentifier)" no-caps>send ON</q-btn>
-                <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.nodeNumber, props.row.eventIdentifier)" no-caps>send OFF</q-btn>
+                <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.nodeNumber, props.row.eventIdentifier)" no-caps>Send ON</q-btn>
+                <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.nodeNumber, props.row.eventIdentifier)" no-caps>Send OFF</q-btn>
               </q-td>
             </q-tr>
 
@@ -336,7 +336,7 @@ const clickInfo = () => {
 //
 //
 const clickSendOff = (nodeNumber, eventIdentifier) => {
-  utils.timeStampedLog (name + ": send OFF " + nodeNumber + ' ' + eventIdentifier)
+  utils.timeStampedLog (name + ": Send OFF " + nodeNumber + ' ' + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
   var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
   if (eventNodeNumber == 0) {
@@ -349,7 +349,7 @@ const clickSendOff = (nodeNumber, eventIdentifier) => {
 //
 //
 const clickSendOn = (nodeNumber, eventIdentifier) => {
-  utils.timeStampedLog (name + ": send ON " + nodeNumber + ' ' + eventIdentifier)
+  utils.timeStampedLog (name + ": Send ON " + nodeNumber + ' ' + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
   var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
   if (eventNodeNumber == 0) {

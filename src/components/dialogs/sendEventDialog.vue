@@ -81,7 +81,7 @@ onMounted(() => {
 })
 
 const send_on = () => {
-  console.log ("send on " + props.eventIdentifier)
+  console.log ("Send ON " + props.eventIdentifier)
   var eventNodeNumber = parseInt(props.eventIdentifier.slice(0,4), 16)
   if (eventNodeNumber == 0) {
     store.methods.short_on_event(props.sendingNodeNumber, props.eventNumber)
@@ -91,7 +91,7 @@ const send_on = () => {
 }
 
 const send_off = () => {
-  console.log ("send off " + props.eventIdentifier)
+  console.log ("Send OFF " + props.eventIdentifier)
   var eventNodeNumber = parseInt(props.eventIdentifier.slice(0,4), 16)
   if (eventNodeNumber == 0) {
     store.methods.short_off_event(props.sendingNodeNumber, props.eventNumber)
