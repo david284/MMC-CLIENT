@@ -1,6 +1,8 @@
 <template>
   <q-card-section class="no-margin no-padding">
-
+    <div class="q-pa-sm">
+      Name and group changes take effect immediately
+    </div>
     <q-card-section class="q-pt-none">
       <div class="text-h6">Event name</div>
       <q-input dense :disable="disableInput" v-model="newEventName" autofocus/>
@@ -50,11 +52,14 @@ watch(eventIdentifierIn, () => {
       if (store.state.layout.eventDetails[props.eventIdentifier]) {
         newEventName.value = store.state.layout.eventDetails[props.eventIdentifier].name
         newEventGroup.value = store.state.layout.eventDetails[props.eventIdentifier].group
+      }else {
+        newEventName.value = null
+        newEventGroup.value = null
       }
       disableInput.value = false
     } else {
-      newEventName.value = ""
-      newEventGroup.value = ""
+      newEventName.value = null
+      newEventGroup.value = null
       disableInput.value = true
     }
     utils.timeStampedLog(name + `: eventIdentifierIn ${props.eventIdentifier}`)
@@ -83,6 +88,9 @@ onMounted(() => {
   if (store.state.layout.eventDetails[props.eventIdentifier]) {
     newEventName.value = store.state.layout.eventDetails[props.eventIdentifier].name
     newEventGroup.value = store.state.layout.eventDetails[props.eventIdentifier].group
+  } else {
+    newEventName.value = null
+    newEventGroup.value = null
   }
   if (eventFunctions.EventIdentifierIsValid(props.eventIdentifier)){
     disableInput.value = false
