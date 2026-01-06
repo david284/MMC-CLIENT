@@ -34,7 +34,7 @@ const state = reactive({
   nodeDescriptors: {},
   nodes: {},
   nodeTraffic: [],
-  nodes_view_mode: 'split',
+  nodes_view_mode: 'Split',
   notification_settings:{backup_notify: true, networkConnection_notify: true, serialConnection_notify: true},
   restoredData: {},
   server: { "nodes":{} },

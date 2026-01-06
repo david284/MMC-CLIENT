@@ -17,7 +17,7 @@
         </q-btn>
         <q-btn class="q-mx-xs  q-my-none" size="sm" color="blue" label="Toggle"  no-caps
           @click="clickToggleViewMode()" />
-        <div class="text-h6" style="min-width: 200px">view {{ store.state.events_view_mode }} events</div>
+        <div class="text-h6" style="min-width: 200px">View {{ store.state.events_view_mode }} events</div>
         <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
             @click="clickInfo()" />
         &nbsp;&nbsp;
@@ -82,8 +82,8 @@
               v-if="props.row.editVariables"
               @click="clickVariables(props.row.eventIdentifier, props.row.eventIndex)" no-caps/>
             <q-btn dense class="q-mx-xs" outline size="md" color="primary" label="Teach" @click="clickTeach(props.row.eventIdentifier)" no-caps/>
-            <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.eventIdentifier)" no-caps>send ON</q-btn>
-            <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.eventIdentifier)" no-caps>send OFF</q-btn>
+            <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOn(props.row.eventIdentifier)" no-caps>Send ON</q-btn>
+            <q-btn dense class="q-mx-xs" outline size="md" color="positive" @click="clickSendOff(props.row.eventIdentifier)" no-caps>Send OFF</q-btn>
             <q-btn dense class="q-mx-xs" outline size="md" color="negative" label="Delete" @click="clickDelete(props.row.eventIdentifier, props.row.eventIndex)" no-caps/>
           </q-td>
         </q-tr>
@@ -766,7 +766,7 @@ const clickRefresh = () => {
 //
 //
 const clickSendOff = (eventIdentifier) => {
-  utils.timeStampedLog (name + ": send OFF " + eventIdentifier)
+  utils.timeStampedLog (name + ": Send OFF " + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
   var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
   if (eventNodeNumber == 0) {
@@ -779,7 +779,7 @@ const clickSendOff = (eventIdentifier) => {
 //
 //
 const clickSendOn = (eventIdentifier) => {
-  utils.timeStampedLog (name + ": send ON " + eventIdentifier)
+  utils.timeStampedLog (name + ": Send ON " + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
   var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
   if (eventNodeNumber == 0) {

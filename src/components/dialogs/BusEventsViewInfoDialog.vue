@@ -48,7 +48,7 @@
 
         <q-card class="q-pa-sm">
           <div class="text_body1">
-              In this view, the 'send ON/OFF' feature will use the Source Node Number of the row selected, thus replicating the event from that specific node 
+              In this view, the 'Send ON/OFF' feature will use the Source Node Number of the row selected, thus replicating the event from that specific node 
           </div>
         </q-card>
 

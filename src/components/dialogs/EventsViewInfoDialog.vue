@@ -59,7 +59,7 @@
 
         <q-card class="q-pa-sm">
           <div class="text_body1">
-              In this view, for short events, the 'send ON/OFF' feature will use '0' as the Sending Node Number, so not linked to any particular node
+              In this view, for short events, the 'Send ON/OFF' feature will use '0' as the Sending Node Number, so not linked to any particular node
           </div>
         </q-card>
 
