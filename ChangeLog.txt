@@ -1,3 +1,6 @@
+Version
+  Make some texts look nicer. (PR #9)
+
 Version 0.17.1
   Added eventIdentityShowVariables to EventsListByNode
   replaced requestAllEventsByIndex with requestAllEventsByNENRD
