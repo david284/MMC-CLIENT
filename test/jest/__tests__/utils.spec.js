@@ -91,17 +91,28 @@ describe('utils Test', () => {
       test4: "${channel4",
       test5: "${CHANNEL9} red",
       test6: "${CHANNEL2} red",
-      test6: "${palette2} red",
-      test7: "text"
+      test7: "${palette2} red",
+      test8: "${palette99}",
+      test9: "${palette6}",
+      test10: "text"
     }
-    let result = utils.extractMDFTokens(jsonObj)
+    // create some existing layout data so we can check it's not overwritten
+    var layoutTokens = {
+      "palette": {
+        "maxNumber": "12",
+        "entries": {
+          "1": {
+            "name": "dark grey"
+          }
+        }
+      }
+    }
+    let result = utils.extractMDFTokens(jsonObj, layoutTokens)
     console.log('unit_test: extractMDFTokens: result = ' + JSON.stringify(result, null, " "))
-    expect(result[0].name).toMatch("channel");
-    expect(result[0].number).toMatch("9");
-    expect(result[1].name).toMatch("channel ****");
-    expect(result[1].number).toMatch("3");
-    expect(result[2].name).toMatch("palette");
-    expect(result[2].number).toMatch("2");
+    expect(result["channel"].maxNumber).toMatch("9");
+    expect(result["channel ****"].maxNumber).toMatch("3");
+    expect(result["palette"].maxNumber).toMatch("99");
+    expect(result["palette"].entries[1].name).toMatch("dark grey");
     console.log("unit_test: extractMDFTokens test END")
   });
 

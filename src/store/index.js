@@ -786,6 +786,24 @@ const getters = {
       utils.timeStampedLog(name + `: getters: node_parameter_value: ${err}`)
     }
     return result
+  },
+  node_token_name(nodeNumber, token, tokenNumber){
+    let name = ""
+    try{
+      // first look for a user supplied channel name, this will overr-ride any default
+      name = state.layout.nodeDetails[nodeNumber].tokens[token].entries[tokenNumber].name
+      if (name.length == 0){ throw "no user token name" }
+    } catch {
+      try {
+        // attempt to get supplied default name from the MDF, this will over-ride system default
+        name = state.nodeDescriptors[nodeNumber][token][tokenNumber].name
+        if (name.length == 0){ throw "no MDF token name" }
+      } catch {
+        // otherwise supply system default name
+        name = token+tokenNumber
+      }
+    }
+    return name
   }
 
 }
@@ -900,6 +918,25 @@ const setters = {
       setters.addNodeToLayout(nodeNumber)
     }
     state.layout.nodeDetails[nodeNumber].name = nodeName
+    state.update_layout_needed = true
+  },
+  node_token_name(nodeNumber, token, tokenNumber, name){
+    if (typeof tokenNumber === 'string'){
+      tokenNumber = parseInt(tokenNumber)
+    }
+    if (nodeNumber in state.layout.nodeDetails === false){
+      setters.addNodeToLayout(nodeNumber)
+    }
+    if (state.layout.nodeDetails[nodeNumber].tokens == undefined){
+      state.layout.nodeDetails[nodeNumber].tokens = {[token]:{entries:{}}}
+    }
+    if (state.layout.nodeDetails[nodeNumber].tokens[token] == undefined){
+      state.layout.nodeDetails[nodeNumber].tokens[token] = {entries:{}}
+    }
+    if (state.layout.nodeDetails[nodeNumber].tokens[token].entries == undefined){
+      state.layout.nodeDetails[nodeNumber].tokens[token].entries = {}
+    }
+    state.layout.nodeDetails[nodeNumber].tokens[token].entries[tokenNumber] = {name: name}
     state.update_layout_needed = true
   }
 }
@@ -1130,8 +1167,9 @@ socket.on("NODE_DESCRIPTOR", (data) => {
     utils.timeStampedLog(name + `: RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber + ' ' + moduleDescriptor.moduleDescriptorFilename)
     state.nodeDescriptors[nodeNumber] = moduleDescriptor
     const store = {"state":state}
+    delete state.layout.nodeDetails[nodeNumber].tokenList // depricated object
     state.layout.nodeDetails[nodeNumber].numberOfChannels = getNumberOfChannels(store, nodeNumber)
-    state.layout.nodeDetails[nodeNumber].tokenList = utils.extractMDFTokens(moduleDescriptor)
+    state.layout.nodeDetails[nodeNumber].tokens = utils.extractMDFTokens(moduleDescriptor, state.layout.nodeDetails[nodeNumber].tokens)
     state.MDFupdateTimestamp = Date.now()
   } catch (err) {
     utils.timeStampedLog(name + `: RECEIVED NODE_DESCRIPTOR: ${err} `)

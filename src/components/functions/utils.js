@@ -49,34 +49,43 @@ export function getListOfTokens(jsonString){
 //
 // get all tokens from json
 // then reduce to single instance of each token, plus highest number
+// And then check if we already have this token in the layout data
+// so that we don't overwrite any existing data
 //
-export function extractMDFTokens(jsonObj) {
+export function extractMDFTokens(moduleDescriptor, layoutNodeTokens) {
   try {
     //timeStampedLog(name + `: extractMDFTokens:`)
-    if (jsonObj != undefined){
-      timeStampedLog(name + `: extractMDFTokens: module: ${jsonObj.moduleName}`)
-      let jsonString = JSON.stringify(jsonObj)
-      //timeStampedLog(name + `: extractMDFTokens: jsonString ${jsonString}`)
+    if (moduleDescriptor != undefined){
+      timeStampedLog(name + `: extractMDFTokens: module: ${moduleDescriptor.moduleName}`)
+      let jsonString = JSON.stringify(moduleDescriptor)
       let allTokens = getListOfTokens(jsonString)
       //
+      // layoutNodeTokens has the following structure
+      //    "palette ": {
+      //      "maxNumber": "12",
+      //      "entries": {
+      //        "1": {
+      //          "name": "dark grey"
+      //        ...
       //
-
-      let list = []
+      if (layoutNodeTokens == undefined){ layoutNodeTokens ={} }
+      // now go through all the tokens we've found in the MDF to see if we need to update anything
       allTokens.forEach(token => {
         let tokenName = token.replace(/[0-9,$,{,}]/g, '')
+        tokenName = tokenName.toLowerCase()
         let tokenNumber = token.replace(/[^0-9]/g, "")
         //timeStampedLog(name + `: extractMDFTokens: tokenName ${tokenName} tokenNumber ${tokenNumber}`)
-        let i = list.find(({ name }) => name === tokenName.toLowerCase());
         //timeStampedLog(name + `: extractMDFTokens: find ${JSON.stringify(i)}`)
-        if (i == undefined) {
-          list.push({name:tokenName.toLowerCase(), number: tokenNumber})
+        //timeStampedLog(name + `: extractMDFTokens: check ${JSON.stringify(layoutNodeTokens)} `)
+        if (layoutNodeTokens[tokenName] == undefined) {
+          layoutNodeTokens[tokenName] = {maxNumber: tokenNumber}
+          //timeStampedLog(name + `: extractMDFTokens: add ${tokenName} ${tokenNumber}`)
         } else {
-          if (tokenNumber > i.number) {i.number = tokenNumber}
+          // token exists, but need to check if we need to update the maxNumber for this token
+          if (tokenNumber > layoutNodeTokens[tokenName].maxNumber) {layoutNodeTokens[tokenName].maxNumber = tokenNumber}
         }
       })
-      //timeStampedLog(name + `: extractMDFTokens: list ${JSON.stringify(list)}`)
-      return list
-      //
+      return layoutNodeTokens
     }
   } catch (err) {
     timeStampedLog(name + `: extractMDFTokens: ${err}`)

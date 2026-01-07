@@ -11,10 +11,10 @@
           <q-btn v-if="(store.state.develop)" class="q-mx-xs q-my-none" color="blue" size="sm" label="names">
             <q-menu auto-close>
               <q-list style="min-width: 100px">
-                <div v-for="item in store.state.layout.nodeDetails[nodeNumber].tokenList" :key="item">
+                <div v-for="(item, name) in store.state.layout.nodeDetails[nodeNumber].tokens" :key="item">
                   <q-item>
-                    <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" :label=item.name
-                      @click="clickNamesMenu(item.name, item.number)" />
+                    <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" :label=name
+                      @click="clickNamesMenu(name, item.maxNumber)" />
                   </q-item>
                 </div>
               </q-list>
@@ -93,6 +93,12 @@
     :numberOfChannels=numberOfChannels
   />
 
+  <NodeTokenNamesDialog v-model="showNodeTokenNamesDialog"
+    :nodeNumber=nodeNumber
+    :numberOfItems=numberOfTokenInstances
+    :token = selectedToken
+  />
+
   <WaitingOnBusTrafficDialog v-model='showWaitOnBusTrafficDialog'
     callingModule = "Node Variables"
     message = "Waiting on Node Variables"
@@ -122,6 +128,7 @@ import NodeRawVariables from "components/modules/common/NodeRawVariables"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
 import { replaceChannelTokens } from "../functions/utils";
 import { getNumberOfChannels } from "../functions/NodeFunctions";
+import NodeTokenNamesDialog from "./NodeTokenNamesDialog.vue"
 
 const $q = useQuasar()
 const { registerTimeout } = useTimeout()
@@ -140,6 +147,9 @@ const processedNodeVariableDescriptor = ref()
 const numberOfChannels=ref(0)
 const showNodeBackupDialog = ref(false)
 var DialogOpenedTimestamp = Date.now()
+const showNodeTokenNamesDialog = ref(false)
+const selectedToken = ref(null)
+const numberOfTokenInstances = ref(0)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -317,18 +327,13 @@ const clickManageModuleDescriptor = () => {
   showMDFDialog.value = true
 }
 
-
 //
 //
 const clickNamesMenu = (name, number) => {
   timeStampedLog(name + `: clickNamesMenu ${name} ${number}`)
-  if (name.toLowerCase().includes("channel")){
-    if (number > 0){
-      timeStampedLog(name + `: clickNamesMenu ${name} enabled`)
-      showNodeChannelNamesDialog.value = true
-    }
-  }
-
+  selectedToken.value = name
+  numberOfTokenInstances.value = number
+  showNodeTokenNamesDialog.value = true
 }
 
 //
