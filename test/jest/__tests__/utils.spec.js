@@ -91,7 +91,7 @@ describe('utils Test', () => {
       test4: "${channel4",
       test5: "${CHANNEL9} red",
       test6: "${CHANNEL2} red",
-      test7: "${palette2} red",
+      test7: "${palette 2} red",
       test8: "${palette99}",
       test9: "${palette6}",
       test10: "text"

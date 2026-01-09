@@ -788,22 +788,25 @@ const getters = {
     return result
   },
   node_token_name(nodeNumber, token, tokenNumber){
-    let name = ""
+    //utils.timeStampedLog(name + `: getters1: node_token_name: ${token} ${tokenNumber}`)
+    //utils.timeStampedLog(name + `: getters2: node_token_name: token: ${JSON.stringify(state.nodeDescriptors[nodeNumber].tokens)}`)
+    let tokenName = ""
     try{
-      // first look for a user supplied channel name, this will overr-ride any default
-      name = state.layout.nodeDetails[nodeNumber].tokens[token].entries[tokenNumber].name
-      if (name.length == 0){ throw "no user token name" }
+      // first look for a user supplied tokenName, this will overr-ride any default
+      tokenName = state.layout.nodeDetails[nodeNumber].tokens[token].entries[tokenNumber].name
+      if (tokenName.length == 0){ throw "no user token name" }
     } catch {
       try {
-        // attempt to get supplied default name from the MDF, this will over-ride system default
-        name = state.nodeDescriptors[nodeNumber][token][tokenNumber].name
-        if (name.length == 0){ throw "no MDF token name" }
-      } catch {
+        // attempt to get supplied default tokenName from the MDF, this will over-ride system default
+        tokenName = state.nodeDescriptors[nodeNumber].tokens[token][tokenNumber]
+        if (tokenName.length == 0){ throw "no MDF token name" }
+      } catch (err) {
+        utils.timeStampedLog(name + `: getters: node_token_name: ${err}`)
         // otherwise supply system default name
-        name = token+tokenNumber
+        tokenName = token+tokenNumber
       }
     }
-    return name
+    return tokenName
   }
 
 }

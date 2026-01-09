@@ -61,7 +61,7 @@ export function extractMDFTokens(moduleDescriptor, layoutNodeTokens) {
       let allTokens = getListOfTokens(jsonString)
       //
       // layoutNodeTokens has the following structure
-      //    "palette ": {
+      //    "palette": {
       //      "maxNumber": "12",
       //      "entries": {
       //        "1": {
@@ -72,11 +72,8 @@ export function extractMDFTokens(moduleDescriptor, layoutNodeTokens) {
       // now go through all the tokens we've found in the MDF to see if we need to update anything
       allTokens.forEach(token => {
         let tokenName = token.replace(/[0-9,$,{,}]/g, '')
-        tokenName = tokenName.toLowerCase()
+        tokenName = tokenName.toLowerCase().trim()
         let tokenNumber = token.replace(/[^0-9]/g, "")
-        //timeStampedLog(name + `: extractMDFTokens: tokenName ${tokenName} tokenNumber ${tokenNumber}`)
-        //timeStampedLog(name + `: extractMDFTokens: find ${JSON.stringify(i)}`)
-        //timeStampedLog(name + `: extractMDFTokens: check ${JSON.stringify(layoutNodeTokens)} `)
         if (layoutNodeTokens[tokenName] == undefined) {
           layoutNodeTokens[tokenName] = {maxNumber: tokenNumber}
           //timeStampedLog(name + `: extractMDFTokens: add ${tokenName} ${tokenNumber}`)
