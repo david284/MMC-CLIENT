@@ -10,7 +10,9 @@ import * as utils from "components/functions/utils.js"
         "000A0002": {}
       },
       "nodeDetails":{
-        "10": {"name": "CANACC5-10", "moduleName": "CANACC5"},
+        "10": {"name": "CANACC5-10",
+          "moduleName": "CANACC5"
+        },
         "20": {}
       }
     }},
@@ -37,6 +39,9 @@ import * as utils from "components/functions/utils.js"
       },
       node_name(nodeNumber, nodeName){
         node_name_updated = true
+      },
+      node_token_name(nodeNumber, token, channelNumber, name){
+        console.log(`unit_test: setter: node_token_name: ${nodeNumber} ${token} ${channelNumber} ${name}`)
       }
     }
   }
@@ -96,23 +101,11 @@ describe('utils Test', () => {
       test9: "${palette6}",
       test10: "text"
     }
-    // create some existing layout data so we can check it's not overwritten
-    var layoutTokens = {
-      "palette": {
-        "maxNumber": "12",
-        "entries": {
-          "1": {
-            "name": "dark grey"
-          }
-        }
-      }
-    }
-    let result = utils.extractMDFTokens(jsonObj, layoutTokens)
+    let result = utils.extractMDFTokens(jsonObj)
     console.log('unit_test: extractMDFTokens: result = ' + JSON.stringify(result, null, " "))
     expect(result["channel"].maxNumber).toMatch("9");
     expect(result["channel ****"].maxNumber).toMatch("3");
     expect(result["palette"].maxNumber).toMatch("99");
-    expect(result["palette"].entries[1].name).toMatch("dark grey");
     console.log("unit_test: extractMDFTokens test END")
   });
 
@@ -137,6 +130,29 @@ describe('utils Test', () => {
     expect(result[3]).toMatch("${palette2}");
     console.log("unit_test: getListOfTokens test END")
   });
+
+  //
+  //
+  it('convertUserChannelNames test', () => {
+    console.log("unit_test: convertUserChannelNames test BEGIN")
+    store.state.layout.nodeDetails[10].channels = {
+      "2": {
+        "channelName": "user_channel_2"
+      }
+    }
+    store.state.layout.nodeDetails[20].channels = {
+      "4": {
+        "channelName": "user_channel_4"
+      }
+    }
+    console.log(`unit_test: convertUserChannelNames: ${JSON.stringify(store, null, "  ")}`)
+    var result = utils.convertUserChannelNames(store.state, store.setters)
+    console.log(`unit_test: convertUserChannelNames: ${JSON.stringify(store, null, "  ")}`)
+
+    console.log("unit_test: convertUserChannelNames test END")
+
+  })
+
 
 
 });

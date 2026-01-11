@@ -793,12 +793,12 @@ const getters = {
     let tokenName = ""
     try{
       // first look for a user supplied tokenName, this will overr-ride any default
-      tokenName = state.layout.nodeDetails[nodeNumber].tokens[token].entries[tokenNumber].name
+      tokenName = state.layout.nodeDetails[nodeNumber].tokens[token].userNames[tokenNumber]
       if (tokenName.length == 0){ throw "no user token name" }
     } catch {
       try {
         // attempt to get supplied default tokenName from the MDF, this will over-ride system default
-        tokenName = state.nodeDescriptors[nodeNumber].tokens[token][tokenNumber]
+        tokenName = state.nodeDescriptors[nodeNumber].tokens[token].defaultNames[tokenNumber]
         if (tokenName.length == 0){ throw "no MDF token name" }
       } catch (err) {
         utils.timeStampedLog(name + `: getters: node_token_name: ${err}`)
@@ -924,6 +924,7 @@ const setters = {
     state.update_layout_needed = true
   },
   node_token_name(nodeNumber, token, tokenNumber, name){
+    utils.timeStampedLog(name + `: setters: node_token_name: ${token} ${tokenNumber} ${name}`)
     if (typeof tokenNumber === 'string'){
       tokenNumber = parseInt(tokenNumber)
     }
@@ -931,15 +932,15 @@ const setters = {
       setters.addNodeToLayout(nodeNumber)
     }
     if (state.layout.nodeDetails[nodeNumber].tokens == undefined){
-      state.layout.nodeDetails[nodeNumber].tokens = {[token]:{entries:{}}}
+      state.layout.nodeDetails[nodeNumber].tokens = {[token]:{userNames:{}}}
     }
     if (state.layout.nodeDetails[nodeNumber].tokens[token] == undefined){
-      state.layout.nodeDetails[nodeNumber].tokens[token] = {entries:{}}
+      state.layout.nodeDetails[nodeNumber].tokens[token] = {userNames:{}}
     }
-    if (state.layout.nodeDetails[nodeNumber].tokens[token].entries == undefined){
-      state.layout.nodeDetails[nodeNumber].tokens[token].entries = {}
+    if (state.layout.nodeDetails[nodeNumber].tokens[token].userNames == undefined){
+      state.layout.nodeDetails[nodeNumber].tokens[token].userNames = {}
     }
-    state.layout.nodeDetails[nodeNumber].tokens[token].entries[tokenNumber] = {name: name}
+    state.layout.nodeDetails[nodeNumber].tokens[token].userNames[tokenNumber] = name
     state.update_layout_needed = true
   }
 }
@@ -1072,6 +1073,7 @@ socket.on('LAYOUT_DATA', (data) => {
   state.layout = data;
   // put a fresh timestamp on it
   state.layout['updateTimestamp'] = Date.now()
+  utils.convertUserChannelNames(state, setters)
   eventBus.emit('LAYOUT_DATA', state.layout)
 })
 
@@ -1172,7 +1174,8 @@ socket.on("NODE_DESCRIPTOR", (data) => {
     const store = {"state":state}
     delete state.layout.nodeDetails[nodeNumber].tokenList // depricated object
     state.layout.nodeDetails[nodeNumber].numberOfChannels = getNumberOfChannels(store, nodeNumber)
-    state.layout.nodeDetails[nodeNumber].tokens = utils.extractMDFTokens(moduleDescriptor, state.layout.nodeDetails[nodeNumber].tokens)
+    utils.extractMDFTokens(moduleDescriptor)
+    //state.nodeDescriptors[nodeNumber].tokens = utils.extractMDFTokens(moduleDescriptor)
     state.MDFupdateTimestamp = Date.now()
   } catch (err) {
     utils.timeStampedLog(name + `: RECEIVED NODE_DESCRIPTOR: ${err} `)

@@ -11,7 +11,7 @@
           <q-btn v-if="(store.state.develop)" class="q-mx-xs q-my-none" color="blue" size="sm" label="names">
             <q-menu auto-close>
               <q-list style="min-width: 100px">
-                <div v-for="(item, name) in store.state.layout.nodeDetails[nodeNumber].tokens" :key="item">
+                <div v-for="(item, name) in store.state.nodeDescriptors[nodeNumber].tokens" :key="item">
                   <q-item>
                     <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" :label=name
                       @click="clickNamesMenu(name, item.maxNumber)" />

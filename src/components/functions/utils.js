@@ -52,7 +52,7 @@ export function getListOfTokens(jsonString){
 // And then check if we already have this token in the layout data
 // so that we don't overwrite any existing data
 //
-export function extractMDFTokens(moduleDescriptor, layoutNodeTokens) {
+export function extractMDFTokens(moduleDescriptor) {
   try {
     //timeStampedLog(name + `: extractMDFTokens:`)
     if (moduleDescriptor != undefined){
@@ -68,21 +68,26 @@ export function extractMDFTokens(moduleDescriptor, layoutNodeTokens) {
       //          "name": "dark grey"
       //        ...
       //
-      if (layoutNodeTokens == undefined){ layoutNodeTokens ={} }
+//      if (layoutNodeTokens == undefined){ layoutNodeTokens ={} }
+      if (moduleDescriptor.tokens == undefined){moduleDescriptor.tokens={}}
       // now go through all the tokens we've found in the MDF to see if we need to update anything
       allTokens.forEach(token => {
         let tokenName = token.replace(/[0-9,$,{,}]/g, '')
         tokenName = tokenName.toLowerCase().trim()
         let tokenNumber = token.replace(/[^0-9]/g, "")
-        if (layoutNodeTokens[tokenName] == undefined) {
-          layoutNodeTokens[tokenName] = {maxNumber: tokenNumber}
-          //timeStampedLog(name + `: extractMDFTokens: add ${tokenName} ${tokenNumber}`)
+        if (moduleDescriptor.tokens[tokenName] == undefined) {
+          moduleDescriptor.tokens[tokenName] = {maxNumber: tokenNumber}
+          timeStampedLog(name + `: extractMDFTokens: add ${tokenName} ${tokenNumber}`)
         } else {
+          timeStampedLog(name + `: extractMDFTokens: ${tokenName} already exists`)
           // token exists, but need to check if we need to update the maxNumber for this token
-          if (tokenNumber > layoutNodeTokens[tokenName].maxNumber) {layoutNodeTokens[tokenName].maxNumber = tokenNumber}
+          if(moduleDescriptor.tokens[tokenName].maxNumber == undefined){
+            moduleDescriptor.tokens[tokenName].maxNumber = tokenNumber}
+          if (tokenNumber > moduleDescriptor.tokens[tokenName].maxNumber) {
+            moduleDescriptor.tokens[tokenName].maxNumber = tokenNumber}
         }
       })
-      return layoutNodeTokens
+      return moduleDescriptor.tokens
     }
   } catch (err) {
     timeStampedLog(name + `: extractMDFTokens: ${err}`)
@@ -219,3 +224,31 @@ export function setVisibleColumn (visibleColumns, columnName, enableState) {
   //timeStampedLog(name + `: setVisibleColumn: ${visibleColumns}`)
 }
 
+
+//
+export function convertUserChannelNames(state, setters){
+  try{
+    var nodeList = Object.keys(state.layout.nodeDetails)
+    for (const nodeNumber of nodeList){
+      //timeStampedLog(name + `: convertUserChannelNames: ${JSON.stringify(store)}`)
+      if (state.layout.nodeDetails[nodeNumber].channels){
+        var channelList = Object.keys(state.layout.nodeDetails[nodeNumber].channels)
+        for (const channelNumber of channelList){
+          //timeStampedLog(name + `: convertUserChannelNames: channelNumber: ${JSON.stringify(channelNumber)}`)
+          setters.node_token_name(
+            nodeNumber,
+            "channel",
+            channelNumber,
+            state.layout.nodeDetails[nodeNumber].channels[channelNumber].channelName
+          )
+        }
+        // now remove old channels structure
+        delete state.layout.nodeDetails[nodeNumber].channels
+      }
+      // remove tokenList if present (no longer used)
+      delete state.layout.nodeDetails[nodeNumber].tokenList
+    }
+  } catch(error){
+    timeStampedLog(name + `: convertUserChannelNames: ${error}`)
+  }
+}
