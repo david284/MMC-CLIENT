@@ -1,5 +1,6 @@
 Version
   Make some texts look nicer. (PR #9)
+  Fixed MFD dialog not listing file without timestamp
 
 Version 0.17.1
   Added eventIdentityShowVariables to EventsListByNode
