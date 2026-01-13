@@ -57,11 +57,12 @@ describe('utils Test', () => {
   //
   each([
     [0, ""],
-    [0x7FFFFFFFFF, "5497/55/81 38:87"],
-    [202411092105, "2024/11/09 21:05"]
+    ["549755813887", "5497/55/81 38:87"],
+    ["202411092105", "2024/11/09 21:05"],
+    [undefined, ""]
   ]).test('TimeStampToText test %s %s', (a, expected) => {
     console.log(`TimeStampToText test BEGIN ${a} ${expected}`)
-    let result = utils.TimeStampToText(a.toString())
+    let result = utils.TimeStampToText(a)
     console.log('TimeStampToText: result = ' + result)
     expect(result).toBe(expected)
     console.log("TimeStampToText test END")
