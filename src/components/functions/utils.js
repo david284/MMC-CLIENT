@@ -226,26 +226,28 @@ export function setVisibleColumn (visibleColumns, columnName, enableState) {
   //timeStampedLog(name + `: setVisibleColumn: ${visibleColumns}`)
 }
 
-
 //
+// convert old style user channel names to new style tokens
+// only does this if new style tokens don't yet exist
+// ensures it's a one-off operation
 export function convertUserChannelNames(state, setters){
   try{
     var nodeList = Object.keys(state.layout.nodeDetails)
     for (const nodeNumber of nodeList){
-      //timeStampedLog(name + `: convertUserChannelNames: ${JSON.stringify(store)}`)
-      if (state.layout.nodeDetails[nodeNumber].channels){
-        var channelList = Object.keys(state.layout.nodeDetails[nodeNumber].channels)
-        for (const channelNumber of channelList){
-          //timeStampedLog(name + `: convertUserChannelNames: channelNumber: ${JSON.stringify(channelNumber)}`)
-          setters.node_token_name(
-            nodeNumber,
-            "channel",
-            channelNumber,
-            state.layout.nodeDetails[nodeNumber].channels[channelNumber].channelName
-          )
+      if (state.layout.nodeDetails[nodeNumber].tokens == undefined){
+        //timeStampedLog(name + `: convertUserChannelNames: ${JSON.stringify(store)}`)
+        if (state.layout.nodeDetails[nodeNumber].channels){
+          var channelList = Object.keys(state.layout.nodeDetails[nodeNumber].channels)
+          for (const channelNumber of channelList){
+            //timeStampedLog(name + `: convertUserChannelNames: channelNumber: ${JSON.stringify(channelNumber)}`)
+            setters.node_token_name(
+              nodeNumber,
+              "channel",
+              channelNumber,
+              state.layout.nodeDetails[nodeNumber].channels[channelNumber].channelName
+            )
+          }
         }
-        // now remove old channels structure
-        delete state.layout.nodeDetails[nodeNumber].channels
       }
       // remove tokenList if present (no longer used)
       delete state.layout.nodeDetails[nodeNumber].tokenList

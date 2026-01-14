@@ -4,18 +4,20 @@ import each from 'jest-each';
 import * as utils from "components/functions/utils.js"
 
   let store = {
-    "state":{"layout":{
-      "eventDetails":{
-        "000A0001": {"name": "event #1"},
-        "000A0002": {}
-      },
-      "nodeDetails":{
-        "10": {"name": "CANACC5-10",
-          "moduleName": "CANACC5"
+    "state":{"layout":
+      {
+        "eventDetails":{
+          "000A0001": {"name": "event #1"},
+          "000A0002": {}
         },
-        "20": {}
+        "nodeDetails":{
+          10: {"name": "CANACC5-10",
+            "moduleName": "CANACC5"
+          },
+          20: {}
+        }
       }
-    }},
+    },
     "getters":{
       node_channel_name(nodeNumber, channelNumber){
         console.log(`unit_test: node_channel_name ${nodeNumber} ${channelNumber}`)
@@ -42,6 +44,9 @@ import * as utils from "components/functions/utils.js"
       },
       node_token_name(nodeNumber, token, channelNumber, name){
         console.log(`unit_test: setter: node_token_name: ${nodeNumber} ${token} ${channelNumber} ${name}`)
+        if (store.state.layout.nodeDetails[nodeNumber].tokens == undefined) {store.state.layout.nodeDetails[nodeNumber].tokens = {}}
+        if (store.state.layout.nodeDetails[nodeNumber].tokens[token] == undefined) {store.state.layout.nodeDetails[nodeNumber].tokens[token] = {}}
+        store.state.layout.nodeDetails[nodeNumber].tokens[token][channelNumber]={"name":name}
       }
     }
   }
@@ -133,23 +138,28 @@ describe('utils Test', () => {
   });
 
   //
-  //
-  it('convertUserChannelNames test', () => {
+  // 2nd run should be ignored, as conversion is a one-shot process
+  // so add another channel on 2nd run, and check it's not converted
+  each([
+    [1],
+    [2]
+  ]).test('convertUserChannelNames test - run %s', (run) => {
     console.log("unit_test: convertUserChannelNames test BEGIN")
     store.state.layout.nodeDetails[10].channels = {
       "2": {
         "channelName": "user_channel_2"
       }
     }
-    store.state.layout.nodeDetails[20].channels = {
-      "4": {
+    if (run == 2){
+      store.state.layout.nodeDetails[10].channels[4] = {
         "channelName": "user_channel_4"
       }
     }
     console.log(`unit_test: convertUserChannelNames: ${JSON.stringify(store, null, "  ")}`)
     var result = utils.convertUserChannelNames(store.state, store.setters)
     console.log(`unit_test: convertUserChannelNames: ${JSON.stringify(store, null, "  ")}`)
-
+    expect(store.state.layout.nodeDetails[10].tokens["channel"][2].name).toMatch("user_channel_2")
+    expect(store.state.layout.nodeDetails[10].tokens["channel"][4]).toBeUndefined
     console.log("unit_test: convertUserChannelNames test END")
 
   })
