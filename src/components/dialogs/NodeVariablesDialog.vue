@@ -118,7 +118,6 @@ import NodeBackupDialog from "components/dialogs/NodeBackupDialog"
 import NodeVariables from "components/modules/common/NodeVariables"
 import NodeRawVariables from "components/modules/common/NodeRawVariables"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
-import { getNumberOfChannels } from "../functions/NodeFunctions";
 import NodeTokenNamesDialog from "./NodeTokenNamesDialog.vue"
 
 const $q = useQuasar()
@@ -134,7 +133,6 @@ const showRawVariables = ref(false)
 const showVariableDescriptor = ref(false)
 const nodeVariableInformation = ref()
 const processedNodeVariableDescriptor = ref()
-const numberOfChannels=ref(0)
 const showNodeBackupDialog = ref(false)
 var DialogOpenedTimestamp = Date.now()
 const showNodeTokenNamesDialog = ref(false)
@@ -172,8 +170,6 @@ watch(model, async () => {
       nodeVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation
       updateDescriptorNames()
     }
-    //utils.timeStampedLog(name + `: WATCH model: getNumberOfChannels`)
-    numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
   }
 })
 
@@ -236,8 +232,6 @@ watch(variablesDescriptor, () => {
       updateDescriptorNames()
       //processedNodeVariableDescriptor.value = utils.replaceDescriptorTokens(store, variablesDescriptor.value, props.nodeNumber)
     }
-    //utils.timeStampedLog(name + `: WATCH variablesDescriptor: getNumberOfChannels`)
-    numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
   }
 })
 

@@ -15,8 +15,18 @@
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           </div>
           <template v-slot:action>
-            <q-btn v-if="(!numberOfChannels==0)" class="q-mx-xs q-my-none" color="blue" size="sm"
-              label="channel names" @click="clickChannelNames()"/>
+            <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="names">
+              <q-menu auto-close>
+                <q-list style="min-width: 100px">
+                  <div v-for="(item, name) in store.state.nodeDescriptors[nodeNumber].tokens" :key="item">
+                    <q-item>
+                      <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" :label=name
+                        @click="clickNamesMenu(name, item.maxNumber)" />
+                    </q-item>
+                  </div>
+                </q-list>
+              </q-menu>
+            </q-btn>
             <q-btn color="cyan-1" size="sm" text-color="black"
               label="update Module Descriptor" @click="clickUpdateModuleDescriptor()"/>
             <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
@@ -104,9 +114,11 @@
     :nodeNumber = nodeNumber
   />
 
-  <NodeChannelNamesDialog v-model="showNodeChannelNamesDialog"
+
+  <NodeTokenNamesDialog v-model="showNodeTokenNamesDialog"
     :nodeNumber=nodeNumber
-    :numberOfChannels=numberOfChannels
+    :numberOfItems=numberOfTokenInstances
+    :token = selectedToken
   />
 
   <WaitingOnBusTrafficDialog v-model='showWaitingOnBusTrafficDialog'
@@ -126,17 +138,14 @@ import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from 
 import { useQuasar, useTimeout } from 'quasar'
 import * as EventFunctions from "components/functions/EventFunctions.js"
 import {getLinkedEventVariables} from "components/modules/common/commonFunctions.js"
-import {sleep} from "components/functions/utils.js"
-import {timeStampedLog} from "components/functions/utils.js"
+import * as utils from "components/functions/utils.js"
 import {createNewEvent} from "components/functions/EventFunctions.js"
 import EventVariables from "components/modules/common/EventVariables"
 import EventRawVariables from "components/modules/common/EventRawVariables"
 import NodeBackupDialog from "components/dialogs/NodeBackupDialog"
-import NodeChannelNamesDialog from "./NodeChannelNamesDialog.vue";
+import NodeTokenNamesDialog from "./NodeTokenNamesDialog.vue"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
 import MDFDialog from "components/dialogs/MDFDialog";
-import { replaceChannelTokens } from "../functions/utils";
-import { getNumberOfChannels } from "../functions/NodeFunctions";
 
 const $q = useQuasar()
 const { registerTimeout } = useTimeout()
@@ -145,19 +154,20 @@ const name = "EventVariablesDialog"
 
 const showWaitingOnBusTrafficDialog = ref(false)
 const showRawVariables = ref(false)
-const showNodeChannelNamesDialog = ref(false)
 const showDescriptorWarning = ref(false)
 const showMDFDialog = ref(false)
 const showVariablesDescriptor = ref(false)
 const showStoredEventJSON = ref(false)
 const eventVariableInformation = ref()
 const processedEventVariableDescriptor = ref()
-const numberOfChannels=ref(0)
 const WaitingOnBusTrafficDialogReturn = ref('')
 const WaitingOnBusTrafficMessage = ref('')
 const showNodeBackupDialog = ref(false)
 var DialogOpenedTimestamp = Date.now()
 const titleText = ref()
+const showNodeTokenNamesDialog = ref(false)
+const selectedToken = ref(null)
+const numberOfTokenInstances = ref(0)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -180,7 +190,7 @@ const model = computed({
 //
 //
 watch(model, () => {
-  //timeStampedLog(name + `: WATCH model`)
+  //utils.timeStampedLog(name + `: WATCH model`)
   if (model.value == true){
     DialogOpenedTimestamp = Date.now()
     showVariablesDescriptor.value = false
@@ -193,26 +203,24 @@ watch(model, () => {
       showDescriptorWarning.value = false
       processedEventVariableDescriptor.value = variablesDescriptor.value
       eventVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].eventVariableInformation
-      updateChannelNames()
+      updateDescriptorNames()
     }
     if (store.getters.node_useSlots(props.nodeNumber)){
       titleText.value = "slot"
     } else {
       titleText.value = "index"
     }
-    //timeStampedLog(name + `: WATCH model: getNumberOfChannels`)
-    numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
   }
 })
 
-// update the channel names in the variables descriptor object
+// update the tokens in the variables descriptor object
 // as it's a blocking call, need to allow this dialog to be displayed first
 // so show a notification, then set a timeout before calling function
 //
-const updateChannelNames = () => {
-  // create notification to alert that channel names function is going to be called
-  let channelNamesNotfication = $q.notify({
-    message: 'updating channel names',
+const updateDescriptorNames = () => {
+  // create notification to alert that descriptor token replacement function is going to be called
+  let descriptorNamesNotfication = $q.notify({
+    message: 'updating names',
     caption: 'please wait....',
     timeout: 0,
     position: 'center',
@@ -220,21 +228,20 @@ const updateChannelNames = () => {
   })
   // set a timed callback
   registerTimeout(() => {
-    //timeStampedLog(name + `: registerTimeout`)
-    processedEventVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
-    channelNamesNotfication()
+    //utils.timeStampedLog(name + `: registerTimeout`)
+    processedEventVariableDescriptor.value = utils.replaceDescriptorTokens(store, variablesDescriptor.value, props.nodeNumber)
+    descriptorNamesNotfication()
   }, 300) // arbitrary timeout of 300mS seems to allow dialog to be displayed
 }
 
-
 //
 //
-watch(showNodeChannelNamesDialog, () => {
-  //timeStampedLog(name + `: WATCH showNodeChannelNamesDialog: ${showNodeChannelNamesDialog.value}`)
+watch(showNodeTokenNamesDialog, () => {
   try{
-    if (showNodeChannelNamesDialog.value == false) {
-      updateChannelNames()
+    if (showNodeTokenNamesDialog.value == false) {
+      updateDescriptorNames()
     }
+    //processedNodeVariableDescriptor.value = utils.replaceDescriptorTokens(store, variablesDescriptor.value, props.nodeNumber)
   } catch {}
 })
 
@@ -251,7 +258,7 @@ const variablesDescriptor = computed(() =>{
 //
 //
 watch(variablesDescriptor, () => {
-  //timeStampedLog(name + `: WATCH variablesDescriptor`)
+  //utils.timeStampedLog(name + `: WATCH variablesDescriptor`)
   if (model.value == true){     // don't bother if not displayed
     if (variablesDescriptor.value == undefined){
       showRawVariables.value = true
@@ -259,10 +266,8 @@ watch(variablesDescriptor, () => {
     } else {
       showDescriptorWarning.value = false
       eventVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].eventVariableInformation
-      updateChannelNames()
+      updateDescriptorNames()
     }
-    //timeStampedLog(name + `: WATCH variablesDescriptor: getNumberOfChannels`)
-    numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
   }
 })
 
@@ -270,7 +275,7 @@ watch(variablesDescriptor, () => {
 //
 //
 onUpdated(async () => {
-  //timeStampedLog(name + ': onUpdated:')
+  //utils.timeStampedLog(name + ': onUpdated:')
 })
 
 /*/////////////////////////////////////////////////////////////////////////////
@@ -281,23 +286,14 @@ Click event handlers
 
 //
 //
-const clickChannelNames = () => {
-  timeStampedLog(name + `: clickChannelNames: number ${numberOfChannels.value}`)
-  if (numberOfChannels.value > 0){
-    showNodeChannelNamesDialog.value = true
-  }
-}
-
-//
-//
 const clickClose = async () => {
-  timeStampedLog(name +`: clickClose: node ` + props.nodeNumber + ' eventIdentifier ' + props.eventIdentifier)
+  utils.timeStampedLog(name +`: clickClose: node ` + props.nodeNumber + ' eventIdentifier ' + props.eventIdentifier)
   if (props.newEvent){
     // An event will be created, if it doesn't exist, when any variable is changed (EVLRN)
     // if it's a new event, in the case no variable was changed, ensure an event was created
     // by setting EV1
     // and then refresh all events as index may have changed
-    timeStampedLog(name +`: clickClose: new event`)
+    utils.timeStampedLog(name +`: clickClose: new event`)
     try {
       var nodeEntry = store.state.nodes[props.nodeNumber]
       try{
@@ -319,15 +315,15 @@ const clickClose = async () => {
         getLinkedEventVariables(variablesDescriptor.value)
       )
 
-      await sleep(250)
+      await utils.sleep(250)
       EventFunctions.requestAllNodeEvents(props.nodeNumber)
     } catch (err){
-      timeStampedLog(name + ': clickClose ' + err)
+      utils.timeStampedLog(name + ': clickClose ' + err)
     }
   }
   // now look at backup notification
   let nodeModified = ((store.state.nodes[props.nodeNumber].NodeModifiedTimestamp-DialogOpenedTimestamp) > 0) ? true : false
-  //timeStampedLog(name + `: clickClose: nodeModified ${nodeModified}`)
+  //utils.timeStampedLog(name + `: clickClose: nodeModified ${nodeModified}`)
   if((nodeModified) && (store.state.notification_settings.backup_notify)) {
     $q.notify({
       message: 'Variables changed - Do you want to take a backup?',
@@ -350,8 +346,17 @@ const clickClose = async () => {
 
 //
 //
+const clickNamesMenu = (name, number) => {
+  utils.timeStampedLog(name + `: clickNamesMenu ${name} ${number}`)
+  selectedToken.value = name
+  numberOfTokenInstances.value = number
+  showNodeTokenNamesDialog.value = true
+}
+
+//
+//
 const clickRefresh = async () => {
-  timeStampedLog(name + `: clickRefresh`)
+  utils.timeStampedLog(name + `: clickRefresh`)
   store.methods.request_event_variables_by_identifier(props.nodeNumber, props.eventIdentifier)
   WaitingOnBusTrafficMessage.value = "Loading Event Variables"
   showWaitingOnBusTrafficDialog.value = true
@@ -360,28 +365,28 @@ const clickRefresh = async () => {
 //
 //
 const clickToggleVariablesDescriptor = () => {
-  timeStampedLog(name + `: clickToggleVariablesDescriptor`)
+  utils.timeStampedLog(name + `: clickToggleVariablesDescriptor`)
   showVariablesDescriptor.value = showVariablesDescriptor.value ? false : true
 }
 
 //
 //
 const clickToggleRaw = () => {
-  timeStampedLog(name + `: clickToggleRaw`)
+  utils.timeStampedLog(name + `: clickToggleRaw`)
   showRawVariables.value = showRawVariables.value ? false : true
 }
 
 //
 //
 const clickToggleStoredEvent = () => {
-  timeStampedLog(name + `: clickToggleStoredEvents:`)
+  utils.timeStampedLog(name + `: clickToggleStoredEvents:`)
   showStoredEventJSON.value = showStoredEventJSON.value ? false : true
 }
 
 //
 //
 const clickUpdateModuleDescriptor = () => {
-  timeStampedLog(name + `: clickUpdateModuleDescriptor`)
+  utils.timeStampedLog(name + `: clickUpdateModuleDescriptor`)
   store.methods.request_matching_mdf_list(props.nodeNumber, "USER")
   store.methods.request_matching_mdf_list(props.nodeNumber, "SYSTEM")
   showMDFDialog.value = true
