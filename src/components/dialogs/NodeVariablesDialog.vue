@@ -8,20 +8,18 @@
             Node Variables for node :  {{ store.getters.node_name(nodeNumber) }}
           </div>
           <template v-slot:action>
-          <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="names">
-            <q-menu auto-close>
-              <q-list style="min-width: 100px">
-                <div v-for="(item, name) in store.state.nodeDescriptors[nodeNumber].tokens" :key="item">
-                  <q-item>
-                    <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" :label=name
-                      @click="clickNamesMenu(name, item.maxNumber)" />
-                  </q-item>
-                </div>
-              </q-list>
-            </q-menu>
-          </q-btn>
-            <q-btn v-if="(!numberOfChannels==0)" class="q-mx-xs q-my-none" color="blue" size="sm"
-              label="channel names" @click="clickChannelNames()"/>
+            <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="names">
+              <q-menu auto-close>
+                <q-list style="min-width: 100px">
+                  <div v-for="(item, name) in store.state.nodeDescriptors[nodeNumber].tokens" :key="item">
+                    <q-item>
+                      <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" :label=name
+                        @click="clickNamesMenu(name, item.maxNumber)" />
+                    </q-item>
+                  </div>
+                </q-list>
+              </q-menu>
+            </q-btn>
             <q-btn color="cyan-1" size="sm" text-color="black"
               label="manage Module Descriptor" @click="clickManageModuleDescriptor()"/>
             <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Refresh" @click="clickRefresh()"/>
@@ -88,11 +86,6 @@
     :nodeNumber = nodeNumber
   />
 
-  <NodeChannelNamesDialog v-model="showNodeChannelNamesDialog"
-    :nodeNumber=nodeNumber
-    :numberOfChannels=numberOfChannels
-  />
-
   <NodeTokenNamesDialog v-model="showNodeTokenNamesDialog"
     :nodeNumber=nodeNumber
     :numberOfItems=numberOfTokenInstances
@@ -122,7 +115,6 @@ import { useQuasar, useTimeout } from 'quasar'
 import * as utils from "components/functions/utils.js"
 import MDFDialog from "components/dialogs/MDFDialog";
 import NodeBackupDialog from "components/dialogs/NodeBackupDialog"
-import NodeChannelNamesDialog from "./NodeChannelNamesDialog.vue";
 import NodeVariables from "components/modules/common/NodeVariables"
 import NodeRawVariables from "components/modules/common/NodeRawVariables"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
@@ -136,7 +128,6 @@ const name = "NodevariablesDialog"
 
 const showDescriptorWarning = ref(false)
 const showMDFDialog = ref(false)
-const showNodeChannelNamesDialog = ref(false)
 const showWaitOnBusTrafficDialog = ref(false)
 const showNoVariablesMessage = ref(false)
 const showRawVariables = ref(false)
@@ -179,20 +170,20 @@ watch(model, async () => {
       showRawVariables.value = false
       showDescriptorWarning.value = false
       nodeVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation
-      updateChannelNames()
+      updateDescriptorNames()
     }
     //utils.timeStampedLog(name + `: WATCH model: getNumberOfChannels`)
     numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
   }
 })
 
-// update the channel names in the variables descriptor object
+// update the tokens in the variables descriptor object
 // as it's a blocking call, need to allow this dialog to be displayed first
 // so show a notification, then set a timeout before calling function
 //
-const updateChannelNames = () => {
-  // create notification to alert that channel names function is going to be called
-  let channelNamesNotfication = $q.notify({
+const updateDescriptorNames = () => {
+  // create notification to alert that descriptor token replacement function is going to be called
+  let descriptorNamesNotfication = $q.notify({
     message: 'updating names',
     caption: 'please wait....',
     timeout: 0,
@@ -203,7 +194,7 @@ const updateChannelNames = () => {
   registerTimeout(() => {
     //utils.timeStampedLog(name + `: registerTimeout`)
     processedNodeVariableDescriptor.value = utils.replaceDescriptorTokens(store, variablesDescriptor.value, props.nodeNumber)
-    channelNamesNotfication()
+    descriptorNamesNotfication()
   }, 300) // arbitrary timeout of 300mS seems to allow dialog to be displayed
 }
 
@@ -222,21 +213,10 @@ const variablesDescriptor = computed(() =>{
 
 //
 //
-watch(showNodeChannelNamesDialog, () => {
-  try{
-    if (showNodeChannelNamesDialog.value == false) {
-      updateChannelNames()
-    }
-    //processedNodeVariableDescriptor.value = utils.replaceDescriptorTokens(store, variablesDescriptor.value, props.nodeNumber)
-  } catch {}
-})
-
-//
-//
 watch(showNodeTokenNamesDialog, () => {
   try{
     if (showNodeTokenNamesDialog.value == false) {
-      updateChannelNames()
+      updateDescriptorNames()
     }
     //processedNodeVariableDescriptor.value = utils.replaceDescriptorTokens(store, variablesDescriptor.value, props.nodeNumber)
   } catch {}
@@ -253,7 +233,7 @@ watch(variablesDescriptor, () => {
     } else {
       showDescriptorWarning.value = false
       nodeVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation
-      updateChannelNames()
+      updateDescriptorNames()
       //processedNodeVariableDescriptor.value = utils.replaceDescriptorTokens(store, variablesDescriptor.value, props.nodeNumber)
     }
     //utils.timeStampedLog(name + `: WATCH variablesDescriptor: getNumberOfChannels`)
@@ -316,15 +296,6 @@ const clickClose = () => {
         }
       ]
     })
-  }
-}
-
-//
-//
-const clickChannelNames = () => {
-  utils.timeStampedLog(name + `: clickChannelNames: number ${numberOfChannels.value}`)
-  if (numberOfChannels.value > 0){
-    showNodeChannelNamesDialog.value = true
   }
 }
 
