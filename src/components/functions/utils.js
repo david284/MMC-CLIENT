@@ -135,6 +135,45 @@ export function replaceChannelTokens(store, jsonObj, nodeNumber) {
 }
 
 //
+// usage: import {replaceDescriptorTokens} from "components/functions/utils.js"
+//
+// Method:
+//   find each instance of token and extract name/number
+//   Replace with name for that node & token
+//
+export function replaceDescriptorTokens(store, jsonObj, nodeNumber) {
+  try {
+    timeStampedLog(name + `: replaceDescriptorTokens:`)
+    let jsonString = JSON.stringify(jsonObj)
+    let allTokens = getListOfTokens(jsonString)
+    //
+    // now have list of all tokens
+    allTokens.forEach(token => {
+      let tokenName = token.replace(/[0-9,$,{,}]/g, '')
+      tokenName = tokenName.toLowerCase().trim()
+      // extract channel number
+      let tokenNumber = token.replace(/[^0-9]/g, "")
+      let replacementName = store.getters.node_token_name(nodeNumber, tokenName, tokenNumber)
+      //timeStampedLog(name + `: replaceDescriptorTokens: token ${token} name ${channelName}`)
+      // now replace full token with channel Name
+      timeStampedLog(name + ":replace " + token + ' with '+ replacementName)
+      jsonString = jsonString.replace(token, replacementName)
+
+    })
+    //
+    try{
+      //timeStampedLog(name + `: END_replaceChannelTokens: node ${nodeNumber}`)
+      return JSON.parse(jsonString)
+    } catch(err) {
+      timeStampedLog(name + ": replaceDescriptorTokens: parsing result " + err)
+    }
+    //
+  } catch (err){
+    timeStampedLog(name + `: replaceDescriptorTokens: ${err}`)
+  }
+}
+
+//
 // usage: import {sleep} from "components/functions/utils.js"
 //
 export function sleep(timeout) {

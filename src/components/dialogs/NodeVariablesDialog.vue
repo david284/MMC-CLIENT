@@ -119,14 +119,13 @@ and then only made visible when this dialog is selected for a specific node
 
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
 import { useQuasar, useTimeout } from 'quasar'
-import {timeStampedLog} from "components/functions/utils.js"
+import * as utils from "components/functions/utils.js"
 import MDFDialog from "components/dialogs/MDFDialog";
 import NodeBackupDialog from "components/dialogs/NodeBackupDialog"
 import NodeChannelNamesDialog from "./NodeChannelNamesDialog.vue";
 import NodeVariables from "components/modules/common/NodeVariables"
 import NodeRawVariables from "components/modules/common/NodeRawVariables"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog"
-import { replaceChannelTokens } from "../functions/utils";
 import { getNumberOfChannels } from "../functions/NodeFunctions";
 import NodeTokenNamesDialog from "./NodeTokenNamesDialog.vue"
 
@@ -169,7 +168,7 @@ const model = computed({
 //
 watch(model, async () => {
   if (model.value == true){
-    //timeStampedLog(name + `: WATCH model`)
+    //utils.timeStampedLog(name + `: WATCH model`)
     DialogOpenedTimestamp = Date.now()
     showVariableDescriptor.value = false
     if (variablesDescriptor.value == undefined){
@@ -182,7 +181,7 @@ watch(model, async () => {
       nodeVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation
       updateChannelNames()
     }
-    //timeStampedLog(name + `: WATCH model: getNumberOfChannels`)
+    //utils.timeStampedLog(name + `: WATCH model: getNumberOfChannels`)
     numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
   }
 })
@@ -194,7 +193,7 @@ watch(model, async () => {
 const updateChannelNames = () => {
   // create notification to alert that channel names function is going to be called
   let channelNamesNotfication = $q.notify({
-    message: 'updating channel names',
+    message: 'updating names',
     caption: 'please wait....',
     timeout: 0,
     position: 'center',
@@ -202,8 +201,8 @@ const updateChannelNames = () => {
   })
   // set a timed callback
   registerTimeout(() => {
-    //timeStampedLog(name + `: registerTimeout`)
-    processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+    //utils.timeStampedLog(name + `: registerTimeout`)
+    processedNodeVariableDescriptor.value = utils.replaceDescriptorTokens(store, variablesDescriptor.value, props.nodeNumber)
     channelNamesNotfication()
   }, 300) // arbitrary timeout of 300mS seems to allow dialog to be displayed
 }
@@ -228,14 +227,25 @@ watch(showNodeChannelNamesDialog, () => {
     if (showNodeChannelNamesDialog.value == false) {
       updateChannelNames()
     }
-    //processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+    //processedNodeVariableDescriptor.value = utils.replaceDescriptorTokens(store, variablesDescriptor.value, props.nodeNumber)
+  } catch {}
+})
+
+//
+//
+watch(showNodeTokenNamesDialog, () => {
+  try{
+    if (showNodeTokenNamesDialog.value == false) {
+      updateChannelNames()
+    }
+    //processedNodeVariableDescriptor.value = utils.replaceDescriptorTokens(store, variablesDescriptor.value, props.nodeNumber)
   } catch {}
 })
 
 //
 //
 watch(variablesDescriptor, () => {
-  //timeStampedLog(name + `: WATCH variablesDescriptor`)
+  //utils.timeStampedLog(name + `: WATCH variablesDescriptor`)
   if (model.value == true){     // don't do if not visible
     if (variablesDescriptor.value == undefined){
       showRawVariables.value = true
@@ -244,9 +254,9 @@ watch(variablesDescriptor, () => {
       showDescriptorWarning.value = false
       nodeVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation
       updateChannelNames()
-      //processedNodeVariableDescriptor.value = replaceChannelTokens(store, variablesDescriptor.value, props.nodeNumber)
+      //processedNodeVariableDescriptor.value = utils.replaceDescriptorTokens(store, variablesDescriptor.value, props.nodeNumber)
     }
-    //timeStampedLog(name + `: WATCH variablesDescriptor: getNumberOfChannels`)
+    //utils.timeStampedLog(name + `: WATCH variablesDescriptor: getNumberOfChannels`)
     numberOfChannels.value = getNumberOfChannels(store, props.nodeNumber)
   }
 })
@@ -254,21 +264,21 @@ watch(variablesDescriptor, () => {
 //
 //
 onBeforeMount(() => {
-//  timeStampedLog(name + ': onBeforeMount')
+//  utils.timeStampedLog(name + ': onBeforeMount')
 })
 
 //
 //
 onMounted(() => {
-//  timeStampedLog(name + ': onMounted')
+//  utils.timeStampedLog(name + ': onMounted')
 })
 
 //
 //
 onUpdated(async () => {
-//  timeStampedLog(name + ': onUpdated')
+//  utils.timeStampedLog(name + ': onUpdated')
   if (props.nodeNumber){
-//    timeStampedLog('NodeVariableDialog onUpdated - nodeNumber ' + props.nodeNumber)
+//    utils.timeStampedLog('NodeVariableDialog onUpdated - nodeNumber ' + props.nodeNumber)
     if (store.state.nodes[props.nodeNumber].parameters[6] == 0){
       showNoVariablesMessage.value = true
     }else{
@@ -286,9 +296,9 @@ Click event handlers
 //
 //
 const clickClose = () => {
-  timeStampedLog(name + `: clickClose`)
+  utils.timeStampedLog(name + `: clickClose`)
   let nodeModified = ((store.state.nodes[props.nodeNumber].NodeModifiedTimestamp-DialogOpenedTimestamp) > 0) ? true : false
-  //timeStampedLog(name + `: clickClose: nodeModified ${nodeModified}`)
+  //utils.timeStampedLog(name + `: clickClose: nodeModified ${nodeModified}`)
   if((nodeModified) && (store.state.notification_settings.backup_notify)) {
     $q.notify({
       message: 'Variables changed - Do you want to take a backup?',
@@ -312,7 +322,7 @@ const clickClose = () => {
 //
 //
 const clickChannelNames = () => {
-  timeStampedLog(name + `: clickChannelNames: number ${numberOfChannels.value}`)
+  utils.timeStampedLog(name + `: clickChannelNames: number ${numberOfChannels.value}`)
   if (numberOfChannels.value > 0){
     showNodeChannelNamesDialog.value = true
   }
@@ -321,7 +331,7 @@ const clickChannelNames = () => {
 //
 //
 const clickManageModuleDescriptor = () => {
-  timeStampedLog(name + `: clickUpdateModuleDescriptor`)
+  utils.timeStampedLog(name + `: clickUpdateModuleDescriptor`)
   store.methods.request_matching_mdf_list(props.nodeNumber, "USER")
   store.methods.request_matching_mdf_list(props.nodeNumber, "SYSTEM")
   showMDFDialog.value = true
@@ -330,7 +340,7 @@ const clickManageModuleDescriptor = () => {
 //
 //
 const clickNamesMenu = (name, number) => {
-  timeStampedLog(name + `: clickNamesMenu ${name} ${number}`)
+  utils.timeStampedLog(name + `: clickNamesMenu ${name} ${number}`)
   selectedToken.value = name
   numberOfTokenInstances.value = number
   showNodeTokenNamesDialog.value = true
@@ -339,7 +349,7 @@ const clickNamesMenu = (name, number) => {
 //
 //
 const clickRefresh = () => {
-  timeStampedLog(name + `: clickRefresh`)
+  utils.timeStampedLog(name + `: clickRefresh`)
   store.methods.request_all_node_variables(props.nodeNumber)
   showWaitOnBusTrafficDialog.value = true
 }
@@ -347,7 +357,7 @@ const clickRefresh = () => {
 //
 //
 const clickToggleRaw = () => {
-  timeStampedLog(name + `: clickToggleRaw`)
+  utils.timeStampedLog(name + `: clickToggleRaw`)
   if (showRawVariables.value){
     showRawVariables.value = false
   } else {
@@ -358,7 +368,7 @@ const clickToggleRaw = () => {
 //
 //
 const clickToggleVariablesDescriptor = () => {
-  timeStampedLog(name + `: clickToggleNodeDescriptor`)
+  utils.timeStampedLog(name + `: clickToggleNodeDescriptor`)
   if (showVariableDescriptor.value){
     showVariableDescriptor.value = false
   } else {

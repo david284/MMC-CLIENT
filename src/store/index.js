@@ -794,19 +794,22 @@ const getters = {
     try{
       // first look for a user supplied tokenName, this will overr-ride any default
       tokenName = state.layout.nodeDetails[nodeNumber].tokens[token].userNames[tokenNumber]
-      if (tokenName.length == 0){ throw "no user token name" }
+      if (tokenName == undefined) { throw "no user token name" }
+      if (tokenName.length == 0)  { throw "no user token name" }
     } catch {
       try {
         // attempt to get supplied default tokenName from the MDF, this will over-ride system default
         tokenName = state.nodeDescriptors[nodeNumber].tokens[token].defaultNames[tokenNumber]
-        if (tokenName.length == 0){ throw "no MDF token name" }
+        if (tokenName == undefined) { throw "no MDF token name" }
+        if (tokenName.length == 0)  { throw "no MDF token name" }
       } catch {
         try {
           if (token=="channel"){
             // attempt to get channel name from the MDF, this is the old implementation
             tokenName = state.nodeDescriptors[nodeNumber].channelNames[tokenNumber]
           }
-          if (tokenName.length == 0){ throw "no legacy MDF channel name" }
+          if (tokenName == undefined) { throw "no legacy MDF channel name" }
+          if (tokenName.length == 0) { throw "no legacy MDF channel name" }
         } catch (err) {
           utils.timeStampedLog(name + `: getters: node_token_name: ${err}`)
           // otherwise supply system default name
