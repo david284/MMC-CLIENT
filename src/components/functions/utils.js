@@ -138,8 +138,9 @@ export function replaceChannelTokens(store, jsonObj, nodeNumber) {
 // usage: import {replaceDescriptorTokens} from "components/functions/utils.js"
 //
 // Method:
+//   an MDF token is a combination of a token name and a number - e.g. channel3
 //   find each instance of token and extract name/number
-//   Replace with name for that node & token
+//   Replace with name for that token
 //
 export function replaceDescriptorTokens(store, jsonObj, nodeNumber) {
   try {

@@ -787,37 +787,38 @@ const getters = {
     }
     return result
   },
-  node_token_name(nodeNumber, token, tokenNumber){
+  // an MDF token is a combination of a token name and a number - e.g. channel3
+  node_token_name(nodeNumber, tokenName, tokenNumber){
     //utils.timeStampedLog(name + `: getters1: node_token_name: ${token} ${tokenNumber}`)
     //utils.timeStampedLog(name + `: getters2: node_token_name: token: ${JSON.stringify(state.nodeDescriptors[nodeNumber].tokens)}`)
-    let tokenName = ""
+    let replacementName = ""
     try{
       // first look for a user supplied tokenName, this will overr-ride any default
-      tokenName = state.layout.nodeDetails[nodeNumber].tokens[token].userNames[tokenNumber]
-      if (tokenName == undefined) { throw "no user token name" }
-      if (tokenName.length == 0)  { throw "no user token name" }
+      replacementName = state.layout.nodeDetails[nodeNumber].tokens[tokenName].userNames[tokenNumber]
+      if (replacementName == undefined) { throw "no user token name" }
+      if (replacementName.length == 0)  { throw "no user token name" }
     } catch {
       try {
         // attempt to get supplied default tokenName from the MDF, this will over-ride system default
-        tokenName = state.nodeDescriptors[nodeNumber].tokens[token].defaultNames[tokenNumber]
-        if (tokenName == undefined) { throw "no MDF token name" }
-        if (tokenName.length == 0)  { throw "no MDF token name" }
+        replacementName = state.nodeDescriptors[nodeNumber].tokens[tokenName].defaultNames[tokenNumber]
+        if (replacementName == undefined) { throw "no MDF token name" }
+        if (replacementName.length == 0)  { throw "no MDF token name" }
       } catch {
         try {
-          if (token=="channel"){
+          if (tokenName=="channel"){
             // attempt to get channel name from the MDF, this is the old implementation
-            tokenName = state.nodeDescriptors[nodeNumber].channelNames[tokenNumber]
+            replacementName = state.nodeDescriptors[nodeNumber].channelNames[tokenNumber]
           }
-          if (tokenName == undefined) { throw "no legacy MDF channel name" }
-          if (tokenName.length == 0) { throw "no legacy MDF channel name" }
+          if (replacementName == undefined) { throw "no legacy MDF channel name" }
+          if (replacementName.length == 0) { throw "no legacy MDF channel name" }
         } catch (err) {
           utils.timeStampedLog(name + `: getters: node_token_name: ${err}`)
           // otherwise supply system default name
-          tokenName = token+tokenNumber
+          replacementName = tokenName+tokenNumber
         }
       }
     }
-    return tokenName
+    return replacementName
   }
 
 }
@@ -934,8 +935,9 @@ const setters = {
     state.layout.nodeDetails[nodeNumber].name = nodeName
     state.update_layout_needed = true
   },
-  node_token_name(nodeNumber, token, tokenNumber, name){
-    utils.timeStampedLog(name + `: setters: node_token_name: ${token} ${tokenNumber} ${name}`)
+  // an MDF token is a combination of a token name and a number - e.g. channel3
+  node_token_name(nodeNumber, tokenName, tokenNumber, name){
+    utils.timeStampedLog(name + `: setters: node_token_name: ${tokenName} ${tokenNumber} ${name}`)
     if (typeof tokenNumber === 'string'){
       tokenNumber = parseInt(tokenNumber)
     }
@@ -943,15 +945,15 @@ const setters = {
       setters.addNodeToLayout(nodeNumber)
     }
     if (state.layout.nodeDetails[nodeNumber].tokens == undefined){
-      state.layout.nodeDetails[nodeNumber].tokens = {[token]:{userNames:{}}}
+      state.layout.nodeDetails[nodeNumber].tokens = {[tokenName]:{userNames:{}}}
     }
-    if (state.layout.nodeDetails[nodeNumber].tokens[token] == undefined){
-      state.layout.nodeDetails[nodeNumber].tokens[token] = {userNames:{}}
+    if (state.layout.nodeDetails[nodeNumber].tokens[tokenName] == undefined){
+      state.layout.nodeDetails[nodeNumber].tokens[tokenName] = {userNames:{}}
     }
-    if (state.layout.nodeDetails[nodeNumber].tokens[token].userNames == undefined){
-      state.layout.nodeDetails[nodeNumber].tokens[token].userNames = {}
+    if (state.layout.nodeDetails[nodeNumber].tokens[tokenName].userNames == undefined){
+      state.layout.nodeDetails[nodeNumber].tokens[tokenName].userNames = {}
     }
-    state.layout.nodeDetails[nodeNumber].tokens[token].userNames[tokenNumber] = name
+    state.layout.nodeDetails[nodeNumber].tokens[tokenName].userNames[tokenNumber] = name
     state.update_layout_needed = true
   }
 }

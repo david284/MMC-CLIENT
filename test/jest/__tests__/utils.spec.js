@@ -29,6 +29,17 @@ import * as utils from "components/functions/utils.js"
           channelName = "turnout"
         }
         return channelName
+      },
+      node_token_name(nodeNumber, tokenName, tokenNumber){
+        console.log(`unit_test: node_channel_name ${nodeNumber} ${tokenName} ${tokenNumber}`)
+        let replacementName = "undefined"
+        if (tokenNumber == 1){
+          replacementName = "switch"
+        }
+        if (tokenNumber == 3){
+          replacementName = "turnout"
+        }
+        return replacementName
       }
     },
     "setters":{
@@ -89,6 +100,24 @@ describe('utils Test', () => {
     expect(result.test1).toMatch(/switch/);
     expect(result.test3).toMatch(/turnout/);
     console.log("unit_test: replaceChannelTokens test END")
+  });
+
+  //
+  //
+  it('replaceDescriptorTokens test', () => {
+    console.log("unit_test: replaceDescriptorTokens test BEGIN")
+    let jsonObj = {test1: "${chaNNel1} green",
+      test2: "${channel2",
+      test3: "${CHANNEL **3**} red",
+      test4: "${channel4",
+      test5: "text"
+    }
+    let nodeNumber = 1
+    let result = utils.replaceDescriptorTokens(store, jsonObj, nodeNumber)
+    console.log('unit_test: replaceDescriptorTokens: result = ' + JSON.stringify(result))
+    expect(result.test1).toMatch(/switch/);
+    expect(result.test3).toMatch(/turnout/);
+    console.log("unit_test: replaceDescriptorTokens test END")
   });
 
 
