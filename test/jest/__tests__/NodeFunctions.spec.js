@@ -1,6 +1,8 @@
 import { describe, expect, it } from '@jest/globals';
+import each from 'jest-each';
 
-import {getNumberOfChannels} from "components/functions/NodeFunctions.js"
+import * as NodeFunctions from "components/functions/NodeFunctions.js"
+
 
 describe('NodeFunctions Test', () => {
 
@@ -33,7 +35,7 @@ describe('NodeFunctions Test', () => {
     console.log("getNumberOfChannels")
     store.state.nodeDescriptors["1"]["numberOfChannels"] = 2
     //
-    let result = getNumberOfChannels(store, 1)
+    let result = NodeFunctions.getNumberOfChannels(store, 1)
     expect(result).toBe(2)
   });
 
@@ -49,7 +51,7 @@ describe('NodeFunctions Test', () => {
       "3": "Output 3"
     }
     //
-    let result = getNumberOfChannels(store, 1)
+    let result = NodeFunctions.getNumberOfChannels(store, 1)
     expect(result).toBe(3)
   });
 
@@ -61,7 +63,7 @@ describe('NodeFunctions Test', () => {
     console.log("getNumberOfChannels")
     store.state.nodeDescriptors["1"]["numberOfChannels"] = 4
     //
-    let result = getNumberOfChannels(store, 1)
+    let result = NodeFunctions.getNumberOfChannels(store, 1)
     expect(result).toBe(4)
   });
 
@@ -75,8 +77,27 @@ describe('NodeFunctions Test', () => {
     store.state.nodeDescriptors = {}
     store.state.layout.nodeDetails[1].numberOfChannels = 5
     //
-    let result = getNumberOfChannels(store, 1)
+    let result = NodeFunctions.getNumberOfChannels(store, 1)
     expect(result).toBe(5)
   });
-});
 
+  //
+  // use channel number in layout
+  // remove nodeDescriptor so it falls back to layout
+  // store.state.layout.nodeDetails[nodeNumber].numberOfChannels
+  //
+  each([
+    [5, 12],  // node descripter 5, use layout as 12
+    [20, 20]  // node descriptor 20, use this
+  ]).test('getMaxNumberForToken test %s %s', (a, expected) => {
+    console.log("unit_test: getMaxNumberForToken test BEGIN")
+    store.state.nodeDescriptors[1] = {"tokens":{"palette":{"maxNumber":a}}}
+    store.state.layout.nodeDetails[1].tokens = {"palette":{"userNames":{"12":"test12","3":"test3"}}}
+    //
+    let result = NodeFunctions.getMaxNumberForToken(store, 1, "palette")
+    expect(result).toBe(expected)
+    console.log("unit_test: getMaxNumberForToken test END")
+  });
+
+
+});

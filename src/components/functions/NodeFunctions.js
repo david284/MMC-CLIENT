@@ -1,5 +1,5 @@
 
-import {timeStampedLog} from "components/functions/utils.js"
+import * as utils from "components/functions/utils.js"
 
 
 const name = "NodeFunctions"
@@ -32,10 +32,39 @@ export function getNumberOfChannels(store, nodeNumber) {
       //console.log(name + `: failed to get stored numberOfChannels`)
     }
   }
-  //timeStampedLog(name + `: numberOfChannels: ${numberOfChannels}`)
+  //utils.timeStampedLog(name + `: numberOfChannels: ${numberOfChannels}`)
   return numberOfChannels
 }
 
+//
+// Get the higest number associated with a token name for this node
+// pick the higest value of either the MDF or the layoutData for this node
+//
+export function getMaxNumberForToken(store, nodeNumber, token) {
+  utils.timeStampedLog(name + `: getMaxNumberForToken: ${nodeNumber} ${token}`)
+  let maxNumber = 0
+  let highestUserNumber = 0
+  try{
+    // get the highest number from the MDF
+    maxNumber = store.state.nodeDescriptors[nodeNumber].tokens[token].maxNumber
+  } catch{
+      utils.timeStampedLog(name + `: getMaxNumberForToken: no MDF number`)
+  }
+  try{
+    // now work out the higest number from the user names
+    let obj = store.state.layout.nodeDetails[nodeNumber].tokens[token].userNames
+    //utils.timeStampedLog(name + `: getMaxNumberForToken: obj ${JSON.stringify(store.state.layout.nodeDetails[nodeNumber].tokens[token])}`)
+    Object.entries(obj).forEach(([key, value]) => {
+      console.log(`${key}: ${value}`)
+      let num = parseInt(key)
+      if (highestUserNumber < num) { highestUserNumber = num}
+    })
+    if (maxNumber < highestUserNumber ){maxNumber = highestUserNumber}
+  } catch{
+          utils.timeStampedLog(name + `: getMaxNumberForToken: no user number`)
+  }
+  return maxNumber
+}
 
 //
 //Parameters collected on startup
@@ -56,7 +85,7 @@ export function NodeParametersLoaded(store, nodeNumber) {
   ){
     return true
   } else {
-    timeStampedLog(name + `:  NodeParametersLoaded node ${nodeNumber} false
+    utils.timeStampedLog(name + `:  NodeParametersLoaded node ${nodeNumber} false
         ${store.state.nodes[nodeNumber].parameters[4]} :
         ${store.state.nodes[nodeNumber].parameters[5]} :
         ${store.state.nodes[nodeNumber].parameters[6]}`)

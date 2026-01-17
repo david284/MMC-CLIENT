@@ -8,7 +8,7 @@
             Node Variables for node :  {{ store.getters.node_name(nodeNumber) }}
           </div>
           <template v-slot:action>
-            <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="names">
+            <q-btn v-if="enableNamesMenu" class="q-mx-xs q-my-none" color="blue" size="sm" label="names">
               <q-menu auto-close>
                 <q-list style="min-width: 100px">
                   <div v-for="(item, name) in store.state.nodeDescriptors[nodeNumber].tokens" :key="item">
@@ -138,6 +138,7 @@ var DialogOpenedTimestamp = Date.now()
 const showNodeTokenNamesDialog = ref(false)
 const selectedToken = ref(null)
 const numberOfTokenInstances = ref(0)
+const enableNamesMenu = ref(false)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -164,10 +165,16 @@ watch(model, async () => {
       showRawVariables.value = true
       showDescriptorWarning.value = true
       processedNodeVariableDescriptor.value = undefined
+      enableNamesMenu.value=false
     } else {
       showRawVariables.value = false
       showDescriptorWarning.value = false
       nodeVariableInformation.value = store.state.nodeDescriptors[props.nodeNumber].nodeVariableInformation
+      if(store.state.nodeDescriptors[props.nodeNumber].tokens != undefined){
+        enableNamesMenu.value=true
+      } else {
+        enableNamesMenu.value=false
+      }
       updateDescriptorNames()
     }
   }

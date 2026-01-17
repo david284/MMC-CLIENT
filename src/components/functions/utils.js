@@ -3,6 +3,14 @@ import { setMaxListeners } from "stream"
 const name = "utils"
 
 //
+//
+// usage: import * as utils from "components/functions/utils.js"
+// then invoke functions like utils.sleep()
+//
+//
+
+
+//
 // Get every instance of tokens into a list
 //
 export function getListOfTokens(jsonString){
@@ -49,10 +57,8 @@ export function getListOfTokens(jsonString){
 //
 // get all tokens from json
 // then reduce to single instance of each token, plus highest number
-// And then check if we already have this token in the layout data
-// so that we don't overwrite any existing data
 //
-export function extractMDFTokens(moduleDescriptor) {
+export function extractMDFTokens(nodeLayoutDetails, moduleDescriptor) {
   try {
     //timeStampedLog(name + `: extractMDFTokens:`)
     if (moduleDescriptor != undefined){
@@ -68,13 +74,14 @@ export function extractMDFTokens(moduleDescriptor) {
       //          "name": "dark grey"
       //        ...
       //
-//      if (layoutNodeTokens == undefined){ layoutNodeTokens ={} }
+      if (nodeLayoutDetails.tokens == undefined){nodeLayoutDetails.tokens = {}}
       if (moduleDescriptor.tokens == undefined){moduleDescriptor.tokens={}}
       // now go through all the tokens we've found in the MDF to see if we need to update anything
       allTokens.forEach(token => {
         let tokenName = token.replace(/[0-9,$,{,}]/g, '')
         tokenName = tokenName.toLowerCase().trim()
         let tokenNumber = token.replace(/[^0-9]/g, "")
+        tokenNumber = parseInt(tokenNumber)
         if (moduleDescriptor.tokens[tokenName] == undefined) {
           moduleDescriptor.tokens[tokenName] = {maxNumber: tokenNumber}
           timeStampedLog(name + `: extractMDFTokens: add ${tokenName} ${tokenNumber}`)
@@ -86,6 +93,9 @@ export function extractMDFTokens(moduleDescriptor) {
           if (tokenNumber > moduleDescriptor.tokens[tokenName].maxNumber) {
             moduleDescriptor.tokens[tokenName].maxNumber = tokenNumber}
         }
+        if (nodeLayoutDetails.tokens[tokenName]== undefined){
+          nodeLayoutDetails.tokens[tokenName] = {}
+        }
       })
       return moduleDescriptor.tokens
     }
@@ -95,47 +105,6 @@ export function extractMDFTokens(moduleDescriptor) {
 }
 
 
-//
-// usage: import {replaceChannelTokens} from "components/functions/utils.js"
-//
-// Method:
-//   find each instance of channel token and extract channel number
-//   Replace with channel name for that node & channel
-//
-export function replaceChannelTokens(store, jsonObj, nodeNumber) {
-  try {
-    timeStampedLog(name + `: replaceChannelTokens:`)
-    let jsonString = JSON.stringify(jsonObj)
-    let allTokens = getListOfTokens(jsonString)
-    //
-    // now have list of all tokens
-    allTokens.forEach(token => {
-      // extract channel number
-      let tokenNumber = token.replace(/[^0-9]/g, "")
-          // get channel name
-      if (token.toLowerCase().includes("channel")){
-        let channelName = store.getters.node_channel_name(nodeNumber, tokenNumber)
-        //timeStampedLog(name + `: replaceChannelTokens: token ${token} name ${channelName}`)
-        // now replace full token with channel Name
-        //timeStampedLog(name + ":replace " + token + ' with '+ channelName)
-        jsonString = jsonString.replace(token, channelName)
-      }
-    })
-    //
-    try{
-      //timeStampedLog(name + `: END_replaceChannelTokens: node ${nodeNumber}`)
-      return JSON.parse(jsonString)
-    } catch(err) {
-      timeStampedLog(name + ": replaceChannelTokens: parsing result " + err)
-    }
-    //
-  } catch (err){
-    timeStampedLog(name + `: replaceChannelTokens: ${err}`)
-  }
-}
-
-//
-// usage: import {replaceDescriptorTokens} from "components/functions/utils.js"
 //
 // Method:
 //   an MDF token is a combination of a token name and a number - e.g. channel3
@@ -163,7 +132,7 @@ export function replaceDescriptorTokens(store, jsonObj, nodeNumber) {
     })
     //
     try{
-      //timeStampedLog(name + `: END_replaceChannelTokens: node ${nodeNumber}`)
+      //timeStampedLog(name + `: END_replaceDescriptorTokens: node ${nodeNumber}`)
       return JSON.parse(jsonString)
     } catch(err) {
       timeStampedLog(name + ": replaceDescriptorTokens: parsing result " + err)

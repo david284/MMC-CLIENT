@@ -86,24 +86,6 @@ describe('utils Test', () => {
 
   //
   //
-  it('replaceChannelTokens test', () => {
-    console.log("unit_test: replaceChannelTokens test BEGIN")
-    let jsonObj = {test1: "${chaNNel1} green",
-      test2: "${channel2",
-      test3: "${CHANNEL **3**} red",
-      test4: "${channel4",
-      test5: "text"
-    }
-    let nodeNumber = 1
-    let result = utils.replaceChannelTokens(store, jsonObj, nodeNumber)
-    console.log('unit_test: replaceChannelTokens: result = ' + JSON.stringify(result))
-    expect(result.test1).toMatch(/switch/);
-    expect(result.test3).toMatch(/turnout/);
-    console.log("unit_test: replaceChannelTokens test END")
-  });
-
-  //
-  //
   it('replaceDescriptorTokens test', () => {
     console.log("unit_test: replaceDescriptorTokens test BEGIN")
     let jsonObj = {test1: "${chaNNel1} green",
@@ -136,11 +118,11 @@ describe('utils Test', () => {
       test9: "${palette6}",
       test10: "text"
     }
-    let result = utils.extractMDFTokens(jsonObj)
+    let result = utils.extractMDFTokens({}, jsonObj)
     console.log('unit_test: extractMDFTokens: result = ' + JSON.stringify(result, null, " "))
-    expect(result["channel"].maxNumber).toMatch("9");
-    expect(result["channel ****"].maxNumber).toMatch("3");
-    expect(result["palette"].maxNumber).toMatch("99");
+    expect(result["channel"].maxNumber).toEqual(9);
+    expect(result["channel ****"].maxNumber).toEqual(3);
+    expect(result["palette"].maxNumber).toEqual(99);
     console.log("unit_test: extractMDFTokens test END")
   });
 

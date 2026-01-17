@@ -1187,7 +1187,7 @@ socket.on("NODE_DESCRIPTOR", (data) => {
     const store = {"state":state}
     delete state.layout.nodeDetails[nodeNumber].tokenList // depricated object
     state.layout.nodeDetails[nodeNumber].numberOfChannels = getNumberOfChannels(store, nodeNumber)
-    utils.extractMDFTokens(moduleDescriptor)
+    utils.extractMDFTokens(store.state.layout.nodeDetails[nodeNumber], moduleDescriptor)
     //state.nodeDescriptors[nodeNumber].tokens = utils.extractMDFTokens(moduleDescriptor)
     state.MDFupdateTimestamp = Date.now()
   } catch (err) {
