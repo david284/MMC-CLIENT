@@ -62,7 +62,7 @@ export function extractMDFTokens(nodeLayoutDetails, moduleDescriptor) {
   try {
     //timeStampedLog(name + `: extractMDFTokens:`)
     if (moduleDescriptor != undefined){
-      timeStampedLog(name + `: extractMDFTokens: module: ${moduleDescriptor.moduleName}`)
+      //timeStampedLog(name + `: extractMDFTokens: module: ${moduleDescriptor.moduleName}`)
       let jsonString = JSON.stringify(moduleDescriptor)
       let allTokens = getListOfTokens(jsonString)
       //
@@ -84,9 +84,9 @@ export function extractMDFTokens(nodeLayoutDetails, moduleDescriptor) {
         tokenNumber = parseInt(tokenNumber)
         if (moduleDescriptor.tokens[tokenName] == undefined) {
           moduleDescriptor.tokens[tokenName] = {maxNumber: tokenNumber}
-          timeStampedLog(name + `: extractMDFTokens: add ${tokenName} ${tokenNumber}`)
+          //timeStampedLog(name + `: extractMDFTokens: ${moduleDescriptor.moduleName} add ${tokenName} ${tokenNumber}`)
         } else {
-          timeStampedLog(name + `: extractMDFTokens: ${tokenName} already exists`)
+          //timeStampedLog(name + `: extractMDFTokens: ${tokenName} already exists`)
           // token exists, but need to check if we need to update the maxNumber for this token
           if(moduleDescriptor.tokens[tokenName].maxNumber == undefined){
             moduleDescriptor.tokens[tokenName].maxNumber = tokenNumber}

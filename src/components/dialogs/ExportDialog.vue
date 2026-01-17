@@ -38,13 +38,8 @@
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
-import {importFCU} from "components/functions/ImportFunctions.js"
-import {createDateStamp} from "components/functions/utils.js"
-import {sleep} from "components/functions/utils.js"
-import { getNumberOfChannels } from "../functions/NodeFunctions";
-import {timeStampedLog} from "components/functions/utils.js"
-
-
+import * as utils from "components/functions/utils.js"
+import * as NodeFunctions from "../functions/NodeFunctions";
 
 const $q = useQuasar()
 const xlsx = require('xlsx');
@@ -66,7 +61,7 @@ const model = computed({
 })
 
 watch(model, () => {
-  //timeStampedLog(name + `: WATCH model`)
+  //utils.timeStampedLog(name + `: WATCH model`)
   if (model.value){
     // now clear filename when dialog opened
     importFile.value = undefined
@@ -89,7 +84,7 @@ Click event handlers
 
 
 const clickExport = async (filename) => {
-  timeStampedLog(name + `: clickExport`)
+  utils.timeStampedLog(name + `: clickExport`)
 
   //
   // Uses sheetsjs
@@ -126,16 +121,17 @@ const clickExport = async (filename) => {
   let nodes = []
   let names = []
   for (let nodeNumber of Object.keys(nodeDetails).sort(function(a, b){return a - b})) {
+    utils.timeStampedLog(name + `: clickExport: node ${nodeNumber}`)
     let output = {}
     output['nodeName'] = nodeDetails[nodeNumber].name ? nodeDetails[nodeNumber].name : ''
     output['moduleName'] = nodeDetails[nodeNumber].moduleName ? nodeDetails[nodeNumber].moduleName : ''
     output['nodeNumber'] = parseInt(nodeNumber)
     output['nodeGroup'] = nodeDetails[nodeNumber].group ? nodeDetails[nodeNumber].group : ''
-    //timeStampedLog(name + `: clickExport: nodeDetail output1 ${JSON.stringify(output)}`)
+    //utils.timeStampedLog(name + `: clickExport: nodeDetail output1 ${JSON.stringify(output)}`)
     nodes.push(output)
     try{
-      let numberOfChannels = getNumberOfChannels(store, nodeNumber)
-      //timeStampedLog(name + `: clickExport: node ${nodeNumber} number of channels ${numberOfChannels}`)
+      let numberOfChannels = NodeFunctions.getNumberOfChannels(store, nodeNumber)
+      //utils.timeStampedLog(name + `: clickExport: node ${nodeNumber} number of channels ${numberOfChannels}`)
       for (var i= 1; i <= numberOfChannels; i++){
         let channelOutput = {}
         channelOutput['nodeNumber'] = parseInt(nodeNumber)
@@ -151,30 +147,33 @@ const clickExport = async (filename) => {
         channels.push(channelOutput)
       }
     } catch(err){
-      timeStampedLog(name + `: clickExport: channels: ${err}`)
+      utils.timeStampedLog(name + `: clickExport: channels: ${err}`)
     }
     try{
-      //timeStampedLog(name + `: clickExport: node ${nodeNumber} number of channels ${numberOfChannels}`)
+      utils.timeStampedLog(name + `: clickExport: names#1: node ${nodeNumber}`)
       if (nodeDetails[nodeNumber].tokens){
+        utils.timeStampedLog(name + `: clickExport: names#2: node ${nodeNumber}`)
         for (let token of Object.keys(nodeDetails[nodeNumber].tokens).sort(function(a, b){return a - b})) {
-          let namesOutput = {}
-          namesOutput['nodeNumber'] = parseInt(nodeNumber)
-          namesOutput['nodeName'] = nodeDetails[nodeNumber].name ? nodeDetails[nodeNumber].name : ''
-          namesOutput['nodeGroup'] = nodeDetails[nodeNumber].group ? nodeDetails[nodeNumber].group : ''
-          namesOutput['moduleName'] = nodeDetails[nodeNumber].moduleName ? nodeDetails[nodeNumber].moduleName : ''
-          namesOutput['token'] = token
-          /*
-          try{
-            namesOutput['name'] = nodeDetails[nodeNumber].channels[i].channelName
-          }catch{
-            namesOutput['name'] = ''
+          let maxNumber = NodeFunctions.getMaxNumberForToken(store, nodeNumber, token)
+          for (var i=1; i<=maxNumber; i++ ){
+            let namesOutput = {}
+            namesOutput['nodeNumber'] = parseInt(nodeNumber)
+            namesOutput['nodeName'] = nodeDetails[nodeNumber].name ? nodeDetails[nodeNumber].name : ''
+            namesOutput['nodeGroup'] = nodeDetails[nodeNumber].group ? nodeDetails[nodeNumber].group : ''
+            namesOutput['moduleName'] = nodeDetails[nodeNumber].moduleName ? nodeDetails[nodeNumber].moduleName : ''
+            namesOutput['token'] = token
+            namesOutput['number'] = i
+            try{
+              namesOutput['name'] = nodeDetails[nodeNumber].tokens[token].userNames[i]
+            }catch{
+              namesOutput['name'] = ''
+            }
+            names.push(namesOutput)
           }
-            */
-          names.push(namesOutput)
         }
       }
     } catch (error){
-      timeStampedLog(name + `: clickExport: names: ${err}`)
+      utils.timeStampedLog(name + `: clickExport: names: ${err}`)
     }
   }
 
@@ -217,14 +216,14 @@ const clickExport = async (filename) => {
 
   const nodesWorksheet = xlsx.utils.json_to_sheet(nodes);
   try{
-    //timeStampedLog(name + `: clickExport: nodesWorksheet ${JSON.stringify(nodes)}`)
+    //utils.timeStampedLog(name + `: clickExport: nodesWorksheet ${JSON.stringify(nodes)}`)
     /* calculate column width */
     const nodes_name_width = nodes.reduce((w, r) => Math.max(w, r.nodeName.length), 15) + 5;
     const nodes_group_width = nodes.reduce((w, r) => Math.max(w, r.nodeGroup.length), 15) + 5;
     nodesWorksheet["!cols"] = [ { wch: nodes_name_width }, { wch: 20 }, { wch: 20 }, { wch: nodes_group_width } ];
-    timeStampedLog(name + `: clickExport: nodesWorksheet`)
+    utils.timeStampedLog(name + `: clickExport: nodesWorksheet`)
   } catch (err){
-      timeStampedLog(name + `: clickExport: nodesWorksheet ${err}`)
+      utils.timeStampedLog(name + `: clickExport: nodesWorksheet ${err}`)
   }
 
   const longEventsWorksheet = xlsx.utils.json_to_sheet(longEvents);
@@ -233,22 +232,22 @@ const clickExport = async (filename) => {
     const long_events_name_width = longEvents.reduce((w, r) => Math.max(w, r.eventName.length), 15) + 5;
     const long_events_group_width = longEvents.reduce((w, r) => Math.max(w, r.eventGroup.length), 15) + 5;
     longEventsWorksheet["!cols"] = [ { wch: long_events_name_width }, { wch: 20 }, { wch: 20 }, { wch: long_events_group_width } ];
-    timeStampedLog(name + `: clickExport: longEventsWorksheet`)
+    utils.timeStampedLog(name + `: clickExport: longEventsWorksheet`)
   } catch (err){
-      timeStampedLog(name + `: clickExport: longEventsWorksheet ${err}`)
+      utils.timeStampedLog(name + `: clickExport: longEventsWorksheet ${err}`)
   }
 
 
   const shortEventsWorksheet = xlsx.utils.json_to_sheet(shortEvents);
   try{
-    //timeStampedLog(name + `: clickExport: shortEventsWorksheet ${JSON.stringify(shortEvents)}`)
+    //utils.timeStampedLog(name + `: clickExport: shortEventsWorksheet ${JSON.stringify(shortEvents)}`)
     // calculate column width
     const short_events_name_width = shortEvents.reduce((w, r) => Math.max(w, r.eventName.length), 15) + 5;
     const short_events_group_width = shortEvents.reduce((w, r) => Math.max(w, r.eventGroup.length), 15) + 5;
     shortEventsWorksheet["!cols"] = [ { wch: short_events_name_width }, { wch: 20 }, { wch: short_events_group_width } ];
-    timeStampedLog(name + `: clickExport: shortEventsWorksheet`)
+    utils.timeStampedLog(name + `: clickExport: shortEventsWorksheet`)
   } catch (err){
-      timeStampedLog(name + `: clickExport: shortEventsWorksheet ${err}`)
+      utils.timeStampedLog(name + `: clickExport: shortEventsWorksheet ${err}`)
   }
 
 
@@ -262,9 +261,9 @@ const clickExport = async (filename) => {
     const nodeGroup_width = channels.reduce((w, r) => Math.max(w, r.nodeGroup.length), 15) + 5;
     const moduleName_width = channels.reduce((w, r) => Math.max(w, r.moduleName.length), 15) + 5;
     channelsWorksheet["!cols"] = [ { wch: 15 }, { wch: nodeName_width }, { wch: nodeGroup_width }, { wch: moduleName_width }, { wch: 18 }, { wch: channelName_width } ];
-    timeStampedLog(name + `: clickExport: channelsWorksheet`)
+    utils.timeStampedLog(name + `: clickExport: channelsWorksheet`)
   } catch (err){
-      timeStampedLog(name + `: clickExport: channelsWorksheet ${err}`)
+      utils.timeStampedLog(name + `: clickExport: channelsWorksheet ${err}`)
   }
 
   const namesWorksheet = xlsx.utils.json_to_sheet(names);
@@ -277,9 +276,9 @@ const clickExport = async (filename) => {
     const nodeGroup_width = channels.reduce((w, r) => Math.max(w, r.nodeGroup.length), 15) + 5;
     const moduleName_width = channels.reduce((w, r) => Math.max(w, r.moduleName.length), 15) + 5;
     namesWorksheet["!cols"] = [ { wch: 15 }, { wch: nodeName_width }, { wch: nodeGroup_width }, { wch: moduleName_width }, { wch: 18 }, { wch: 18 } ];
-    timeStampedLog(name + `: clickExport: namesWorksheet`)
+    utils.timeStampedLog(name + `: clickExport: namesWorksheet`)
   } catch (err){
-      timeStampedLog(name + `: clickExport: namesWorksheet ${err}`)
+      utils.timeStampedLog(name + `: clickExport: namesWorksheet ${err}`)
   }
 
   const workbook = xlsx.utils.book_new();
@@ -290,10 +289,10 @@ const clickExport = async (filename) => {
     xlsx.utils.book_append_sheet(workbook, channelsWorksheet, "Channels");
     xlsx.utils.book_append_sheet(workbook, namesWorksheet, "Names");
   } catch (err){
-      timeStampedLog(name + `: clickExport: book_append_sheet ${err}`)
+      utils.timeStampedLog(name + `: clickExport: book_append_sheet ${err}`)
   }
 
-  const fileName = store.state.layout.layoutDetails.title + ' export '+createDateStamp() + '.ods'
+  const fileName = store.state.layout.layoutDetails.title + ' export ' + utils.createDateStamp() + '.ods'
   const newFilename = fileName.replaceAll(" ", "_")
   xlsx.writeFile(workbook, newFilename, { bookType:'ods', compression: true, cellStyles: true });
 

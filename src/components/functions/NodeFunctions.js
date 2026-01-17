@@ -41,28 +41,29 @@ export function getNumberOfChannels(store, nodeNumber) {
 // pick the higest value of either the MDF or the layoutData for this node
 //
 export function getMaxNumberForToken(store, nodeNumber, token) {
-  utils.timeStampedLog(name + `: getMaxNumberForToken: ${nodeNumber} ${token}`)
+  //utils.timeStampedLog(name + `: getMaxNumberForToken: ${nodeNumber} ${token}`)
   let maxNumber = 0
   let highestUserNumber = 0
   try{
     // get the highest number from the MDF
     maxNumber = store.state.nodeDescriptors[nodeNumber].tokens[token].maxNumber
   } catch{
-      utils.timeStampedLog(name + `: getMaxNumberForToken: no MDF number`)
+    //utils.timeStampedLog(name + `: getMaxNumberForToken: no MDF number`)
   }
   try{
     // now work out the higest number from the user names
     let obj = store.state.layout.nodeDetails[nodeNumber].tokens[token].userNames
     //utils.timeStampedLog(name + `: getMaxNumberForToken: obj ${JSON.stringify(store.state.layout.nodeDetails[nodeNumber].tokens[token])}`)
     Object.entries(obj).forEach(([key, value]) => {
-      console.log(`${key}: ${value}`)
+      //console.log(`${key}: ${value}`)
       let num = parseInt(key)
       if (highestUserNumber < num) { highestUserNumber = num}
     })
     if (maxNumber < highestUserNumber ){maxNumber = highestUserNumber}
   } catch{
-          utils.timeStampedLog(name + `: getMaxNumberForToken: no user number`)
+    //utils.timeStampedLog(name + `: getMaxNumberForToken: no user number`)
   }
+  utils.timeStampedLog(name + `: getMaxNumberForToken: ${nodeNumber} ${token} maxNumber: ${maxNumber}`)
   return maxNumber
 }
 
