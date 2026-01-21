@@ -2,6 +2,7 @@ Version
   Make some texts look nicer. (PR #9)
   Fixed MFD dialog not listing file without timestamp
   replaced channel names with new generic names dialog to support other tokens
+  altered export to replace channels page with names page
 
 Version 0.17.1
   Added eventIdentityShowVariables to EventsListByNode
