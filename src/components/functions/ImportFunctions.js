@@ -266,7 +266,7 @@ function addNodeModulename(store, nodeNumber, moduleName, modeValue){
   }
 }
 
-function addNodeChannelName(store, nodeNumber, channelNumber, channelName, modeValue){
+function addNodeChannelNameOld(store, nodeNumber, channelNumber, channelName, modeValue){
   let existingChannelName = null
   try {
     existingChannelName = store.state.layout.nodeDetails[nodeNumber].channels[channelNumber].channelName
@@ -287,3 +287,24 @@ function addNodeChannelName(store, nodeNumber, channelNumber, channelName, modeV
   }
 }
 
+export function addNodeChannelName(store, nodeNumber, channelNumber, channelName, modeValue){
+  let existingChannelName = null
+  try {
+    existingChannelName=store.getters.node_token_name(nodeNumber, 'channel', channelNumber)
+    //existingChannelName = store.state.layout.nodeDetails[nodeNumber].channels[channelNumber].channelName
+  } catch {}
+  if ((existingChannelName == null) || (existingChannelName.length == 0)){
+    console.log('node ' + nodeNumber + ": channelName: " + channelName + " ChannelName not found - updated")
+    store.setters.node_token_name(nodeNumber, 'channel', channelNumber, channelName)
+  } else if (existingChannelName == channelName){
+    console.log('node ' + nodeNumber + ": channelName: " + channelName + " ChannelName match - do nothing")
+  } else {
+    // stored channel name doesn't match import channel name
+    if (modeValue == "overwrite"){
+      console.log('node ' + nodeNumber + ": channelName: " + channelName + " no match - overwrite")
+      store.setters.node_token_name(nodeNumber, 'channel', channelNumber, channelName)
+    } else {
+      console.log('node ' + nodeNumber + ": channelName: " + channelName + " no match - retain")
+    }
+  }
+}

@@ -129,6 +129,7 @@ const clickExport = async (filename) => {
     output['nodeGroup'] = nodeDetails[nodeNumber].group ? nodeDetails[nodeNumber].group : ''
     //utils.timeStampedLog(name + `: clickExport: nodeDetail output1 ${JSON.stringify(output)}`)
     nodes.push(output)
+    /*
     try{
       let numberOfChannels = NodeFunctions.getNumberOfChannels(store, nodeNumber)
       //utils.timeStampedLog(name + `: clickExport: node ${nodeNumber} number of channels ${numberOfChannels}`)
@@ -149,6 +150,7 @@ const clickExport = async (filename) => {
     } catch(err){
       utils.timeStampedLog(name + `: clickExport: channels: ${err}`)
     }
+      */
     try{
       utils.timeStampedLog(name + `: clickExport: names#1: node ${nodeNumber}`)
       if (nodeDetails[nodeNumber].tokens){
@@ -201,6 +203,7 @@ const clickExport = async (filename) => {
   nodes.push(nodeOutput)
   //
 
+  /*
   let channelOutput = {}
   channelOutput['nodeNumber'] = ''
   channelOutput['nodeName'] = ''
@@ -209,6 +212,7 @@ const clickExport = async (filename) => {
   channelOutput['channelNumber'] = ''
   channelOutput['channelName'] = ''
   channels.push(channelOutput)
+  */
 
   // ok, lets convert that json data into sheets
   // add some formatting while we're at it
@@ -217,7 +221,7 @@ const clickExport = async (filename) => {
   const nodesWorksheet = xlsx.utils.json_to_sheet(nodes);
   try{
     //utils.timeStampedLog(name + `: clickExport: nodesWorksheet ${JSON.stringify(nodes)}`)
-    /* calculate column width */
+    // calculate column width
     const nodes_name_width = nodes.reduce((w, r) => Math.max(w, r.nodeName.length), 15) + 5;
     const nodes_group_width = nodes.reduce((w, r) => Math.max(w, r.nodeGroup.length), 15) + 5;
     nodesWorksheet["!cols"] = [ { wch: nodes_name_width }, { wch: 20 }, { wch: 20 }, { wch: nodes_group_width } ];
@@ -228,7 +232,7 @@ const clickExport = async (filename) => {
 
   const longEventsWorksheet = xlsx.utils.json_to_sheet(longEvents);
   try{
-    /* calculate column width */
+    // calculate column width
     const long_events_name_width = longEvents.reduce((w, r) => Math.max(w, r.eventName.length), 15) + 5;
     const long_events_group_width = longEvents.reduce((w, r) => Math.max(w, r.eventGroup.length), 15) + 5;
     longEventsWorksheet["!cols"] = [ { wch: long_events_name_width }, { wch: 20 }, { wch: 20 }, { wch: long_events_group_width } ];
@@ -250,10 +254,10 @@ const clickExport = async (filename) => {
       utils.timeStampedLog(name + `: clickExport: shortEventsWorksheet ${err}`)
   }
 
-
+/*
   const channelsWorksheet = xlsx.utils.json_to_sheet(channels);
   try{
-    /* calculate column width */
+    // calculate column width
     // just do it for the variable size text fields
     // w is the previous result, r is the current element (row)
     const channelName_width = channels.reduce((w, r) => Math.max(w, r.channelName.length), 15) + 5;
@@ -265,17 +269,19 @@ const clickExport = async (filename) => {
   } catch (err){
       utils.timeStampedLog(name + `: clickExport: channelsWorksheet ${err}`)
   }
+*/
 
   const namesWorksheet = xlsx.utils.json_to_sheet(names);
   try{
-    /* calculate column width */
+    // calculate column width
     // just do it for the variable size text fields
     // w is the previous result, r is the current element (row)
-    //const channelName_width = channels.reduce((w, r) => Math.max(w, r.name.length), 15) + 5;
     const nodeName_width = channels.reduce((w, r) => Math.max(w, r.nodeName.length), 15) + 5;
     const nodeGroup_width = channels.reduce((w, r) => Math.max(w, r.nodeGroup.length), 15) + 5;
     const moduleName_width = channels.reduce((w, r) => Math.max(w, r.moduleName.length), 15) + 5;
-    namesWorksheet["!cols"] = [ { wch: 15 }, { wch: nodeName_width }, { wch: nodeGroup_width }, { wch: moduleName_width }, { wch: 18 }, { wch: 18 } ];
+    const userName_width = channels.reduce((w, r) => Math.max(w, r.name.length), 15) + 5;
+    // columns are nodeNumber, nodeName, nodeGroup, moduleName, token, number, userName
+    namesWorksheet["!cols"] = [ { wch: 15 }, { wch: nodeName_width }, { wch: nodeGroup_width }, { wch: moduleName_width }, { wch: 18 }, { wch: 10 }, { wch: userName_width } ];
     utils.timeStampedLog(name + `: clickExport: namesWorksheet`)
   } catch (err){
       utils.timeStampedLog(name + `: clickExport: namesWorksheet ${err}`)
@@ -286,7 +292,7 @@ const clickExport = async (filename) => {
     xlsx.utils.book_append_sheet(workbook, nodesWorksheet, "Nodes");
     xlsx.utils.book_append_sheet(workbook, longEventsWorksheet, "Long_Events");
     xlsx.utils.book_append_sheet(workbook, shortEventsWorksheet, "Short_Events");
-    xlsx.utils.book_append_sheet(workbook, channelsWorksheet, "Channels");
+    //xlsx.utils.book_append_sheet(workbook, channelsWorksheet, "Channels");
     xlsx.utils.book_append_sheet(workbook, namesWorksheet, "Names");
   } catch (err){
       utils.timeStampedLog(name + `: clickExport: book_append_sheet ${err}`)

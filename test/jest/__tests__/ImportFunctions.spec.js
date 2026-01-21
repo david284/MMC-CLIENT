@@ -1,6 +1,12 @@
 import { describe, expect, it } from '@jest/globals';
+import each from 'jest-each';
+
 
 import {importFCU} from "components/functions/ImportFunctions.js"
+import * as ImportFunctions from "components/functions/ImportFunctions.js"
+
+import * as mock_store from "../../../test/jest/mock_store.js";
+
 
 describe('ImportFunctions Test', () => {
 
@@ -10,15 +16,28 @@ describe('ImportFunctions Test', () => {
 
   let store = {
     "state":{"layout":{
-      "eventDetails":{ 
+      "eventDetails":{
         "000A0001": {"name": "event #1"},
         "000A0002": {}
       },
-      "nodeDetails":{ 
+      "nodeDetails":{
         "10": {"name": "CANACC5-10", "moduleName": "CANACC5"},
         "20": {}
       }
     }},
+    "getters":{
+      node_token_name(nodeNumber, tokenName, tokenNumber){
+        console.log(`unit_test: node_channel_name ${nodeNumber} ${tokenName} ${tokenNumber}`)
+        let replacementName = "undefined"
+        if (tokenNumber == 1){
+          replacementName = "switch"
+        }
+        if (tokenNumber == 3){
+          replacementName = "turnout"
+        }
+        return replacementName
+      }
+    },
     "setters":{
       event_name(eventIdentifier, eventName){
         event_name_updated = true
@@ -29,6 +48,12 @@ describe('ImportFunctions Test', () => {
       },
       node_name(nodeNumber, nodeName){
         node_name_updated = true
+      },
+      node_token_name(nodeNumber, token, channelNumber, name){
+        console.log(`unit_test: setter: node_token_name: ${nodeNumber} ${token} ${channelNumber} ${name}`)
+        if (store.state.layout.nodeDetails[nodeNumber].tokens == undefined) {store.state.layout.nodeDetails[nodeNumber].tokens = {}}
+        if (store.state.layout.nodeDetails[nodeNumber].tokens[token] == undefined) {store.state.layout.nodeDetails[nodeNumber].tokens[token] = {}}
+        store.state.layout.nodeDetails[nodeNumber].tokens[token][channelNumber]={"name":name}
       }
     }
   }
@@ -280,6 +305,21 @@ describe('ImportFunctions Test', () => {
     expect(node_name_updated).toBe(true)
     expect(node_moduleName_updated).toBe(true)
   });
+
+  //
+  // test support for older channel name inport into new tokens structure
+  each([
+    ["unit_test_1", "overwrite", "unit_test_1"],
+    ["unit_test_2", "retain", "unit_test_1"],
+    ["unit_test_3", "overwrite", "unit_test_3"]
+  ]).test('addNodeChannelName test - %s %s', (test_name, modeValue, expected) => {
+    console.log("addNodeChannelName test BEGIN")
+    ImportFunctions.addNodeChannelName(mock_store, 10, 1, test_name, modeValue)
+    //console.log(`unit_test: addNodeChannelName: ${JSON.stringify(mock_store, null, "  ")}`)
+    expect(mock_store.state.layout.nodeDetails[10].tokens.channel[1].name).toBe(expected)
+    console.log("addNodeChannelName test END")
+  });
+
 
 });
 
