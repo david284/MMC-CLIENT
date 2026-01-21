@@ -4,6 +4,7 @@ const convert = require('xml-js');
 const XLSX = require('xlsx');
 
 import {decToHex} from "components/functions/utils.js"
+import * as utils from "components/functions/utils.js"
 
 //
 //
@@ -65,6 +66,7 @@ export function importSPREADSHEET(file, store, modeValue) {
   let importedEvents = {}
   let importedNodes = {}
   let importedChannels = {}
+  let importedUserNames = {}
   try{
     const workbook = XLSX.read(file,{'type':'binary'});
     if (workbook.Workbook != undefined){
@@ -116,6 +118,26 @@ export function importSPREADSHEET(file, store, modeValue) {
               console.log (name + `importSPREADSHEET: workbook Channels: channel ${importedChannels[j].channelNumber} ${importedChannels[j].channelName}`)
               addNodeChannelName(store, importedChannels[j].nodeNumber, importedChannels[j].channelNumber, importedChannels[j].channelName, modeValue)
             }
+          }
+        }
+        if (workbook.SheetNames[i].toUpperCase() == "NAMES"){
+          importedUserNames = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
+          console.log (name + "importSPREADSHEET: workbook number of userNames imported: " + importedUserNames.length)
+          for ( let j=0; j < importedUserNames.length; j++) {
+            utils.timeStampedLog(`importSPREADSHEET: NAMES: ${JSON.stringify(importedUserNames[j], null, " ")}`)
+            addNodeUserName(
+              store,
+              importedUserNames[j].nodeNumber,
+              importedUserNames[j].token,
+              importedUserNames[j].number,
+              importedUserNames[j].name,
+              modeValue)
+            /*
+            if(importedUserNames[j].number != undefined){
+              console.log (name + `importSPREADSHEET: workbook names: channel ${importedChannels[j].channelNumber} ${importedChannels[j].channelName}`)
+              addNodeChannelName(store, importedChannels[j].nodeNumber, importedChannels[j].channelNumber, importedChannels[j].channelName, modeValue)
+            }
+              */
           }
         }
       }
@@ -308,3 +330,39 @@ export function addNodeChannelName(store, nodeNumber, channelNumber, channelName
     }
   }
 }
+
+
+export function addNodeUserName(store, nodeNumber, tokenName, tokenNumber, userName, modeValue){
+  if (userName != undefined){
+    if (userName.length >0){
+      utils.timeStampedLog(`addNodeUserName:
+        ${tokenName}
+        ${tokenNumber}
+        ${userName}
+        ${modeValue}`)
+
+      let existingUserName = null
+      try {
+        // check if layout data has an existing name
+        existingUserName= store.state.layout.nodeDetails[nodeNumber].tokens[tokenName].userNames[tokenNumber]
+      } catch {}
+      if ((existingUserName == null) || (existingUserName.length == 0)){
+        console.log(`node: ${nodeNumber} token: ${tokenName}${tokenNumber} userName: ${userName} not found - updated`)
+        store.setters.node_token_name(nodeNumber, tokenName, tokenNumber, userName)
+      } else if (existingUserName == userName){
+        console.log(`node: ${nodeNumber} token: ${tokenName}${tokenNumber} userName: ${userName} match - do nothing`)
+      } else {
+        //console.log(`node: ${nodeNumber} token: ${tokenName}${tokenNumber} existingUserName ${existingUserName} length ${existingUserName.length}`)
+        // stored channel name doesn't match import channel name
+        if (modeValue == "overwrite"){
+          console.log(`node: ${nodeNumber} token: ${tokenName}${tokenNumber} userName: ${userName} no match - overwrite`)
+          store.setters.node_token_name(nodeNumber, tokenName, tokenNumber, userName)
+        } else {
+          console.log(`node: ${nodeNumber} token: ${tokenName}${tokenNumber} userName: ${userName} no match - retain`)
+        }
+      }
+
+    }
+  }
+}
+

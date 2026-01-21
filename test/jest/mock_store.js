@@ -33,7 +33,8 @@ export const setters = {
     if (state.layout.nodeDetails[nodeNumber] == undefined) {state.layout.nodeDetails[nodeNumber] = {}}
     if (state.layout.nodeDetails[nodeNumber].tokens == undefined) {state.layout.nodeDetails[nodeNumber].tokens = {}}
     if (state.layout.nodeDetails[nodeNumber].tokens[token] == undefined) {state.layout.nodeDetails[nodeNumber].tokens[token] = {}}
-    state.layout.nodeDetails[nodeNumber].tokens[token][channelNumber]={"name":name}
+    if (state.layout.nodeDetails[nodeNumber].tokens[token].userNames == undefined) {state.layout.nodeDetails[nodeNumber].tokens[token].userNames = {}}
+    state.layout.nodeDetails[nodeNumber].tokens[token].userNames[channelNumber]=name
   }
 }
 

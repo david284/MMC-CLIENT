@@ -316,8 +316,22 @@ describe('ImportFunctions Test', () => {
     console.log("addNodeChannelName test BEGIN")
     ImportFunctions.addNodeChannelName(mock_store, 10, 1, test_name, modeValue)
     //console.log(`unit_test: addNodeChannelName: ${JSON.stringify(mock_store, null, "  ")}`)
-    expect(mock_store.state.layout.nodeDetails[10].tokens.channel[1].name).toBe(expected)
+    expect(mock_store.state.layout.nodeDetails[10].tokens.channel.userNames[1]).toBe(expected)
     console.log("addNodeChannelName test END")
+  });
+
+  //
+  // test support for token name inport into tokens structure
+  each([
+    ["unit_test_1", "overwrite", "unit_test_1"],
+    ["unit_test_2", "retain", "unit_test_1"],
+    ["unit_test_3", "overwrite", "unit_test_3"]
+  ]).test('addNodeUserName test - %s %s', (test_name, modeValue, expected) => {
+    console.log("addNodeUserName test BEGIN")
+    ImportFunctions.addNodeUserName(mock_store, 10, "unitTestToken", 1, test_name, modeValue)
+    console.log(`unit_test: addNodeChannelName: ${JSON.stringify(mock_store, null, "  ")}`)
+    expect(mock_store.state.layout.nodeDetails[10].tokens.unitTestToken.userNames[1]).toBe(expected)
+    console.log("addNodeUserName test END")
   });
 
 
