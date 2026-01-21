@@ -312,8 +312,7 @@ function addNodeChannelNameOld(store, nodeNumber, channelNumber, channelName, mo
 export function addNodeChannelName(store, nodeNumber, channelNumber, channelName, modeValue){
   let existingChannelName = null
   try {
-    existingChannelName=store.getters.node_token_name(nodeNumber, 'channel', channelNumber)
-    //existingChannelName = store.state.layout.nodeDetails[nodeNumber].channels[channelNumber].channelName
+    existingChannelName= store.state.layout.nodeDetails[nodeNumber].tokens['channel'].userNames[channelNumber]
   } catch {}
   if ((existingChannelName == null) || (existingChannelName.length == 0)){
     console.log('node ' + nodeNumber + ": channelName: " + channelName + " ChannelName not found - updated")
