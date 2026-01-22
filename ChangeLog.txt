@@ -1,8 +1,10 @@
-Version
+Version 0.18.0
   Make some texts look nicer. (PR #9)
   Fixed MFD dialog not listing file without timestamp
   replaced channel names with new generic names dialog to support other tokens
   altered export to replace channels page with names page
+  Altered import for new names page (retains import of channel page)
+  Added EventVariableDual component
 
 Version 0.17.1
   Added eventIdentityShowVariables to EventsListByNode

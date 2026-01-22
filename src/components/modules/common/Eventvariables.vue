@@ -22,6 +22,28 @@
         :displaySubTitle="item.displaySubTitle"
         :configuration=item>
       </EventVariableBitSingle>
+
+
+      <EventVariableDual v-if="(item.type=='EventVariableDual') && (isVisible(item))"
+        :NodeNumber=nodeNumber
+        :eventIdentifier = "props.eventIdentifier"
+        :eventIndex = "props.eventIndex"
+        :eventVariableIndexLow="item.eventVariableIndexLow"
+        :eventVariableIndexHigh="item.eventVariableIndexHigh"
+        :displayTitle="item.displayTitle"
+        :displaySubTitle="item.displaySubTitle"
+        :displayScale = "item.displayScale"
+        :displayOffset = "item.displayOffset"
+        :displayUnits="item.displayUnits"
+        :min = "item.min"
+        :max = "item.max"
+        :startBit = "item.startBit"
+        :endBit = "item.endBit"
+        :configuration = item
+        >
+      </EventVariableDual>
+
+
       <EventVariableGroup v-if="(item.type=='EventVariableGroup') && (isVisible(item))"
         :node-number=props.nodeNumber
         :eventIdentifier= props.eventIdentifier
@@ -96,6 +118,7 @@
 import {computed, inject, onBeforeMount, onMounted, onUpdated, watch} from "vue";
 import EventVariableBitArray from "components/modules/common/EventVariableBitArray"
 import EventVariableBitSingle from "components/modules/common/EventVariableBitSingle"
+import EventVariableDual from "components/modules/common/EventVariableDual"
 import EventVariableGroup from "components/modules/common/EventVariableGroup"
 import EventVariableNumber from "components/modules/common/EventVariableNumber"
 import EventVariableSelect from "components/modules/common/EventVariableSelect"
