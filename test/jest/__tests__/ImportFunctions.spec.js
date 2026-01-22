@@ -1,310 +1,95 @@
 import { describe, expect, it } from '@jest/globals';
 import each from 'jest-each';
 
-
-import {importFCU} from "components/functions/ImportFunctions.js"
 import * as ImportFunctions from "components/functions/ImportFunctions.js"
-
 import * as mock_store from "../../../test/jest/mock_store.js";
 
-
 describe('ImportFunctions Test', () => {
-
-  var event_name_updated = false
-  var node_name_updated = false
-  var node_moduleName_updated = false
-
-  let store = {
-    "state":{"layout":{
-      "eventDetails":{
-        "000A0001": {"name": "event #1"},
-        "000A0002": {}
-      },
-      "nodeDetails":{
-        "10": {"name": "CANACC5-10", "moduleName": "CANACC5"},
-        "20": {}
-      }
-    }},
-    "getters":{
-      node_token_name(nodeNumber, tokenName, tokenNumber){
-        console.log(`unit_test: node_channel_name ${nodeNumber} ${tokenName} ${tokenNumber}`)
-        let replacementName = "undefined"
-        if (tokenNumber == 1){
-          replacementName = "switch"
-        }
-        if (tokenNumber == 3){
-          replacementName = "turnout"
-        }
-        return replacementName
-      }
-    },
-    "setters":{
-      event_name(eventIdentifier, eventName){
-        event_name_updated = true
-        console.log(`unit_test: event_name updated ${event_name_updated}`)
-      },
-      node_moduleName(nodeNumber, moduleName){
-        node_moduleName_updated = true
-      },
-      node_name(nodeNumber, nodeName){
-        node_name_updated = true
-      },
-      node_token_name(nodeNumber, token, channelNumber, name){
-        console.log(`unit_test: setter: node_token_name: ${nodeNumber} ${token} ${channelNumber} ${name}`)
-        if (store.state.layout.nodeDetails[nodeNumber].tokens == undefined) {store.state.layout.nodeDetails[nodeNumber].tokens = {}}
-        if (store.state.layout.nodeDetails[nodeNumber].tokens[token] == undefined) {store.state.layout.nodeDetails[nodeNumber].tokens[token] = {}}
-        store.state.layout.nodeDetails[nodeNumber].tokens[token][channelNumber]={"name":name}
-      }
-    }
-  }
 
   //---------------------------------------------------------------------------
   //  FCU Import
   //---------------------------------------------------------------------------
 
+
   //
-  // event number 100 doesn't exist
-  // expect update
+  // fcu import event name tests
+  // At start, event doesn't exist
   //
-  it('fcuImport event#1', () => {
-    console.log("fcuImport event#1")
+  each([
+    ["unit_test_1", "overwrite", true],     // new event - added
+    ["unit_test_1", "overwrite", false],    // same event name - not added
+    ["unit_test_2", "retain", false],       // new event name - retain - not added
+    ["unit_test_3", "overwrite", true]      // new event name - overwrite - added
+  ]).test('fcuImport_event test - %s %s %s', (test_name, modeValue, expected) => {
+    console.log(`fcuImport_event BEGIN ${test_name}, ${modeValue}, ${expected}`)
 
     const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
       + "<MergModuleDataSet>"
       + "<userEvents>"
         + "<eventValue>100</eventValue>"
         + "<eventNode>10</eventNode>"
-        + "<eventName>event #1</eventName>"
-      + "</userEvents>"
-      + "<userEvents>"
-        + "<eventValue>101</eventValue>"
-        + "<eventNode>10</eventNode>"
-        + "<eventName>event #1</eventName>"
+        + "<eventName>" + test_name + "</eventName>"
       + "</userEvents>"
     + "</MergModuleDataSet>"
 
-    let modeValue = "retain"
-    event_name_updated = false
-    importFCU(fcuConfig, store, modeValue)
-    expect(event_name_updated).toBe(true)
-  });
-
-
-  //
-  // event number 2 doesn't have a name
-  // expect update
-  //
-  it('fcuImport event#2', () => {
-    console.log("fcuImport event#2")
-
-    const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
-      + "<MergModuleDataSet>"
-      + "<userEvents>"
-        + "<eventValue>2</eventValue>"
-        + "<eventNode>10</eventNode>"
-        + "<eventName>event #1</eventName>"
-      + "</userEvents>"
-    + "</MergModuleDataSet>"
-
-    let modeValue = "retain"
-    event_name_updated = false
-    importFCU(fcuConfig, store, modeValue)
-    expect(event_name_updated).toBe(true)
+    mock_store.state.event_name_updated = false
+    ImportFunctions.importFCU(fcuConfig, mock_store, modeValue)
+    console.log(`unit_test: fcuImport_event: ${JSON.stringify(mock_store, null, "  ")}`)
+    expect(mock_store.state.event_name_updated).toBe(expected)
+    console.log("fcuImport_event END")
   });
 
   //
-  // event name matches
-  // don't expect update
-  //
-  it('fcuImport event#3', () => {
-    console.log("fcuImport event#3")
-
-    const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
-      + "<MergModuleDataSet>"
-      + "<userEvents>"
-        + "<eventValue>1</eventValue>"
-        + "<eventNode>10</eventNode>"
-        + "<eventName>event #1</eventName>"
-      + "</userEvents>"
-    + "</MergModuleDataSet>"
-
-    let modeValue = "retain"
-    event_name_updated = false
-    importFCU(fcuConfig, store, modeValue)
-    expect(event_name_updated).toBe(false)
-  });
-
-
-  //
-  // event name doesn't match
-  // mode is retain, don't expect update
-  //
-  it('fcuImport event#4', () => {
-    console.log("fcuImport event#4")
-
-    const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
-    + "<MergModuleDataSet>"
-    + "<userEvents>"
-      + "<eventValue>1</eventValue>"
-      + "<eventNode>10</eventNode>"
-      + "<eventName>event #5</eventName>"
-    + "</userEvents>"
-  + "</MergModuleDataSet>"
-
-    let modeValue = "retain"
-    event_name_updated = false
-    importFCU(fcuConfig, store, modeValue)
-    expect(event_name_updated).toBe(false)
-  });
-
-
-  //
-  // event name doesn't match
-  // mode is overwrite, expect update
-  //
-  it('fcuImport event#5', () => {
-    console.log("fcuImport event#5")
-
-    const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
-    + "<MergModuleDataSet>"
-      + "<userEvents>"
-        + "<eventValue>1</eventValue>"
-        + "<eventNode>10</eventNode>"
-        + "<eventName>event #5</eventName>"
-      + "</userEvents>"
-    + "</MergModuleDataSet>"
-
-    let modeValue = "overwrite"
-    event_name_updated = false
-    importFCU(fcuConfig, store, modeValue)
-    expect(event_name_updated).toBe(true)
-  });
-
-
-  //
+  // Node name tests
   // Node number 100 doesn't exist
-  // expect update
   //
-  it('fcuImport node#1', () => {
-    console.log("fcuImport node#1")
+  each([
+    ["CANACC5-100","overwrite", true],    // new node - so updated
+    ["CANACC5-100","overwrite", false],   // same name, no update
+    ["CANACC5-1000","retain", false],     // new name, but retain - no update
+    ["CANACC5-1000","overwrite", true]    // new name, overwrite - update true
+  ]).test('fcuImport_node %s %s', (nodeName, modeValue, expected) => {
+    console.log(`fcuImport_node ${nodeName}, ${modeValue}`)
 
     const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
       + "<MergModuleDataSet>"
       + "<userNodes>"
         + "<nodeNum>100</nodeNum>"
-        + "<nodeName>CANACC5-100</nodeName>"
+        + "<nodeName>" + nodeName +"</nodeName>"
         + "<moduleName>CANACC5</moduleName>"
       + "</userNodes>"
-      + "<userNodes>"
-        + "<nodeNum>101</nodeNum>"
-        + "<nodeName>CANACC5-101</nodeName>"
-        + "<moduleName>CANACC5</moduleName>"
-      + "</userNodes>"
-    + "</MergModuleDataSet>"
-
-    let modeValue = "retain"
-    node_name_updated = false
-    node_moduleName_updated = false
-    importFCU(fcuConfig, store, modeValue)
-    expect(node_name_updated).toBe(true)
-    expect(node_moduleName_updated).toBe(true)
+      + "</MergModuleDataSet>"
+    mock_store.state.node_name_updated = false
+    ImportFunctions.importFCU(fcuConfig, mock_store, modeValue)
+    console.log(`unit_test: fcuImport_node: ${JSON.stringify(mock_store, null, "  ")}`)
+    expect(mock_store.state.node_name_updated).toBe(expected)
   });
 
   //
-  // Node name doesn't exist for node 20
-  // expect update
+  // module name tests
+  // Node number 200 doesn't exist
   //
-  it('fcuImport node#2', () => {
-    console.log("fcuImport node#2")
-
+  each([
+    ["CANMNT","overwrite", true],       // new node - so updated
+    ["CANMNT","overwrite", false],      // same name, no update
+    ["CANMNT5000","retain", false],     // new name, but retain - no update
+    ["CANMNT5000","overwrite", true]    // new name, overwrite - update true
+  ]).test('fcuImport_moduleName %s %s', (moduleName, modeValue, expected) => {
+    console.log(`fcuImport_moduleName ${moduleName}, ${modeValue}`)
     const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
       + "<MergModuleDataSet>"
       + "<userNodes>"
-        + "<nodeNum>20</nodeNum>"
-        + "<nodeName>CANACC8-20</nodeName>"
-        + "<moduleName>CANACC8</moduleName>"
+        + "<nodeNum>200</nodeNum>"
+        + "<nodeName>CANACC5</nodeName>"
+        + "<moduleName>" + moduleName + "</moduleName>"
       + "</userNodes>"
-    + "</MergModuleDataSet>"
-
-    let modeValue = "retain"
-    node_name_updated = false
-    node_moduleName_updated = false
-    importFCU(fcuConfig, store, modeValue)
-    expect(node_name_updated).toBe(true)
-    expect(node_moduleName_updated).toBe(true)
+      + "</MergModuleDataSet>"
+    mock_store.state.node_moduleName_updated = false
+    ImportFunctions.importFCU(fcuConfig, mock_store, modeValue)
+    console.log(`unit_test: fcuImport_moduleName: ${JSON.stringify(mock_store, null, "  ")}`)
+    expect(mock_store.state.node_moduleName_updated).toBe(expected)
   });
 
-  //
-  // Node name matches for node 10
-  // don't expect update
-  //
-  it('fcuImport node#3', () => {
-    console.log("fcuImport node#3")
-
-    const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
-      + "<MergModuleDataSet>"
-      + "<userNodes>"
-        + "<nodeNum>10</nodeNum>"
-        + "<nodeName>CANACC5-10</nodeName>"
-        + "<moduleName>CANACC5</moduleName>"
-      + "</userNodes>"
-    + "</MergModuleDataSet>"
-
-    let modeValue = "overwrite"
-    node_name_updated = false
-    node_moduleName_updated = false
-    importFCU(fcuConfig, store, modeValue)
-    expect(node_name_updated).toBe(false)
-    expect(node_moduleName_updated).toBe(false)
-  });
-
-  //
-  // Node name doesn't match for node 10
-  // mode is retain - don't expect update
-  //
-  it('fcuImport node#4', () => {
-    console.log("fcuImport node#4")
-
-    const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
-      + "<MergModuleDataSet>"
-      + "<userNodes>"
-        + "<nodeNum>10</nodeNum>"
-        + "<nodeName>CANACE8C-10</nodeName>"
-        + "<moduleName>CANACE8C</moduleName>"
-      + "</userNodes>"
-    + "</MergModuleDataSet>"
-
-    let modeValue = "retain"
-    node_name_updated = false
-    node_moduleName_updated = false
-    importFCU(fcuConfig, store, modeValue)
-    expect(node_name_updated).toBe(false)
-    expect(node_moduleName_updated).toBe(false)
-  });
-
-  //
-  // Node name doesn't match for node 10
-  // mode is overwrite - expect update
-  //
-  it('fcuImport node#5', () => {
-    console.log("fcuImport node#5")
-
-    const fcuConfig = `<?xml version="1.0" standalone="yes"?>`
-      + "<MergModuleDataSet>"
-      + "<userNodes>"
-        + "<nodeNum>10</nodeNum>"
-        + "<nodeName>CANACE8C-10</nodeName>"
-        + "<moduleName>CANACE8C</moduleName>"
-      + "</userNodes>"
-    + "</MergModuleDataSet>"
-
-    let modeValue = "overwrite"
-    node_name_updated = false
-    node_moduleName_updated = false
-    importFCU(fcuConfig, store, modeValue)
-    expect(node_name_updated).toBe(true)
-    expect(node_moduleName_updated).toBe(true)
-  });
 
   //
   // test support for older channel name inport into new tokens structure

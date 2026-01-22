@@ -3,14 +3,15 @@
 //
 //
 
-export var state = {"layout":{
-  "eventDetails":{
-    "000A0001": {"name": "event #1"},
-    "000A0002": {}
+export var state = {
+  "layout":{
+    "eventDetails":{},
+    "nodeDetails":{}
   },
-  "nodeDetails":{
-  }
-}}
+  event_name_updated: false,
+  node_name_updated: false,
+  node_moduleName_updated: false
+}
 
 export const getters = {
   node_token_name(nodeNumber, tokenName, tokenNumber){
@@ -22,11 +23,20 @@ export const getters = {
 
 export const setters = {
   event_name(eventIdentifier, eventName){
-    console.log(`unit_test: event_name updated ${event_name_updated}`)
+    console.log(`unit_test: event_name updated ${state.event_name_updated}`)
+    if (state.layout.eventDetails[eventIdentifier] == undefined) {state.layout.eventDetails[eventIdentifier] = {}}
+    state.layout.eventDetails[eventIdentifier].name = eventName
+    state.event_name_updated = true
   },
   node_moduleName(nodeNumber, moduleName){
+    if (state.layout.nodeDetails[nodeNumber] == undefined) {state.layout.nodeDetails[nodeNumber] = {}}
+    state.layout.nodeDetails[nodeNumber].moduleName = moduleName
+    state.node_moduleName_updated = true
   },
   node_name(nodeNumber, nodeName){
+    if (state.layout.nodeDetails[nodeNumber] == undefined) {state.layout.nodeDetails[nodeNumber] = {}}
+    state.layout.nodeDetails[nodeNumber].name = nodeName
+    state.node_name_updated = true
   },
   node_token_name(nodeNumber, token, channelNumber, name){
     console.log(`unit_test: setter: node_token_name: ${nodeNumber} ${token} ${channelNumber} ${name}`)
