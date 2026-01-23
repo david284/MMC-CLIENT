@@ -13,7 +13,8 @@
 
         <q-card-section>
           <div class="text-subtitle2">
-            The data exported includes node & event names
+            The data exported includes node and event names<br>
+            The data also includes channel & other module specific names
           </div>
           <div class="text-subtitle2">
             The export data does not include node configuration & events, use node backup for that
@@ -129,28 +130,6 @@ const clickExport = async (filename) => {
     output['nodeGroup'] = nodeDetails[nodeNumber].group ? nodeDetails[nodeNumber].group : ''
     //utils.timeStampedLog(name + `: clickExport: nodeDetail output1 ${JSON.stringify(output)}`)
     nodes.push(output)
-    /*
-    try{
-      let numberOfChannels = NodeFunctions.getNumberOfChannels(store, nodeNumber)
-      //utils.timeStampedLog(name + `: clickExport: node ${nodeNumber} number of channels ${numberOfChannels}`)
-      for (var i= 1; i <= numberOfChannels; i++){
-        let channelOutput = {}
-        channelOutput['nodeNumber'] = parseInt(nodeNumber)
-        channelOutput['nodeName'] = nodeDetails[nodeNumber].name ? nodeDetails[nodeNumber].name : ''
-        channelOutput['nodeGroup'] = nodeDetails[nodeNumber].group ? nodeDetails[nodeNumber].group : ''
-        channelOutput['moduleName'] = nodeDetails[nodeNumber].moduleName ? nodeDetails[nodeNumber].moduleName : ''
-        channelOutput['channelNumber'] = i
-        try{
-          channelOutput['channelName'] = nodeDetails[nodeNumber].channels[i].channelName
-        }catch{
-          channelOutput['channelName'] = ''
-        }
-        channels.push(channelOutput)
-      }
-    } catch(err){
-      utils.timeStampedLog(name + `: clickExport: channels: ${err}`)
-    }
-      */
     try{
       utils.timeStampedLog(name + `: clickExport: names#1: node ${nodeNumber}`)
       if (nodeDetails[nodeNumber].tokens){
@@ -203,16 +182,15 @@ const clickExport = async (filename) => {
   nodes.push(nodeOutput)
   //
 
-  /*
-  let channelOutput = {}
-  channelOutput['nodeNumber'] = ''
-  channelOutput['nodeName'] = ''
-  channelOutput['nodeGroup'] = ''
-  channelOutput['moduleName'] = ''
-  channelOutput['channelNumber'] = ''
-  channelOutput['channelName'] = ''
-  channels.push(channelOutput)
-  */
+  let namesOutput = {}
+  namesOutput['nodeNumber'] = ''
+  namesOutput['nodeName'] = ''
+  namesOutput['nodeGroup'] = ''
+  namesOutput['moduleName'] = ''
+  namesOutput['token'] = ''
+  namesOutput['number'] = ''
+  namesOutput['name'] = ''
+  names.push(namesOutput)
 
   // ok, lets convert that json data into sheets
   // add some formatting while we're at it
@@ -254,23 +232,6 @@ const clickExport = async (filename) => {
       utils.timeStampedLog(name + `: clickExport: shortEventsWorksheet ${err}`)
   }
 
-/*
-  const channelsWorksheet = xlsx.utils.json_to_sheet(channels);
-  try{
-    // calculate column width
-    // just do it for the variable size text fields
-    // w is the previous result, r is the current element (row)
-    const channelName_width = channels.reduce((w, r) => Math.max(w, r.channelName.length), 15) + 5;
-    const nodeName_width = channels.reduce((w, r) => Math.max(w, r.nodeName.length), 15) + 5;
-    const nodeGroup_width = channels.reduce((w, r) => Math.max(w, r.nodeGroup.length), 15) + 5;
-    const moduleName_width = channels.reduce((w, r) => Math.max(w, r.moduleName.length), 15) + 5;
-    channelsWorksheet["!cols"] = [ { wch: 15 }, { wch: nodeName_width }, { wch: nodeGroup_width }, { wch: moduleName_width }, { wch: 18 }, { wch: channelName_width } ];
-    utils.timeStampedLog(name + `: clickExport: channelsWorksheet`)
-  } catch (err){
-      utils.timeStampedLog(name + `: clickExport: channelsWorksheet ${err}`)
-  }
-*/
-
   const namesWorksheet = xlsx.utils.json_to_sheet(names);
   try{
     // calculate column width
@@ -292,7 +253,6 @@ const clickExport = async (filename) => {
     xlsx.utils.book_append_sheet(workbook, nodesWorksheet, "Nodes");
     xlsx.utils.book_append_sheet(workbook, longEventsWorksheet, "Long_Events");
     xlsx.utils.book_append_sheet(workbook, shortEventsWorksheet, "Short_Events");
-    //xlsx.utils.book_append_sheet(workbook, channelsWorksheet, "Channels");
     xlsx.utils.book_append_sheet(workbook, namesWorksheet, "Names");
   } catch (err){
       utils.timeStampedLog(name + `: clickExport: book_append_sheet ${err}`)

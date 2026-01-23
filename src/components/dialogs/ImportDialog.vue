@@ -117,14 +117,15 @@
           </div>
           <br>
           <div class="text-subtitle2">
-            The channel information is expected to be on a sheet named 'Channels'.<br>
-            Only 'nodeNumber', 'channelNumber' & 'channelName' are actually used by the import.<br>
+            The names information is expected to be on a sheet named 'Names'.<br>
+            These names are used to replace the instances of the token in the MDF file<br>
+            Only 'nodeNumber', 'token', 'number' & 'name' are actually used by the import.<br>
             'nodeName', 'moduleName' and 'groupName' are not used by the import, and so optional.<br>
              These are populated when a spreadsheet is exported, and very useful to make the list more readable.
           </div>
           <div>
             <q-img
-              src="~/assets/Channels_sheet.png"
+              src="~/assets/names_sheet.png"
               spinner-color="white"
               style="width: 500px"
             />

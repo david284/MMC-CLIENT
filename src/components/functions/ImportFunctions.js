@@ -124,7 +124,7 @@ export function importSPREADSHEET(file, store, modeValue) {
           importedUserNames = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
           console.log (name + "importSPREADSHEET: workbook number of userNames imported: " + importedUserNames.length)
           for ( let j=0; j < importedUserNames.length; j++) {
-            utils.timeStampedLog(`importSPREADSHEET: NAMES: ${JSON.stringify(importedUserNames[j], null, " ")}`)
+            //utils.timeStampedLog(`importSPREADSHEET: NAMES: ${JSON.stringify(importedUserNames[j], null, " ")}`)
             addNodeUserName(
               store,
               importedUserNames[j].nodeNumber,
@@ -132,12 +132,6 @@ export function importSPREADSHEET(file, store, modeValue) {
               importedUserNames[j].number,
               importedUserNames[j].name,
               modeValue)
-            /*
-            if(importedUserNames[j].number != undefined){
-              console.log (name + `importSPREADSHEET: workbook names: channel ${importedChannels[j].channelNumber} ${importedChannels[j].channelName}`)
-              addNodeChannelName(store, importedChannels[j].nodeNumber, importedChannels[j].channelNumber, importedChannels[j].channelName, modeValue)
-            }
-              */
           }
         }
       }
