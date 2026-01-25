@@ -16,6 +16,22 @@
 
           <q-card-section style="width: 250px; min-height: 80px;">
             <q-card-actions align="left">
+              <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Delete Offline Nodes"
+              @click="clickDeleteAllOffline()" v-close-popup/>
+            </q-card-actions>
+          </q-card-section>
+
+          <q-card-section style="width: 500px; min-height: 80px;">
+            This will remove all nodes in the list with a status of 'Offline'<br>
+            Offline means any node that hasn't communicated since MMC started this time
+          </q-card-section>
+
+        </q-card>
+
+        <q-card class="q-py-none q-ma-none row">
+
+          <q-card-section style="width: 250px; min-height: 80px;">
+            <q-card-actions align="left">
               <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Node 0 parameters"
               @click="clickNodeZeroParameters()"  v-close-popup/>
             </q-card-actions>
@@ -68,7 +84,7 @@
 
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
-import {sleep} from "components/functions/utils.js"
+import * as utils from "components/functions/utils.js"
 import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
 import { date, useQuasar, scroll } from 'quasar'
 import {NodeParametersLoaded} from "components/functions/NodeFunctions.js"
@@ -102,7 +118,7 @@ const model = computed({
 //
 //
 const checkNodeParameters = async (nodeNumber) => {
-  //console.log(name + ': checkNodeParameters: node ' + nodeNumber)
+  //utils.timeStampedLog(name + ': checkNodeParameters: node ' + nodeNumber)
   //
   // check if parameters have already been fully retrieved
   if(NodeParametersLoaded(store, nodeNumber)){
@@ -116,12 +132,12 @@ const checkNodeParameters = async (nodeNumber) => {
     let startTime = Date.now()
     while ((Date.now() - startTime) < 60000){
       if (WaitingOnBusTrafficDialogReturn.value.length > 0) { break }
-      await sleep (100)
+      await utils.sleep (100)
     }
     showWaitingOnBusTrafficDialog.value = false
   }
   if (NodeParametersLoaded(store, nodeNumber) == false){
-    console.log(name + `: checkNodeParameters: node ${nodeNumber} failed`)
+    utils.timeStampedLog(name + `: checkNodeParameters: node ${nodeNumber} failed`)
     $q.notify({
       message: 'Reading Node Parameters has failed',
       caption: 'please check connections to node',
@@ -134,7 +150,27 @@ const checkNodeParameters = async (nodeNumber) => {
   return NodeParametersLoaded(store, nodeNumber)
 }
 
-
+//
+// deletes offline nodes one-by-one
+// needs a delay between each, otherwise doesn't keep up
+// a bulk delete would be quicker, but would need new WebSocket message
+//
+const deleteAllOfflineNodes = async () => {
+  // don't use forEach, as await doesn't work
+  for(const nodeNumber in store.state.nodes){
+    //utils.timeStampedLog(name + `: clickDeleteAllOffline: node ${JSON.stringify(nodeNumber, null, " ")}`)
+    utils.timeStampedLog(name + `: clickDeleteAllOffline: node ${nodeNumber}`)
+    try{
+      // offline is status==false
+      if (store.state.nodes[nodeNumber].status != true){
+        utils.timeStampedLog(name + `: clickDeleteAllOffline: delete node ${nodeNumber}`)
+        store.methods.remove_node(nodeNumber)
+        store.eventBus.emit('NODE_DELETED_EVENT', nodeNumber)
+        await utils.sleep(1000)   // allow time for individual deletes
+      }
+    }catch{}
+  }
+}
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -144,8 +180,26 @@ Click event handlers
 
 //
 //
+const clickDeleteAllOffline = async () => {
+  utils.timeStampedLog(name + `: clickDeleteAllOffline`)
+  const result = $q.notify({
+    message: 'Are you sure you want to delete all offline nodes?',
+    timeout: 0,
+    position: 'center',
+    color: 'primary',
+    actions: [
+      { label: 'YES', color: 'white', handler: async () => {
+        await deleteAllOfflineNodes()
+      } },
+      { label: 'NO', color: 'white', handler: () => { /* ... */ } }
+    ]
+  })
+}
+
+//
+//
 const clickNodeZeroParameters = async () => {
-  console.log(name + `: clickNodeZeroParameters`)
+  utils.timeStampedLog(name + `: clickNodeZeroParameters`)
   // clear out parameters to force them to be reloaded
   if (store.state.nodes[0] == undefined){ store.state.nodes[0] = {} }
   store.state.nodes[0].parameters = {}
@@ -155,7 +209,7 @@ const clickNodeZeroParameters = async () => {
 }
 
 const clickProgramNode = () => {
-  console.log(name + `: clickProgramNode: BOOT mode `)
+  utils.timeStampedLog(name + `: clickProgramNode: BOOT mode `)
   showProgramNodeDialog.value = true
 }
 
