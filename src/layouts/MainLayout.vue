@@ -572,7 +572,7 @@ const clickClearBusTraffic = () => {
 //
 const click_enableBusTraffic = () =>{
   utils.timeStampedLog(name + ': click_enableBusTraffic')
-
+  store.state.update_layout_needed = true
 }
 
 //
