@@ -12,103 +12,107 @@
         </template>
       </q-banner>
 
-      <q-card class="q-pa-sm q-ma-none text-subtitle1">
-        Unless stated otherwise,  these settings will only take effect the next time MMC is started
-      </q-card>
+      <q-card style="max-height: 87vh" class="scroll q-py-none no-margin">
 
-      <q-card style="min-height: 200px;" class="q-py-none q-ma-none">
+        <q-card class="q-pa-sm q-ma-none text-subtitle1">
+          Unless stated otherwise,  these settings will only take effect the next time MMC is started
+        </q-card>
 
-        <q-card-section class="q-py-none q-ma-none row">
-          <q-card-section style="width: 250px;" class="q-py-none q-ma-none">
-            <q-checkbox v-model="develop" label="Develop"
-              @update:model-value="Develop_updated"></q-checkbox>
-          </q-card-section>
-          <q-card-section style="width: 500px;" class="q-py-none q-ma-none">
-            Enables development features.
-            Has immediate effect.
-          </q-card-section>
-        </q-card-section>
+        <q-card style="min-height: 200px;" class="q-py-none q-ma-none">
 
-        <q-card-section style="border" class="q-py-none q-ma-none row">
-          <q-card-section style="width: 250px;" class="q-py-none q-ma-none">
-            <q-checkbox v-model="resetDisplaySettings" label="reset display settings"
-              @update:model-value="resetDisplaySettings_updated"></q-checkbox>
+          <q-card-section class="q-py-none q-ma-none row">
+            <q-card-section style="width: 250px;" class="q-py-none q-ma-none">
+              <q-checkbox v-model="develop" label="Develop"
+                @update:model-value="Develop_updated"></q-checkbox>
+            </q-card-section>
+            <q-card-section style="width: 500px;" class="q-py-none q-ma-none">
+              Enables development features.
+              Has immediate effect.
+            </q-card-section>
           </q-card-section>
-          <q-card-section style="width: 500px;" class="q-py-none q-ma-none">
-            resets display settings at startup
-          </q-card-section>
-        </q-card-section>
 
-        <q-card-section class="q-py-none q-ma-none row">
-          <q-card-section style="width: 250px;" class="q-py-none q-ma-none">
-            <q-select
-              autofocus
-              outlined
-              v-model="userDataMode"
-              :options="mode_options"
-              label="user data mode"
-            />
+          <q-card-section style="border" class="q-py-none q-ma-none row">
+            <q-card-section style="width: 250px;" class="q-py-none q-ma-none">
+              <q-checkbox v-model="resetDisplaySettings" label="reset display settings"
+                @update:model-value="resetDisplaySettings_updated"></q-checkbox>
+            </q-card-section>
+            <q-card-section style="width: 500px;" class="q-py-none q-ma-none">
+              resets display settings at startup
+            </q-card-section>
           </q-card-section>
-          <q-card-section style="width: 500px;" class="q-py-none q-ma-none">
-            selects which directory to use for user data<br>
-            APP - use system defined directory<br>
-            CUSTOM - use custom user directory
-          </q-card-section>
-        </q-card-section>
 
-        <q-card-section class="q-py-none q-ma-none row">
-          <q-card-section style="width: 250px;" class="q-py-none q-ma-none">
-              <q-input
+          <q-card-section class="q-py-none q-ma-none row">
+            <q-card-section style="width: 250px;" class="q-py-none q-ma-none">
+              <q-select
                 autofocus
-                class="q-pa-sm"
+                dense
+                class="q-pa-none"
                 outlined
-                type="url"
-                v-model="customUserDirectory"
-                label="custom user directory"
-                >
-              </q-input>
+                v-model="userDataMode"
+                :options="mode_options"
+              />
+            </q-card-section>
+            <q-card-section style="width: 500px;" class="q-py-none q-ma-none">
+              selects which directory to use for user data<br>
+              APP - use system defined directory<br>
+              CUSTOM - use custom user directory
+            </q-card-section>
           </q-card-section>
-          <q-card-section style="width: 500px;" class="q-py-none q-ma-none">
-            <br>sets the custom directory for user data
+
+          <q-card-section class="q-py-none q-ma-none row">
+            <q-card-section style="width: 250px;" class="q-py-none q-ma-none">
+                <q-input
+                  autofocus
+                  dense
+                  class="q-pa-none"
+                  outlined
+                  type="url"
+                  v-model="customUserDirectory"
+                  >
+                </q-input>
+            </q-card-section>
+            <q-card-section style="width: 500px;" class="q-py-none q-ma-none">
+              <br>sets the custom directory for user data
+            </q-card-section>
           </q-card-section>
-        </q-card-section>
 
-        <q-card-section class="q-py-none q-ma-none row">
-          <q-card-section style="width: 250px;" class="q-py-none q-ma-none">
-              <q-input
-                autofocus
-                class="q-pa-sm"
-                outlined
-                type="number"
-                v-model="archiveLogsLimit"
-                label="archive Logs Limit"
-                >
-              </q-input>
+          <q-card-section class="q-py-none q-ma-none row">
+            <q-card-section style="width: 250px;" class="q-py-none q-ma-none">
+                <q-input
+                  autofocus
+                  dense
+                  class="q-pa-none"
+                  outlined
+                  type="number"
+                  v-model="archiveLogsLimit"
+                  >
+                </q-input>
+            </q-card-section>
+            <q-card-section style="width: 500px;" class="q-py-none q-ma-none">
+              <br>oldest archive will be deleted when this limit reached
+            </q-card-section>
           </q-card-section>
-          <q-card-section style="width: 500px;" class="q-py-none q-ma-none">
-            <br>oldest archive will be deleted when this limit reached
-          </q-card-section>
-        </q-card-section>
 
-      </q-card>
+        </q-card>
 
-      <q-separator />
-      <q-card-section class="q-pa-md">
-        <div><span class="text-h6">App storage directory &nbsp;</span> {{ store.state.serverStatus.appStorageDirectory }}
-          &nbsp; <q-btn dense color="primary" size="xs" label="copy" @click="clickCopyApp()" no-caps/>
-        </div>
-      </q-card-section>
-
-      <q-separator />
-      <q-card-section class="q-pa-sm">
-        <div class="q-pa-xs">
-          <div class="text-h6">App Settings<br></div>
-          <div class="text-body2">
-            <pre>{{ store.state.serverStatus.appSettings }}</pre>
+        <q-separator />
+        <q-card-section class="q-pa-md">
+          <div><span class="text-h6">App storage directory &nbsp;</span> {{ store.state.serverStatus.appStorageDirectory }}
+            &nbsp; <q-btn dense color="primary" size="xs" label="copy" @click="clickCopyApp()" no-caps/>
           </div>
-        </div>
-      </q-card-section>
+        </q-card-section>
 
+        <q-separator />
+        <q-card-section class="q-pa-sm">
+          <div class="q-pa-xs">
+            <div class="text-h6">App Settings<br></div>
+            <div class="text-body2">
+              <pre>{{ store.state.serverStatus.appSettings }}</pre>
+            </div>
+          </div>
+        </q-card-section>
+
+      </q-card>
     </q-card>
 
   </q-dialog>
