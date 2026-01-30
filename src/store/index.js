@@ -19,8 +19,6 @@ const state = reactive({
   colours: ["black", "red", "pink", "purple", "deep-purple", "indigo", "blue", "light-blue", "cyan", "teal", "green", "light-green", "lime", "yellow", "amber", "orange", "deep-orange", "brown", "blue-grey", "grey"],
   dcc_sessions: {},
   dcc_errors: {},
-  develop: false,
-  //develop: true,
   events_view_mode: 'all',
   event_view_status: [],
   exported_MDF: {},
@@ -356,6 +354,11 @@ const methods = {
     utils.timeStampedLog(name + ': RESET_NODE ' + nodeNumber)
   },
   //
+  save_app_setting(data){
+    utils.timeStampedLog(`SAVE_SETTING ${JSON.stringify(data)}`)
+    socket.emit('SAVE_SETTING', data)
+  },
+  //
   save_logs_archive(){
     utils.timeStampedLog(`SAVE_LOGS_ARCHIVE`)
     socket.emit('SAVE_LOGS_ARCHIVE')
@@ -463,6 +466,14 @@ const getters = {
     } else {
       return ''
     }
+  },
+  develop(){
+    var result = false
+    try{
+      result = state.serverStatus.appSettings.develop
+    } catch {}
+    //utils.timeStampedLog(name + `: getters.develop: ${result}}`)
+    return result
   },
   event_name(eventIdentifier) {
     if (eventIdentifier in state.layout.eventDetails) {

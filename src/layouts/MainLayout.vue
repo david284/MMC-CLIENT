@@ -7,6 +7,9 @@
         <q-btn flat dense size="md" icon="menu" class="no-margin no-padding">
           <q-menu auto-close>
             <q-list style="min-width: 100px">
+              <q-item clickable @click="clickAppSettings()">
+                <q-item-section>App Settings</q-item-section>
+              </q-item>
               <q-item clickable @click="clickExport()">
                 <q-item-section>Export</q-item-section>
               </q-item>
@@ -28,13 +31,13 @@
               <q-item clickable @click="clickSystem()">
                 <q-item-section>System</q-item-section>
               </q-item>
-              <q-item v-if="(store.state.develop)" clickable @click="clickExample()">
+              <q-item v-if="(store.getters.develop())" clickable @click="clickExample()">
                 <q-item-section>Example</q-item-section>
               </q-item>
-              <q-item v-if="(store.state.develop)" clickable @click="clickiframe()">
+              <q-item v-if="(store.getters.develop())" clickable @click="clickiframe()">
                 <q-item-section>Example iFrame</q-item-section>
               </q-item>
-              <q-item v-if="(store.state.develop)" clickable @click="clickTest()">
+              <q-item v-if="(store.getters.develop())" clickable @click="clickTest()">
                 <q-item-section>Test</q-item-section>
               </q-item>
             </q-list>
@@ -50,6 +53,7 @@
       </q-toolbar>
 
       <q-toolbar class="col no-margin no-padding float-right" style="min-width: 400px">
+        <q-btn v-if="store.getters.develop()" size="md" color="info" label="DEV"/>
         <q-space />
         <div class="text-h6 no-margin no-padding float-right">{{ layoutDataTitle }}</div>
         <q-space />
@@ -164,7 +168,7 @@
   </q-layout>
 
 
-
+  <AppSettingsDialog v-model="showAppSettingsDialog" />
   <busTrafficDialog v-model='showBusTrafficDialog' />
   <cbusErrorsDialog v-model='showCbusErrorsDialog' />
   <ExportDialog v-model='showExportDialog' />
@@ -207,6 +211,7 @@ import packageInfo from './../../package.json';
 import * as utils from "components/functions/utils.js"
 import * as EventFunctions from "components/functions/EventFunctions.js"
 import nodesView from "components/views/NodesView"
+import AppSettingsDialog from "components/dialogs/AppSettingsDialog";
 import busTrafficDialog from "components/dialogs/BusTrafficDialog";
 import cbusErrorsDialog from "components/dialogs/CbusErrorsDialog";
 import ExportDialog from "components/dialogs/ExportDialog";
@@ -232,6 +237,7 @@ const name = "MainLayout"
 
 const busMessage = ref({})
 const leftDrawerOpen = ref(false)
+const showAppSettingsDialog = ref(false)
 const showBusTrafficDialog = ref(false)
 const showCbusErrorsDialog = ref(false)
 const showExportDialog = ref(false)
@@ -519,6 +525,14 @@ const clickAllBusTraffic = (message) => {
   utils.timeStampedLog(name + ': clickAllBusTraffic')
   store.methods.request_log_file("bustraffic.txt")
   showBusTrafficDialog.value = true
+}
+
+
+//
+//
+const clickAppSettings = (message) => {
+  utils.timeStampedLog(name + ': clickAppSettings')
+  showAppSettingsDialog.value = true
 }
 
 

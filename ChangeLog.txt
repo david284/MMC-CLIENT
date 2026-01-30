@@ -1,5 +1,6 @@
 Version
   Added delete offline nodes to NodesViewAdvanced menu
+  Added AppSettingsDialog
 
 Version 0.18.0
   Make some texts look nicer. (PR #9)

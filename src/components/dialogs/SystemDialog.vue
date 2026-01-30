@@ -52,10 +52,6 @@
           @change="store.methods.update_layout()">
         </q-input>
       </q-card>
-      <q-card class="q-pa-md" flat>
-        <q-checkbox v-model="store.state.develop" label="Develop"></q-checkbox>
-        &emsp;&emsp;&emsp;Enables development features
-      </q-card>
 
       <q-card-actions align="right" class="text-primary">
       </q-card-actions>

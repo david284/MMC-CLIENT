@@ -372,6 +372,14 @@ const clickExit = () => {
 const clickProceed = async () => {
   utils.timeStampedLog(name + ': clickProceed')
   if (store.state.layout != {} ){
+    try{
+      // delete all stored layout settings if reset flag true
+      if (store.state.serverStatus.appSettings.resetDisplaySettings){
+        utils.timeStampedLog(name + ': resetDisplaySettings')
+        store.state.layout.settings = {}
+        store.state.update_layout_needed = true
+      }
+    } catch{}
     store.methods.start_connection(store.state.layout.connectionDetails)
     await utils.sleep(500)     // allow a bit of a delay for the change
     store.state.inStartup = false

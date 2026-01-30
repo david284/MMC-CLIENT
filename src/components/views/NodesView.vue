@@ -648,7 +648,7 @@ const clickVariables = async (nodeNumber) => {
   // check if parameters have been fully retrieved
   if(NodeParametersLoaded(store, nodeNumber)){
     await select_node_row(nodeNumber)
-    if ((nodeNumber == 1000) && store.state.develop){
+    if ((nodeNumber == 1000) && store.getters.develop()){
       showiFrameDialog.value = true
     } else {
       await checkNodeVariables(nodeNumber)

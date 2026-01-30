@@ -11,10 +11,6 @@
         <q-btn class="q-mx-xs q-my-none" v-if="store.getters.node_useSwitchTeach2(props.nodeNumber)"
          size="sm" color="blue" label="Switch Teach" no-caps @click="clickSwitchTeach()">
         </q-btn>
-        <q-btn class="q-mx-xs q-my-none" v-if="store.state.develop" size="sm" color="black" no-caps
-          @click="clickToggleEventMode()">
-          {{eventMode}}
-        </q-btn>
         <q-btn class="q-mx-xs  q-my-none" size="sm" color="blue" label="Toggle"  no-caps
           @click="clickToggleViewMode()" />
         <div class="text-h6" style="min-width: 200px">View {{ store.state.events_view_mode }} events</div>
