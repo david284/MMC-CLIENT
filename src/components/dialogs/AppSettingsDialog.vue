@@ -12,26 +12,27 @@
         </template>
       </q-banner>
 
-      <q-card style="max-height: 87vh" class="scroll q-py-none no-margin">
+      <q-card style="max-height: 85vh" class="scroll no-padding no-margin">
 
         <q-card class="q-pa-sm q-ma-none text-subtitle1">
           Unless stated otherwise,  these settings will only take effect the next time MMC is started
         </q-card>
 
-        <q-card style="min-height: 200px;" class="q-py-none q-ma-none">
+        <q-card style="min-height: 200px;" class="no-padding no-margin">
 
-          <q-card-section class="q-py-none q-ma-none row">
+          <q-card class="no-padding q-ma-sm row">
             <q-card-section style="width: 250px;" class="q-py-none q-ma-none">
               <q-checkbox v-model="develop" label="Develop"
                 @update:model-value="Develop_updated"></q-checkbox>
             </q-card-section>
             <q-card-section style="width: 500px;" class="q-py-none q-ma-none">
               Enables development features.
-              Has immediate effect.
+              Has immediate effect.<br>
+              Not recommended for normal use
             </q-card-section>
-          </q-card-section>
+          </q-card>
 
-          <q-card-section style="border" class="q-py-none q-ma-none row">
+          <q-card class="no-padding q-ma-sm row">
             <q-card-section style="width: 250px;" class="q-py-none q-ma-none">
               <q-checkbox v-model="resetDisplaySettings" label="reset display settings"
                 @update:model-value="resetDisplaySettings_updated"></q-checkbox>
@@ -39,9 +40,9 @@
             <q-card-section style="width: 500px;" class="q-py-none q-ma-none">
               resets display settings at startup
             </q-card-section>
-          </q-card-section>
+          </q-card>
 
-          <q-card-section class="q-py-none q-ma-none row">
+          <q-card class="no-padding q-ma-sm row">
             <q-card-section style="width: 250px;" class="q-py-none q-ma-none">
               <q-select
                 autofocus
@@ -57,9 +58,9 @@
               APP - use system defined directory<br>
               CUSTOM - use custom user directory
             </q-card-section>
-          </q-card-section>
+          </q-card>
 
-          <q-card-section class="q-py-none q-ma-none row">
+          <q-card class="no-padding q-ma-sm row">
             <q-card-section style="width: 250px;" class="q-py-none q-ma-none">
                 <q-input
                   autofocus
@@ -72,11 +73,11 @@
                 </q-input>
             </q-card-section>
             <q-card-section style="width: 500px;" class="q-py-none q-ma-none">
-              <br>sets the custom directory for user data
+              sets the custom directory for user data
             </q-card-section>
-          </q-card-section>
+          </q-card>
 
-          <q-card-section class="q-py-none q-ma-none row">
+          <q-card class="no-padding q-ma-sm row">
             <q-card-section style="width: 250px;" class="q-py-none q-ma-none">
                 <q-input
                   autofocus
@@ -89,9 +90,9 @@
                 </q-input>
             </q-card-section>
             <q-card-section style="width: 500px;" class="q-py-none q-ma-none">
-              <br>oldest archive will be deleted when this limit reached
+              oldest archive will be deleted when this limit reached
             </q-card-section>
-          </q-card-section>
+          </q-card>
 
         </q-card>
 
