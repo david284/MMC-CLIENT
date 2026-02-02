@@ -364,17 +364,6 @@ const methods = {
     socket.emit('SAVE_LOGS_ARCHIVE')
   },
   //
-  save_node_backup(nodeNumber, backupNode){
-    utils.timeStampedLog(`SAVE_NODE_BACKUP`)
-    let data = {
-      'layoutName': state.layout.layoutDetails.title,
-      'nodeNumber': nodeNumber,
-      'layout': state.layout,
-      'backupNode': backupNode
-    }
-    socket.emit('SAVE_NODE_BACKUP', data)
-  },
-  //
   save_node_backup_file(nodeNumber, fileName, backupNodeFile){
     utils.timeStampedLog(`SAVE_NODE_BACKUP_FILE`)
     let data = {

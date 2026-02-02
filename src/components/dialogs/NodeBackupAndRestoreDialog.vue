@@ -577,9 +577,6 @@ const clickDownload = async () => {
 const clickUpload = () => {
   utils.timeStampedLog(name + `: clickImport`)
   showUploadDialog.value = true
-
-  //store.methods.save_node_backup(props.nodeNumber, store.state.nodes[props.nodeNumber])
-
 }
 
 //

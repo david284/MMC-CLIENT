@@ -37,6 +37,7 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { useQuasar } from 'quasar'
 import * as utils from "components/functions/utils.js"
 import * as eventFunctions from "components/functions/EventFunctions.js"
+import packageInfo from './../../../package.json';
 import cbusLib from "cbuslibrary"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
 
@@ -127,7 +128,16 @@ const backupNode = async () => {
 
   if (successState) {
     // now store backup if it was successfull
-    store.methods.save_node_backup(props.nodeNumber, store.state.nodes[props.nodeNumber])
+    // create file to be saved
+    let fileName = store.state.nodes[props.nodeNumber].moduleName
+      + '_' + utils.createTimeStamp() + ".json"
+    var backupFile = {
+      timestamp: new Date().toISOString(),
+      layoutName: store.state.layout.layoutDetails.title,
+      ServerVersion: packageInfo.version,
+      backupNode: store.state.nodes[props.nodeNumber]
+    }
+    store.methods.save_node_backup_file(props.nodeNumber, fileName, backupFile)
     backupStatus.value = "Backup completed"
     store.eventBus.emit('NODE_BACKUP_COMPLETED')
   } else {
