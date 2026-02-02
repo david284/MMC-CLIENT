@@ -327,10 +327,16 @@ const restoreEventsByIdentifier = async () => {
   utils.timeStampedLog(name + ': restoreEventsByIdentifier')
   inProgress.value = true
   try{
-    // first remove all existing events - even if there's no events in the backup
-    restoreStatus.value = "erasing Events"
-    store.methods.delete_all_events(props.nodeNumber)
-    await utils.sleep(2000)  // allow a little time for this to take effect
+    // check if we should retain all events
+    if (restoredNode.value.retain_events == true){
+      utils.timeStampedLog(name + `: restoreEventsByIdentifier: retain events` )
+    } else {
+      // remove all exisitng events
+      restoreStatus.value = "erasing Events"
+      store.methods.delete_all_events(props.nodeNumber)
+      await utils.sleep(2000)  // allow a little time for this to take effect
+      utils.timeStampedLog(name + `: restoreEventsByIdentifier: clear events` )
+    }
     //
     restoreStatus.value = "restoring Events & Variables"
     //
