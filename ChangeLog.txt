@@ -1,6 +1,7 @@
 Version 0.19.0
   Added delete offline nodes to NodesViewAdvanced menu
   Added AppSettingsDialog
+  Added SAVE_NODE_BACKUP_FILE for upload backups
 
 Version 0.18.0
   Make some texts look nicer. (PR #9)

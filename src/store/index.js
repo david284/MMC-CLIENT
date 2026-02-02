@@ -375,6 +375,17 @@ const methods = {
     socket.emit('SAVE_NODE_BACKUP', data)
   },
   //
+  save_node_backup_file(nodeNumber, fileName, backupNodeFile){
+    utils.timeStampedLog(`SAVE_NODE_BACKUP_FILE`)
+    let data = {
+      'layoutName': state.layout.layoutDetails.title,
+      'nodeNumber': nodeNumber,
+      'fileName': fileName,
+      'backupFile': backupNodeFile
+    }
+    socket.emit('SAVE_NODE_BACKUP_FILE', data)
+  },
+  //
   send_cbus_message(message){
     socket.emit('SEND_CBUS_MESSAGE', message)
     utils.timeStampedLog(name + `: SEND_CBUS_MESSAGE: ${message}` )
