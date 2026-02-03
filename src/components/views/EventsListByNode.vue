@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none">
+    <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-margin q-py-none q-px-xs">
       <div class="text-h6">
         {{ bannerTitle }}:  {{ store.getters.node_name(props.nodeNumber) }}
       </div>
@@ -13,14 +13,14 @@
         </q-btn>
         <q-btn class="q-mx-xs  q-my-none" size="sm" color="blue" label="Toggle"  no-caps
           @click="clickToggleViewMode()" />
-        <div class="text-h6" style="min-width: 200px">View {{ store.state.events_view_mode }} events</div>
+        <div class="text-body1" style="min-width: 100px">View {{ store.state.events_view_mode }} events</div>
         <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
             @click="clickInfo()" />
-        &nbsp;&nbsp;
-        <q-input class="input-box" bg-color="grey-3" style="width: 200px;" filled dense borderless debounce="300" v-model="filter" placeholder="Search">
+        &nbsp;
+        <q-input class="input-box" bg-color="grey-3" style="width: 100px;" filled dense borderless debounce="300" v-model="filter" placeholder="Search">
             <q-icon size="sm" name="search"/>
         </q-input>
-        &nbsp;&nbsp;
+        &nbsp;
         <q-btn v-if="(eventMode=='Event')" class="q-mx-xs q-my-none" color="blue" size="sm" label="Add Event" @click="clickAddEvent()"/>
         <q-btn v-if="enableActivateSlot" class="q-mx-xs q-my-none" color="blue" size="sm" :label=activateTitle @click="clickActivateSlot()"/>
         <q-btn class="q-mx-xs q-my-none" color="blue" size="sm" label="Advanced" @click="clickAdvanced()"/>
