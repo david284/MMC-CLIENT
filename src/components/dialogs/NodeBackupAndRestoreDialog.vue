@@ -252,7 +252,7 @@ const restoredData = computed(() => {
 })
 
 watch(restoredData, () => {
-  //utils.timeStampedLog(name + `: WATCH restoredData`)
+  utils.timeStampedLog(name + `: WATCH restoredData ${JSON.stringify(restoredData.value)}`)
   try {
     restoredNode.value = restoredData.value.backupNode
     moduleName.value = restoredNode.value.moduleName
@@ -366,10 +366,16 @@ const restoreEventsByIndex = async () => {
   utils.timeStampedLog(name + ': restoreEventsByIndex')
   inProgress.value = true
   try{
-    // first remove all existing events - even if there's no events in the backup
-    restoreStatus.value = "erasing Events"
-    store.methods.delete_all_events(props.nodeNumber)
-    await utils.sleep(2000)  // allow a little time for this to take effect
+    // check if we should retain all events
+    if (restoredNode.value.retain_events == true){
+      utils.timeStampedLog(name + `: restoreEventsByIndex: retain events` )
+    } else {
+      // remove all existing events
+      restoreStatus.value = "erasing Events"
+      store.methods.delete_all_events(props.nodeNumber)
+      await utils.sleep(2000)  // allow a little time for this to take effect
+      utils.timeStampedLog(name + `: restoreEventsByIndex: clear events` )
+    }
     //
     restoreStatus.value = "restoring Events & Variables"
     // node uses indexed events
@@ -483,7 +489,7 @@ const actionUpload = async() => {
     reader.onload = async function() {
       try{
         var resultOBJ = JSON.parse(reader.result)
-        store.methods.save_node_backup_file(props.nodeNumber, fileName, resultOBJ.backupNode)
+        store.methods.save_node_backup_file(props.nodeNumber, fileName, resultOBJ)
         await utils.sleep(500)
         store.methods.request_node_backups_list(store.state.layout.layoutDetails.title, props.nodeNumber)
       } catch(e){

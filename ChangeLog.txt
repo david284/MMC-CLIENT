@@ -1,7 +1,9 @@
 Version 0.19.0
   Added delete offline nodes to NodesViewAdvanced menu
   Added AppSettingsDialog
-  Added SAVE_NODE_BACKUP_FILE for upload backups
+  Replaced SAVE_NODE_BACKUP with SAVE_NODE_BACKUP_FILE
+  Fixed backup upload issues
+  Added check for retain_events to allow partial retores
 
 Version 0.18.0
   Make some texts look nicer. (PR #9)
