@@ -4,6 +4,7 @@ Version 0.19.0
   Replaced SAVE_NODE_BACKUP with SAVE_NODE_BACKUP_FILE
   Fixed backup upload issues
   Added check for retain_events to allow partial retores
+  Added info dialog to NodeBackupAndRestoreDialog
 
 Version 0.18.0
   Make some texts look nicer. (PR #9)
