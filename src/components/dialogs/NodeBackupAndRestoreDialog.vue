@@ -10,6 +10,8 @@
             Backup & Restore Node: {{ store.getters.node_name(nodeNumber) }}
           </div>
           <template v-slot:action>
+            <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps
+                @click="clickInfo()" />
             <q-btn flat color="white" size="md" label="Close" v-close-popup/>
           </template>
         </q-banner>
@@ -182,6 +184,47 @@
     :nodeNumber = nodeNumber
   />
 
+  <q-dialog v-model='showViewInfoDialog'>
+    <q-card style="min-width: 800px">
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+        <div class="text-h6">
+          Backup and Restore information
+        </div>
+        <template v-slot:action>
+          <q-btn flat color="white" size="md" label="Close" v-close-popup/>
+        </template>
+      </q-banner>
+
+      <q-card style="max-height: 85vh" class="scroll no-margin q-py-none">
+        <q-card-section>
+          <div class="text-subtitle2">
+            A backup file can be used for any module of the same type, irrespective of node number or layout<br>
+            So a backup file can be shared with other users to program their modules with exactly the same settings<br>
+            To achieve this, you can download a selected backup file, then can be uploaded by another user in their system
+          </div>
+          <div class="text-h6">
+            Setting just specific variables
+          </div>
+          <div class="text-subtitle2">
+            Restore now supports partial restores, where the file only contains specific variables to be changed<br>
+            The best way to achieve this is to take a backup, download that backup<br>
+            Edit that backup to just keep the variables to be changed (including the file name) <br>
+            add "retain_events":true in the root of the backup file<br>
+            Then upload it so it can be selected to be restored<br>
+          </div>
+          <div class="text-h6">
+            Why "retain_events":true?<br>
+          </div>
+          <div class="text-subtitle2">
+            By default, restore will delete all events, and expect to restore the events from the backup file<br>
+            If you don't want the restore to delete all the events, you should add "retain_events":true in the root of the backup file<br>
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-card>
+  </q-dialog>
+
+
 </template>
 
 
@@ -214,6 +257,7 @@ const uploadFile = ref()
 const newFilename = ref("")
 const oldFilename = ref("")
 const showNodeBackupDialog = ref(false)
+const showViewInfoDialog = ref(false)
 
 const teColumns = [
   {name: 'backup', field: 'backup', required: true, label: 'backup', align: 'left', sortable: true},
@@ -576,6 +620,14 @@ const clickDownload = async () => {
   element.click();
   document.body.removeChild(element);
 
+}
+
+
+//
+//
+const clickInfo = () => {
+  utils.timeStampedLog(name + `: clickInfo`)
+  showViewInfoDialog.value = true
 }
 
 //
