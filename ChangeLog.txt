@@ -1,4 +1,4 @@
-Version
+Version 0.20.0
   Fixed delete unused events
   changed NewNodeDialog to get NAME from bus traffic
   Now uses backup_required to populate backup column
