@@ -412,7 +412,9 @@ const clickDeleteUnused = (eventIdentifier) => {
         // order by eventIdentifier
         for (let eventIdentifier of Object.keys(events).sort()) {
           var nodeNumber = parseInt(eventIdentifier.substring(0, 4), 16)
-          if (store.state.layout.eventDetails[eventIdentifier].name.length == 0) {
+          if ((store.state.layout.eventDetails[eventIdentifier].name == undefined)
+          || (store.state.layout.eventDetails[eventIdentifier].name.length == 0))
+          {
             if (getLinkedNodesCount(eventIdentifier) == 0){
               utils.timeStampedLog(name + `: ${eventIdentifier} ${store.getters.event_name(eventIdentifier)}`)
               count++
