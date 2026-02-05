@@ -74,8 +74,7 @@
           <q-td key="events" :props="props">{{ props.row.events }}</q-td>
           <q-td key="spaceLeft" :props="props">{{ props.row.spaceLeft }}</q-td>
           <q-td key="backupStatus" :props="props">
-            <q-chip dense color="white" text-color="green" v-if="props.row.backup > 0">{{props.row.backup}}</q-chip>
-            <q-chip dense color="white" text-color="red" v-else>{{props.row.backup}}</q-chip>
+            <q-chip dense :color=props.row.backupColour>{{props.row.backup}}</q-chip>
           </q-td>
           <q-td key="actions">
             <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Events"
@@ -182,7 +181,7 @@ const columns = [
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},
   {name: 'events', field: 'events', label: 'Stored Events', align: 'center', sortable: true},
   {name: 'spaceLeft', field: 'spaceLeft', label: 'Space', align: 'center', sortable: true},
-  {name: 'backupStatus', field: 'backupStatus', label: 'Backups', align: 'left', sortable: true},
+  {name: 'backupStatus', field: 'backupStatus', label: 'Backup', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
@@ -250,7 +249,16 @@ const update_rows = () => {
       output['moduleVersion'] = store.getters.module_version(node.nodeNumber)
       output['component'] = node.component
       output['status'] = node.status
-      output['backup'] = backupCount(node.nodeNumber)
+      if (store.getters.node_backup_required(node.nodeNumber) == true){
+        output['backupColour'] = 'red-3'
+        output['backup'] = "Needed"
+      } else if (backupCount(node.nodeNumber) > 0 ){
+        output['backupColour'] = 'green-3'
+        output['backup'] = "OK"
+      } else {
+        output['backupColour'] = 'red-3'
+        output['backup'] = "Needed"
+      }
       if (node.flim == true) {
         output['mode'] = 'FLiM'
       } else if (node.flim == false) {

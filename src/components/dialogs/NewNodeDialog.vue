@@ -169,6 +169,7 @@ const clickAccept = () => {
     // setting name will trigger layoutdetails update & create entry if it doesn't exist
     store.setters.node_name(newNodeNumber.value, newNodeName.value)
     store.setters.node_group(newNodeNumber.value, newGroupName.value)
+    store.setters.node_set_backup_required(newNodeNumber.value, true)
     model.value = false // close dialog
   } else {
     const result = $q.notify({
@@ -182,6 +183,7 @@ const clickAccept = () => {
           // setting name will trigger layoutdetails update & create entry if it doesn't exist
           store.setters.node_name(newNodeNumber.value, newNodeName.value)
           store.setters.node_group(newNodeNumber.value, newGroupName.value)
+          store.setters.node_set_backup_required(newNodeNumber.value, true)
           model.value = false   // close dialog
         } },
         { label: 'NO', color: 'white', handler: () => { /* ... */ } }

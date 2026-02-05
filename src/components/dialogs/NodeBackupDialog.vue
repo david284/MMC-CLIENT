@@ -140,6 +140,7 @@ const backupNode = async () => {
     store.methods.save_node_backup_file(props.nodeNumber, fileName, backupFile)
     backupStatus.value = "Backup completed"
     store.eventBus.emit('NODE_BACKUP_COMPLETED')
+    store.setters.node_set_backup_required(props.nodeNumber, false)
   } else {
     // display popup for failure
     backupStatus.value = result

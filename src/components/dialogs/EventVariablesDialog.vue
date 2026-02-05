@@ -327,25 +327,6 @@ const clickClose = async () => {
   if(nodeModified) {
     store.setters.node_set_backup_required(props.nodeNumber, true)
   }
-  //
-  if((nodeModified) && (store.state.notification_settings.backup_notify)) {
-    $q.notify({
-      message: 'Variables changed - Do you want to take a backup?',
-      caption: 'Yes, No or \'Don\'t remind me again\'',
-      timeout: 0,
-      position: 'center',
-      color: 'primary',
-      actions: [
-        { label: 'YES', color: 'white', handler: async () => {
-          showNodeBackupDialog.value=true
-        } },
-        { label: 'NO', color: 'white', handler: () => { } },
-        { label: `Don't remind me again`, color:'white',
-            handler: () => { store.state.notification_settings.backup_notify = false }
-        }
-      ]
-    })
-  }
 }
 
 //
