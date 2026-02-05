@@ -660,6 +660,11 @@ const getters = {
     }
     return value
   },
+  node_backup_required(nodeNumber){
+    try{
+      return state.layout.nodeDetails[nodeNumber].backup_required
+    } catch { return false}
+  },
   //
   // get actual number of events present
   // MDF value overrides moduleInfo in mergConfig
@@ -911,6 +916,22 @@ const setters = {
         }
       }
     }
+  },
+  // argument is true or false
+  node_set_backup_required(nodeNumber, status){
+    utils.timeStampedLog(name + `: node_set_backup_required: ${nodeNumber} ${status}`)
+    try{
+      if (status == true) {
+        state.layout.nodeDetails[nodeNumber].backup_required = true
+        utils.timeStampedLog(name + `: node_set_backup_required: true`)
+      } else {
+        state.layout.nodeDetails[nodeNumber].backup_required = false
+        utils.timeStampedLog(name + `: node_set_backup_required: false`)
+      }
+    } catch (error) {
+        utils.timeStampedLog(name + `: node_set_backup_required: ${error}`)
+    }
+    state.update_layout_needed = true
   },
   node_channel_name(nodeNumber, channelNumber, channelName){
     if (typeof channelNumber === 'string'){

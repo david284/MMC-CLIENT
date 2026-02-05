@@ -280,6 +280,10 @@ const clickClose = () => {
   utils.timeStampedLog(name + `: clickClose`)
   let nodeModified = ((store.state.nodes[props.nodeNumber].NodeModifiedTimestamp-DialogOpenedTimestamp) > 0) ? true : false
   //utils.timeStampedLog(name + `: clickClose: nodeModified ${nodeModified}`)
+  if(nodeModified) {
+    store.setters.node_set_backup_required(props.nodeNumber, true)
+  }
+  //
   if((nodeModified) && (store.state.notification_settings.backup_notify)) {
     $q.notify({
       message: 'Variables changed - Do you want to take a backup?',
