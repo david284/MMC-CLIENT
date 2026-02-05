@@ -18,7 +18,7 @@
         <q-input type="number" style="max-width: 150px" :input-style="{ fontSize: '25px' }" dense v-model="newNodeNumber" autofocus />
         <div class="text-h6">
           This node was previously {{ props.previousNodeNumber }}<br/>
-          The module type is CAN{{ props.moduleName }}<br/>
+          The module type is CAN{{ displayModuleName }}<br/>
         </div>
       </q-card-section>
 
@@ -49,19 +49,20 @@
 
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
+import * as utils from "components/functions/utils.js"
 
 const $q = useQuasar()
 const store = inject('store')
-const name = "NewNodeDialog"
+const logPrefix = "NewNodeDialog"
 const newGroupName = ref("")
 const newNodeName = ref("")
 const newNodeNumber = ref(0)
+const displayModuleName = ref()
 
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
-  previousNodeNumber:{ type: Number, required: true },
-  moduleName:{type:String, default:''}
+  previousNodeNumber:{ type: Number, required: true }
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -72,15 +73,15 @@ const model = computed({
     })
 
 watch(model, () => {
-  console.log(name + `: WATCH model`)
-  console.log(name + `: WATCH model: previousNodeNumber ` + props.previousNodeNumber)
+  console.log(logPrefix + `: WATCH model`)
+  console.log(logPrefix + `: WATCH model: previousNodeNumber ` + props.previousNodeNumber)
   newNodeNumber.value = getNextFreeNodeNumber()
   newNodeName.value = ""
 })
 
 
 watch(newNodeNumber, () => {
-  console.log(name + `: WATCH model: newNodeNumber ` + newNodeNumber.value)
+  console.log(logPrefix + `: WATCH model: newNodeNumber ` + newNodeNumber.value)
   try{
     if(newNodeNumber.value in store.state.layout.nodeDetails){
       newNodeName.value = store.state.layout.nodeDetails[newNodeNumber.value].name
@@ -90,7 +91,7 @@ watch(newNodeNumber, () => {
       newGroupName.value = ""
     }
   } catch(err){
-    console.log(name + `: WATCH newNodeNumber ` + err)
+    console.log(logPrefix + `: WATCH newNodeNumber ` + err)
   }
 })
 
@@ -109,7 +110,7 @@ const getNextFreeNodeNumber = () => {
       //console.log(name + " node number match: " + i)
       // found node, so not free
     } else {
-      console.log(name + " first free node number: " + i)
+      console.log(logPrefix + " first free node number: " + i)
       freeNode = i
       break
     }
@@ -122,15 +123,31 @@ const isNodeNumberFree = (nodeNumber) => {
   var nodes = Object.keys(store.state.nodes)  // just get node numbers
   // loop through all node numbers, checking it it already exists
     if (nodes.includes(nodeNumber)) {
-      console.log(name + " node number in use: " + nodeNumber)
+      console.log(logPrefix + " node number in use: " + nodeNumber)
       // found nodeNumber, so not free
       return false
     } else {
-      console.log(name + " free node number: " + nodeNumber)
+      console.log(logPrefix + " free node number: " + nodeNumber)
       return true
     }
-
 }
+
+// inspect bus traffic to find when cbus NAME is received
+// and update displayModuleName
+// replaces using props.moduleName as as the NAME hasn't always
+// been received when the dialog is shown
+//
+store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
+    var opCode = data.json.opCode
+    // check for NAME (E2) event
+    if (opCode == 'E2')
+    {
+      utils.timeStampedLog(logPrefix + `: BUS_TRAFFIC_EVENT : NAME event: ${data.json.name}` )
+      displayModuleName.value = data.json.name
+    }
+})
+
+
 
 
 onUpdated(() => {
@@ -143,9 +160,9 @@ Click event handlers
 /////////////////////////////////////////////////////////////////////////////*/
 
 const clickAccept = () => {
-  console.log(name + " new node number: " + newNodeNumber.value)
-  console.log(name + " new node name: " + newNodeName.value)
-  console.log(name + " new group name: " + newGroupName.value)
+  console.log(logPrefix + " new node number: " + newNodeNumber.value)
+  console.log(logPrefix + " new node name: " + newNodeName.value)
+  console.log(logPrefix + " new group name: " + newGroupName.value)
 
   if (isNodeNumberFree(newNodeNumber.value)){
     store.methods.set_node_number(newNodeNumber.value)

@@ -178,8 +178,7 @@
   <modifiedGridConnectDialog v-model='showModifiedGridConnectDialog'
     :busMessage="busMessage"/>
   <newNodeDialog v-model='showNewNodeDialog'
-    :previousNodeNumber="previousNodeNumber"
-    :moduleName="nodeModuleName" />
+    :previousNodeNumber="previousNodeNumber"/>
   <TestDialog v-model='showTestDialog' />
   <SendCbusDialog v-model='showSendCbusDialog' />
   <startupDialog v-model='store.state.inStartup' />
@@ -248,7 +247,6 @@ const showModifiedGridConnectDialog = ref(false)
 const showNewNodeDialog = ref(false)
 const showSystemDialog = ref(false)
 const previousNodeNumber = ref(0)
-const nodeModuleName = ref('')
 const showDialogExampleCompositionAPI = ref(false)
 const showiFrameDialog = ref(false)
 const exampleURL = ref("dummyModule/index.html")
@@ -370,7 +368,6 @@ store.eventBus.on('GENERAL_MESSAGE_EVENT', (message, caption, type, timeout) => 
 store.eventBus.on('REQUEST_NODE_NUMBER_EVENT', (nodeNumber, moduleName) => {
  //utils.timeStampedLog(name + ': REQUEST_NODE_NUMBER_EVENT - previous node number ' + nodeNumber + ' moduleName ' + moduleName )
  previousNodeNumber.value = nodeNumber
- nodeModuleName.value = moduleName
  showNewNodeDialog.value = true
 })
 
