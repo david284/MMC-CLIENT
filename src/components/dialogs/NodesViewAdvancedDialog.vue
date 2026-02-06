@@ -157,19 +157,21 @@ const checkNodeParameters = async (nodeNumber) => {
 //
 const deleteAllOfflineNodes = async () => {
   // don't use forEach, as await doesn't work
+  var offLineList = []
   for(const nodeNumber in store.state.nodes){
     //utils.timeStampedLog(name + `: clickDeleteAllOffline: node ${JSON.stringify(nodeNumber, null, " ")}`)
-    utils.timeStampedLog(name + `: clickDeleteAllOffline: node ${nodeNumber}`)
+    //utils.timeStampedLog(name + `: clickDeleteAllOffline: node ${nodeNumber}`)
     try{
       // offline is status==false
       if (store.state.nodes[nodeNumber].status != true){
-        utils.timeStampedLog(name + `: clickDeleteAllOffline: delete node ${nodeNumber}`)
-        store.methods.remove_node(nodeNumber)
-        store.eventBus.emit('NODE_DELETED_EVENT', nodeNumber)
-        await utils.sleep(1000)   // allow time for individual deletes
+        //utils.timeStampedLog(name + `: clickDeleteAllOffline: delete node ${nodeNumber}`)
+        offLineList.push(nodeNumber)
+        //store.eventBus.emit('NODE_DELETED_EVENT', nodeNumber)
       }
     }catch{}
   }
+  utils.timeStampedLog(name + `: clickDeleteAllOffline: delete ${offLineList.length} nodes`)
+  store.methods.remove_multiple_nodes(offLineList)
 }
 
 /*/////////////////////////////////////////////////////////////////////////////

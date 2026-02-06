@@ -2,6 +2,7 @@ Version 0.20.0
   Fixed delete unused events
   changed NewNodeDialog to get NAME from bus traffic
   Now uses backup_required to populate backup column
+  Added remove_multiple_nodes to fix delete offline nodes
 
 Version 0.19.0
   Added delete offline nodes to NodesViewAdvanced menu

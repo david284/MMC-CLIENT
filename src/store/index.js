@@ -195,6 +195,17 @@ const methods = {
     })
   },
   //
+  remove_multiple_nodes(nodeList) {
+    // remove node from layout data
+    for (const nodeNumber of nodeList){
+      delete state.layout.nodeDetails[nodeNumber]
+    }
+    // now remove it from server
+    socket.emit('REMOVE_MULTIPLE_NODES', nodeList)
+    utils.timeStampedLog(name + `: sent REMOVE_MULTIPLE_NODES length ${nodeList.length}` )
+    state.update_layout_needed = true
+  },
+  //
   remove_node(nodeNumber) {
     // remove node from layout data
     delete state.layout.nodeDetails[nodeNumber]
