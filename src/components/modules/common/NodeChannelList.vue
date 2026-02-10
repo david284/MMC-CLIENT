@@ -2,7 +2,7 @@
   <div style="border:2px solid grey" class="no-padding no-margin">
     <q-card style="max-height: 70vh" class="scroll q-ma-xs no-padding">
 
-        <q-card-section class="no-margin q-py-none-xs" style="width: 95vw;">
+        <q-card-section class="no-margin q-py-none-xs" style="width: 90vw;">
 
           <q-table
             flat
