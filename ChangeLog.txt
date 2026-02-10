@@ -3,6 +3,8 @@ Version 0.20.0
   changed NewNodeDialog to get NAME from bus traffic
   Now uses backup_required to populate backup column
   Added remove_multiple_nodes to fix delete offline nodes
+  Minor ProgramNode changes
+  Added develop mode Send long message Request
 
 Version 0.19.0
   Added delete offline nodes to NodesViewAdvanced menu
