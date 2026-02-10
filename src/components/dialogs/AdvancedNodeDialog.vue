@@ -63,6 +63,13 @@
             <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Set CANID"
             @click="clickSetCAN_ID()"/>
           </q-card-actions>
+
+          <q-card-actions align="left" v-if="(store.getters.develop())">
+            <q-btn dense size="md" color="info" label="DEV"/>
+            <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Send Request"
+            @click="clickSendLMRequest()"/>
+          </q-card-actions>
+
         </q-card-section>
 
         <q-card class="q-py-none q-ma-none row"  v-if="(store.state.nodes[nodeNumber].status != true)">
@@ -107,7 +114,7 @@
 
 import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
-import {sleep} from "components/functions/utils.js"
+import * as utils from "components/functions/utils.js"
 import MDFDialog from "components/dialogs/MDFDialog"
 import programNodeDialog from "components/dialogs/programNodeDialog"
 import NodeBackupAndRestoreDialog from "components/dialogs/NodeBackupAndRestoreDialog"
@@ -116,12 +123,13 @@ import cbusLib from "cbuslibrary"
 
 const $q = useQuasar()
 const store = inject('store')
-const name = "AdvancedNodeDialog"
+const logPrefix = "AdvancedNodeDialog"
 const programNodeMode = ref("NORMAL")
 const showMDFDialog = ref(false)
 const showProgramNodeDialog = ref(false)
 const showNodeBackupAndRestoreDialog = ref(false)
 const showSetCanIdDialog = ref(false)
+const showSendLMRequest = ref(false)
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -152,21 +160,21 @@ Click event handlers
 //
 //
 const clickBackupAndRestoreNode = () => {
-  console.log(name + `: clickBackupAndRestoreNode ` + props.nodeNumber)
+  utils.timeStampedLog(logPrefix + `: clickBackupAndRestoreNode ` + props.nodeNumber)
   showNodeBackupAndRestoreDialog.value = true
 }
 
 //
 //
 const clickCanIdEnumeration = () => {
-  console.log(name + `: clickCanIdEnumeration ` + props.nodeNumber)
+  utils.timeStampedLog(logPrefix + `: clickCanIdEnumeration ` + props.nodeNumber)
   store.methods.node_can_id_enum(props.nodeNumber)
 }
 
 //
 //
 const clickMDF = () => {
-  console.log(name + `: clickMDF`)
+  utils.timeStampedLog(logPrefix + `: clickMDF`)
   store.methods.request_matching_mdf_list(props.nodeNumber, "USER")
   store.methods.request_matching_mdf_list(props.nodeNumber, "SYSTEM")
   showMDFDialog.value = true
@@ -179,7 +187,7 @@ const clickMDF = () => {
 // Event_Acknowledge 0n = 0x0A
 //
 const click_MODE_Event_Acknowledge = () => {
-  console.log(name + `: click_MODE_Event_Acknowledge`)
+  utils.timeStampedLog(logPrefix + `: click_MODE_Event_Acknowledge`)
   const result = $q.notify({
     message: 'Set Event Acknowledge for node: '+ store.getters.node_name(props.nodeNumber),
     timeout: 0,
@@ -205,7 +213,7 @@ const click_MODE_Event_Acknowledge = () => {
 // FCU_Compatibility 0n = 0x10
 //
 const click_MODE_FCU_Compatibility = () => {
-  console.log(name + `: click_MODE_FCU_Compatibility`)
+  utils.timeStampedLog(logPrefix + `: click_MODE_FCU_Compatibility`)
   const result = $q.notify({
     message: 'Set FCU Compatibility for node: '+ store.getters.node_name(props.nodeNumber),
     timeout: 0,
@@ -231,7 +239,7 @@ const click_MODE_FCU_Compatibility = () => {
 // Heartbeat 0n = 0x0C
 //
 const click_Mode_Heartbeat = () => {
-  console.log(name + `: click_Mode_Heartbeat`)
+  utils.timeStampedLog(logPrefix + `: click_Mode_Heartbeat`)
   const result = $q.notify({
     message: 'Set Heartbeat for node: '+ store.getters.node_name(props.nodeNumber),
     timeout: 0,
@@ -254,7 +262,7 @@ const click_Mode_Heartbeat = () => {
 //
 //
 const clickProgramNode = () => {
-  console.log(name + `: clickProgramNode ` + props.nodeNumber)
+  utils.timeStampedLog(logPrefix + `: clickProgramNode ` + props.nodeNumber)
   programNodeMode.value = "NORMAL"
   showProgramNodeDialog.value = true
 }
@@ -262,7 +270,7 @@ const clickProgramNode = () => {
 //
 //
 const clickProgramInBootMode = () => {
-  console.log(name + `: clickProgramInBootMode ` + props.nodeNumber)
+  utils.timeStampedLog(logPrefix + `: clickProgramInBootMode ` + props.nodeNumber)
   programNodeMode.value = "BOOT"
   showProgramNodeDialog.value = true
 }
@@ -270,14 +278,30 @@ const clickProgramInBootMode = () => {
 //
 //
 const clickResetNode = () => {
-  console.log(name + `: clickResetNode ` + props.nodeNumber)
+  utils.timeStampedLog(logPrefix + `: clickResetNode ` + props.nodeNumber)
   store.methods.reset_node(props.nodeNumber)
 }
 
 //
 //
+const clickSendLMRequest = () => {
+  utils.timeStampedLog(logPrefix + `: clickSendLMRequest ` + props.nodeNumber)
+  //showSendLMRequest.value = true
+  //
+  //  encodeLM_REQUEST(channel, use, nodeNumber, option_flags, request_number)
+  //  assume use:254 is JSON
+  try{
+    let commandString = cbusLib.encodeLM_REQUEST(199, 254, props.nodeNumber, 0, 0 )
+    store.methods.send_cbus_message(commandString)
+  } catch (error){
+    utils.timeStampedLog(logPrefix + `: clickSendLMRequest ${error}` )
+  }
+}
+
+//
+//
 const clickSetCAN_ID = () => {
-  console.log(name + `: clickSetCAN_ID ` + props.nodeNumber)
+  utils.timeStampedLog(logPrefix + `: clickSetCAN_ID ` + props.nodeNumber)
   showSetCanIdDialog.value = true
 }
 

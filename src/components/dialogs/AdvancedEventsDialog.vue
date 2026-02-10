@@ -16,12 +16,12 @@
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md" label="Delete all events" v-close-popup @click="deleteAllEvents()"/>
         </q-card-actions>
         <q-card-actions v-if="(store.getters.develop())" align="left" class="text-primary">
-          Develop
+          <q-btn dense size="md" color="info" label="DEV"/>
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md"
             label="Send NERD" v-close-popup @click="clickSendNERD()"/>
         </q-card-actions>
         <q-card-actions v-if="(store.getters.develop())" align="left" class="text-primary">
-          Develop
+          <q-btn dense size="md" color="info" label="DEV"/>
           <q-btn dense class="q-mx-xs q-my-none" color="light-blue-2" text-color="black" size="md"
             label="Send NENRD" v-close-popup @click="clickSendNENRD()"/>
         </q-card-actions>

@@ -95,13 +95,16 @@
           <div class="text-body1">
             In the event of a failure, and if the node is left in bootmode (both leds lit), then retry with the 'Program in Boot Mode' option checked.
           </div>
+          <div class="text-body1">
+            When finished, select a file again to restart.
+          </div>
         </q-card>
 
       </div>
 
       <q-card-section class="row">
         <q-card-actions align="left" class="text-primary">
-            <q-btn color="primary" label="Program" @click="clickProgram()" />
+            <q-btn :disable=!enableProgram color="primary" label="Program" @click="clickProgram()" />
           </q-card-actions>
           <q-card align="center" flat class="text-h6" style="width: 370px">
             {{ FIRMWARE_STATUS }}
@@ -141,6 +144,7 @@ import ProgramNodeInfoDialog from "components/dialogs/ProgramNodeInfoDialog"
 const $q = useQuasar()
 const store = inject('store')
 const name = "ProgramNodeDialog"
+const enableProgram = ref(false)
 const uploadFile = ref(null)
 const programCONFIG = ref(false)
 const programEEPROM = ref(false)
@@ -262,6 +266,7 @@ const clearAllSelections = () => {
   timeStampedLog( name + `: clearFileSelected` )
   uploadFile.value = null
   showFileInfo.value = false
+  enableProgram.value = false
   //
   programCONFIG.value = false
   programEEPROM.value = false
@@ -297,6 +302,7 @@ store.eventBus.on('FIRMWARE_INFO', (data) => {
         }
       }
       showFileInfo.value = true
+      enableProgram.value=true
       // check matching CPU type
       if (nodeCpuType != undefined){
         //timeStampedLog( name + `: FIRMWARE_INFO event: node ${props.nodeNumber} cpuTypes ${fileCpuType.value} ${nodeCpuType}` )
@@ -379,6 +385,7 @@ const clickInfo = () => {
 //
 //
 const clickProgram = async () => {
+  enableProgram.value=false
   flags = programCONFIG.value ? flags | 1 : flags & ~1   // program CONFIG
   flags = programEEPROM.value ? flags | 2 : flags & ~2   // program EEPROM
   flags = cpuTypeCheckIgnore.value ? flags | 4 : flags & ~4   // ignore CPUTYPE
