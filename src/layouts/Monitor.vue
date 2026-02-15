@@ -13,8 +13,9 @@
       </q-toolbar>
 
       <q-toolbar class="col no-margin q-py-none  float-right" v-if="store.getters.develop()">
+      <q-space />
         <div class="float-right">
-          <q-btn size="md" color="secondary" label="clear all" @click="clickClear()" no-caps/>
+          <q-btn size="md" color="blue" label="clear all" @click="clickClear()" no-caps/>
         </div>
       </q-toolbar>
 
