@@ -59,6 +59,11 @@
         <q-space />
       </q-toolbar>
 
+      <q-toolbar class="col no-margin q-py-none" v-if="store.getters.develop()">
+        <div class="float-right">
+          <q-btn size="md" color="secondary" label="CAN BUS" @click="clickMonitor()" no-caps/>
+        </div>
+      </q-toolbar>
 
       <q-toolbar class="col no-margin q-py-none">
         <div class="float-right">
@@ -205,7 +210,7 @@
 //
 
 import {computed, inject, onBeforeMount, onMounted, onUpdated, ref, watch} from "vue";
-import { date, useQuasar, scroll } from 'quasar'
+import { date, useQuasar, scroll, openURL } from 'quasar'
 import packageInfo from './../../package.json';
 import * as utils from "components/functions/utils.js"
 import * as EventFunctions from "components/functions/EventFunctions.js"
@@ -227,6 +232,9 @@ import iFrameDialog from "components/dialogs/iFrameDialog";
 import EventsView from "components/views/EventsView";
 import BusEventsView from "components/views/BusEventsView";
 import SendCbusDialog from "components/dialogs/SendCbusDialog";
+
+import { useRouter } from 'vue-router'
+const router = useRouter()  // returns router instance
 
 
 const { getVerticalScrollPosition, setVerticalScrollPosition } = scroll
@@ -584,6 +592,13 @@ const clickEventsView = () => {
 const clickExample = () => {
   utils.timeStampedLog(name + `: clickExample`)
   showDialogExampleCompositionAPI.value = true
+}
+
+const clickMonitor = () => {
+  utils.timeStampedLog(name + ': clickMonitor')
+  utils.timeStampedLog(name + `: clickMonitor: path  ${JSON.stringify(window.location)}`)
+  let new_url = window.location.href + "monitor"
+  window.open(new_url, 'monitor', "popup").focus()
 }
 
 //
