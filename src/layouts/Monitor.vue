@@ -5,7 +5,7 @@
       <q-toolbar class="col no-margin no-padding" style="min-width: 180px">
 
 
-        <q-toolbar-title style="min-height: 0;" class="no-margin no-padding">
+        <q-toolbar-title style="height: 6vh;" class="no-margin no-padding">
           <div class="text-h6 no-margin no-padding">
             &nbsp; CAN BUS Monitor
             </div>
@@ -25,7 +25,7 @@
 
       <q-page>
         <q-card class="no-margin no-padding">
-          <q-scroll-area id="demo" ref="scrollAreaRef" style="height: 87vh;">
+          <q-scroll-area id="demo" ref="scrollAreaRef" style="height: 92vh;">
             <q-list>
               <q-item
                 v-for="message in busTrafficDisplay"
@@ -59,6 +59,7 @@ const store = inject('store')
 const logPrefix = "Monitor"
 const busTrafficDisplay = ref([])
 const busTraffic = ref([])
+const scrollAreaRef = ref(null)
 
 
 store.eventBus.on('BUS_TRAFFIC_EVENT', (eventData) => {
@@ -72,17 +73,18 @@ store.eventBus.on('BUS_TRAFFIC_EVENT', (eventData) => {
 
 
 const updateBusMonitorDisplay1 = (eventData) => {
-    let data = eventData
-    let cbusMsg = data.json
-    // display all messages
-    data["displayText"] = cbusMsg.encoded + " " + cbusMsg.text
-    //data["displayText"] = cbusMsg.text
-    busTrafficDisplay.value.push(data)
+  let data = eventData
+  let cbusMsg = data.json
+  // display all messages
+  data["displayText"] = cbusMsg.encoded + " " + cbusMsg.text
+  //data["displayText"] = cbusMsg.text
+  busTrafficDisplay.value.push(data)
+  scrollAreaRef.value.setScrollPosition('vertical', scrollAreaRef.value.getScroll().verticalSize)
+  utils.timeStampedLog(logPrefix + `: BUS_TRAFFIC_EVENT : size ${JSON.stringify(scrollAreaRef.value.getScroll())}` )
 }
 
 
 const updateBusMonitorDisplay0 = () => {
-  //busTrafficDisplay.value=[]
   for (let i =0; i < busTraffic.value.length; i++){
     let data = busTraffic.value[i]
     let cbusMsg = data.json
@@ -104,7 +106,10 @@ const updateBusMonitorDisplay0 = () => {
       busTrafficDisplay.value.push(data)
     }
   }
+  scrollAreaRef.value.setScrollPosition('vertical', scrollAreaRef.value.getScroll.verticalSize)
 }
+
+
 
 /*/////////////////////////////////////////////////////////////////////////////
 
