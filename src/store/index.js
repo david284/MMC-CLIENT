@@ -608,18 +608,18 @@ const getters = {
   node_useSlots(nodeNumber){
     try{
       if ( state.nodeDescriptors[nodeNumber].useSlots == true ){
-        utils.timeStampedLog(name + `: node_useSlots: MDF true`)
+        utils.timeStampedLog(name + `: node_useSlots: ${nodeNumber} MDF true`)
         return true
       } else if(state.nodes[nodeNumber].moduleInfo.useSlots) {
-        utils.timeStampedLog(name + `: node_useSlots: moduleInfo.useSlots true`)
+        utils.timeStampedLog(name + `: node_useSlots: ${nodeNumber} moduleInfo.useSlots true`)
         return true
       } else {
         // anything else is false
-        utils.timeStampedLog(name + `: node_useSlots: false`)
+        utils.timeStampedLog(name + `: node_useSlots: ${nodeNumber} false`)
         return false
       }
     } catch (err) {
-      utils.timeStampedLog(name + `: node_useSlots: ${err}`)
+      utils.timeStampedLog(name + `: node_useSlots: ${nodeNumber} ${err}`)
       return false
     }
   },

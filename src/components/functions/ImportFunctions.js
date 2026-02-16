@@ -16,6 +16,7 @@ export function importFCU(file, store, modeValue) {
     fcuConfig = convert.xml2js(file, { compact: true })
   } catch (err){
     console.log(name + ': ImportFCU: convert.xml2js: ' + err )
+    store.eventBus.emit('GENERAL_MESSAGE_EVENT', "FCU import failed - check file is valid XML", err, 'warning', 0)
     throw "convert.xml2js: " + err;
   }
   //console.log(name + `: ImportFCU: ${JSON.stringify(fcuConfig)}` )
@@ -141,6 +142,7 @@ export function importSPREADSHEET(file, store, modeValue) {
 
   } catch (err){
     console.log(name + ': importSPREADSHEET ' + err )
+    store.eventBus.emit('GENERAL_MESSAGE_EVENT', "Spreadsheet import failed - check file is valid", err, 'warning', 0)
     throw err;
   }
 }
