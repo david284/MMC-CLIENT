@@ -115,7 +115,7 @@
         <div class="text-h6">Bus Traffic</div>
         <template v-slot:action>
           <div class="text-h6 float-right">
-            <q-btn size="sm" color="blue" label="All" @click="clickAllBusTraffic()"/>
+            <q-btn size="sm" color="blue" label="Log" @click="clickAllBusTraffic()"/>
             <q-btn square unelevated color="primary" icon="settings" @click="clickBusTrafficSettings()">
               <q-menu auto-close v-model="showBusTrafficSettings">
                 <q-list style="min-width: 100px">
@@ -594,19 +594,6 @@ const clickExample = () => {
   showDialogExampleCompositionAPI.value = true
 }
 
-const clickMonitor = () => {
-  utils.timeStampedLog(name + ': clickMonitor')
-  utils.timeStampedLog(name + `: clickMonitor: path  ${JSON.stringify(window.location)}`)
-  let new_url = window.location.href + "monitor"
-  window.open(new_url, 'monitor', "popup").focus()
-}
-
-//
-//
-const clickNodesView = () => {
-  utils.timeStampedLog(name + ': clickNodeView')
-  selectedView.value = 'NodesView'
-}
 
 //
 //
@@ -660,6 +647,24 @@ const clickJson = () => {
 const clickLogs = () => {
   utils.timeStampedLog(name + ': clickLogs')
   showLogsDialog.value = true
+}
+
+//
+//
+const clickMonitor = () => {
+  utils.timeStampedLog(name + ': clickMonitor')
+  utils.timeStampedLog(name + `: clickMonitor: path  ${JSON.stringify(window.location)}`)
+  let new_url = window.location.href + "monitor"
+  // using popup, the UI features included in the popup window will be automatically decided
+  // by the browser, generally including an address bar only
+  window.open(new_url, 'monitor', "popup, width=350, height=500" ).focus()
+}
+
+//
+//
+const clickNodesView = () => {
+  utils.timeStampedLog(name + ': clickNodeView')
+  selectedView.value = 'NodesView'
 }
 
 //

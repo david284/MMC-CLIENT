@@ -25,7 +25,7 @@
 
       <q-page>
         <q-card class="no-margin no-padding">
-          <q-scroll-area id="demo" ref="scrollAreaRef" style="height: 92vh;">
+          <q-scroll-area id="demo" ref="scrollAreaRef" style="height: 90vh;">
             <q-list>
               <q-item
                 v-for="message in busTrafficDisplay"
