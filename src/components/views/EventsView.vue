@@ -174,7 +174,7 @@ const columns = [
   {name: 'eventName', field: 'name', required: true, label: 'Event Name', align: 'left', sortable: true},
   {name: 'eventGroup', field: 'eventGroup', label: 'Group', align: 'left', sortable: true},
   {name: 'eventIdentifier', field: 'eventIdentifier', label: 'Event Identifier', align: 'left', sortable: true},
-  {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Event Node Number', align: 'left', sortable: true},
+  {name: 'nodeNumber', field: 'nodeNumber', required: true, label: 'Event Node', align: 'left', sortable: true},
   {name: 'eventNumber', field: 'eventNumber', required: true, label: 'Event Number', align: 'left', sortable: true},
   {name: 'type', field: 'type', required: true, label: 'Type', align: 'left', sortable: true},
   {name: 'status', field: 'status', required: true, label: 'Status', align: 'left', sortable: true},

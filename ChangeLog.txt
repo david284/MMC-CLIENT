@@ -8,6 +8,7 @@ Version 0.20.0
   Added dialog for sendLMrequest
   Added CAN BUS monitor as separate window
   Added error notifications to import functions
+  Changed 'source node number' to 'Event Node'
 
 Version 0.19.0
   Added delete offline nodes to NodesViewAdvanced menu
