@@ -9,6 +9,7 @@ Version 0.20.0
   Added CAN BUS monitor as separate window
   Added error notifications to import functions
   Changed 'source node number' to 'Event Node'
+  Added delay when adding event to allow name entry to complete (hopefully)
 
 Version 0.19.0
   Added delete offline nodes to NodesViewAdvanced menu
