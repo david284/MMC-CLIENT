@@ -30,7 +30,7 @@ import * as utils from "components/functions/utils.js"
 import EventNameAndGroup from "components/modules/common/EventNameAndGroup"
 
 const store = inject('store')
-const name = "NameEventDialog"
+const logPrefix = "NameEventDialog"
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },

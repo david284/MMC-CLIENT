@@ -13,14 +13,6 @@
       <q-input dense :disable="disableInput" v-model="newEventGroup" autofocus/>
     </q-card-section>
 
-<!--
-    <q-card-section>
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Accept" v-close-popup @click="clickAccept()"/>
-      </q-card-actions>
-    </q-card-section>
- -->
-
   </q-card-section>
 </template>
 
@@ -30,7 +22,7 @@ import * as utils from "components/functions/utils.js"
 import * as eventFunctions from "components/functions/EventFunctions.js"
 
 const store = inject('store')
-const name = "EventNameAndGroup"
+const logPrefix = "EventNameAndGroup"
 const newEventName = ref("")
 const newEventGroup = ref("")
 const disableInput = ref(true)
@@ -62,21 +54,21 @@ watch(eventIdentifierIn, () => {
       newEventGroup.value = null
       disableInput.value = true
     }
-    utils.timeStampedLog(name + `: eventIdentifierIn ${props.eventIdentifier}`)
+    utils.timeStampedLog(logPrefix + `: eventIdentifierIn ${props.eventIdentifier}`)
   } catch(err) {
-    utils.timeStampedLog(name + ": eventIdentifierIn " + err)
+    utils.timeStampedLog(logPrefix + ": eventIdentifierIn " + err)
   }
 })
 
 //
 //
 watch(newEventName, () => {
-  utils.timeStampedLog(name + `: watch: newEventName: ${newEventName.value}`)
+  utils.timeStampedLog(logPrefix + `: watch: newEventName: ${newEventName.value}`)
   store.setters.event_name(props.eventIdentifier, newEventName.value)
 })
 
 watch(newEventGroup, () => {
-  utils.timeStampedLog(name + `: watch: newEventGroup: ${newEventGroup.value}`)
+  utils.timeStampedLog(logPrefix + `: watch: newEventGroup: ${newEventGroup.value}`)
   store.setters.event_group(props.eventIdentifier, newEventGroup.value)
 })
 
@@ -84,7 +76,7 @@ watch(newEventGroup, () => {
 //
 //
 onMounted(() => {
-  //utils.timeStampedLog(name + ": onMounted " + props.eventIdentifier)
+  //utils.timeStampedLog(logPrefix + ": onMounted " + props.eventIdentifier)
   if (store.state.layout.eventDetails[props.eventIdentifier]) {
     newEventName.value = store.state.layout.eventDetails[props.eventIdentifier].name
     newEventGroup.value = store.state.layout.eventDetails[props.eventIdentifier].group
@@ -105,14 +97,6 @@ onMounted(() => {
 Click event handlers
 
 /////////////////////////////////////////////////////////////////////////////*/
-
-//
-//
-const clickAccept = () => {
-  utils.timeStampedLog(name + `: clickAccept: name: ${newEventName.value} group: ${newEventGroup.value}`)
-  store.setters.event_group(props.eventIdentifier, newEventGroup.value)
-  store.setters.event_name(props.eventIdentifier, newEventName.value)
-}
 
 
 </script>

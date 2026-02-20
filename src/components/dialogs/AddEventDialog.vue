@@ -104,7 +104,7 @@ import EventNameAndGroup from "components/modules/common/EventNameAndGroup"
 
 const store = inject('store')
 const $q = useQuasar()
-const name = "AddEventDialog"
+const logPrefix = "AddEventDialog"
 const newEventNodeNumber = ref()
 const newEventNumber = ref()
 const addEventEnabled = ref(false)
@@ -151,7 +151,7 @@ watch (model, () => {
 //
 //
 watch(newEventNumber, () => {
-  //utils.timeStampedLog(name + `: WATCH newEventNumber`)
+  //utils.timeStampedLog(logPrefix + `: WATCH newEventNumber`)
   if(eventType.value == 'short'){
     newEventNodeNumber.value = 0
   }
@@ -161,7 +161,7 @@ watch(newEventNumber, () => {
 //
 //
 watch(newEventNodeNumber, () => {
-  //utils.timeStampedLog(name + `: WATCH newEventNodeNumber`)
+  //utils.timeStampedLog(logPrefix + `: WATCH newEventNodeNumber`)
   updateEventIdentifier()
 })
 
@@ -170,17 +170,17 @@ const updateEventIdentifier = () => {
   entered_event_identifier += parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
   selected_event_Identifier.value = entered_event_identifier
   addEventEnabled.value = eventFunctions.EventIdentifierIsValid(selected_event_Identifier.value)
-  utils.timeStampedLog(name + `: updateEventIdentifier ${selected_event_Identifier.value}`)
+  utils.timeStampedLog(logPrefix + `: updateEventIdentifier ${selected_event_Identifier.value}`)
 }
 
 //
 //
 onUpdated(() =>{
-  //utils.timeStampedLog(name + ` OnUpdated`)
+  //utils.timeStampedLog(logPrefix + ` OnUpdated`)
 })
 
 onMounted(() =>{
-  //utils.timeStampedLog(name + ` onMounted`)
+  //utils.timeStampedLog(logPrefix + ` onMounted`)
 })
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -190,9 +190,9 @@ Click event handlers
 
 //
 //
-const clickAddEvent = () => {
-  utils.timeStampedLog(name + `: clickAddEvent ${props.nodeNumber} ${selected_event_Identifier.value}`)
-
+const clickAddEvent = async () => {
+  utils.timeStampedLog(logPrefix + `: clickAddEvent ${props.nodeNumber} ${selected_event_Identifier.value}`)
+  await utils.sleep(500)
   if (props.nodeNumber){
     if (store.state.nodes[props.nodeNumber].storedEventsNI[selected_event_Identifier.value] != undefined){
       const result = $q.notify({
@@ -220,21 +220,21 @@ const clickAddEvent = () => {
 //
 //
 const clickInfo = () => {
-  utils.timeStampedLog(name + `: clickInfo`)
+  utils.timeStampedLog(logPrefix + `: clickInfo`)
   showInfo.value = true
 }
 
 //
 //
 const clickLongEvent = () => {
-  utils.timeStampedLog(name + `: clickLongEvent`)
+  utils.timeStampedLog(logPrefix + `: clickLongEvent`)
   newEventNodeNumber.value = props.nodeNumber
 }
 
 //
 //
 const clickShortEvent = () => {
-  utils.timeStampedLog(name + `: clickShortEvent`)
+  utils.timeStampedLog(logPrefix + `: clickShortEvent`)
   newEventNodeNumber.value = 0
 }
 

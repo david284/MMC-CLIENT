@@ -81,7 +81,7 @@ import EventNameAndGroup from "components/modules/common/EventNameAndGroup"
 
 
 const store = inject('store')
-const name = "EventIdentityDialog"
+const logPrefix = "EventIdentityDialog"
 const newEventNodeNumber = ref()
 const newEventNumber = ref()
 const addEventEnabled = ref(false)
@@ -110,9 +110,9 @@ const model = computed({
 
 // model changes when Dialog opened & closed
 watch(model, () => {
-  console.log(name + `: WATCH model`)
+  utils.timeStampedLog(logPrefix + `: WATCH model`)
   if (model.value == true){
-    utils.timeStampedLog(name + `: watch model: ${props.eventIdentifier}`)
+    utils.timeStampedLog(logPrefix + `: watch model: ${props.eventIdentifier}`)
     newEventNodeNumber.value = parseInt(props.eventIdentifier.substring(0, 4), 16)
     newEventNumber.value = parseInt(props.eventIdentifier.substring(4, 8), 16)
     if (newEventNodeNumber.value == 0){
@@ -140,7 +140,7 @@ const updateEventIdentifier = () => {
   entered_event_identifier += parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
   selected_event_Identifier.value = entered_event_identifier
   addEventEnabled.value = eventFunctions.EventIdentifierIsValid(selected_event_Identifier.value)
-  utils.timeStampedLog(name + `: updateEventIdentifier ${selected_event_Identifier.value}`)
+  utils.timeStampedLog(logPrefix + `: updateEventIdentifier ${selected_event_Identifier.value}`)
 }
 
 
@@ -161,14 +161,15 @@ Click event handlers
 //
 //
 const clickSaveEvent = async () => {
-  utils.timeStampedLog(name + `: clickAddEventIdentifier`)
+  utils.timeStampedLog(logPrefix + `: clickAddEventIdentifier`)
+  await utils.sleep(500)
 
   if (eventType.value == 'short'){newEventNodeNumber.value = 0}
   let entered_event_identifier = parseInt(newEventNodeNumber.value).toString(16).toUpperCase().padStart(4, 0)
   entered_event_identifier += parseInt(newEventNumber.value).toString(16).toUpperCase().padStart(4, 0)
   selected_event_Identifier.value = entered_event_identifier
 
-  utils.timeStampedLog(name + `: clickAddEventIdentifier: entered_event_identifier ${entered_event_identifier} `)
+  utils.timeStampedLog(logPrefix + `: clickAddEventIdentifier: entered_event_identifier ${entered_event_identifier} `)
 
   if (store.getters.node_useEventIndex(props.nodeNumber) == true){
     store.methods.event_teach_by_index(
@@ -209,7 +210,7 @@ const clickSaveEvent = async () => {
 //
 //
 const clickInfo = () => {
-  utils.timeStampedLog(name + `: clickInfo`)
+  utils.timeStampedLog(logPrefix + `: clickInfo`)
   showInfo.value = true
 }
 
@@ -217,14 +218,14 @@ const clickInfo = () => {
 //
 //
 const clickLongEvent = () => {
-  utils.timeStampedLog(name + `: clickLongEvent`)
+  utils.timeStampedLog(logPrefix + `: clickLongEvent`)
   newEventNodeNumber.value = props.nodeNumber
 }
 
 //
 //
 const clickShortEvent = () => {
-  utils.timeStampedLog(name + `: clickShortEvent`)
+  utils.timeStampedLog(logPrefix + `: clickShortEvent`)
   newEventNodeNumber.value = 0
 }
 
