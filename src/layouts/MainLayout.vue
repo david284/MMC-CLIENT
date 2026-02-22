@@ -59,7 +59,7 @@
         <q-space />
       </q-toolbar>
 
-      <q-toolbar class="col no-margin q-py-none" v-if="store.getters.develop()">
+      <q-toolbar class="col no-margin q-py-none">
         <div class="float-right">
           <q-btn size="md" color="secondary" label="CAN BUS" @click="clickMonitor()" no-caps/>
         </div>
