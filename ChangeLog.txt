@@ -1,3 +1,6 @@
+Version 0.21.0
+  Changed chip in backup column to clickable & renamed to backup if needed
+
 Version 0.20.0
   Fixed delete unused events
   changed NewNodeDialog to get NAME from bus traffic
