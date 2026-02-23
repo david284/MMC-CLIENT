@@ -74,7 +74,7 @@
           <q-td key="events" :props="props">{{ props.row.events }}</q-td>
           <q-td key="spaceLeft" :props="props">{{ props.row.spaceLeft }}</q-td>
           <q-td key="backupStatus" :props="props">
-            <q-chip v-if="(props.row.backup=='OK')" dense clickable :color=props.row.backupColour>
+            <q-chip v-if="(props.row.backup=='OK')" dense :color=props.row.backupColour>
               {{props.row.backup}}</q-chip>
             <q-chip v-else dense clickable :color=props.row.backupColour @click="clickBackup(props.row.nodeNumber)">
               {{props.row.backup}}</q-chip>
