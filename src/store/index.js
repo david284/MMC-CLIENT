@@ -776,6 +776,26 @@ const getters = {
     }
     return name
   },
+  node_colour(nodeNumber){
+    try{
+      if (nodeNumber in state.layout.nodeDetails == false){
+        state.layout.nodeDetails[nodeNumber] = {}
+        state.layout.nodeDetails[nodeNumber].name =
+        state.nodes[nodeNumber].moduleName + ' (' + nodeNumber.toString() + ')'
+        state.layout.nodeDetails[nodeNumber].colour = "black"
+        state.layout.nodeDetails[nodeNumber].group = ""
+        state.update_layout_needed = true
+      }
+      if (state.layout.nodeDetails[nodeNumber].colour == undefined){
+        state.layout.nodeDetails[nodeNumber].colour = "black"
+        state.update_layout_needed = true
+      }
+      return state.layout.nodeDetails[nodeNumber].colour
+    } catch (err) {
+      utils.timeStampedLog(name + `: getters.node_colour: ${err}`)
+      return ""
+    }
+  },
   node_group(nodeNumber){
     try{
       if (nodeNumber in state.layout.nodeDetails == false){
@@ -955,6 +975,13 @@ const setters = {
       state.layout.nodeDetails[nodeNumber].channels = {}
     }
     state.layout.nodeDetails[nodeNumber].channels[channelNumber] = {channelName: channelName}
+    state.update_layout_needed = true
+  },
+  node_colour(nodeNumber, colour){
+    if (nodeNumber in state.layout.nodeDetails === false){
+      setters.addNodeToLayout(nodeNumber)
+    }
+    state.layout.nodeDetails[nodeNumber].colour = colour
     state.update_layout_needed = true
   },
   node_group(nodeNumber, Group){

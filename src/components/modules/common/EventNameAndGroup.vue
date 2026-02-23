@@ -5,12 +5,22 @@
     </div>
     <q-card-section class="q-pt-none">
       <div class="text-h6">Event name</div>
-      <q-input dense :disable="disableInput" v-model="newEventName" autofocus/>
+      <q-input
+        dense
+        debounce="500"
+        :disable="disableInput"
+        v-model="newEventName"
+        autofocus/>
     </q-card-section>
 
     <q-card-section class="q-pt-none">
       <div class="text-h6">Event group</div>
-      <q-input dense :disable="disableInput" v-model="newEventGroup" autofocus/>
+      <q-input
+        dense
+        debounce="500"
+        :disable="disableInput"
+        v-model="newEventGroup"
+        autofocus/>
     </q-card-section>
 
   </q-card-section>

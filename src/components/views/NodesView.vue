@@ -54,10 +54,12 @@
         :virtual-scroll-sticky-size-start="0"
         :visible-columns="visibleColumns"
         hide-bottom
+        :table-row-style-fn="rowStyleFn"
       >
       <template v-slot:body="props" >
-          <q-tr :props="props" :class="selected_nodeNumber==props.row.nodeNumber?'bg-blue-1':'bg-white'" class="q-my-none q-py-none">
-          <q-td key="nodeNumber" :class="'text-'+nodeColour(props.row.nodeNumber)" :props="props">{{ props.row.nodeNumber }}</q-td>
+          <q-tr :props="props" :class="(selected_nodeNumber==props.row.nodeNumber?'bg-blue-1':'bg-white') "
+            class="'q-my-none' 'q-py-none'">
+          <q-td key="nodeNumber" :props="props">{{ props.row.nodeNumber }}</q-td>
           <q-td key="CANID" :props="props">{{ props.row.CANID }} </q-td>
           <q-td key="nodeName" :props="props">{{ props.row.nodeName }} </q-td>
           <q-td key="group" :props="props">{{ props.row.group }} </q-td>
@@ -255,6 +257,7 @@ const update_rows = () => {
       output['CANID'] = node.CANID
       output['nodeName'] = store.getters.node_name(node.nodeNumber)
       output['group'] = store.getters.node_group(node.nodeNumber)
+      output['text_colour'] = store.getters.node_colour(node.nodeNumber)
       output['moduleName'] = store.getters.module_name(node.nodeNumber)
       output['moduleVersion'] = store.getters.module_version(node.nodeNumber)
       output['component'] = node.component
@@ -280,6 +283,7 @@ const update_rows = () => {
       output['spaceLeft'] = node.eventSpaceLeft
       output['vlcb'] = node.VLCB
       rows.value.push(output)
+      timeStampedLog(logPrefix + `: update_rows: ${JSON.stringify(output)}`)
     }
   })
 }
@@ -291,6 +295,16 @@ const nodeColour = (nodeNumber) => {
     return store.state.layout.nodeDetails[nodeNumber].colour
   } else {
     return 'blue'
+  }
+}
+
+const rowStyleFn = (row) =>{
+  timeStampedLog(logPrefix + `: rowStyleFn: ${JSON.stringify(row.nodeNumber)}`)
+  let nodeNumber = row.nodeNumber
+  if (nodeNumber in store.state.layout.nodeDetails) {
+    return 'color:' + store.state.layout.nodeDetails[nodeNumber].colour
+  } else {
+    return 'color:black'
   }
 }
 
