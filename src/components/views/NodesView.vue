@@ -261,13 +261,13 @@ const update_rows = () => {
       output['status'] = node.status
       if (store.getters.node_backup_required(node.nodeNumber) == true){
         output['backupColour'] = 'red-3'
-        output['backup'] = "Needed"
+        output['backup'] = "Backup"
       } else if (backupCount(node.nodeNumber) > 0 ){
         output['backupColour'] = 'green-3'
         output['backup'] = "OK"
       } else {
         output['backupColour'] = 'red-3'
-        output['backup'] = "Needed"
+        output['backup'] = "Backup"
       }
       if (node.flim == true) {
         output['mode'] = 'FLiM'
