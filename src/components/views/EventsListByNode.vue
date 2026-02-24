@@ -59,6 +59,7 @@
       :rows-per-page-options="[0]"
       :virtual-scroll-sticky-size-start="0"
       :visible-columns="visibleColumns"
+      :table-row-style-fn="rowStyleFn"
       hide-bottom
     >
       <template v-slot:body="props">
@@ -99,6 +100,7 @@
       :rows-per-page-options="[0]"
       :virtual-scroll-sticky-size-start="0"
       :visible-columns="visibleColumns"
+      :table-row-style-fn="rowStyleFn"
       hide-bottom
     >
       <template v-slot:body="props">
@@ -212,7 +214,7 @@ import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDia
 
 const $q = useQuasar()
 const store = inject('store')
-const name = "EventsListByNode"
+const logPrefix = "EventsListByNode"
 const rows = ref([])
 const filter = ref('')
 const showActivateSlotDialog = ref(false)
@@ -247,13 +249,23 @@ const props = defineProps({
 //
 //
 const tableClass = computed(() => {
-  utils.timeStampedLog(name + `: computed isDialog ${props.isDialog}`)
+  utils.timeStampedLog(logPrefix + `: computed isDialog ${props.isDialog}`)
   if(props.isDialog) {
     return "events-list-by-node-table-full"
   } else {
     return"events-list-by-node-table"
   }
 })
+
+const rowStyleFn = (row) =>{
+  utils.timeStampedLog(logPrefix + `: rowStyleFn: ${JSON.stringify(row.eventIdentifier)}`)
+  let eventIdentifier = row.eventIdentifier
+  if (eventIdentifier in store.state.layout.eventDetails) {
+    return 'color:' + store.state.layout.eventDetails[eventIdentifier].colour
+  } else {
+    return 'color:black'
+  }
+}
 
 
 const visibleColumns = ref([])
@@ -291,7 +303,7 @@ const selected_node = computed(() =>{
 //
 //
 watch(selected_node, () => {
-  //utils.timeStampedLog(name + `: WATCH selected_node ${props.nodeNumber}`)
+  //utils.timeStampedLog(logPrefix + `: WATCH selected_node ${props.nodeNumber}`)
   if (props.nodeNumber){
     update_rows()
   }
@@ -304,7 +316,7 @@ const busEvents = computed(() =>{
   return Object.values(store.state.busEvents)
 })
 watch(busEvents, () => {
-  //utils.timeStampedLog(name + `: WATCH busEvents`)
+  //utils.timeStampedLog(logPrefix + `: WATCH busEvents`)
   if (props.nodeNumber){
     update_rows()
   }
@@ -317,7 +329,7 @@ const layoutUpdated = computed(() => {
 })
 
 watch(layoutUpdated, () => {
-  //utils.timeStampedLog(name + `: WATCH: layoutUpdated`)
+  //utils.timeStampedLog(logPrefix + `: WATCH: layoutUpdated`)
   if (props.nodeNumber){
     update_rows()
   }
@@ -330,7 +342,7 @@ const nodesUpdated = computed(() => {
 })
 
 watch(nodesUpdated, () => {
-  //utils.timeStampedLog(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
+  //utils.timeStampedLog(logPrefix + `: WATCH: nodesUpdated ` + nodesUpdated.value)
   if (props.nodeNumber){
     if (store.getters.node_useEventIndex(props.nodeNumber) == true){
       eventMode.value = "Index"
@@ -357,11 +369,11 @@ watch(nodesUpdated, () => {
 
 
 const update_rows = () => {
-  //utils.timeStampedLog(name + `: update_rows: node ${props.nodeNumber} `)
+  //utils.timeStampedLog(logPrefix + `: update_rows: node ${props.nodeNumber} `)
   rows.value = []
   try{
     if (eventMode.value == "Event"){
-      //utils.timeStampedLog(name + `: update_rows: node ${props.nodeNumber} `)
+      //utils.timeStampedLog(logPrefix + `: update_rows: node ${props.nodeNumber} `)
       // do stored events for this node first.....
       var storedEventsNI = Object.values(store.state.nodes[props.nodeNumber].storedEventsNI)
       storedEventsNI.forEach(event => {
@@ -429,14 +441,14 @@ const update_rows = () => {
       update_rows_indexed()
     }
   } catch (err) {
-    utils.timeStampedLog(name + `: update_rows: ${err} `)
+    utils.timeStampedLog(logPrefix + `: update_rows: ${err} `)
   }
 }
 
 
 const update_rows_indexed = () => {
   try{
-    //utils.timeStampedLog(name + `: update_rows_indexed: node ${props.nodeNumber} `)
+    //utils.timeStampedLog(logPrefix + `: update_rows_indexed: node ${props.nodeNumber} `)
     //
     // first add all reported events to list
     var eventsByIndex = Object.values(store.state.nodes[props.nodeNumber].eventsByIndex)
@@ -506,7 +518,7 @@ const update_rows_indexed = () => {
     // finally, sort rows by eventIndex
     rows.value.sort(function(a, b){return (a.eventIndex < b.eventIndex)? -1 : 1;});
   } catch(err){
-    utils.timeStampedLog(name + `: update_rows_indexed: ${err} `)
+    utils.timeStampedLog(logPrefix + `: update_rows_indexed: ${err} `)
   }
 }
 
@@ -527,7 +539,7 @@ const isEventVisible = (eventIdentifier) => {
 
 
 onBeforeMount(() => {
-  //utils.timeStampedLog(name + ": onBeforeMount")
+  //utils.timeStampedLog(logPrefix + ": onBeforeMount")
   getSettings()
   if (props.nodeNumber){
     update_rows()
@@ -536,16 +548,16 @@ onBeforeMount(() => {
 
 
 onMounted(() => {
-  //utils.timeStampedLog(name + ": onMounted")
+  //utils.timeStampedLog(logPrefix + ": onMounted")
 })
 
 onUpdated(() => {
-  //utils.timeStampedLog(name + ": onUpdated")
+  //utils.timeStampedLog(logPrefix + ": onUpdated")
 })
 
 
 const getEventVariables = async (eventIdentifier, eventIndex) => {
-  //utils.timeStampedLog(name + `: getEventVariables: ${eventIdentifier} ${eventIndex}`)
+  //utils.timeStampedLog(logPrefix + `: getEventVariables: ${eventIdentifier} ${eventIndex}`)
   //
   WaitingOnBusTrafficDialogReturn.value =''
   WaitingOnBusTrafficMessage.value = "Loading Event Variables"
@@ -597,15 +609,15 @@ const getSettings = () => {
 //
 //
 store.eventBus.on('LAYOUT_DATA', () => {
-//  utils.timeStampedLog(name + ': LAYOUT_DATA')
+//  utils.timeStampedLog(logPrefix + ': LAYOUT_DATA')
   getSettings()
 })
 
 store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
-  //utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : opcode ' + data.json.opCode)
+  //utils.timeStampedLog(logPrefix + ': BUS_TRAFFIC_EVENT : opcode ' + data.json.opCode)
   if (showSwitchTeachDialog.value){
     var opCode = data.json.opCode
-    //utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : opcode #2 ${opCode}` )
+    //utils.timeStampedLog(logPrefix + `: BUS_TRAFFIC_EVENT : opcode #2 ${opCode}` )
     eventIdentityDialogText.value = "switch"
     if (store.getters.node_useSwitchTeach1(props.nodeNumber)){
       // check for ACON1 or ACOF1 event
@@ -613,7 +625,7 @@ store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
       {
         selected_event_index.value = data.json.data1
         selected_event_Identifier.value = data.json.eventIdentifier
-        utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : ACON1/ACOF1 event - switch ${selected_event_index.value}`)
+        utils.timeStampedLog(logPrefix + `: BUS_TRAFFIC_EVENT : ACON1/ACOF1 event - switch ${selected_event_index.value}`)
         // lets store this against the node in the layout
         // as the index is specific to the node
         store.setters.addIndexedEventToLayoutNode(props.nodeNumber, data.json.data1, selected_event_Identifier.value)
@@ -626,7 +638,7 @@ store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
       {
         selected_event_index.value = data.json.data1
         selected_event_Identifier.value = data.json.eventIdentifier
-        utils.timeStampedLog(name + `: BUS_TRAFFIC_EVENT : ARON1/AROF1 event - switch ${selected_event_index.value}`)
+        utils.timeStampedLog(logPrefix + `: BUS_TRAFFIC_EVENT : ARON1/AROF1 event - switch ${selected_event_index.value}`)
         eventIdentityShowVariables.value = true
         showEventIdentityDialog.value = true
       }
@@ -644,14 +656,14 @@ Click event handlers
 //
 //
 const clickActivateSlot = () => {
-  utils.timeStampedLog(name + `: clickActivateSlot`)
+  utils.timeStampedLog(logPrefix + `: clickActivateSlot`)
   showActivateSlotDialog.value = true
 }
 
 //
 //
 const clickAddEvent = () => {
-  utils.timeStampedLog(name + `: clickAddEvent`)
+  utils.timeStampedLog(logPrefix + `: clickAddEvent`)
   if(store.state.nodes[props.nodeNumber].eventSpaceLeft > 0 ) {
     showAddEventDialog.value = true
   } else {
@@ -670,20 +682,20 @@ const clickAddEvent = () => {
 //
 //
 const clickAdvanced = () => {
-  utils.timeStampedLog(name + `: clickAdvanced`)
+  utils.timeStampedLog(logPrefix + `: clickAdvanced`)
   showAdvancedEventDialog.value = true
 }
 
 //
 //
 const clickClose = () => {
-  utils.timeStampedLog(name + `: clickClose`)
+  utils.timeStampedLog(logPrefix + `: clickClose`)
 }
 
 //
 //
 const clickDelete = async (eventIdentifier, eventIndex) => {
-  utils.timeStampedLog(name + `: clickDelete ${eventIdentifier} ${eventIndex}`)
+  utils.timeStampedLog(logPrefix + `: clickDelete ${eventIdentifier} ${eventIndex}`)
   const result = $q.notify({
     message: 'Are you sure you want to delete event ' + store.getters.event_name(eventIdentifier),
     timeout: 0,
@@ -702,7 +714,7 @@ const clickDelete = async (eventIdentifier, eventIndex) => {
 //
 //
 const click_enableEventIdentifier = () => {
-  utils.timeStampedLog(name + `: click_enableEventIdentifier ${store.state.layout.settings.enableEventIdentifier}`)
+  utils.timeStampedLog(logPrefix + `: click_enableEventIdentifier ${store.state.layout.settings.enableEventIdentifier}`)
   utils.setVisibleColumn(visibleColumns.value, "eventIdentifier", store.state.layout.settings.enableEventIdentifier)
   store.state.update_layout_needed = true
 }
@@ -710,7 +722,7 @@ const click_enableEventIdentifier = () => {
 //
 //
 const click_enableEventIndex = () => {
-  utils.timeStampedLog(name + `: click_enableEventIndex ${store.state.layout.settings.EventsByNodeView.enableEventIndex}`)
+  utils.timeStampedLog(logPrefix + `: click_enableEventIndex ${store.state.layout.settings.EventsByNodeView.enableEventIndex}`)
   utils.setVisibleColumn(visibleColumns.value, "eventIndex", store.state.layout.settings.EventsByNodeView.enableEventIndex)
   store.state.update_layout_needed = true
 }
@@ -718,7 +730,7 @@ const click_enableEventIndex = () => {
 //
 //
 const click_enableEventGroup = () => {
-  utils.timeStampedLog(name + `: click_enableEventGroup ${store.state.layout.settings.enableEventGroup}`)
+  utils.timeStampedLog(logPrefix + `: click_enableEventGroup ${store.state.layout.settings.enableEventGroup}`)
   utils.setVisibleColumn(visibleColumns.value, "eventGroup", store.state.layout.settings.enableEventGroup)
   store.state.update_layout_needed = true
 }
@@ -726,7 +738,7 @@ const click_enableEventGroup = () => {
 //
 //
 const clickEvent = (eventIndex, eventIdentifier) => {
-  utils.timeStampedLog(name + `: clickEvent: eventIndex ${eventIndex}`)
+  utils.timeStampedLog(logPrefix + `: clickEvent: eventIndex ${eventIndex}`)
   selected_event_index.value = eventIndex
   selected_event_Identifier.value = eventIdentifier
   eventIdentityDialogText.value = "index"
@@ -738,7 +750,7 @@ const clickEvent = (eventIndex, eventIdentifier) => {
 //
 //
 const clickEventName = (eventIdentifier) => {
-  utils.timeStampedLog(name + `: clickEventName ` + eventIdentifier)
+  utils.timeStampedLog(logPrefix + `: clickEventName ` + eventIdentifier)
   selected_event_Identifier.value = eventIdentifier
   newEventName.value = store.getters.event_name(eventIdentifier)
   showNameEventDialog.value = true;
@@ -747,14 +759,14 @@ const clickEventName = (eventIdentifier) => {
 //
 //
 const clickInfo = () => {
-  utils.timeStampedLog(name + `: clickInfo`)
+  utils.timeStampedLog(logPrefix + `: clickInfo`)
   showEventsByNodeViewInfoDialog.value = true
 }
 
 //
 //
 const clickRefresh = () => {
-  utils.timeStampedLog(name + `: clickRefresh`)
+  utils.timeStampedLog(logPrefix + `: clickRefresh`)
   eventFunctions.requestAllNodeEvents(store, props.nodeNumber)
   update_rows()
 }
@@ -807,7 +819,7 @@ const clickSwitchTeachClose = (nodeNumber) => {
 //
 //
 const clickTeach = (eventIndentifier) => {
-  utils.timeStampedLog(name + `: clickTeach`)
+  utils.timeStampedLog(logPrefix + `: clickTeach`)
   selected_event_Identifier.value = eventIndentifier
   showEventTeachDialog.value = true
 }
@@ -816,7 +828,7 @@ const clickTeach = (eventIndentifier) => {
 //
 //
 const clickToggleEventMode = () => {
-  utils.timeStampedLog(name + `: clickToggleEventMode`)
+  utils.timeStampedLog(logPrefix + `: clickToggleEventMode`)
   eventMode.value = (eventMode.value == 'Event') ? 'Index' : 'Event'
   update_rows()
 }
@@ -824,7 +836,7 @@ const clickToggleEventMode = () => {
 //
 //
 const clickToggleViewMode = () => {
-  utils.timeStampedLog(name + `: clickToggleViewMode`)
+  utils.timeStampedLog(logPrefix + `: clickToggleViewMode`)
   switch(store.state.events_view_mode){
     case 'all':
       store.state.events_view_mode = 'short'
@@ -847,7 +859,7 @@ const clickToggleViewMode = () => {
 //
 //
 const clickVariables = async (eventIdentifier, eventIndex) => {
-  utils.timeStampedLog(name + `: clickVariables: node ${props.nodeNumber} event ${eventIdentifier}`)
+  utils.timeStampedLog(logPrefix + `: clickVariables: node ${props.nodeNumber} event ${eventIdentifier}`)
   selected_event_Identifier.value = eventIdentifier
   selected_event_index.value = eventIndex
   await getEventVariables(eventIdentifier, eventIndex)

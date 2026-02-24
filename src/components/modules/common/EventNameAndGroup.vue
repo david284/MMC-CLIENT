@@ -23,6 +23,18 @@
         autofocus/>
     </q-card-section>
 
+      <q-card-section class="q-pt-none">
+        <div class="text-h6">Colour</div>
+        <q-select
+          v-model="newEventColour"
+          dense
+          debounce="500"
+          :options=items
+          popup-content-class="no-margin no-padding"
+        >
+        </q-select>
+      </q-card-section>
+
   </q-card-section>
 </template>
 
@@ -30,11 +42,14 @@
 import {inject, ref, onMounted, onUpdated, computed, watch} from "vue";
 import * as utils from "components/functions/utils.js"
 import * as eventFunctions from "components/functions/EventFunctions.js"
+import {text_colours} from "src/definitions/general_definitions"
 
 const store = inject('store')
 const logPrefix = "EventNameAndGroup"
 const newEventName = ref("")
 const newEventGroup = ref("")
+const newEventColour = ref()
+const items = ref([])
 const disableInput = ref(true)
 
 const props = defineProps({
@@ -54,14 +69,17 @@ watch(eventIdentifierIn, () => {
       if (store.state.layout.eventDetails[props.eventIdentifier]) {
         newEventName.value = store.state.layout.eventDetails[props.eventIdentifier].name
         newEventGroup.value = store.state.layout.eventDetails[props.eventIdentifier].group
+        newEventColour.value = store.state.layout.eventDetails[props.eventIdentifier].colour
       }else {
         newEventName.value = null
         newEventGroup.value = null
+        newEventColour.value = "black"
       }
       disableInput.value = false
     } else {
       newEventName.value = null
       newEventGroup.value = null
+      newEventColour.value = "black"
       disableInput.value = true
     }
     utils.timeStampedLog(logPrefix + `: eventIdentifierIn ${props.eventIdentifier}`)
@@ -82,6 +100,11 @@ watch(newEventGroup, () => {
   store.setters.event_group(props.eventIdentifier, newEventGroup.value)
 })
 
+watch(newEventColour, () => {
+  utils.timeStampedLog(logPrefix + `: watch: newEventColour: ${newEventColour.value}`)
+  store.setters.event_colour(props.eventIdentifier, newEventColour.value)
+})
+
 
 //
 //
@@ -90,16 +113,28 @@ onMounted(() => {
   if (store.state.layout.eventDetails[props.eventIdentifier]) {
     newEventName.value = store.state.layout.eventDetails[props.eventIdentifier].name
     newEventGroup.value = store.state.layout.eventDetails[props.eventIdentifier].group
+    newEventColour.value = store.state.layout.eventDetails[props.eventIdentifier].colour
   } else {
     newEventName.value = null
     newEventGroup.value = null
+    newEventColour.value = "black"
   }
   if (eventFunctions.EventIdentifierIsValid(props.eventIdentifier)){
     disableInput.value = false
   } else {
     disableInput.value = true
   }
+  //
+  for (const index in text_colours)
+  {
+    let newItem = text_colours[index]
+    utils.timeStampedLog(logPrefix + `: onMounted ${JSON.stringify(newItem)}`)
+    items.value.push( newItem )
+  }
 })
+
+
+
 
 
 /*/////////////////////////////////////////////////////////////////////////////

@@ -14,12 +14,20 @@
 
       <q-card-section class="q-pt-none">
         <div class="text-h6">Name</div>
-        <q-input dense v-model="newNodeName" autofocus />
+        <q-input
+          dense
+          debounce="500"
+          v-model="newNodeName"
+          autofocus />
       </q-card-section>
 
       <q-card-section class="q-pt-none">
         <div class="text-h6">Group</div>
-        <q-input dense v-model="newNodeGroup" autofocus />
+        <q-input
+          dense
+          debounce="500"
+          v-model="newNodeGroup"
+          autofocus />
       </q-card-section>
 
       <q-card-section class="q-pt-none">
@@ -27,6 +35,7 @@
         <q-select
           v-model="newNodeColour"
           dense
+          debounce="500"
           :options=items
           popup-content-class="no-margin no-padding"
         >
