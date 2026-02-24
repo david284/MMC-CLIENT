@@ -107,6 +107,7 @@ const clickExport = async (filename) => {
       }
       output['eventNumber'] = parseInt(eventIdentifier.slice(4,8), 16)
       output['eventGroup'] = eventDetails[eventIdentifier].group ? eventDetails[eventIdentifier].group : ''
+      output['eventColour'] = eventDetails[eventIdentifier].colour ? eventDetails[eventIdentifier].colour : ''
       if (eventNodeNumber == 0){
         shortEvents.push(output)
       } else {
@@ -128,6 +129,7 @@ const clickExport = async (filename) => {
     output['moduleName'] = nodeDetails[nodeNumber].moduleName ? nodeDetails[nodeNumber].moduleName : ''
     output['nodeNumber'] = parseInt(nodeNumber)
     output['nodeGroup'] = nodeDetails[nodeNumber].group ? nodeDetails[nodeNumber].group : ''
+    output['nodeColour'] = nodeDetails[nodeNumber].colour ? nodeDetails[nodeNumber].colour : ''
     //utils.timeStampedLog(name + `: clickExport: nodeDetail output1 ${JSON.stringify(output)}`)
     nodes.push(output)
     try{
@@ -165,12 +167,14 @@ const clickExport = async (filename) => {
   shortEventOutput['eventName'] = ''
   shortEventOutput['eventNumber'] = ''
   shortEventOutput['eventGroup'] = ''
+  shortEventOutput['eventColour'] = ''
   shortEvents.push(shortEventOutput)
   //
   let longEventOutput = {}
   longEventOutput['eventName'] = ''
   longEventOutput['eventNumber'] = ''
   longEventOutput['eventGroup'] = ''
+  longEventOutput['eventColour'] = ''
   longEventOutput['eventNodeNumber'] = ''
   longEvents.push(longEventOutput)
   //
@@ -179,6 +183,7 @@ const clickExport = async (filename) => {
   nodeOutput['moduleName'] = ''
   nodeOutput['nodeNumber'] = ''
   nodeOutput['nodeGroup'] = ''
+  nodeOutput['nodeColour'] = ''
   nodes.push(nodeOutput)
   //
 
@@ -202,7 +207,7 @@ const clickExport = async (filename) => {
     // calculate column width
     const nodes_name_width = nodes.reduce((w, r) => Math.max(w, r.nodeName.length), 15) + 5;
     const nodes_group_width = nodes.reduce((w, r) => Math.max(w, r.nodeGroup.length), 15) + 5;
-    nodesWorksheet["!cols"] = [ { wch: nodes_name_width }, { wch: 20 }, { wch: 20 }, { wch: nodes_group_width } ];
+    nodesWorksheet["!cols"] = [ { wch: nodes_name_width }, { wch: 20 }, { wch: 20 }, { wch: nodes_group_width }, { wch: 20 } ];
     utils.timeStampedLog(name + `: clickExport: nodesWorksheet`)
   } catch (err){
       utils.timeStampedLog(name + `: clickExport: nodesWorksheet ${err}`)
@@ -213,7 +218,7 @@ const clickExport = async (filename) => {
     // calculate column width
     const long_events_name_width = longEvents.reduce((w, r) => Math.max(w, r.eventName.length), 15) + 5;
     const long_events_group_width = longEvents.reduce((w, r) => Math.max(w, r.eventGroup.length), 15) + 5;
-    longEventsWorksheet["!cols"] = [ { wch: long_events_name_width }, { wch: 20 }, { wch: 20 }, { wch: long_events_group_width } ];
+    longEventsWorksheet["!cols"] = [ { wch: long_events_name_width }, { wch: 20 }, { wch: 20 }, { wch: long_events_group_width }, { wch: 20 } ];
     utils.timeStampedLog(name + `: clickExport: longEventsWorksheet`)
   } catch (err){
       utils.timeStampedLog(name + `: clickExport: longEventsWorksheet ${err}`)
@@ -226,7 +231,7 @@ const clickExport = async (filename) => {
     // calculate column width
     const short_events_name_width = shortEvents.reduce((w, r) => Math.max(w, r.eventName.length), 15) + 5;
     const short_events_group_width = shortEvents.reduce((w, r) => Math.max(w, r.eventGroup.length), 15) + 5;
-    shortEventsWorksheet["!cols"] = [ { wch: short_events_name_width }, { wch: 20 }, { wch: short_events_group_width } ];
+    shortEventsWorksheet["!cols"] = [ { wch: short_events_name_width }, { wch: 20 }, { wch: short_events_group_width }, { wch: 20 } ];
     utils.timeStampedLog(name + `: clickExport: shortEventsWorksheet`)
   } catch (err){
       utils.timeStampedLog(name + `: clickExport: shortEventsWorksheet ${err}`)
