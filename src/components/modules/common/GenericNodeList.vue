@@ -13,6 +13,7 @@
             virtual-scroll
             :rows-per-page-options="[0]"
             :virtual-scroll-sticky-size-start="0"
+            :table-row-style-fn="rowStyleFn"
             >
 
             <template v-slot:body="props">
@@ -54,15 +55,14 @@
 <script setup>
 import {inject, ref, onBeforeMount, onMounted, onUpdated, computed, watch} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
-import {sleep} from "components/functions/utils.js"
+import * as utils from "components/functions/utils.js"
 import {NodeParametersLoaded} from "components/functions/NodeFunctions.js"
 import EventVariablesDialog from "components/dialogs/EventVariablesDialog"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
-import {timeStampedLog} from "components/functions/utils.js"
 
 const $q = useQuasar()
 const store = inject('store')
-const name = "GenericNodeList"
+const logPrefix = "GenericNodeList"
 const showEventVariablesDialog = ref(false)
 const selected_nodeNumber = ref(0)
 const showWaitingOnBusTrafficDialog = ref(false)
@@ -90,8 +90,20 @@ const teColumns = [
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: true}
 ]
 
+//
+//
+const rowStyleFn = (row) =>{
+  utils.timeStampedLog(logPrefix + `: rowStyleFn: ${JSON.stringify(row.nodeNumber)}`)
+  let nodeNumber = row.nodeNumber
+  if (nodeNumber in store.state.layout.nodeDetails) {
+    return 'color:' + store.state.layout.nodeDetails[nodeNumber].colour
+  } else {
+    return 'color:black'
+  }
+}
+
 const update_nodes_table = async () => {
-//  timeStampedLog(name + `: update__nodes_table`)
+//  timeStampedLog(logPrefix + `: update__nodes_table`)
   teRows.value = []
   props.nodeNumberList.forEach(nodeNumber => {
     var nodeName = store.getters.node_name(nodeNumber)
@@ -109,7 +121,7 @@ const update_nodes_table = async () => {
 //
 //
 const checkNodeParameters = async (nodeNumber) => {
-  //timeStampedLog(name + ': checkNodeParameters: node ' + nodeNumber)
+  //utils.timeStampedLog(logPrefix + ': checkNodeParameters: node ' + nodeNumber)
   //
   // check if parameters have already been fully retrieved
   if(NodeParametersLoaded(store, nodeNumber)){
@@ -123,7 +135,7 @@ const checkNodeParameters = async (nodeNumber) => {
     let startTime = Date.now()
     while ((Date.now() - startTime) < 60000){
       if (WaitingOnBusTrafficDialogReturn.value.length > 0) { break }
-      await sleep (100)
+      await utils.sleep (100)
     }
     showWaitingOnBusTrafficDialog.value = false
   }
@@ -133,10 +145,10 @@ const checkNodeParameters = async (nodeNumber) => {
 //
 //
 const checkNodeVariables = async (nodeNumber) => {
-  //timeStampedLog(name + ': checkNodeVariables: node ' + nodeNumber)
+  //utils.timeStampedLog(logPrefix + ': checkNodeVariables: node ' + nodeNumber)
   var maxNodeVariableIndex = store.state.nodes[nodeNumber].parameters[6]
   if(store.state.nodes[nodeNumber].nodeVariables[maxNodeVariableIndex] != undefined){
-    //timeStampedLog(name + ": checkNodeVariables: already read")
+    //utils.timeStampedLog(logPrefix + ": checkNodeVariables: already read")
   } else {
     WaitingOnBusTrafficDialogReturn.value =''
     WaitingOnBusTrafficMessage.value = "Loading Node Variables"
@@ -145,7 +157,7 @@ const checkNodeVariables = async (nodeNumber) => {
     // wait for variables to load
     for (let i = 0; i < 10000; i++){
       if (WaitingOnBusTrafficDialogReturn.value.length > 0) break
-      await sleep (10)
+      await utils.sleep (10)
     }
     showWaitingOnBusTrafficDialog.value = false
   }
@@ -153,15 +165,15 @@ const checkNodeVariables = async (nodeNumber) => {
 
 
 onBeforeMount(() => {
-//  timeStampedLog(name + `: onBeforeMount`)
+//  utils.timeStampedLog(logPrefix + `: onBeforeMount`)
 })
 
 onMounted(() => {
-//  timeStampedLog(name + ': props: ' + JSON.stringify(props))
+//  utils.timeStampedLog(logPrefix + ': props: ' + JSON.stringify(props))
 })
 
 onUpdated(() => {
-//  timeStampedLog(name + `: onUpdated`)
+//  utils.timeStampedLog(logPrefix + `: onUpdated`)
   update_nodes_table()
 })
 
@@ -174,7 +186,7 @@ Click event handlers
 
 
 const clickDelete = (nodeNumber) => {
-  timeStampedLog(name + `: clickDelete`)
+  utils.timeStampedLog(logPrefix + `: clickDelete`)
   const result = $q.notify({
     message: 'Are you sure you want to delete event ' + store.getters.event_name(props.eventIdentifier) + ' from node ' + store.getters.node_name(nodeNumber),
     timeout: 0,
@@ -182,7 +194,7 @@ const clickDelete = (nodeNumber) => {
     color: 'primary',
     actions: [
       { label: 'YES', color: 'white', handler: async () => {
-        timeStampedLog(`removeEvent ` + nodeNumber + ' ' + props.eventIdentifier)
+        utils.timeStampedLog(`removeEvent ` + nodeNumber + ' ' + props.eventIdentifier)
         store.methods.remove_event(nodeNumber, props.eventIdentifier)
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
@@ -192,7 +204,7 @@ const clickDelete = (nodeNumber) => {
 
 
 const clickVariables = async (nodeNumber) => {
-  timeStampedLog(name + `: clickVariables: node ` + nodeNumber + ' eventIdentifer ' + props.eventIdentifier)
+  utils.timeStampedLog(logPrefix + `: clickVariables: node ` + nodeNumber + ' eventIdentifer ' + props.eventIdentifier)
   selected_nodeNumber.value = nodeNumber
   await checkNodeParameters(nodeNumber)
   await checkNodeVariables(nodeNumber)

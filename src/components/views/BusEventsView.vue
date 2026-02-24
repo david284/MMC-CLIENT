@@ -45,6 +45,7 @@
           :rows-per-page-options="[0]"
           :virtual-scroll-sticky-size-start="0"
           :visible-columns="visibleColumns"
+          :table-row-style-fn="rowStyleFn"
           hide-bottom
         >
           <template v-slot:body="props">
@@ -127,7 +128,7 @@ import * as utils from "components/functions/utils.js"
 
 const $q = useQuasar()
 const store = inject('store')
-const name = "BusEventsView"
+const logPrefix = "BusEventsView"
 const tab = ref('nodes')
 const filter = ref('')
 const pagnation = {rowsPerPage: 0}
@@ -154,6 +155,17 @@ const columns = [
   {name: 'count', field: 'count', required: true, label: 'Count', align: 'left', sortable: true},
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
+
+const rowStyleFn = (row) =>{
+  utils.timeStampedLog(logPrefix + `: rowStyleFn: ${JSON.stringify(row.eventIdentifier)}`)
+  let eventIdentifier = row.eventIdentifier
+  if (eventIdentifier in store.state.layout.eventDetails) {
+    return 'color:' + store.state.layout.eventDetails[eventIdentifier].colour
+  } else {
+    return 'color:black'
+  }
+}
+
 
 //
 //
@@ -185,7 +197,7 @@ watch(eventDetails, () => {
 //
 //
 const update_bus_events = () => {
-//  utils.timeStampedLog(name + `:Update busEvents`)
+//  utils.timeStampedLog(logPrefix + `:Update busEvents`)
   let displayEventListLocal = []
   try{
     let busEvents = store.state.busEvents
@@ -216,7 +228,7 @@ const update_bus_events = () => {
       }
     }
   } catch (err){
-    utils.timeStampedLog(name + `: update_bus_events ` + err)
+    utils.timeStampedLog(logPrefix + `: update_bus_events ` + err)
   }
   displayEventList.value = displayEventListLocal
 }
@@ -271,7 +283,7 @@ const getSettings = () => {
 //
 //
 store.eventBus.on('LAYOUT_DATA', () => {
-//  timeStampedLog(name + ': LAYOUT_DATA')
+//  timeStampedLog(logPrefix + ': LAYOUT_DATA')
   getSettings()
 })
 
@@ -285,7 +297,7 @@ Click event handlers
 //
 //
 const clickClearAllBusEvents = () => {
-  utils.timeStampedLog(name + `: clickClearAllBusEvents`)
+  utils.timeStampedLog(logPrefix + `: clickClearAllBusEvents`)
   const result = $q.notify({
     message: 'Are you sure you want to clear all bus events?',
     timeout: 0,
@@ -304,7 +316,7 @@ const clickClearAllBusEvents = () => {
 //
 //
 const click_enableEventIdentifier = () => {
-  utils.timeStampedLog(name + `: click_enableEventIdentifier ${store.state.layout.settings.enableEventIdentifier}`)
+  utils.timeStampedLog(logPrefix + `: click_enableEventIdentifier ${store.state.layout.settings.enableEventIdentifier}`)
   utils.setVisibleColumn(visibleColumns.value, "eventIdentifier", store.state.layout.settings.enableEventIdentifier)
   store.state.update_layout_needed = true
 }
@@ -312,7 +324,7 @@ const click_enableEventIdentifier = () => {
 //
 //
 const click_enableEventGroup = () => {
-  utils.timeStampedLog(name + `: click_enableEventGroup ${store.state.layout.settings.enableEventGroup}`)
+  utils.timeStampedLog(logPrefix + `: click_enableEventGroup ${store.state.layout.settings.enableEventGroup}`)
   utils.setVisibleColumn(visibleColumns.value, "eventGroup", store.state.layout.settings.enableEventGroup)
   store.state.update_layout_needed = true
 }
@@ -320,7 +332,7 @@ const click_enableEventGroup = () => {
 //
 //
 const clickEventName = (eventIdentifier) => {
-  utils.timeStampedLog(name + `: clickEventName ` + eventIdentifier)
+  utils.timeStampedLog(logPrefix + `: clickEventName ` + eventIdentifier)
   selected_event_Identifier.value = eventIdentifier
   newEventName.value = store.getters.event_name(eventIdentifier)
   showNameEventDialog.value = true;
@@ -329,7 +341,7 @@ const clickEventName = (eventIdentifier) => {
 //
 //
 const clickInfo = () => {
-  utils.timeStampedLog(name + `: clickInfo`)
+  utils.timeStampedLog(logPrefix + `: clickInfo`)
   showBusEventsViewInfoDialog.value = true
 }
 
@@ -362,7 +374,7 @@ const clickSendOn = (nodeNumber, eventIdentifier) => {
 //
 //
 const clickTeach = (eventIndentifier) => {
-  utils.timeStampedLog(name + `: clickTeach`)
+  utils.timeStampedLog(logPrefix + `: clickTeach`)
   selected_event_Identifier.value = eventIndentifier
   showEventTeachDialog.value = true
 }
@@ -370,7 +382,7 @@ const clickTeach = (eventIndentifier) => {
 //
 //
 const clickToggleShowBusEventsJSON = () => {
-  utils.timeStampedLog(name + `: clickToggleShowBusEventsJSON`)
+  utils.timeStampedLog(logPrefix + `: clickToggleShowBusEventsJSON`)
   if (showBusEventsJSON.value){
     showBusEventsJSON.value = false
   } else {
@@ -381,7 +393,7 @@ const clickToggleShowBusEventsJSON = () => {
 //
 //
 const clickToggleViewMode = () => {
-  utils.timeStampedLog(name + `: clickToggleViewMode`)
+  utils.timeStampedLog(logPrefix + `: clickToggleViewMode`)
   switch(store.state.events_view_mode){
     case 'all':
       store.state.events_view_mode = 'short'

@@ -51,25 +51,18 @@
         :rows-per-page-options = "[0]"
         :virtual-scroll-sticky-size-start = "0"
         :visible-columns="visibleColumns"
+        :table-row-style-fn="rowStyleFn"
         hide-bottom
       >
 
           <template v-slot:body="props">
             <q-tr :props="props">
-              <q-td key="eventName" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">{{ props.row.name }}</q-td>
+              <q-td key="eventName" :props="props">{{ props.row.name }}</q-td>
               <q-td key="eventGroup" :props="props">{{ props.row.eventGroup }} </q-td>
-              <q-td key="eventIdentifier" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
-                {{ props.row.eventIdentifier }}
-              </q-td>
-              <q-td key="nodeNumber" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
-                {{ props.row.nodeNumber }}
-              </q-td>
-              <q-td key="eventNumber" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
-                {{ props.row.eventNumber }}
-              </q-td>
-              <q-td key="type" :props="props" :class="'text-'+event_colour(props.row.eventIdentifier)">
-                {{ props.row.type }}
-              </q-td>
+              <q-td key="eventIdentifier" :props="props">{{ props.row.eventIdentifier }}</q-td>
+              <q-td key="nodeNumber" :props="props">{{ props.row.nodeNumber }}</q-td>
+              <q-td key="eventNumber" :props="props">{{ props.row.eventNumber }}</q-td>
+              <q-td key="type" :props="props">{{ props.row.type }}</q-td>
               <q-td key="status" :props="props">
                 <q-chip color="white" text-color="green" v-if="props.row.status=='on'">ON</q-chip>
                 <q-chip color="white" text-color="red" v-else-if="props.row.status=='off'">OFF</q-chip>
@@ -93,22 +86,6 @@
 
           </template>
         </q-table>
-
-
-<!--
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Toggle event details json" @click="clickToggleShowEventsJSON()"/>
-        </q-card-actions>
-
-        <q-card-section class="q-pa-sm" v-if="showEventsJSON">
-          <div class="q-pa-xs row">
-            <div class="text-body1">Events<br></div>
-            <div class="text-body2">
-              <pre>{{ store.state.layout.eventDetails }}</pre>
-            </div>
-          </div>
-        </q-card-section>
- -->
 
       </div>
   </div>
@@ -153,7 +130,7 @@ import * as utils from "components/functions/utils.js"
 
 const $q = useQuasar()
 const store = inject('store')
-const name = "EventsView"
+const logPrefix = "EventsView"
 const filter = ref('')
 const pagnation = {rowsPerPage: 0}
 let displayEventTable = ref([])
@@ -182,12 +159,22 @@ const columns = [
   {name: 'actions', field: 'actions', required: true, label: 'Actions', align: 'left', sortable: false}
 ]
 
+const rowStyleFn = (row) =>{
+  utils.timeStampedLog(logPrefix + `: rowStyleFn: ${JSON.stringify(row.eventIdentifier)}`)
+  let eventIdentifier = row.eventIdentifier
+  if (eventIdentifier in store.state.layout.eventDetails) {
+    return 'color:' + store.state.layout.eventDetails[eventIdentifier].colour
+  } else {
+    return 'color:black'
+  }
+}
+
 const layoutUpdated = computed(() => {
   return store.state.layout.updateTimestamp
 })
 
 watch(layoutUpdated, () => {
-  //utils.timeStampedLog(name + `: WATCH: layoutUpdated`)
+  //utils.timeStampedLog(logPrefix + `: WATCH: layoutUpdated`)
   update_events_table()
 })
 
@@ -197,7 +184,7 @@ const nodesUpdated = computed(() => {
 })
 
 watch(nodesUpdated, () => {
-  //utils.timeStampedLog(name + `: WATCH: nodesUpdated ` + nodesUpdated.value)
+  //utils.timeStampedLog(logPrefix + `: WATCH: nodesUpdated ` + nodesUpdated.value)
   update_events_table()
 })
 
@@ -206,12 +193,12 @@ const busEvents = computed(() => {
 })
 
 watch(busEvents, () => {
-  //utils.timeStampedLog(name + `: WATCH busEvents`)
+  //utils.timeStampedLog(logPrefix + `: WATCH busEvents`)
   update_events_table()
 })
 
 const update_events_table = () => {
-//  utils.timeStampedLog(name + `:Update Events`)
+//  utils.timeStampedLog(logPrefix + `:Update Events`)
   let displayEventListLocal = []
   let events = store.state.layout.eventDetails
   // order by eventIdentifier
@@ -242,7 +229,7 @@ const update_events_table = () => {
       }
     }
   }
-//  utils.timeStampedLog(name + ": eventlist " + JSON.stringify(displayEventListLocal))
+//  utils.timeStampedLog(logPrefix + ": eventlist " + JSON.stringify(displayEventListLocal))
   displayEventTable.value = displayEventListLocal
 }
 
@@ -273,8 +260,8 @@ const getLinkedNodesCount = (eventIdentifier) => {
 
 
 store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
-//  utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : ' + JSON.stringify(data.json.eventIdentifier))
-  utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : opcode ' + data.json.opCode)
+//  utils.timeStampedLog(logPrefix + ': BUS_TRAFFIC_EVENT : ' + JSON.stringify(data.json.eventIdentifier))
+  utils.timeStampedLog(logPrefix + ': BUS_TRAFFIC_EVENT : opcode ' + data.json.opCode)
   var eventIdentifier = data.json.eventIdentifier
   var opCode = data.json.opCode
   var status = 'unknown'
@@ -288,7 +275,7 @@ store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
     || (opCode == 'F0')
     || (opCode == 'F8')
     ){
-      utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : ON event ' + eventIdentifier)
+      utils.timeStampedLog(logPrefix + ': BUS_TRAFFIC_EVENT : ON event ' + eventIdentifier)
       status = 'on'
     }
 
@@ -302,7 +289,7 @@ store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
     || (opCode == 'F1')
     || (opCode == 'F9')
     ){
-      utils.timeStampedLog(name + ': BUS_TRAFFIC_EVENT : OFF event ' + eventIdentifier)
+      utils.timeStampedLog(logPrefix + ': BUS_TRAFFIC_EVENT : OFF event ' + eventIdentifier)
       status = 'off'
   }
   if (status != 'unknown'){
@@ -317,19 +304,19 @@ store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
 
 
 onBeforeMount(() => {
-//  utils.timeStampedLog(name + `: onBeforeMount`)
+//  utils.timeStampedLog(logPrefix + `: onBeforeMount`)
   update_events_table()
   getSettings()
 })
 
 /*
 onMounted(() => {
-    utils.timeStampedLog(name + `: onMounted`)
+    utils.timeStampedLog(logPrefix + `: onMounted`)
     update_events_table()
 })
 
 onUpdated(() => {
-    utils.timeStampedLog(name + `: onUpdated`)
+    utils.timeStampedLog(logPrefix + `: onUpdated`)
 })
     */
 
@@ -361,7 +348,7 @@ const getSettings = () => {
 //
 //
 store.eventBus.on('LAYOUT_DATA', () => {
-//  timeStampedLog(name + ': LAYOUT_DATA')
+//  timeStampedLog(logPrefix + ': LAYOUT_DATA')
   getSettings()
 })
 
@@ -374,13 +361,13 @@ Click event handlers
 
 
 const clickAddEvent = () => {
-  utils.timeStampedLog(name + `: clickAddEvent`)
+  utils.timeStampedLog(logPrefix + `: clickAddEvent`)
   showAddEventDialog.value = true
 }
 
 
 const clickDelete = (eventIdentifier) => {
-  utils.timeStampedLog(name + `: clickDelete`)
+  utils.timeStampedLog(logPrefix + `: clickDelete`)
   const result = $q.notify({
     message: 'Are you sure you want to delete event ' + store.getters.event_name(eventIdentifier),
     timeout: 0,
@@ -398,7 +385,7 @@ const clickDelete = (eventIdentifier) => {
 }
 
 const clickDeleteUnused = (eventIdentifier) => {
-  utils.timeStampedLog(name + `: clickDeleteUnused`)
+  utils.timeStampedLog(logPrefix + `: clickDeleteUnused`)
   const result = $q.notify({
     message: 'Continue with delete?',
     caption: 'To be deleted, events must have no linked nodes and also no user provided name',
@@ -416,14 +403,14 @@ const clickDeleteUnused = (eventIdentifier) => {
           || (store.state.layout.eventDetails[eventIdentifier].name.length == 0))
           {
             if (getLinkedNodesCount(eventIdentifier) == 0){
-              utils.timeStampedLog(name + `: ${eventIdentifier} ${store.getters.event_name(eventIdentifier)}`)
+              utils.timeStampedLog(logPrefix + `: ${eventIdentifier} ${store.getters.event_name(eventIdentifier)}`)
               count++
               delete store.state.layout.eventDetails[eventIdentifier]
               store.state.update_layout_needed = true
             }
           }
         }
-        utils.timeStampedLog(name + `: events deleted ${count}`)
+        utils.timeStampedLog(logPrefix + `: events deleted ${count}`)
         update_events_table()
       } },
       { label: 'NO', color: 'white', handler: () => { /* ... */ } }
@@ -434,7 +421,7 @@ const clickDeleteUnused = (eventIdentifier) => {
 //
 //
 const click_enableEventIdentifier = () => {
-  utils.timeStampedLog(name + `: click_enableEventIdentifier ${store.state.layout.settings.enableEventIdentifier}`)
+  utils.timeStampedLog(logPrefix + `: click_enableEventIdentifier ${store.state.layout.settings.enableEventIdentifier}`)
   utils.setVisibleColumn(visibleColumns.value, "eventIdentifier", store.state.layout.settings.enableEventIdentifier)
   store.state.update_layout_needed = true
 }
@@ -442,7 +429,7 @@ const click_enableEventIdentifier = () => {
 //
 //
 const click_enableEventGroup = () => {
-  utils.timeStampedLog(name + `: click_enableEventGroup ${store.state.layout.settings.enableEventGroup}`)
+  utils.timeStampedLog(logPrefix + `: click_enableEventGroup ${store.state.layout.settings.enableEventGroup}`)
   utils.setVisibleColumn(visibleColumns.value, "eventGroup", store.state.layout.settings.enableEventGroup)
   store.state.update_layout_needed = true
 }
@@ -450,7 +437,7 @@ const click_enableEventGroup = () => {
 //
 //
 const clickEventName = (eventIdentifier) => {
-  utils.timeStampedLog(name + `: clickEventName ` + eventIdentifier)
+  utils.timeStampedLog(logPrefix + `: clickEventName ` + eventIdentifier)
   selected_event_Identifier.value = eventIdentifier
   newEventName.value = store.getters.event_name(eventIdentifier)
   showNameEventDialog.value = true;
@@ -458,20 +445,20 @@ const clickEventName = (eventIdentifier) => {
 
 
 const clickInfo = () => {
-  utils.timeStampedLog(name + `: clickInfo`)
+  utils.timeStampedLog(logPrefix + `: clickInfo`)
   showEventsViewInfoDialog.value = true
 }
 
 
 const clickLinkedNodes = (eventIdentifier) => {
-  utils.timeStampedLog(name + `: clickLinkedNodes ` + eventIdentifier)
+  utils.timeStampedLog(logPrefix + `: clickLinkedNodes ` + eventIdentifier)
   selected_event_Identifier.value = eventIdentifier
   showLinkedNodesDialog.value = true
 }
 
 
 const clickScanNodes = () => {
-  utils.timeStampedLog(name + `: clickScanNodes`)
+  utils.timeStampedLog(logPrefix + `: clickScanNodes`)
   var nodeNumberList = Object.keys(store.state.nodes)
   nodeNumberList.forEach(nodeNumber => {
     EventFunctions.requestAllNodeEvents(nodeNumber)
@@ -504,14 +491,14 @@ const clickSendOn = (nodeNumber, eventIdentifier) => {
 
 
 const clickTeach = (eventIndentifier) => {
-  utils.timeStampedLog(name + `: clickTeach ` + eventIndentifier)
+  utils.timeStampedLog(logPrefix + `: clickTeach ` + eventIndentifier)
   selected_event_Identifier.value = eventIndentifier
   showEventTeachDialog.value = true
 }
 
 
 const clickToggleShowEventsJSON = () => {
-  utils.timeStampedLog(name + `: clickToggleShowEventsJSON`)
+  utils.timeStampedLog(logPrefix + `: clickToggleShowEventsJSON`)
   if (showEventsJSON.value){
     showEventsJSON.value = false
   } else {
@@ -521,7 +508,7 @@ const clickToggleShowEventsJSON = () => {
 
 
 const clickToggleViewMode = () => {
-  utils.timeStampedLog(name + `: clickToggleViewMode`)
+  utils.timeStampedLog(logPrefix + `: clickToggleViewMode`)
   switch(store.state.events_view_mode){
     case 'all':
       store.state.events_view_mode = 'short'
@@ -538,7 +525,7 @@ const clickToggleViewMode = () => {
     default:
       store.state.events_view_mode = 'all'
   }
-  //utils.timeStampedLog(name + `: clickToggleViewMode ${store.state.events_view_mode}`)
+  //utils.timeStampedLog(logPrefix + `: clickToggleViewMode ${store.state.events_view_mode}`)
   update_events_table()
 }
 
