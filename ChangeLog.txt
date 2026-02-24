@@ -1,5 +1,6 @@
 Version 0.21.0
   Changed chip in backup column to clickable & renamed to backup if needed
+  Added colour to node & event lists
 
 Version 0.20.0
   Fixed delete unused events
