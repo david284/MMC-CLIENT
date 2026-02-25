@@ -1139,7 +1139,7 @@ socket.on('dccSessions', function (data) {
 
 socket.on("disconnect", (data) => {
   utils.timeStampedLog(name + `: disconnect`)
-  eventBus.emit('SERVER_DISCONNECT')
+  eventBus.emit('SERVER_DISCONNECT', data)
 })
 
 socket.on("error", (data) => {

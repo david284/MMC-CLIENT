@@ -446,9 +446,11 @@ store.eventBus.on('SERVER_CONNECT', () => {
 
 //
 //
-store.eventBus.on('SERVER_DISCONNECT', () => {
+store.eventBus.on('SERVER_DISCONNECT', (data) => {
+  let caption_text = JSON.stringify(data)
   serverDisconnectNotification = $q.notify({
     message: 'MMC-server has disconnected',
+    caption: caption_text,
     timeout: 0,
     type: 'warning',
     position: 'center',
