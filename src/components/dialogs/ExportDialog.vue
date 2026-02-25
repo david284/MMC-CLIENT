@@ -41,6 +41,8 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import * as utils from "components/functions/utils.js"
 import * as NodeFunctions from "../functions/NodeFunctions";
+import {text_colours} from "src/definitions/general_definitions"
+
 
 const $q = useQuasar()
 const xlsx = require('xlsx');
@@ -197,6 +199,12 @@ const clickExport = async (filename) => {
   namesOutput['name'] = ''
   names.push(namesOutput)
 
+  let colours = []
+  for (const index in text_colours)
+  {
+    colours.push( {colour:text_colours[index]} )
+  }
+
   // ok, lets convert that json data into sheets
   // add some formatting while we're at it
   //
@@ -253,12 +261,16 @@ const clickExport = async (filename) => {
       utils.timeStampedLog(name + `: clickExport: namesWorksheet ${err}`)
   }
 
+  const coloursWorksheet = xlsx.utils.json_to_sheet(colours);
+
+
   const workbook = xlsx.utils.book_new();
   try{
     xlsx.utils.book_append_sheet(workbook, nodesWorksheet, "Nodes");
     xlsx.utils.book_append_sheet(workbook, longEventsWorksheet, "Long_Events");
     xlsx.utils.book_append_sheet(workbook, shortEventsWorksheet, "Short_Events");
     xlsx.utils.book_append_sheet(workbook, namesWorksheet, "Names");
+    xlsx.utils.book_append_sheet(workbook, coloursWorksheet, "selectable colours");
   } catch (err){
       utils.timeStampedLog(name + `: clickExport: book_append_sheet ${err}`)
   }
