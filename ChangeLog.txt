@@ -3,6 +3,7 @@ Version 0.21.0
   Added colour to node, event lists & export
   Added debounce to EventNameAndGroup
   added reason in caption for "MMC-server has disconnected"
+  Status in Events View now goes to unknown when bus traffic cleared
 
 Version 0.20.0
   Fixed delete unused events
