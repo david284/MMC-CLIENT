@@ -10,7 +10,7 @@
         &nbsp;&nbsp;&nbsp;&nbsp;
         <q-btn class="q-mx-xs q-my-none" size="sm" color="info" label="INFO"  no-caps @click="clickInfo()" />
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <q-input class="input-box" bg-color="grey-3" style="width: 200px;" filled dense borderless debounce="300" v-model="filter" placeholder="Search">
+        <q-input class="input-box" bg-color="grey-3" style="width: 100px;" filled dense borderless debounce="300" v-model="filter" placeholder="Search">
           <q-icon size="sm" name="search"/>
         </q-input>
         &nbsp;&nbsp;&nbsp;&nbsp;
