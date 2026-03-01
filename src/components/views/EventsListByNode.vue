@@ -258,7 +258,7 @@ const tableClass = computed(() => {
 })
 
 const rowStyleFn = (row) =>{
-  utils.timeStampedLog(logPrefix + `: rowStyleFn: ${JSON.stringify(row.eventIdentifier)}`)
+  //utils.timeStampedLog(logPrefix + `: rowStyleFn: ${JSON.stringify(row.eventIdentifier)}`)
   let eventIdentifier = row.eventIdentifier
   if (eventIdentifier in store.state.layout.eventDetails) {
     return 'color:' + store.state.layout.eventDetails[eventIdentifier].colour

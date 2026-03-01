@@ -596,7 +596,7 @@ const getters = {
         return false
       }
     } catch (err) {
-      utils.timeStampedLog(logPrefix + `: node_useEventIndex: ${err}`)
+      //utils.timeStampedLog(logPrefix + `: node_useEventIndex: ${err}`)
       return false
     }
   },
@@ -613,7 +613,7 @@ const getters = {
         return false
       }
     } catch (err) {
-      utils.timeStampedLog(logPrefix + `: node_useNENRD: ${err}`)
+      //utils.timeStampedLog(logPrefix + `: node_useNENRD: ${err}`)
       return false
     }
   },
@@ -631,7 +631,7 @@ const getters = {
         return false
       }
     } catch (err) {
-      utils.timeStampedLog(logPrefix + `: node_useSlots: ${nodeNumber} ${err}`)
+      //utils.timeStampedLog(logPrefix + `: node_useSlots: ${nodeNumber} ${err}`)
       return false
     }
   },
@@ -647,7 +647,7 @@ const getters = {
         return false
       }
     } catch (err) {
-      utils.timeStampedLog(logPrefix + `: node_useSwitchTeach1: ${err}`)
+      //utils.timeStampedLog(logPrefix + `: node_useSwitchTeach1: ${err}`)
       return false
     }
   },
@@ -663,7 +663,7 @@ const getters = {
         return false
       }
     } catch (err) {
-      utils.timeStampedLog(logPrefix + `: node_useSwitchTeach2: ${err}`)
+      //utils.timeStampedLog(logPrefix + `: node_useSwitchTeach2: ${err}`)
       return false
     }
   },
