@@ -5,6 +5,7 @@ Version 0.21.0
   added reason in caption for "MMC-server has disconnected"
   Status in Events View now goes to unknown when bus traffic cleared
   Fixed add event in Events View
+  Added support for colours to import
 
 Version 0.20.0
   Fixed delete unused events

@@ -73,6 +73,7 @@ export function importSPREADSHEET(file, store, modeValue) {
     if (workbook.Workbook != undefined){
       for (let i =0; i< workbook.SheetNames.length; i++){
 //        console.log (name + "importSPREADSHEET: SheetName: " + workbook.SheetNames[i])
+        //
         if (workbook.SheetNames[i].toUpperCase() == "SHORT_EVENTS"){
           importedEvents = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
           console.log (name + "importSPREADSHEET: workbook number of Short Events imported: " + importedEvents.length)
@@ -84,8 +85,10 @@ export function importSPREADSHEET(file, store, modeValue) {
             }
             addEventName(store, 0, importedEvents[j].eventNumber, importedEvents[j].eventName, modeValue)
             addEventGroup(store, 0, importedEvents[j].eventNumber, importedEvents[j].eventGroup, modeValue)
+            addEventColour(store, 0, importedEvents[j].eventNumber, importedEvents[j].eventColour, modeValue)
           }
         }
+        //
         if (workbook.SheetNames[i].toUpperCase() == "LONG_EVENTS"){
           importedEvents = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
           console.log (name + "importSPREADSHEET: workbook number of Long Events imported: " + importedEvents.length)
@@ -97,8 +100,10 @@ export function importSPREADSHEET(file, store, modeValue) {
             }
             addEventName(store, importedEvents[j].eventNodeNumber, importedEvents[j].eventNumber, importedEvents[j].eventName, modeValue)
             addEventGroup(store, importedEvents[j].eventNodeNumber, importedEvents[j].eventNumber, importedEvents[j].eventGroup, modeValue)
+            addEventColour(store, importedEvents[j].eventNodeNumber, importedEvents[j].eventNumber, importedEvents[j].eventColour, modeValue)
           }
         }
+        //
         if (workbook.SheetNames[i].toUpperCase() == "NODES"){
           importedNodes = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
           console.log (name + "importSPREADSHEET: workbook number of Nodes imported: " + importedNodes.length)
@@ -107,10 +112,12 @@ export function importSPREADSHEET(file, store, modeValue) {
               console.log (name + `importSPREADSHEET: workbook Nodes: ${importedNodes[j].nodeName} ${importedNodes[j].nodeNumber}`)
               addNodeName(store, importedNodes[j].nodeNumber, importedNodes[j].nodeName, modeValue)
               addNodeGroup(store, importedNodes[j].nodeNumber, importedNodes[j].nodeGroup, modeValue)
+              addNodeColour(store, importedNodes[j].nodeNumber, importedNodes[j].nodeColour, modeValue)
               addNodeModulename(store, importedNodes[j].nodeNumber, importedNodes[j].moduleName, modeValue)
             }
           }
         }
+        //
         if (workbook.SheetNames[i].toUpperCase() == "CHANNELS"){
           importedChannels = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
           console.log (name + "importSPREADSHEET: workbook number of Channels imported: " + importedChannels.length)
@@ -121,6 +128,7 @@ export function importSPREADSHEET(file, store, modeValue) {
             }
           }
         }
+        //
         if (workbook.SheetNames[i].toUpperCase() == "NAMES"){
           importedUserNames = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
           console.log (name + "importSPREADSHEET: workbook number of userNames imported: " + importedUserNames.length)
@@ -203,7 +211,36 @@ function addEventGroup(store, eventNodeNumber, eventNumber, eventGroup, modeValu
   }
 }
 
+//
+//
+function addEventColour(store, eventNodeNumber, eventNumber, eventColour, modeValue){
+  if (eventNumber > 0){
+    let eventIdentifier = decToHex(eventNodeNumber,4) + decToHex(eventNumber,4)
+    if (store.state.layout.eventDetails[eventIdentifier] == undefined){
+      // event doesn't exist
+      store.setters.event_colour(eventIdentifier, eventColour)
+      console.log("new event: " + eventIdentifier + ' addEventColour: ' + eventColour)
+    } else if ((store.state.layout.eventDetails[eventIdentifier].colour == undefined) ||
+      (store.state.layout.eventDetails[eventIdentifier].colour.length < 1)){
+      // event colour doesn't exist
+      store.setters.event_colour(eventIdentifier, eventColour)
+      console.log('Event: ' + eventIdentifier + ": addEventColour: " + eventColour + ' updated')
+    } else  if (store.state.layout.eventDetails[eventIdentifier].colour == eventColour) {
+      console.log('Event: ' + eventIdentifier + ": addEventColour: " + eventColour + ' match')
+      // do nothing
+    } else {
+      if (modeValue == "overwrite"){
+        store.setters.event_colour(eventIdentifier, eventColour)
+        console.log('Event ' + eventIdentifier + ": addEventColour: " + eventColour + " overwrite")
+      } else {
+        console.log('Event ' + eventIdentifier + ": addEventColour: " + eventColour + " retain")
+      }
+    }
+  }
+}
 
+//
+//
 function addNodeName(store, nodeNumber, nodeName, modeValue){
   // not interested in node 0, so skip
   if (nodeNumber > 0){
@@ -231,6 +268,8 @@ function addNodeName(store, nodeNumber, nodeName, modeValue){
   }
 }
 
+//
+//
 function addNodeGroup(store, nodeNumber, nodeGroup, modeValue){
   // not interested in node 0, so skip
   if (nodeNumber > 0){
@@ -258,6 +297,37 @@ function addNodeGroup(store, nodeNumber, nodeGroup, modeValue){
   }
 }
 
+//
+//
+function addNodeColour(store, nodeNumber, nodeColour, modeValue){
+  // not interested in node 0, so skip
+  if (nodeNumber > 0){
+    if (store.state.layout.nodeDetails[nodeNumber] == undefined){
+      // node doesn't exist, so create it with colour
+      store.setters.node_colour(nodeNumber, nodeColour)
+      console.log("new node: " + nodeNumber + ": nodeColour: " + nodeColour)
+    } else if ((store.state.layout.nodeDetails[nodeNumber].colour == undefined ) ||
+      (store.state.layout.nodeDetails[nodeNumber].colour.length < 1 )){
+      // node has no colour, so add it
+      store.setters.node_colour(nodeNumber, nodeColour)
+      console.log('node ' + nodeNumber + ": nodeColour: " + nodeColour + ' updated')
+    } else if (store.state.layout.nodeDetails[nodeNumber].colour == nodeColour) {
+      console.log('node ' + nodeNumber + ": nodeColour: " + nodeColour + ' match')
+      // do nothing
+    } else {
+      // stored colour doesn't match import colour
+      if (modeValue == "overwrite"){
+        console.log('node ' + nodeNumber + ": nodeColour: " + nodeColour + " no match - overwrite")
+        store.setters.node_colour(nodeNumber, nodeColour)
+      } else {
+        console.log('node ' + nodeNumber + ": nodeColour: " + nodeColour + " no match - retain")
+      }
+    }
+  }
+}
+
+//
+//
 function addNodeModulename(store, nodeNumber, moduleName, modeValue){
   // not interested in node 0, so skip
   if (nodeNumber > 0){
@@ -284,6 +354,8 @@ function addNodeModulename(store, nodeNumber, moduleName, modeValue){
   }
 }
 
+//
+//
 function addNodeChannelNameOld(store, nodeNumber, channelNumber, channelName, modeValue){
   let existingChannelName = null
   try {
@@ -305,6 +377,8 @@ function addNodeChannelNameOld(store, nodeNumber, channelNumber, channelName, mo
   }
 }
 
+//
+//
 export function addNodeChannelName(store, nodeNumber, channelNumber, channelName, modeValue){
   let existingChannelName = null
   try {
@@ -326,7 +400,8 @@ export function addNodeChannelName(store, nodeNumber, channelNumber, channelName
   }
 }
 
-
+//
+//
 export function addNodeUserName(store, nodeNumber, tokenName, tokenNumber, userName, modeValue){
   if (userName != undefined){
     if (userName.length >0){

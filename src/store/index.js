@@ -920,11 +920,15 @@ const setters = {
     state.update_layout_needed = true
   },
   event_colour(eventIdentifier, eventColour) {
-    if (eventIdentifier in state.layout.eventDetails === false) {
-      setters.addEventToLayout(eventIdentifier)
-    }
-    state.layout.eventDetails[eventIdentifier].colour = eventColour
-    state.update_layout_needed = true
+    try {
+      if (eventIdentifier in state.layout.eventDetails === false) {
+        setters.addEventToLayout(eventIdentifier)
+      }
+      if (eventColour != undefined){
+        state.layout.eventDetails[eventIdentifier].colour = eventColour
+        state.update_layout_needed = true
+      }
+    } catch {}
   },
   event_group(eventIdentifier, eventGroup) {
     if (eventIdentifier in state.layout.eventDetails === false) {
@@ -991,11 +995,15 @@ const setters = {
     state.update_layout_needed = true
   },
   node_colour(nodeNumber, colour){
-    if (nodeNumber in state.layout.nodeDetails === false){
-      setters.addNodeToLayout(nodeNumber)
-    }
-    state.layout.nodeDetails[nodeNumber].colour = colour
-    state.update_layout_needed = true
+    try {
+      if (nodeNumber in state.layout.nodeDetails === false){
+        setters.addNodeToLayout(nodeNumber)
+      }
+      if (colour.length != undefined){
+        state.layout.nodeDetails[nodeNumber].colour = colour
+        state.update_layout_needed = true
+      }
+    } catch {}
   },
   node_group(nodeNumber, Group){
     if (nodeNumber in state.layout.nodeDetails === false){
