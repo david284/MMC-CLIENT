@@ -10,7 +10,7 @@ import { getNumberOfChannels } from "components/functions/NodeFunctions"
 const eventBus = new EventBus()
 const host = window.location.hostname
 const port = "5552"
-const name = "store"
+const logPrefix = "store"
 
 const state = reactive({
   backups_list: [],
@@ -50,7 +50,7 @@ const methods = {
 
   //
   change_layout(layoutName){
-    utils.timeStampedLog(name + `: CHANGE_LAYOUT: ` + JSON.stringify(layoutName))
+    utils.timeStampedLog(logPrefix + `: CHANGE_LAYOUT: ` + JSON.stringify(layoutName))
     socket.emit('CHANGE_LAYOUT', {
       "layoutName": layoutName
     })
@@ -58,19 +58,19 @@ const methods = {
   //
   clear_all_event_status() {
     try {
-      //utils.timeStampedLog(name + `: clear_all_event_status ${JSON.stringify(state.event_view_status)}`)
+      //utils.timeStampedLog(logPrefix + `: clear_all_event_status ${JSON.stringify(state.event_view_status)}`)
       for (let eventIdentifier of Object.keys(state.event_view_status)){
         state.event_view_status[eventIdentifier] = undefined
-        //utils.timeStampedLog(name + `: clear_all_event_status: ${eventIdentifier}`)
+        //utils.timeStampedLog(logPrefix + `: clear_all_event_status: ${eventIdentifier}`)
       }
     } catch(error){
-      utils.timeStampedLog(name + `: clear_all_event_status : ${err} `)
+      utils.timeStampedLog(logPrefix + `: clear_all_event_status : ${err} `)
     }
   },
   //
   clear_bus_events() {
     socket.emit('CLEAR_BUS_EVENTS')
-    utils.timeStampedLog(name + `: CLEAR_BUS_EVENTS`)
+    utils.timeStampedLog(logPrefix + `: CLEAR_BUS_EVENTS`)
   },
   //
   clear_cbus_errors() {
@@ -88,25 +88,25 @@ const methods = {
   copy_layout(sourceLayout, destinationLayout) {
     let data = {"sourceLayout":sourceLayout, "destinationLayout":destinationLayout}
     socket.emit('COPY_LAYOUT', data)
-    utils.timeStampedLog(name + `: COPY_LAYOUT ${JSON.stringify(data)}`)
+    utils.timeStampedLog(logPrefix + `: COPY_LAYOUT ${JSON.stringify(data)}`)
   },
   //
   delete_all_events(nodeNumber) {
     socket.emit('DELETE_ALL_EVENTS', {
         "nodeNumber": nodeNumber
     })
-    utils.timeStampedLog(name + `: DELETE_ALL_EVENTS ${nodeNumber}`)
+    utils.timeStampedLog(logPrefix + `: DELETE_ALL_EVENTS ${nodeNumber}`)
   },
   //
   delete_layout(layoutName) {
     socket.emit('DELETE_LAYOUT', {
         "layoutName": layoutName
     })
-    utils.timeStampedLog(name + `: DELETE_LAYOUT ${layoutName}`)
+    utils.timeStampedLog(logPrefix + `: DELETE_LAYOUT ${layoutName}`)
   },
   //
   delete_node_backup(layoutName, nodeNumber, fileName) {
-    utils.timeStampedLog(name + `: DELETE_NODE_BACKUP ${layoutName} ${nodeNumber} ${fileName}`)
+    utils.timeStampedLog(logPrefix + `: DELETE_NODE_BACKUP ${layoutName} ${nodeNumber} ${fileName}`)
     socket.emit('DELETE_NODE_BACKUP', {
         "layoutName": layoutName,
         "nodeNumber":nodeNumber,
@@ -125,10 +125,10 @@ const methods = {
         "reLoad": reLoad,
         "linkedVariableList": linkedVariableList
       }
-      utils.timeStampedLog(name + `: EVENT_TEACH_BY_IDENTIFIER : ${JSON.stringify (data)} `)
+      utils.timeStampedLog(logPrefix + `: EVENT_TEACH_BY_IDENTIFIER : ${JSON.stringify (data)} `)
       socket.emit('EVENT_TEACH_BY_IDENTIFIER', data)
     } catch (err) {
-      utils.timeStampedLog(name + `: EVENT_TEACH_BY_IDENTIFIER : ${err} `)
+      utils.timeStampedLog(logPrefix + `: EVENT_TEACH_BY_IDENTIFIER : ${err} `)
     }
   },
   //
@@ -144,13 +144,13 @@ const methods = {
         "reLoad": reLoad,
         "linkedVariableList": linkedVariableList
       }
-      utils.timeStampedLog(name + `: EVENT_TEACH_BY_INDEX : ${JSON.stringify (data)} `)
+      utils.timeStampedLog(logPrefix + `: EVENT_TEACH_BY_INDEX : ${JSON.stringify (data)} `)
       socket.emit('EVENT_TEACH_BY_INDEX', data)
       // lets store this against the node in the layout
       // as the index is specific to the node
       setters.addIndexedEventToLayoutNode(nodeNumber, eventIndex, eventIdentifier)
     } catch (err) {
-      utils.timeStampedLog(name + `: EVENT_TEACH_BY_INDEX : ${err} `)
+      utils.timeStampedLog(logPrefix + `: EVENT_TEACH_BY_INDEX : ${err} `)
     }
   },
   //
@@ -176,12 +176,12 @@ const methods = {
   },
   //
   node_can_id_enum(nodeNumber){
-    utils.timeStampedLog(name + `: CANID_ENUM : ` + nodeNumber)
+    utils.timeStampedLog(logPrefix + `: CANID_ENUM : ` + nodeNumber)
     socket.emit('CANID_ENUM', nodeNumber)
   },
   //
   program_node(nodeNumber, cpuType, flags, hexFile) {
-    utils.timeStampedLog(name + `: PROGRAM_NODE : node: ${nodeNumber} hexfile: ${hexFile.name}`)
+    utils.timeStampedLog(logPrefix + `: PROGRAM_NODE : node: ${nodeNumber} hexfile: ${hexFile.name}`)
     socket.emit('PROGRAM_NODE', {
       "nodeNumber": nodeNumber,
       "cpuType": cpuType,
@@ -196,11 +196,11 @@ const methods = {
   },
   //
   remove_event(nodeNumber, eventName, eventIndex) {
-    utils.timeStampedLog(name + `: remove_event: ${nodeNumber} ${eventName} ${eventIndex}`)
+    utils.timeStampedLog(logPrefix + `: remove_event: ${nodeNumber} ${eventName} ${eventIndex}`)
     try {
-    } catch(err){ utils.timeStampedLog(name + `: remove_event: ${err}`) }
-    utils.timeStampedLog(name + `: remove_event: ${JSON.stringify(state.layout.nodeDetails[nodeNumber].indexedEvents, null, " ")} `)
-    utils.timeStampedLog(name + `: REMOVE_EVENT`)
+    } catch(err){ utils.timeStampedLog(logPrefix + `: remove_event: ${err}`) }
+    utils.timeStampedLog(logPrefix + `: remove_event: ${JSON.stringify(state.layout.nodeDetails[nodeNumber].indexedEvents, null, " ")} `)
+    utils.timeStampedLog(logPrefix + `: REMOVE_EVENT`)
     socket.emit('REMOVE_EVENT', {
         "nodeNumber": nodeNumber,
         "eventName": eventName
@@ -214,7 +214,7 @@ const methods = {
     }
     // now remove it from server
     socket.emit('REMOVE_MULTIPLE_NODES', nodeList)
-    utils.timeStampedLog(name + `: sent REMOVE_MULTIPLE_NODES length ${nodeList.length}` )
+    utils.timeStampedLog(logPrefix + `: sent REMOVE_MULTIPLE_NODES length ${nodeList.length}` )
     state.update_layout_needed = true
   },
   //
@@ -223,7 +223,7 @@ const methods = {
     delete state.layout.nodeDetails[nodeNumber]
     state.update_layout_needed = true
     socket.emit('REMOVE_NODE', nodeNumber)
-    utils.timeStampedLog(name + ': sent REMOVE_NODE ' + nodeNumber)
+    utils.timeStampedLog(logPrefix + ': sent REMOVE_NODE ' + nodeNumber)
   },
   //
   rename_node_backup(layoutName, nodeNumber, fileName, newFileName) {
@@ -234,29 +234,29 @@ const methods = {
       "newFileName": newFileName
     }
     socket.emit('RENAME_NODE_BACKUP', data)
-    utils.timeStampedLog(name + ': sent RENAME_NODE_BACKUP ' + JSON.stringify(data))
+    utils.timeStampedLog(logPrefix + ': sent RENAME_NODE_BACKUP ' + JSON.stringify(data))
   },
   //
   requestAllEventVariablesForNode(nodeNumber) {
     socket.emit('REQUEST_ALL_EVENT_VARIABLES_FOR_NODE', {
       "nodeNumber": nodeNumber
     })
-    utils.timeStampedLog(`REQUEST_ALL_EVENT_VARIABLES_FOR_NODE: node ` + nodeNumber)
+    utils.timeStampedLog(logPrefix + `: REQUEST_ALL_EVENT_VARIABLES_FOR_NODE: node ` + nodeNumber)
   },
   //
   request_archived_logs_list() {
-    utils.timeStampedLog(`REQUEST_ARCHIVED_LOGS_LIST :`)
+    utils.timeStampedLog(logPrefix + `: REQUEST_ARCHIVED_LOGS_LIST :`)
     socket.emit('REQUEST_ARCHIVED_LOGS_LIST')
   },
   //
   request_binary_file(directory, fileName) {
-    utils.timeStampedLog(`REQUEST_BINARY_FILE : ` + directory + ' ' + fileName)
+    utils.timeStampedLog(logPrefix + `: REQUEST_BINARY_FILE : ` + directory + ' ' + fileName)
     socket.emit('REQUEST_BINARY_FILE', {"directory":directory, "fileName":fileName})
   },
   //
   request_diagnostics(nodeNumber, serviceIndex) {
     if (serviceIndex == undefined){serviceIndex = 0;}
-    utils.timeStampedLog(`Request Service Diagnostics : node ` + nodeNumber + ' Service Index ' + serviceIndex )
+    utils.timeStampedLog(logPrefix + `: Request Service Diagnostics : node ` + nodeNumber + ' Service Index ' + serviceIndex )
     socket.emit('REQUEST_DIAGNOSTICS', {"nodeNumber":nodeNumber, "serviceIndex":serviceIndex})
   },
   //
@@ -273,42 +273,42 @@ const methods = {
     socket.emit('REQUEST_ALL_NODE_VARIABLES', {
       "nodeNumber": nodeNumber
     })
-    utils.timeStampedLog(`REQUEST_ALL_NODE_VARIABLES: node ` + nodeNumber)
+    utils.timeStampedLog(logPrefix + `: REQUEST_ALL_NODE_VARIABLES: node ` + nodeNumber)
   },
   //
   refresh_bus_events() {
     socket.emit('REQUEST_BUS_EVENTS')
-    utils.timeStampedLog(name + `: REQUEST_BUS_EVENTS`)
+    utils.timeStampedLog(logPrefix + `: REQUEST_BUS_EVENTS`)
   },
   //
   request_firmware_info(file) {
-    utils.timeStampedLog(`REQUEST_FIRMWARE_INFO : ` + file.name)
+    utils.timeStampedLog(logPrefix + `: REQUEST_FIRMWARE_INFO : ` + file.name)
     socket.emit('REQUEST_FIRMWARE_INFO', file)
   },
 
   //
   request_log_file(filename) {
-    utils.timeStampedLog(`REQUEST_LOG_FILE : ` + filename)
+    utils.timeStampedLog(logPrefix + `: REQUEST_LOG_FILE : ` + filename)
     socket.emit('REQUEST_LOG_FILE', {"fileName":filename})
   },
   //
   request_MDF_delete(filename, nodeNumber) {
-    utils.timeStampedLog(`REQUEST_MDF_DELETE : ${filename} ${nodeNumber}`)
+    utils.timeStampedLog(logPrefix + `: REQUEST_MDF_DELETE : ${filename} ${nodeNumber}`)
     socket.emit('REQUEST_MDF_DELETE', {"filename":filename, "nodeNumber":nodeNumber})
   },
   //
   request_MDF_export(location, filename) {
-    utils.timeStampedLog(`REQUEST_MDF_EXPORT : ` + location + ' ' + filename)
+    utils.timeStampedLog(logPrefix + `: REQUEST_MDF_EXPORT : ` + location + ' ' + filename)
     socket.emit('REQUEST_MDF_EXPORT', {"location":location, "filename":filename})
   },
   //
   request_node_backup(layoutName, nodeNumber, filename) {
-    utils.timeStampedLog(`REQUEST_NODE_BACKUP : ` + layoutName + ' ' + nodeNumber + ' ' + filename)
+    utils.timeStampedLog(logPrefix + `: REQUEST_NODE_BACKUP : ` + layoutName + ' ' + nodeNumber + ' ' + filename)
     socket.emit('REQUEST_NODE_BACKUP', {"layoutName":layoutName, "nodeNumber":nodeNumber, "fileName":filename})
   },
   //
   request_node_backups_list(layoutName, nodeNumber) {
-    utils.timeStampedLog(`REQUEST_NODE_BACKUPS_LIST : ` + layoutName)
+    utils.timeStampedLog(logPrefix + `: REQUEST_NODE_BACKUPS_LIST : ` + layoutName)
     socket.emit('REQUEST_NODE_BACKUPS_LIST', {"layoutName":layoutName, 'nodeNumber':nodeNumber})
   },
   //
@@ -321,34 +321,34 @@ const methods = {
   //
   request_all_node_events(nodeNumber) {
     socket.emit('REQUEST_ALL_NODE_EVENTS', {"nodeNumber": nodeNumber})
-    utils.timeStampedLog(name + `: REQUEST_ALL_NODE_EVENTS ${nodeNumber}`)
+    utils.timeStampedLog(logPrefix + `: REQUEST_ALL_NODE_EVENTS ${nodeNumber}`)
   },
   //
   request_all_node_events_by_index(nodeNumber, numberOfEvents) {
     let data = {"nodeNumber": nodeNumber, "numberOfEvents":numberOfEvents}
     socket.emit('REQUEST_ALL_NODE_EVENTS_BY_INDEX', data)
-    utils.timeStampedLog(name + `: REQUEST_ALL_NODE_EVENTS_BY_INDEX ${JSON.stringify(data)}`)
+    utils.timeStampedLog(logPrefix + `: REQUEST_ALL_NODE_EVENTS_BY_INDEX ${JSON.stringify(data)}`)
   },
   //
   request_node_event_by_index(nodeNumber, eventIndex) {
     socket.emit('REQUEST_NODE_EVENT_BY_INDEX', {"nodeNumber": nodeNumber, "eventIndex":eventIndex})
-    utils.timeStampedLog(name + `: REQUEST_NODE_EVENT_BY_INDEX ${nodeNumber} ${eventIndex}`)
+    utils.timeStampedLog(logPrefix + `: REQUEST_NODE_EVENT_BY_INDEX ${nodeNumber} ${eventIndex}`)
   },
   //
   request_event_variables_by_identifier(nodeNumber, eventIdentifier) {
     let data = { "nodeNumber": nodeNumber, "eventIdentifier": eventIdentifier }
-    utils.timeStampedLog(name + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER: nodeNumber: ${JSON.stringify(data)}`)
+    utils.timeStampedLog(logPrefix + `: REQUEST_EVENT_VARIABLES_BY_IDENTIFIER: nodeNumber: ${JSON.stringify(data)}`)
     socket.emit(`REQUEST_EVENT_VARIABLES_BY_IDENTIFIER`, data)
   },
   //
   request_event_variables_by_index(nodeNumber, eventIndex) {
     let data = { "nodeNumber": nodeNumber, "eventIndex": eventIndex }
-    utils.timeStampedLog(name + `: REQUEST_EVENT_VARIABLES_BY_INDEX: nodeNumber: ${JSON.stringify(data)}`)
+    utils.timeStampedLog(logPrefix + `: REQUEST_EVENT_VARIABLES_BY_INDEX: nodeNumber: ${JSON.stringify(data)}`)
     socket.emit(`REQUEST_EVENT_VARIABLES_BY_INDEX`, data)
   },
   //
   request_service_discovery(nodeNumber) {
-    utils.timeStampedLog(`Request Service Discovery : ` + nodeNumber)
+    utils.timeStampedLog(logPrefix + `: Request Service Discovery : ` + nodeNumber)
     socket.emit('REQUEST_SERVICE_DISCOVERY', {"nodeNumber":nodeNumber})
   },
   //
@@ -361,12 +361,12 @@ const methods = {
   },
   //
   request_layout_list(){
-    utils.timeStampedLog(name + `: request_layout_list:`)
+    utils.timeStampedLog(logPrefix + `: request_layout_list:`)
     socket.emit('REQUEST_LAYOUTS_LIST')
   },
   //
   request_matching_mdf_list(nodeNumber, location) {
-    utils.timeStampedLog(name + ': REQUEST_MATCHING_MDF_LIST: ' + location)
+    utils.timeStampedLog(logPrefix + ': REQUEST_MATCHING_MDF_LIST: ' + location)
     if (state.server.nodes[nodeNumber] == undefined){state.server.nodes[nodeNumber] = {} }
     state.server.nodes[nodeNumber][location + '_MDF_List'] = []
     socket.emit('REQUEST_MATCHING_MDF_LIST', {"nodeNumber":nodeNumber, "location":location})
@@ -374,11 +374,11 @@ const methods = {
   //
   reset_node(nodeNumber) {
     socket.emit('RESET_NODE', nodeNumber)
-    utils.timeStampedLog(name + ': RESET_NODE ' + nodeNumber)
+    utils.timeStampedLog(logPrefix + ': RESET_NODE ' + nodeNumber)
   },
   //
   save_app_setting(data){
-    utils.timeStampedLog(`SAVE_SETTING ${JSON.stringify(data)}`)
+    utils.timeStampedLog(logPrefix + `: SAVE_SETTING ${JSON.stringify(data)}`)
     socket.emit('SAVE_SETTING', data)
   },
   //
@@ -388,7 +388,7 @@ const methods = {
   },
   //
   save_node_backup_file(nodeNumber, fileName, backupNodeFile){
-    utils.timeStampedLog(`SAVE_NODE_BACKUP_FILE`)
+    utils.timeStampedLog(logPrefix + `: SAVE_NODE_BACKUP_FILE`)
     let data = {
       'layoutName': state.layout.layoutDetails.title,
       'nodeNumber': nodeNumber,
@@ -400,7 +400,7 @@ const methods = {
   //
   send_cbus_message(message){
     socket.emit('SEND_CBUS_MESSAGE', message)
-    utils.timeStampedLog(name + `: SEND_CBUS_MESSAGE: ${message}` )
+    utils.timeStampedLog(logPrefix + `: SEND_CBUS_MESSAGE: ${message}` )
   },
   //
   set_can_id(nodeNumber, CAN_ID){
@@ -408,22 +408,22 @@ const methods = {
     data['nodeNumber'] = nodeNumber
     data['CAN_ID'] = CAN_ID
     socket.emit('SET_CAN_ID', data)
-    utils.timeStampedLog(name + `: SET_CAN_ID: node ` + JSON.stringify(data))
+    utils.timeStampedLog(logPrefix + `: SET_CAN_ID: node ` + JSON.stringify(data))
   },
   //
   STOP_SERVER(nodeNumber) {
     socket.emit('STOP_SERVER')
-    utils.timeStampedLog(`STOP SERVER`)
+    utils.timeStampedLog(logPrefix + `: STOP SERVER`)
     window.close()
   },
   //
   set_node_number(nodeNumber){
-    utils.timeStampedLog(name + `: emit SET_NODE_NUMBER ${nodeNumber}`)
+    utils.timeStampedLog(logPrefix + `: emit SET_NODE_NUMBER ${nodeNumber}`)
     socket.emit('SET_NODE_NUMBER', nodeNumber)
   },
   //
   short_on_event(nodeNumber, eventNumber){
-    utils.timeStampedLog(`ASON ${nodeNumber} : ${eventNumber}`)
+    utils.timeStampedLog(logPrefix + `: ASON ${nodeNumber} : ${eventNumber}`)
     socket.emit('ACCESSORY_SHORT_ON', {
       "nodeNumber": nodeNumber,
       "deviceNumber": eventNumber
@@ -431,7 +431,7 @@ const methods = {
   },
   //
   short_off_event(nodeNumber, eventNumber){
-    utils.timeStampedLog(`ASOF ${nodeNumber} : ${eventNumber}`)
+    utils.timeStampedLog(logPrefix + `: ASOF ${nodeNumber} : ${eventNumber}`)
     socket.emit('ACCESSORY_SHORT_OFF', {
       "nodeNumber": nodeNumber,
       "deviceNumber": eventNumber
@@ -439,13 +439,13 @@ const methods = {
   },
   //
   start_connection(data) {
-    utils.timeStampedLog(name + `: start_connection : ` + JSON.stringify(data))
+    utils.timeStampedLog(logPrefix + `: start_connection : ` + JSON.stringify(data))
     socket.emit('START_CONNECTION', data)
   },
   //
   update_layout() {
     try{
-      utils.timeStampedLog(`Update Layout Data : ` + state.layout.layoutDetails.title)
+      utils.timeStampedLog(logPrefix + `: Update Layout Data : ` + state.layout.layoutDetails.title)
       //utils.timeStampedLog(`Update Layout Data : ` + JSON.stringify(state.layout))
       socket.emit('UPDATE_LAYOUT_DATA', state.layout)
     } catch {}
@@ -455,7 +455,7 @@ const methods = {
   // we don't want to read any back if doing bulk programming (e.g. restoring a node)
   //
   update_node_variable(nodeNumber, nodeVariableIndex, nodeVariableValue, reLoad, linkedVariableList) {
-    utils.timeStampedLog(name + `: update_node_variable: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad} ${JSON.stringify(linkedVariableList)}`)
+    utils.timeStampedLog(logPrefix + `: update_node_variable: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad} ${JSON.stringify(linkedVariableList)}`)
     state.nodes[nodeNumber].nodeVariables[nodeVariableIndex] = nodeVariableValue
     if (reLoad != false){reLoad = true}
     let data = {
@@ -468,10 +468,10 @@ const methods = {
     //utils.timeStampedLog(`NVsetNeedsLearnMode : ` + JSON.stringify(state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode))
     if((state.nodeDescriptors[nodeNumber])
         && (state.nodeDescriptors[nodeNumber].NVsetNeedsLearnMode)){
-          //utils.timeStampedLog(name + `: Update Node Variable in learn mode: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad}`)
+          //utils.timeStampedLog(logPrefix + `: Update Node Variable in learn mode: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad}`)
           socket.emit('UPDATE_NODE_VARIABLE_IN_LEARN_MODE', data)
     } else {
-      //utils.timeStampedLog(name + `: Update Node Variable: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad}`)
+      //utils.timeStampedLog(logPrefix + `: Update Node Variable: ${nodeNumber} ${nodeVariableIndex} ${nodeVariableValue} ${reLoad}`)
       socket.emit('UPDATE_NODE_VARIABLE', data)
     }
     // let capture the last timestamp
@@ -495,7 +495,7 @@ const getters = {
     try{
       result = state.serverStatus.appSettings.develop
     } catch {}
-    //utils.timeStampedLog(name + `: getters.develop: ${result}}`)
+    //utils.timeStampedLog(logPrefix + `: getters.develop: ${result}}`)
     return result
   },
   event_name(eventIdentifier) {
@@ -532,7 +532,7 @@ const getters = {
   },
   //
   event_variable_by_identifier(nodeNumber, eventIdentifier, eventVariableIndex){
-    //utils.timeStampedLog(name + `: event_variable_by_identifier: ${nodeNumber} ${eventIdentifier} ${eventVariableIndex}`)
+    //utils.timeStampedLog(logPrefix + `: event_variable_by_identifier: ${nodeNumber} ${eventIdentifier} ${eventVariableIndex}`)
     try{
       return state.nodes[nodeNumber].storedEventsNI[eventIdentifier].variables[eventVariableIndex]
     } catch (err){
@@ -542,7 +542,7 @@ const getters = {
   },
   //
   event_variable_by_index(nodeNumber, eventIndex, eventVariableIndex){
-    //utils.timeStampedLog(name + `: event_variable_by_index: ${nodeNumber} ${eventIdentifier} ${eventVariableIndex}`)
+    //utils.timeStampedLog(logPrefix + `: event_variable_by_index: ${nodeNumber} ${eventIdentifier} ${eventVariableIndex}`)
     try{
       return state.nodes[nodeNumber].eventsByIndex[eventIndex].variables[eventVariableIndex]
     } catch (err){
@@ -582,88 +582,88 @@ const getters = {
   node_useEventIndex(nodeNumber){
     try{
       if ( state.nodeDescriptors[nodeNumber].useEventIndex == true ){
-        //utils.timeStampedLog(name + `: node_useEventIndex: MDF true`)
+        //utils.timeStampedLog(logPrefix + `: node_useEventIndex: MDF true`)
         return true
       } else if (state.nodes[nodeNumber].moduleInfo.useEventIndex == true) {
-        //utils.timeStampedLog(name + `: node_useEventIndex: moduleInfo.useEventIndex true`)
+        //utils.timeStampedLog(logPrefix + `: node_useEventIndex: moduleInfo.useEventIndex true`)
         return true
       } else if (getters.node_useSlots(nodeNumber) == true) {
-        //utils.timeStampedLog(name + `: node_useEventIndex: useSlots true`)
+        //utils.timeStampedLog(logPrefix + `: node_useEventIndex: useSlots true`)
         return true
       } else {
         // anything else is false
-        //utils.timeStampedLog(name + `: node_useEventIndex: false`)
+        //utils.timeStampedLog(logPrefix + `: node_useEventIndex: false`)
         return false
       }
     } catch (err) {
-      utils.timeStampedLog(name + `: node_useEventIndex: ${err}`)
+      utils.timeStampedLog(logPrefix + `: node_useEventIndex: ${err}`)
       return false
     }
   },
   node_useNENRD(nodeNumber){
     try{
       if (state.nodeDescriptors[nodeNumber].useNENRD){
-        utils.timeStampedLog(name + `: node_useNENRD: MDF true`)
+        utils.timeStampedLog(logPrefix + `: node_useNENRD: MDF true`)
         return true
       } else if(state.nodes[nodeNumber].moduleInfo.useNENRD) {
-        utils.timeStampedLog(name + `: node_useNENRD: moduleInfo.useNENRD true`)
+        utils.timeStampedLog(logPrefix + `: node_useNENRD: moduleInfo.useNENRD true`)
         return true
       } else {
-        utils.timeStampedLog(name + `: node_useNENRD: false`)
+        utils.timeStampedLog(logPrefix + `: node_useNENRD: false`)
         return false
       }
     } catch (err) {
-      utils.timeStampedLog(name + `: node_useNENRD: ${err}`)
+      utils.timeStampedLog(logPrefix + `: node_useNENRD: ${err}`)
       return false
     }
   },
   node_useSlots(nodeNumber){
     try{
       if ( state.nodeDescriptors[nodeNumber].useSlots == true ){
-        utils.timeStampedLog(name + `: node_useSlots: ${nodeNumber} MDF true`)
+        utils.timeStampedLog(logPrefix + `: node_useSlots: ${nodeNumber} MDF true`)
         return true
       } else if(state.nodes[nodeNumber].moduleInfo.useSlots) {
-        utils.timeStampedLog(name + `: node_useSlots: ${nodeNumber} moduleInfo.useSlots true`)
+        utils.timeStampedLog(logPrefix + `: node_useSlots: ${nodeNumber} moduleInfo.useSlots true`)
         return true
       } else {
         // anything else is false
-        utils.timeStampedLog(name + `: node_useSlots: ${nodeNumber} false`)
+        utils.timeStampedLog(logPrefix + `: node_useSlots: ${nodeNumber} false`)
         return false
       }
     } catch (err) {
-      utils.timeStampedLog(name + `: node_useSlots: ${nodeNumber} ${err}`)
+      utils.timeStampedLog(logPrefix + `: node_useSlots: ${nodeNumber} ${err}`)
       return false
     }
   },
   node_useSwitchTeach1(nodeNumber){
     try{
       if (state.nodeDescriptors[nodeNumber].useSwitchTeach1){
-        utils.timeStampedLog(name + `: node_useSwitchTeach1: MDF true`)
+        utils.timeStampedLog(logPrefix + `: node_useSwitchTeach1: MDF true`)
         return true
       } else if(state.nodes[nodeNumber].moduleInfo.useSwitchTeach1) {
-        utils.timeStampedLog(name + `: node_useSwitchTeach1: moduleInfo.useSwitchTeach1 true`)
+        utils.timeStampedLog(logPrefix + `: node_useSwitchTeach1: moduleInfo.useSwitchTeach1 true`)
         return true
       } else {
         return false
       }
     } catch (err) {
-      utils.timeStampedLog(name + `: node_useSwitchTeach1: ${err}`)
+      utils.timeStampedLog(logPrefix + `: node_useSwitchTeach1: ${err}`)
       return false
     }
   },
   node_useSwitchTeach2(nodeNumber){
     try{
       if (state.nodeDescriptors[nodeNumber].useSwitchTeach2){
-        utils.timeStampedLog(name + `: node_useSwitchTeach2: MDF true`)
+        utils.timeStampedLog(logPrefix + `: node_useSwitchTeach2: MDF true`)
         return true
       } else if(state.nodes[nodeNumber].moduleInfo.useSwitchTeach2) {
-        utils.timeStampedLog(name + `: node_useSwitchTeach2: moduleInfo.useSwitchTeach1 true`)
+        utils.timeStampedLog(logPrefix + `: node_useSwitchTeach2: moduleInfo.useSwitchTeach1 true`)
         return true
       } else {
         return false
       }
     } catch (err) {
-      utils.timeStampedLog(name + `: node_useSwitchTeach2: ${err}`)
+      utils.timeStampedLog(logPrefix + `: node_useSwitchTeach2: ${err}`)
       return false
     }
   },
@@ -679,7 +679,7 @@ const getters = {
         value = (state.nodes[nodeNumber].parameters[4] > value) ? state.nodes[nodeNumber].parameters[4] : value
       } catch{}
     } catch (err){
-      utils.timeStampedLog(name + `: node_numberOfEvents  ${err}`)
+      utils.timeStampedLog(logPrefix + `: node_numberOfEvents  ${err}`)
     }
     return value
   },
@@ -699,14 +699,14 @@ const getters = {
       try {
         if (state.nodeDescriptors[nodeNumber].numberOfEvents != undefined){
           value = state.nodeDescriptors[nodeNumber].numberOfEvents
-          utils.timeStampedLog(name + `: node_numberOfEvents: MDF ${value}`)
+          utils.timeStampedLog(logPrefix + `: node_numberOfEvents: MDF ${value}`)
         }
       } catch {}
       if (value == 0) {
         try {
           if (state.nodes[nodeNumber].moduleInfo.numberOfEvents != undefined){
             value = state.nodes[nodeNumber].moduleInfo.numberOfEvents
-            utils.timeStampedLog(name + `: node_numberOfEvents: moduleInfo.numberOfEvents ${value}`)
+            utils.timeStampedLog(logPrefix + `: node_numberOfEvents: moduleInfo.numberOfEvents ${value}`)
           }
         } catch {}
       }
@@ -715,9 +715,9 @@ const getters = {
         value = (state.nodes[nodeNumber].eventCount > value) ? state.nodes[nodeNumber].eventCount : value
       } catch {}
     } catch(err){
-      utils.timeStampedLog(name + `: node_numberOfEvents  ${err}`)
+      utils.timeStampedLog(logPrefix + `: node_numberOfEvents  ${err}`)
     }
-    utils.timeStampedLog(name + `: node_numberOfEvents  node ${nodeNumber} number ${value}`)
+    utils.timeStampedLog(logPrefix + `: node_numberOfEvents  node ${nodeNumber} number ${value}`)
     return value
   },
   //
@@ -726,13 +726,13 @@ const getters = {
     try{
       if (state.nodes[nodeNumber].parameters[5] != undefined) {
         value = state.nodes[nodeNumber].parameters[5]
-        utils.timeStampedLog(name + `: node_numberOfEventVariables: parameters[5] ${value}`)
+        utils.timeStampedLog(logPrefix + `: node_numberOfEventVariables: parameters[5] ${value}`)
       } else {
-        utils.timeStampedLog(name + `: node_numberOfEventVariables: node ${nodeNumber} parameters[5] undefined`)
+        utils.timeStampedLog(logPrefix + `: node_numberOfEventVariables: node ${nodeNumber} parameters[5] undefined`)
       }
     } catch(err){
-      utils.timeStampedLog(name + `: node_numberOfEventVariables  ${err}`)
-      utils.timeStampedLog(name + `: node_numberOfEventVariables  node ${nodeNumber} number ${value}`)
+      utils.timeStampedLog(logPrefix + `: node_numberOfEventVariables  ${err}`)
+      utils.timeStampedLog(logPrefix + `: node_numberOfEventVariables  node ${nodeNumber} number ${value}`)
     }
     return value
   },
@@ -742,7 +742,7 @@ const getters = {
     try{
       CAN_ID = state.nodes[nodeNumber].CANID
     } catch (err){
-      utils.timeStampedLog(name + `: getters.node_can_id: ${err}`)
+      utils.timeStampedLog(logPrefix + `: getters.node_can_id: ${err}`)
     }
     return CAN_ID
   },
@@ -766,7 +766,7 @@ const getters = {
         return state.layout.nodeDetails[nodeNumber].name
       }
     } catch (err) {
-      utils.timeStampedLog(name + `: getters.node_name: ${err}`)
+      utils.timeStampedLog(logPrefix + `: getters.node_name: ${err}`)
       return "error"
     }
   },
@@ -804,7 +804,7 @@ const getters = {
       }
       return state.layout.nodeDetails[nodeNumber].colour
     } catch (err) {
-      utils.timeStampedLog(name + `: getters.node_colour: ${err}`)
+      utils.timeStampedLog(logPrefix + `: getters.node_colour: ${err}`)
       return ""
     }
   },
@@ -824,7 +824,7 @@ const getters = {
       }
       return state.layout.nodeDetails[nodeNumber].group
     } catch (err) {
-      utils.timeStampedLog(name + `: getters.node_group: ${err}`)
+      utils.timeStampedLog(logPrefix + `: getters.node_group: ${err}`)
       return ""
     }
   },
@@ -833,7 +833,7 @@ const getters = {
     try{
       result = parameterIndex + ': ' + NodeParameterNames[parameterIndex]
     } catch (err) {
-      utils.timeStampedLog(name + `: getters.node_parameter_name: ${err}`)
+      utils.timeStampedLog(logPrefix + `: getters.node_parameter_name: ${err}`)
     }
     return result
   },
@@ -842,14 +842,14 @@ const getters = {
     try{
       result = state.nodes[nodeNumber].parameters[parameterIndex]
     } catch (err) {
-      utils.timeStampedLog(name + `: getters: node_parameter_value: ${err}`)
+      utils.timeStampedLog(logPrefix + `: getters: node_parameter_value: ${err}`)
     }
     return result
   },
   // an MDF token is a combination of a token name and a number - e.g. channel3
   node_token_name(nodeNumber, tokenName, tokenNumber){
-    //utils.timeStampedLog(name + `: getters1: node_token_name: ${token} ${tokenNumber}`)
-    //utils.timeStampedLog(name + `: getters2: node_token_name: token: ${JSON.stringify(state.nodeDescriptors[nodeNumber].tokens)}`)
+    //utils.timeStampedLog(logPrefix + `: getters1: node_token_name: ${token} ${tokenNumber}`)
+    //utils.timeStampedLog(logPrefix + `: getters2: node_token_name: token: ${JSON.stringify(state.nodeDescriptors[nodeNumber].tokens)}`)
     let replacementName = ""
     try{
       // first look for a user supplied tokenName, this will overr-ride any default
@@ -871,7 +871,7 @@ const getters = {
           if (replacementName == undefined) { throw "no legacy MDF channel name" }
           if (replacementName.length == 0) { throw "no legacy MDF channel name" }
         } catch (err) {
-          utils.timeStampedLog(name + `: getters: node_token_name: ${err}`)
+          utils.timeStampedLog(logPrefix + `: getters: node_token_name: ${err}`)
           // otherwise supply system default name
           replacementName = tokenName+tokenNumber
         }
@@ -899,7 +899,7 @@ const setters = {
   // Events
   addIndexedEventToLayoutNode(nodeNumber, eventIndex, eventIdentifier){
     try{
-      utils.timeStampedLog(name + `: setters: addIndexedEventToLayoutNode: ${nodeNumber} ${eventIndex} ${eventIdentifier}`)
+      utils.timeStampedLog(logPrefix + `: setters: addIndexedEventToLayoutNode: ${nodeNumber} ${eventIndex} ${eventIdentifier}`)
       if (state.layout.nodeDetails[nodeNumber] != undefined){
         if (state.layout.nodeDetails[nodeNumber].indexedEvents == undefined){
           state.layout.nodeDetails[nodeNumber].indexedEvents = {}
@@ -908,7 +908,7 @@ const setters = {
         state.update_layout_needed = true
       }
     } catch (err){
-      utils.timeStampedLog(name + `: setters: addIndexedEventToLayoutNode: ${err}`)
+      utils.timeStampedLog(logPrefix + `: setters: addIndexedEventToLayoutNode: ${err}`)
     }
   },
   event_name(eventIdentifier, eventName) {
@@ -935,10 +935,10 @@ const setters = {
   //
   // Nodes
   addNodeToLayout(nodeNumber, moduleIdentifer, moduleName){
-    //utils.timeStampedLog(name + `: addNodeToLayout: ${nodeNumber} ${moduleIdentifer} ${moduleName}`)
+    //utils.timeStampedLog(logPrefix + `: addNodeToLayout: ${nodeNumber} ${moduleIdentifer} ${moduleName}`)
     if (nodeNumber != undefined){
       if (nodeNumber in state.layout.nodeDetails === false){
-        //utils.timeStampedLog(name + `: addNodeToLayout: nodeNumber: ${nodeNumber}`)
+        //utils.timeStampedLog(logPrefix + `: addNodeToLayout: nodeNumber: ${nodeNumber}`)
         state.layout.nodeDetails[nodeNumber] = {}
         state.layout.nodeDetails[nodeNumber].colour = "black"
         state.layout.nodeDetails[nodeNumber].group = ""
@@ -946,14 +946,14 @@ const setters = {
       }
       if (moduleIdentifer != undefined){
         if (state.layout.nodeDetails[nodeNumber].moduleIdentifer != moduleIdentifer){
-          //utils.timeStampedLog(name + `: addNodeToLayout: moduleIdentifier: ${moduleIdentifer}`)
+          //utils.timeStampedLog(logPrefix + `: addNodeToLayout: moduleIdentifier: ${moduleIdentifer}`)
           state.layout.nodeDetails[nodeNumber].moduleIdentifer = moduleIdentifer
           state.update_layout_needed = true
         }
       }
       if (moduleName != undefined){
         if (state.layout.nodeDetails[nodeNumber].moduleName != moduleName){
-          //utils.timeStampedLog(name + `: addNodeToLayout: moduleName: ${moduleName}`)
+          //utils.timeStampedLog(logPrefix + `: addNodeToLayout: moduleName: ${moduleName}`)
           state.layout.nodeDetails[nodeNumber].moduleName = moduleName
           state.update_layout_needed = true
         }
@@ -962,17 +962,17 @@ const setters = {
   },
   // argument is true or false
   node_set_backup_required(nodeNumber, status){
-    utils.timeStampedLog(name + `: node_set_backup_required: ${nodeNumber} ${status}`)
+    utils.timeStampedLog(logPrefix + `: node_set_backup_required: ${nodeNumber} ${status}`)
     try{
       if (status == true) {
         state.layout.nodeDetails[nodeNumber].backup_required = true
-        utils.timeStampedLog(name + `: node_set_backup_required: true`)
+        utils.timeStampedLog(logPrefix + `: node_set_backup_required: true`)
       } else {
         state.layout.nodeDetails[nodeNumber].backup_required = false
-        utils.timeStampedLog(name + `: node_set_backup_required: false`)
+        utils.timeStampedLog(logPrefix + `: node_set_backup_required: false`)
       }
     } catch (error) {
-        utils.timeStampedLog(name + `: node_set_backup_required: ${error}`)
+        utils.timeStampedLog(logPrefix + `: node_set_backup_required: ${error}`)
     }
     state.update_layout_needed = true
   },
@@ -1019,7 +1019,7 @@ const setters = {
   },
   // an MDF token is a combination of a token name and a number - e.g. channel3
   node_token_name(nodeNumber, tokenName, tokenNumber, name){
-    utils.timeStampedLog(name + `: setters: node_token_name: ${tokenName} ${tokenNumber} ${name}`)
+    utils.timeStampedLog(logPrefix + `: setters: node_token_name: ${tokenName} ${tokenNumber} ${name}`)
     if (typeof tokenNumber === 'string'){
       tokenNumber = parseInt(tokenNumber)
     }
@@ -1048,23 +1048,23 @@ const socket = io(`http://${host}:${port}`)
 //
 //
 socket.on('ARCHIVED_LOGS_LIST', (data) => {
-  utils.timeStampedLog(name + `: RECEIVED ARCHIVED_LOGS_LIST`)
-  utils.timeStampedLog(name + `: RECEIVED ARCHIVED_LOGS_LIST ${JSON.stringify(data)}`)
+  utils.timeStampedLog(logPrefix + `: RECEIVED ARCHIVED_LOGS_LIST`)
+  utils.timeStampedLog(logPrefix + `: RECEIVED ARCHIVED_LOGS_LIST ${JSON.stringify(data)}`)
   eventBus.emit('ARCHIVED_LOGS_LIST', data)
 })
 
 //
 //
 socket.on('BACKUPS_LIST', (data) => {
-  utils.timeStampedLog(name + `: RECEIVED BACKUPS_LIST`)
+  utils.timeStampedLog(logPrefix + `: RECEIVED BACKUPS_LIST`)
   state.backups_list = data;
 })
 
 //
 //
 socket.on('BINARY_FILE', (data) => {
-  utils.timeStampedLog(name + `: RECEIVED BINARY_FILE ${data.directory} ${data.fileName} length ${data.data.length}`)
-  //utils.timeStampedLog(name + `: RECEIVED BINARY_FILE base 64 : ${data.data}`)
+  utils.timeStampedLog(logPrefix + `: RECEIVED BINARY_FILE ${data.directory} ${data.fileName} length ${data.data.length}`)
+  //utils.timeStampedLog(logPrefix + `: RECEIVED BINARY_FILE base 64 : ${data.data}`)
   eventBus.emit('BINARY_FILE', data)
 })
 
@@ -1072,12 +1072,12 @@ socket.on('BINARY_FILE', (data) => {
 //
 socket.on('LIST_OF_BACKUPS_FOR_ALL_NODES', (data) => {
   try{
-    utils.timeStampedLog(name + `: RECEIVED LIST_OF_BACKUPS_FOR_ALL_NODES`)
+    utils.timeStampedLog(logPrefix + `: RECEIVED LIST_OF_BACKUPS_FOR_ALL_NODES`)
     for(const node in data){
       // extract node number
       let nodeNumber = node.replace(/[^0-9]/g, "")
       if (nodeNumber != undefined){
-        //utils.timeStampedLog(name + `: RECEIVED LIST_OF_BACKUPS_FOR_ALL_NODES: node ${nodeNumber}`)
+        //utils.timeStampedLog(logPrefix + `: RECEIVED LIST_OF_BACKUPS_FOR_ALL_NODES: node ${nodeNumber}`)
         if (state.layout.nodeDetails[nodeNumber] != undefined){
           state.layout.nodeDetails[nodeNumber]['backupList'] = data[node]
         }
@@ -1085,34 +1085,34 @@ socket.on('LIST_OF_BACKUPS_FOR_ALL_NODES', (data) => {
     }
     eventBus.emit('LIST_OF_BACKUPS_FOR_ALL_NODES', data)
   } catch(err){
-    utils.timeStampedLog(name + `: RECEIVED LIST_OF_BACKUPS_FOR_ALL_NODES: ${err}`)
+    utils.timeStampedLog(logPrefix + `: RECEIVED LIST_OF_BACKUPS_FOR_ALL_NODES: ${err}`)
   }
 })
 
 //
 //
 socket.on('NODE_BACKUP_SAVED', (filename) => {
-  utils.timeStampedLog(name + `: RECEIVED NODE_BACKUP_SAVED ${filename}`)
+  utils.timeStampedLog(logPrefix + `: RECEIVED NODE_BACKUP_SAVED ${filename}`)
   eventBus.emit('NODE_BACKUP_SAVED', filename)
 })
 
 socket.on('NODE_BACKUPS_LIST', (data) => {
-  utils.timeStampedLog(name + `: RECEIVED NODE_BACKUPS_LIST`)
+  utils.timeStampedLog(logPrefix + `: RECEIVED NODE_BACKUPS_LIST`)
   state.backups_list = data;
 })
 
 socket.on("BUS_EVENTS", (data) => {
-  utils.timeStampedLog(name + `: RECEIVED BUS_EVENTS Data`)
+  utils.timeStampedLog(logPrefix + `: RECEIVED BUS_EVENTS Data`)
   state.busEvents = data
 })
 
 socket.on("CBUS_ERRORS", (data) => {
-  utils.timeStampedLog(name + `: RECEIVED CBUS_ERRORS `)
+  utils.timeStampedLog(logPrefix + `: RECEIVED CBUS_ERRORS `)
   state.cbus_errors = data
 })
 
 socket.on("CBUS_NO_SUPPORT", (data) => {
-  utils.timeStampedLog(name + `: RECEIVED CBUS_NO_SUPPORT `)
+  utils.timeStampedLog(logPrefix + `: RECEIVED CBUS_NO_SUPPORT `)
 })
 
 socket.on("CBUS_TRAFFIC", (data) => {
@@ -1150,21 +1150,21 @@ socket.on('dccSessions', function (data) {
 })
 
 socket.on("disconnect", (data) => {
-  utils.timeStampedLog(name + `: disconnect`)
+  utils.timeStampedLog(logPrefix + `: disconnect`)
   eventBus.emit('SERVER_DISCONNECT', data)
 })
 
 socket.on("error", (data) => {
-  utils.timeStampedLog(name + `: connection error`)
+  utils.timeStampedLog(logPrefix + `: connection error`)
 })
 
 socket.on("FIRMWARE_INFO", (data) => {
-  utils.timeStampedLog(name + `: FIRMWARE_INFO ${JSON.stringify(data)}`)
+  utils.timeStampedLog(logPrefix + `: FIRMWARE_INFO ${JSON.stringify(data)}`)
   eventBus.emit('FIRMWARE_INFO', data)
 })
 
 socket.on('LAYOUT_DATA', (data) => {
-  utils.timeStampedLog(name + `: RECEIVED Layout Data`)
+  utils.timeStampedLog(logPrefix + `: RECEIVED Layout Data`)
   state.layout = data;
   // put a fresh timestamp on it
   state.layout['updateTimestamp'] = Date.now()
@@ -1173,7 +1173,7 @@ socket.on('LAYOUT_DATA', (data) => {
 })
 
 socket.on('LAYOUTS_LIST', (data) => {
-  utils.timeStampedLog(name + `: RECEIVED LAYOUTS_LIST`)
+  utils.timeStampedLog(logPrefix + `: RECEIVED LAYOUTS_LIST`)
   state.layouts_list = data;
 })
 
@@ -1181,23 +1181,23 @@ socket.on('LAYOUTS_LIST', (data) => {
 //
 socket.on('LOG_FILE', (data) => {
   if ((data.fileName.length > 0) & (data.logFile.length > 0)){
-    utils.timeStampedLog(name + `: RECEIVED LOG_FILE ${data.fileName} ${data.logFile.length}`)
+    utils.timeStampedLog(logPrefix + `: RECEIVED LOG_FILE ${data.fileName} ${data.logFile.length}`)
     eventBus.emit('LOG_FILE', data.fileName, data.logFile)
   } else {
-    utils.timeStampedLog(name + `: RECEIVED unexpected LOG_FILE`)
-    utils.timeStampedLog(name + `: RECEIVED unexpected LOG_FILE  ${data.fileName} ${data.logFile.length}`)
+    utils.timeStampedLog(logPrefix + `: RECEIVED unexpected LOG_FILE`)
+    utils.timeStampedLog(logPrefix + `: RECEIVED unexpected LOG_FILE  ${data.fileName} ${data.logFile.length}`)
   }
 })
 
 //
 socket.on("MDF_EXPORT", (location, filename, MDF) => {
-  utils.timeStampedLog(name + `: RECEIVED MDF_EXPORT ` + location + ' ' + filename)
+  utils.timeStampedLog(logPrefix + `: RECEIVED MDF_EXPORT ` + location + ' ' + filename)
   state.exported_MDF = MDF
   state.MDFupdateTimestamp = Date.now()
 })
 
 socket.on("MATCHING_MDF_LIST", (location, nodeNumber, list) => {
-  utils.timeStampedLog(name + `: RECEIVED MATCHING_MDF_LIST ` + nodeNumber + ' ' + location + ' ' + list.length)
+  utils.timeStampedLog(logPrefix + `: RECEIVED MATCHING_MDF_LIST ` + nodeNumber + ' ' + location + ' ' + list.length)
   if (state.server.nodes[nodeNumber] == undefined){state.server.nodes[nodeNumber] = {} }
   state.server.nodes[nodeNumber][location + '_MDF_List'] = list
   state.MDFupdateTimestamp = Date.now()
@@ -1205,8 +1205,8 @@ socket.on("MATCHING_MDF_LIST", (location, nodeNumber, list) => {
 
 //
 socket.on("MODULE_NAMES", (data) => {
-  utils.timeStampedLog(name + `: RECEIVED MODULE_NAMES`)
-  //utils.timeStampedLog(name + `: RECEIVED MODULE_NAMES ${JSON.stringify(data)}`)
+  utils.timeStampedLog(logPrefix + `: RECEIVED MODULE_NAMES`)
+  //utils.timeStampedLog(logPrefix + `: RECEIVED MODULE_NAMES ${JSON.stringify(data)}`)
   state.moduleNames = data
   state.server["moduleNames"] = data
 })
@@ -1214,13 +1214,13 @@ socket.on("MODULE_NAMES", (data) => {
 //
 //
 socket.on("NETWORK_CONNECTION_FAILURE", (data) => {
-  utils.timeStampedLog(name + `: RECEIVED NETWORK_CONNECTION_FAILURE : ${JSON.stringify(data)}`)
+  utils.timeStampedLog(logPrefix + `: RECEIVED NETWORK_CONNECTION_FAILURE : ${JSON.stringify(data)}`)
   eventBus.emit('NETWORK_CONNECTION_FAILURE', data.message, data.caption, data.type, data.timeout)
 })
 
 socket.on("NODE", (data) => {
   state.nodes["updateTimestamp"] = Date.now()
-  utils.timeStampedLog(name + `: RECEIVED NODE: ${data.nodeNumber}`)
+  utils.timeStampedLog(logPrefix + `: RECEIVED NODE: ${data.nodeNumber}`)
   // remove original stored events by Index
   delete data.storedEvents
   state.nodes[data.nodeNumber] = data
@@ -1232,13 +1232,13 @@ socket.on("NODE", (data) => {
       getters.event_name(event.eventIdentifier)
     })
   } catch(err){
-    utils.timeStampedLog(name + `: socket.on NODE: ` + err)
+    utils.timeStampedLog(logPrefix + `: socket.on NODE: ` + err)
   }
 })
 
 socket.on("NODES", (data) => {
   state.nodes["updateTimestamp"] = Date.now()
-  utils.timeStampedLog(name + ': RECEIVED NODES')
+  utils.timeStampedLog(logPrefix + ': RECEIVED NODES')
   var nodes = Object.values(data)
   // remove original stored events by Index
   nodes.forEach(node =>{
@@ -1256,7 +1256,7 @@ socket.on("NODES", (data) => {
       })
     })
   } catch(err){
-    utils.timeStampedLog(name + `: socket.on NODES: ` + err)
+    utils.timeStampedLog(logPrefix + `: socket.on NODES: ` + err)
   }
 })
 
@@ -1264,7 +1264,7 @@ socket.on("NODE_DESCRIPTOR", (data) => {
   try {
     var nodeNumber = Object.keys(data)[0]   // get first key
     var moduleDescriptor = Object.values(data)[0] // get first value
-    utils.timeStampedLog(name + `: RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber + ' ' + moduleDescriptor.moduleDescriptorFilename)
+    utils.timeStampedLog(logPrefix + `: RECEIVED NODE_DESCRIPTOR : node ` + nodeNumber + ' ' + moduleDescriptor.moduleDescriptorFilename)
     state.nodeDescriptors[nodeNumber] = moduleDescriptor
     const store = {"state":state}
     delete state.layout.nodeDetails[nodeNumber].tokenList // depricated object
@@ -1273,37 +1273,37 @@ socket.on("NODE_DESCRIPTOR", (data) => {
     //state.nodeDescriptors[nodeNumber].tokens = utils.extractMDFTokens(moduleDescriptor)
     state.MDFupdateTimestamp = Date.now()
   } catch (err) {
-    utils.timeStampedLog(name + `: RECEIVED NODE_DESCRIPTOR: ${err} `)
+    utils.timeStampedLog(logPrefix + `: RECEIVED NODE_DESCRIPTOR: ${err} `)
   }
 })
 
 socket.on("PROGRAM_NODE_PROGRESS", (text) => {
-  utils.timeStampedLog(name + `: RECEIVED PROGRAM_NODE_PROGRESS : ` + text)
+  utils.timeStampedLog(logPrefix + `: RECEIVED PROGRAM_NODE_PROGRESS : ` + text)
   eventBus.emit('PROGRAM_NODE_PROGRESS', text)
 })
 
 socket.on('RESTORED_DATA', (data) => {
-  utils.timeStampedLog(name + `: RECEIVED RESTORED_DATA`)
+  utils.timeStampedLog(logPrefix + `: RECEIVED RESTORED_DATA`)
   state.restoredData = data;
   // put a fresh timestamp on it
   state.restoredData['updateTimestamp'] = Date.now()
 })
 
 socket.on("REQUEST_NODE_NUMBER", (nodeNumber, moduleName) => {
-  utils.timeStampedLog(name + `: RECEIVED REQUEST_NODE_NUMBER : ` + JSON.stringify(nodeNumber) + ' moduleName ' + moduleName)
+  utils.timeStampedLog(logPrefix + `: RECEIVED REQUEST_NODE_NUMBER : ` + JSON.stringify(nodeNumber) + ' moduleName ' + moduleName)
   eventBus.emit('REQUEST_NODE_NUMBER_EVENT', nodeNumber, moduleName)
 })
 
 //
 //
 socket.on("SERIAL_CONNECTION_FAILURE", (data) => {
-  utils.timeStampedLog(name + `: RECEIVED SERIAL_CONNECTION_FAILURE : ${JSON.stringify(data)}`)
+  utils.timeStampedLog(logPrefix + `: RECEIVED SERIAL_CONNECTION_FAILURE : ${JSON.stringify(data)}`)
   eventBus.emit('SERIAL_CONNECTION_FAILURE', data.message, data.caption, data.type, data.timeout)
 })
 
 
 socket.on("SERVER_NOTIFICATION", (data) => {
-  utils.timeStampedLog(name + `: RECEIVED SERVER_NOTIFICATION : ${JSON.stringify(data)}`)
+  utils.timeStampedLog(logPrefix + `: RECEIVED SERVER_NOTIFICATION : ${JSON.stringify(data)}`)
   eventBus.emit('GENERAL_MESSAGE_EVENT', data.message, data.caption, data.type, data.timeout)
 })
 
@@ -1316,7 +1316,7 @@ socket.on("SERVER_STATUS", (data) => {
 })
 
 socket.on("VERSION", (data) => {
-  utils.timeStampedLog(name + `: RECEIVED VERSION ` + JSON.stringify(data))
+  utils.timeStampedLog(logPrefix + `: RECEIVED VERSION ` + JSON.stringify(data))
   state.version = data
 })
 

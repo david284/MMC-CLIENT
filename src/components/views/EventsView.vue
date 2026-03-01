@@ -469,7 +469,7 @@ const clickScanNodes = () => {
 
 
 const clickSendOff = (nodeNumber, eventIdentifier) => {
-  utils.timeStampedLog (name + ": Send OFF " + nodeNumber + ' ' + eventIdentifier)
+  utils.timeStampedLog (logPrefix + ": Send OFF " + nodeNumber + ' ' + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
   var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
   if (eventNodeNumber == 0) {
@@ -481,7 +481,7 @@ const clickSendOff = (nodeNumber, eventIdentifier) => {
 
 
 const clickSendOn = (nodeNumber, eventIdentifier) => {
-  utils.timeStampedLog (name + ": Send ON " + nodeNumber + ' ' + eventIdentifier)
+  utils.timeStampedLog (logPrefix + ": Send ON " + nodeNumber + ' ' + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
   var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
   if (eventNodeNumber == 0) {

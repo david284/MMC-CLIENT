@@ -774,7 +774,7 @@ const clickRefresh = () => {
 //
 //
 const clickSendOff = (eventIdentifier) => {
-  utils.timeStampedLog (name + ": Send OFF " + eventIdentifier)
+  utils.timeStampedLog (logPrefix + ": Send OFF " + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
   var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
   if (eventNodeNumber == 0) {
@@ -787,7 +787,7 @@ const clickSendOff = (eventIdentifier) => {
 //
 //
 const clickSendOn = (eventIdentifier) => {
-  utils.timeStampedLog (name + ": Send ON " + eventIdentifier)
+  utils.timeStampedLog (logPrefix + ": Send ON " + eventIdentifier)
   var eventNodeNumber = parseInt(eventIdentifier.slice(0,4), 16)
   var eventNumber = parseInt(eventIdentifier.slice(4,8), 16)
   if (eventNodeNumber == 0) {

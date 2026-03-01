@@ -196,7 +196,7 @@ const columns = [
 ]
 
 const store = inject('store')
-const logPrefix = "NodesList"
+const logPrefix = "NodesView"
 const filter = ref('')
 const rows = ref([])
 const selectedNode = ref()
@@ -287,7 +287,7 @@ const update_rows = () => {
 }
 
 const rowStyleFn = (row) =>{
-  utils.timeStampedLog(logPrefix + `: rowStyleFn: ${JSON.stringify(row.nodeNumber)}`)
+  //utils.timeStampedLog(logPrefix + `: rowStyleFn: ${JSON.stringify(row.nodeNumber)}`)
   let nodeNumber = row.nodeNumber
   if (nodeNumber in store.state.layout.nodeDetails) {
     return 'color:' + store.state.layout.nodeDetails[nodeNumber].colour
