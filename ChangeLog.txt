@@ -1,6 +1,7 @@
 Version 0.21.0
   Changed chip in backup column to clickable & renamed to backup if needed
   Added colour to node, event lists & export
+  Added debounce to EventNameAndGroup
   added reason in caption for "MMC-server has disconnected"
 
 Version 0.20.0
