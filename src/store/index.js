@@ -893,6 +893,7 @@ const setters = {
       state.layout.eventDetails[eventIdentifier] = {}
       state.layout.eventDetails[eventIdentifier].colour = "black"
       state.layout.eventDetails[eventIdentifier].group = ""
+      state.update_layout_needed = true
     }
   },
   //

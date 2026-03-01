@@ -199,7 +199,7 @@ const clickAddEvent = async () => {
         message: 'This event already exists on this node',
         timeout: 0,
         position: 'center',
-        color: 'primary',
+        color: 'info',
         actions: [
           { label: 'dismiss', color: 'white', handler: async () => {  } }
         ]
@@ -212,6 +212,21 @@ const clickAddEvent = async () => {
           showEventVariablesDialog.value = true
         }
       }
+    }
+  } else {
+    // not adding to a node, just to layout
+    if (selected_event_Identifier.value in store.state.layout.eventDetails === false) {
+      store.setters.addEventToLayout(selected_event_Identifier.value)
+    } else{
+      const result = $q.notify({
+        message: 'This event already exists in this layout',
+        timeout: 0,
+        position: 'center',
+        color: 'info',
+        actions: [
+          { label: 'dismiss', color: 'white', handler: async () => {  } }
+        ]
+      })
     }
   }
   //model.value = false
