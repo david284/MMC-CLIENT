@@ -281,7 +281,7 @@ const update_rows = () => {
       output['spaceLeft'] = node.eventSpaceLeft
       output['vlcb'] = node.VLCB
       rows.value.push(output)
-      utils.timeStampedLog(logPrefix + `: update_rows: ${JSON.stringify(output)}`)
+      //utils.timeStampedLog(logPrefix + `: update_rows: ${JSON.stringify(output)}`)
     }
   })
 }

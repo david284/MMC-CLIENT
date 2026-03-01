@@ -127,6 +127,7 @@ import eventTeachDialog from "components/dialogs/EventTeachDialog"
 import eventsViewInfoDialog from "components/dialogs/EventsViewInfoDialog"
 import linkedNodesDialog from "components/dialogs/LinkedNodesDialog"
 import * as utils from "components/functions/utils.js"
+import * as eventFunctions from "components/functions/EventFunctions.js"
 
 const $q = useQuasar()
 const store = inject('store')
@@ -160,7 +161,7 @@ const columns = [
 ]
 
 const rowStyleFn = (row) =>{
-  utils.timeStampedLog(logPrefix + `: rowStyleFn: ${JSON.stringify(row.eventIdentifier)}`)
+  //utils.timeStampedLog(logPrefix + `: rowStyleFn: ${JSON.stringify(row.eventIdentifier)}`)
   let eventIdentifier = row.eventIdentifier
   if (eventIdentifier in store.state.layout.eventDetails) {
     return 'color:' + store.state.layout.eventDetails[eventIdentifier].colour
@@ -260,8 +261,8 @@ const getLinkedNodesCount = (eventIdentifier) => {
 
 
 store.eventBus.on('BUS_TRAFFIC_EVENT', (data) => {
-//  utils.timeStampedLog(logPrefix + ': BUS_TRAFFIC_EVENT : ' + JSON.stringify(data.json.eventIdentifier))
-  utils.timeStampedLog(logPrefix + ': BUS_TRAFFIC_EVENT : opcode ' + data.json.opCode)
+  //utils.timeStampedLog(logPrefix + ': BUS_TRAFFIC_EVENT : ' + JSON.stringify(data.json.eventIdentifier))
+  //utils.timeStampedLog(logPrefix + ': BUS_TRAFFIC_EVENT : opcode ' + data.json.opCode)
   var eventIdentifier = data.json.eventIdentifier
   var opCode = data.json.opCode
   var status = 'unknown'
@@ -461,8 +462,9 @@ const clickScanNodes = () => {
   utils.timeStampedLog(logPrefix + `: clickScanNodes`)
   var nodeNumberList = Object.keys(store.state.nodes)
   nodeNumberList.forEach(nodeNumber => {
-    EventFunctions.requestAllNodeEvents(nodeNumber)
+    eventFunctions.requestAllNodeEvents(store, nodeNumber)
   })
+  update_events_table()
 }
 
 

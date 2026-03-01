@@ -20,7 +20,7 @@ const state = reactive({
   dcc_sessions: {},
   dcc_errors: {},
   events_view_mode: 'all',
-  event_view_status: [],
+  event_view_status: {},
   exported_MDF: {},
   inStartup: true,
   cbusTrafficTimeStamp: 0,
@@ -54,6 +54,18 @@ const methods = {
     socket.emit('CHANGE_LAYOUT', {
       "layoutName": layoutName
     })
+  },
+  //
+  clear_all_event_status() {
+    try {
+      utils.timeStampedLog(name + `: clear_all_event_status ${JSON.stringify(state.event_view_status)}`)
+      for (let eventIdentifier of Object.keys(state.event_view_status)){
+        state.event_view_status[eventIdentifier] = undefined
+        utils.timeStampedLog(name + `: clear_all_event_status: ${eventIdentifier}`)
+      }
+    } catch(error){
+      utils.timeStampedLog(name + `: clear_all_event_status : ${err} `)
+    }
   },
   //
   clear_bus_events() {

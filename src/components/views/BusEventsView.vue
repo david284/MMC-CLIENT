@@ -305,6 +305,7 @@ const clickClearAllBusEvents = () => {
     color: 'primary',
     actions: [
       { label: 'YES', color: 'white', handler: async () => {
+          store.methods.clear_all_event_status()
           store.methods.clear_bus_events()
         }
       },

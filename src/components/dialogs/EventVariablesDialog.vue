@@ -316,7 +316,7 @@ const clickClose = async () => {
       )
 
       await utils.sleep(250)
-      EventFunctions.requestAllNodeEvents(props.nodeNumber)
+      EventFunctions.requestAllNodeEvents(store, props.nodeNumber)
     } catch (err){
       utils.timeStampedLog(name + ': clickClose ' + err)
     }
