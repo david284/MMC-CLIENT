@@ -77,13 +77,17 @@
       </q-banner>
 
       <q-card style="max-height: 85vh" class="scroll no-margin q-py-none">
+        <!-- screenshots taken from INFORMATION_export_2026-03-02.ods export -->
         <q-card-section>
           <div class="text-subtitle2">
             The import will accept most spreadsheet types, such as xls, xlsx & ods, but NOT csv
-            (which strictly isn't a spreadsheet format anyway)
+            (which strictly isn't a spreadsheet format anyway).
           </div>
           <div class="text-subtitle2">
-            The information for long events is expected to be on a sheet named 'Long_Events'
+            Note the 'eventColour' column is optional for both long & short events, and defaults to black.
+          </div>
+          <div class="text-subtitle2">
+            The information for long events is expected to be on a sheet named 'Long_Events'.
           </div>
           <div>
             <q-img
@@ -94,7 +98,7 @@
           </div>
           <br>
           <div class="text-subtitle2">
-            The information for short events is expected to be on a sheet named 'Short_Events', and doesn't need the 'EventNodeNumber' column
+            The information for short events is expected to be on a sheet named 'Short_Events', and doesn't need the 'EventNodeNumber' column.
           </div>
           <div>
             <q-img
@@ -106,7 +110,8 @@
           <br>
           <div class="text-subtitle2">
             The node information is expected to be on a sheet named 'Nodes'.<br>
-            'moduleName' is optional, and will be updated when the node connects anyway, but useful if the node isn't connected.
+            The 'nodeColour' column is optional, and will default to black.<br>
+            The 'moduleName' column is optional, and will be updated when the node connects anyway, but useful if the node isn't connected.
           </div>
           <div>
             <q-img
