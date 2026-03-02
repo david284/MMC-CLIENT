@@ -84,7 +84,7 @@
             (which strictly isn't a spreadsheet format anyway).
           </div>
           <div class="text-subtitle2">
-            Note the 'eventColour' column is optional for both long & short events, and defaults to black.
+            Note the 'eventColour' column is optional for both long & short events, and defaults to black (see list at bottom).
           </div>
           <div class="text-subtitle2">
             The information for long events is expected to be on a sheet named 'Long_Events'.
@@ -141,6 +141,16 @@
           </div>
           <div class="text-subtitle2">
             Additional columns with different headers are ignored, as are other sheets with different names.
+          </div>
+          <div class="text-subtitle2">
+            The colours selectable for events & nodes are added as a page to exports, and also shown below
+          </div>
+          <div>
+            <q-img
+              src="~/assets/selectable_colours.png"
+              spinner-color="white"
+              style="width: 100px"
+            />
           </div>
         </q-card-section>
       </q-card>
