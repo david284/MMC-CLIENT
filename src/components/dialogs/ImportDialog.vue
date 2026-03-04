@@ -2,7 +2,7 @@
   <q-dialog v-model='model' persistent>
     <q-card style="min-width: 800px">
 
-      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
+      <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense q-py-none">
         <div class="text-h6">
           Import
         </div>
@@ -11,14 +11,15 @@
         </template>
       </q-banner>
 
+      <q-card style="max-height: 75vh" class="scroll no-margin q-py-none-xs">
 
-        <q-card-section>
-          <div class="text-h6">
+        <q-card-section class="dense q-py-none">
+          <div class="text-body1">
             This allows the import of names, groups & modules for Events & Nodes from external files
           </div>
-          <div class="text-h6">Node variables and events are not imported, please use node restore for that</div>
-          <div class="text-h6">The data imported is dependant on the file type below</div>
-          <div class="text-h6">Click the info button by each file type for more details</div>
+          <div class="text-body1">Node variables and events are not imported, please use node restore for that</div>
+          <div class="text-body1">The data imported is dependant on the file type below</div>
+          <div class="text-body1">Click the info button by each file type for more details</div>
         </q-card-section>
 
         <q-card-section class="dense no-padding no-margin">
@@ -31,38 +32,45 @@
         </q-card-section>
 
         <q-file
-            v-model="importFile"
-            label="Pick one file"
-            filled
-            style="max-width: 400px"
-          />
-          <q-card-section>
-            <div class="text-subtitle2">
-              By default, if there is any existing data for an element being imported, this is retained, and the imported data for that element is ignored
-            </div>
-            <div class="text-subtitle2">
-              However, selecting "overwrite" will result in the import being used instead
-            </div>
-          </q-card-section>
+          dense
+          v-model="importFile"
+          label="Pick one file"
+          filled
+          style="max-width: 400px"
+        />
+        <q-card-section class="dense q-py-none">
+          <div class="text-subtitle2">
+            By default, if there is any existing data for an element being imported, this is retained, and the imported data for that element is ignored
+          </div>
+          <div class="text-subtitle2">
+            However, selecting "overwrite" will result in the import being used instead
+          </div>
+        </q-card-section>
 
-          <q-card-section class="dense no-padding no-margin">
-            <q-radio v-model="mode" val="retain" label="Retain any existing data" />
-          </q-card-section>
-          <q-card-section class="dense no-padding no-margin">
-            <q-radio v-model="mode" val="overwrite" label="Overwrite existing data" />
-          </q-card-section>
+        <q-card-section class="dense no-padding no-margin">
+          <q-radio v-model="mode" val="retain" label="Retain any existing data" />
+        </q-card-section>
+        <q-card-section class="dense no-padding no-margin">
+          <q-radio v-model="mode" val="overwrite" label="Overwrite existing data" />
+        </q-card-section>
 
-          <q-card-section>
+        <q-card-actions align="right" class="text-primary q-py-none no-margin">
+          <!-- // Only close top dialog - this gives time for underlying dialogs to update -->
+          <q-btn color="positive" label="IMPORT"
+            :disabled="!importFile"   @click="clickImport()" />
+        </q-card-actions>
 
-          </q-card-section>
+        <q-card-section>
+          import log
+          <div v-for="item in store.state.import_log" :key="item">
+            {{ item }}
+          </div>
+        </q-card-section>
+      </q-card>
 
-          <q-card-actions align="right" class="text-primary">
-            <!-- // Only close top dialog - this gives time for underlying dialogs to update -->
-            <q-btn color="positive" label="IMPORT" v-close-popup
-              :disabled="!importFile"   @click="clickImport()" />
-          </q-card-actions>
 
     </q-card>
+
   </q-dialog>
 
   <q-dialog v-model='showSheetInfo'>
@@ -193,6 +201,7 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import {importFCU} from "components/functions/ImportFunctions.js"
 import {importSPREADSHEET} from "components/functions/ImportFunctions.js"
+import * as ImportFunctions from  "components/functions/ImportFunctions.js"
 import {sleep} from "components/functions/utils.js"
 
 const $q = useQuasar()
@@ -224,6 +233,7 @@ watch(model, () => {
     importType.value = "SPREADSHEET"
     showFCUInfo.value = false
     showSheetInfo.value = false
+    store.state.import_log = []
   }
 })
 
@@ -248,6 +258,7 @@ const clickFCUInfo = () => {
 
 const clickImport = () => {
   console.log(name + `: clickImport ` + importFile.value.name)
+  store.state.import_log = []
   var jsonResult = null
   let reader = new FileReader();
   try{
@@ -259,6 +270,7 @@ const clickImport = () => {
       }
     }
     else if (importType.value == "SPREADSHEET"){
+      ImportFunctions.write_import_log(store, importFile.value.name )
       reader.readAsArrayBuffer(importFile.value)
       reader.onload = function() {
         importSPREADSHEET(reader.result, store, mode.value)
@@ -268,7 +280,6 @@ const clickImport = () => {
   } catch(err){
     console.log(name + `: clickImport: ` + err)
     store.eventBus.emit('GENERAL_MESSAGE_EVENT', "import " + importFile.value.name + " failed", err, 'warning', 0)
-
   }
 }
 

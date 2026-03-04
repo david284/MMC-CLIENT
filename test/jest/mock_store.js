@@ -4,6 +4,7 @@
 //
 
 export var state = {
+  import_log: [],
   "layout":{
     "eventDetails":{},
     "nodeDetails":{}

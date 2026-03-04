@@ -1,10 +1,17 @@
 "use strict";
-const name = "ImportFunctions"
+const logPrefix = "ImportFunctions"
 const convert = require('xml-js');
 const XLSX = require('xlsx');
 
 import {decToHex} from "components/functions/utils.js"
 import * as utils from "components/functions/utils.js"
+
+//
+//
+export function write_import_log(store, data){
+  store.state.import_log.push(data)
+  utils.timeStampedLog(logPrefix + `: ${data}` )
+}
 
 //
 //
@@ -15,11 +22,11 @@ export function importFCU(file, store, modeValue) {
   try{
     fcuConfig = convert.xml2js(file, { compact: true })
   } catch (err){
-    console.log(name + ': ImportFCU: convert.xml2js: ' + err )
+    utils.timeStampedLog(logPrefix + ': ImportFCU: convert.xml2js: ' + err )
     store.eventBus.emit('GENERAL_MESSAGE_EVENT', "FCU import failed - check file is valid XML", err, 'warning', 0)
     throw "convert.xml2js: " + err;
   }
-  //console.log(name + `: ImportFCU: ${JSON.stringify(fcuConfig)}` )
+  //utils.timeStampedLog(logPrefix + `: ImportFCU: ${JSON.stringify(fcuConfig)}` )
   //
   // import nodes
   // ignore CAN_SW nodes
@@ -27,19 +34,19 @@ export function importFCU(file, store, modeValue) {
     if (Array.isArray(fcuConfig.MergModuleDataSet.userNodes)) {
       fcuConfig.MergModuleDataSet.userNodes.forEach( node => {
         if (node.moduleName._text != "CAN_SW"){
-          addNodeName(store, parseInt(node.nodeNum._text), node.nodeName._text, modeValue)
-          addNodeModulename(store, parseInt(node.nodeNum._text), node.moduleName._text, modeValue)
+          importNodeName(store, parseInt(node.nodeNum._text), node.nodeName._text, modeValue)
+          importModulename(store, parseInt(node.nodeNum._text), node.moduleName._text, modeValue)
         }
       })
     } else{
       let node = fcuConfig.MergModuleDataSet.userNodes
       if (node.moduleName._text != "CAN_SW"){
-        addNodeName(store, parseInt(node.nodeNum._text), node.nodeName._text, modeValue)
-        addNodeModulename(store, parseInt(node.nodeNum._text), node.moduleName._text, modeValue)
+        importNodeName(store, parseInt(node.nodeNum._text), node.nodeName._text, modeValue)
+        importModulename(store, parseInt(node.nodeNum._text), node.moduleName._text, modeValue)
       }
     }
   } catch (err) {
-    console.log(name + ': ImportFCU: userNodes ' + err )
+    utils.timeStampedLog(logPrefix + ': ImportFCU: userNodes ' + err )
   }
   //
   // import events
@@ -48,22 +55,22 @@ export function importFCU(file, store, modeValue) {
     if (Array.isArray(fcuConfig.MergModuleDataSet.userEvents)) {
       fcuConfig.MergModuleDataSet.userEvents.forEach( event => {
         if (event.eventValue._text !=0){
-          addEventName(store, event.eventNode._text, event.eventValue._text, event.eventName._text, modeValue)
+          importEventName(store, event.eventNode._text, event.eventValue._text, event.eventName._text, modeValue)
         }
       })
     } else{
       let event = fcuConfig.MergModuleDataSet.userEvents
-      addEventName(store, event.eventNode._text, event.eventValue._text, event.eventName._text, modeValue)
+      importEventName(store, event.eventNode._text, event.eventValue._text, event.eventName._text, modeValue)
     }
   } catch (err){
-    console.log(name + ': ImportFCU: userEvents ' + err )
+    utils.timeStampedLog(logPrefix + ': ImportFCU: userEvents ' + err )
   }
 };
 
 //
 //
 export function importSPREADSHEET(file, store, modeValue) {
-  console.log(name + ': importSPREADSHEET: file size ' + file.byteLength)
+  write_import_log(store, 'importSPREADSHEET: file size ' + file.byteLength)
   let importedEvents = {}
   let importedNodes = {}
   let importedChannels = {}
@@ -72,69 +79,70 @@ export function importSPREADSHEET(file, store, modeValue) {
     const workbook = XLSX.read(file,{'type':'binary'});
     if (workbook.Workbook != undefined){
       for (let i =0; i< workbook.SheetNames.length; i++){
-//        console.log (name + "importSPREADSHEET: SheetName: " + workbook.SheetNames[i])
         //
         if (workbook.SheetNames[i].toUpperCase() == "SHORT_EVENTS"){
           importedEvents = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
-          console.log (name + "importSPREADSHEET: workbook number of Short Events imported: " + importedEvents.length)
+          utils.timeStampedLog(logPrefix + "importSPREADSHEET: workbook number of Short Events imported: " + importedEvents.length)
           for ( let j=0; j < importedEvents.length; j++) {
             if (importedEvents[j].eventNumber != undefined){
-              console.log (name + `importSPREADSHEET: workbook events:
+              utils.timeStampedLog(logPrefix + `importSPREADSHEET: workbook events:
+                ${importedEvents[j].eventNumber}
                 ${importedEvents[j].eventName}
-                ${importedEvents[j].eventNumber}`)
+                ${importedEvents[j].eventGroup}
+                ${importedEvents[j].eventColour}`)
             }
-            addEventName(store, 0, importedEvents[j].eventNumber, importedEvents[j].eventName, modeValue)
-            addEventGroup(store, 0, importedEvents[j].eventNumber, importedEvents[j].eventGroup, modeValue)
-            addEventColour(store, 0, importedEvents[j].eventNumber, importedEvents[j].eventColour, modeValue)
+            importEventName(store, 0, importedEvents[j].eventNumber, importedEvents[j].eventName, modeValue)
+            importEventGroup(store, 0, importedEvents[j].eventNumber, importedEvents[j].eventGroup, modeValue)
+            importEventColour(store, 0, importedEvents[j].eventNumber, importedEvents[j].eventColour, modeValue)
           }
         }
         //
         if (workbook.SheetNames[i].toUpperCase() == "LONG_EVENTS"){
           importedEvents = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
-          console.log (name + "importSPREADSHEET: workbook number of Long Events imported: " + importedEvents.length)
+          utils.timeStampedLog(logPrefix + "importSPREADSHEET: workbook number of Long Events imported: " + importedEvents.length)
           for ( let j=0; j < importedEvents.length; j++) {
             if (importedEvents[j].eventNumber != undefined){
-              console.log (name + `importSPREADSHEET: workbook events:
+              utils.timeStampedLog(logPrefix + `importSPREADSHEET: workbook events:
                 ${importedEvents[j].eventName}
                 ${importedEvents[j].eventNodeNumber}:${importedEvents[j].eventNumber}`)
             }
-            addEventName(store, importedEvents[j].eventNodeNumber, importedEvents[j].eventNumber, importedEvents[j].eventName, modeValue)
-            addEventGroup(store, importedEvents[j].eventNodeNumber, importedEvents[j].eventNumber, importedEvents[j].eventGroup, modeValue)
-            addEventColour(store, importedEvents[j].eventNodeNumber, importedEvents[j].eventNumber, importedEvents[j].eventColour, modeValue)
+            importEventName(store, importedEvents[j].eventNodeNumber, importedEvents[j].eventNumber, importedEvents[j].eventName, modeValue)
+            importEventGroup(store, importedEvents[j].eventNodeNumber, importedEvents[j].eventNumber, importedEvents[j].eventGroup, modeValue)
+            importEventColour(store, importedEvents[j].eventNodeNumber, importedEvents[j].eventNumber, importedEvents[j].eventColour, modeValue)
           }
         }
         //
         if (workbook.SheetNames[i].toUpperCase() == "NODES"){
           importedNodes = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
-          console.log (name + "importSPREADSHEET: workbook number of Nodes imported: " + importedNodes.length)
+          utils.timeStampedLog(logPrefix + "importSPREADSHEET: workbook number of Nodes imported: " + importedNodes.length)
           for ( let j=0; j < importedNodes.length; j++) {
             if(importedNodes[j].nodeNumber != undefined){
-              console.log (name + `importSPREADSHEET: workbook Nodes: ${importedNodes[j].nodeName} ${importedNodes[j].nodeNumber}`)
-              addNodeName(store, importedNodes[j].nodeNumber, importedNodes[j].nodeName, modeValue)
-              addNodeGroup(store, importedNodes[j].nodeNumber, importedNodes[j].nodeGroup, modeValue)
-              addNodeColour(store, importedNodes[j].nodeNumber, importedNodes[j].nodeColour, modeValue)
-              addNodeModulename(store, importedNodes[j].nodeNumber, importedNodes[j].moduleName, modeValue)
+              utils.timeStampedLog(logPrefix + `importSPREADSHEET: workbook Nodes: ${importedNodes[j].nodeName} ${importedNodes[j].nodeNumber}`)
+              importNodeName(store, importedNodes[j].nodeNumber, importedNodes[j].nodeName, modeValue)
+              importNodeGroup(store, importedNodes[j].nodeNumber, importedNodes[j].nodeGroup, modeValue)
+              importNodeColour(store, importedNodes[j].nodeNumber, importedNodes[j].nodeColour, modeValue)
+              importModulename(store, importedNodes[j].nodeNumber, importedNodes[j].moduleName, modeValue)
             }
           }
         }
         //
         if (workbook.SheetNames[i].toUpperCase() == "CHANNELS"){
           importedChannels = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
-          console.log (name + "importSPREADSHEET: workbook number of Channels imported: " + importedChannels.length)
+          utils.timeStampedLog(logPrefix + "importSPREADSHEET: workbook number of Channels imported: " + importedChannels.length)
           for ( let j=0; j < importedChannels.length; j++) {
             if(importedChannels[j].channelNumber != undefined){
-              console.log (name + `importSPREADSHEET: workbook Channels: channel ${importedChannels[j].channelNumber} ${importedChannels[j].channelName}`)
-              addNodeChannelName(store, importedChannels[j].nodeNumber, importedChannels[j].channelNumber, importedChannels[j].channelName, modeValue)
+              utils.timeStampedLog(logPrefix + `importSPREADSHEET: workbook Channels: channel ${importedChannels[j].channelNumber} ${importedChannels[j].channelName}`)
+              importChannelName(store, importedChannels[j].nodeNumber, importedChannels[j].channelNumber, importedChannels[j].channelName, modeValue)
             }
           }
         }
         //
         if (workbook.SheetNames[i].toUpperCase() == "NAMES"){
           importedUserNames = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
-          console.log (name + "importSPREADSHEET: workbook number of userNames imported: " + importedUserNames.length)
+          utils.timeStampedLog(logPrefix + "importSPREADSHEET: workbook number of userNames imported: " + importedUserNames.length)
           for ( let j=0; j < importedUserNames.length; j++) {
             //utils.timeStampedLog(`importSPREADSHEET: NAMES: ${JSON.stringify(importedUserNames[j], null, " ")}`)
-            addNodeUserName(
+            importUserTokenName(
               store,
               importedUserNames[j].nodeNumber,
               importedUserNames[j].token,
@@ -149,7 +157,7 @@ export function importSPREADSHEET(file, store, modeValue) {
     }
 
   } catch (err){
-    console.log(name + ': importSPREADSHEET ' + err )
+    utils.timeStampedLog(logPrefix + ': importSPREADSHEET ' + err )
     store.eventBus.emit('GENERAL_MESSAGE_EVENT', "Spreadsheet import failed - check file is valid", err, 'warning', 0)
     throw err;
   }
@@ -157,27 +165,30 @@ export function importSPREADSHEET(file, store, modeValue) {
 
 //
 //
-function addEventName(store, eventNodeNumber, eventNumber, eventName, modeValue){
+function importEventName(store, eventNodeNumber, eventNumber, eventName, modeValue){
   if (eventNumber > 0){
     let eventIdentifier = decToHex(eventNodeNumber,4) + decToHex(eventNumber,4)
     if (store.state.layout.eventDetails[eventIdentifier] == undefined){
       // event doesn't exist
       store.setters.event_name(eventIdentifier, eventName)
-      console.log("new event: " + eventIdentifier + ' addEventName: ' + eventName)
+      write_import_log(store,`importEventName: new event: ${eventIdentifier} eventName: ${eventName}`)
     } else if ((store.state.layout.eventDetails[eventIdentifier].name == undefined) ||
       (store.state.layout.eventDetails[eventIdentifier].name.length < 1)){
-      // event name doesn't exist
-      store.setters.event_name(eventIdentifier, eventName)
-      console.log('Event: ' + eventIdentifier + ": addEventName: " + eventName + ' updated')
+      // event name doesn't exist - but only update if import has value
+      if ( (eventName != undefined)  && (eventName.length > 0) ){
+        store.setters.event_name(eventIdentifier, eventName)
+        write_import_log(store,`importEventName: event updated: ${eventIdentifier} eventName: ${eventName}`)
+      }
     } else  if (store.state.layout.eventDetails[eventIdentifier].name == eventName) {
-      console.log('Event: ' + eventIdentifier + ": addEventName: " + eventName + ' match')
+      write_import_log(store,`importEventName: event match: ${eventIdentifier} eventName: ${eventName}`)
       // do nothing
     } else {
       if (modeValue == "overwrite"){
         store.setters.event_name(eventIdentifier, eventName)
-        console.log('Event ' + eventIdentifier + ": addEventName: " + eventName + " overwrite")
+        write_import_log(store,`importEventName: event overwrite: ${eventIdentifier} eventName: ${eventName}`)
       } else {
-        console.log('Event ' + eventIdentifier + ": addEventName: " + eventName + " retain")
+        write_import_log(store,`importEventName: event retain: ${eventIdentifier}
+          existing eventName: ${store.state.layout.eventDetails[eventIdentifier].name}`)
       }
     }
   }
@@ -185,27 +196,30 @@ function addEventName(store, eventNodeNumber, eventNumber, eventName, modeValue)
 
 //
 //
-function addEventGroup(store, eventNodeNumber, eventNumber, eventGroup, modeValue){
+function importEventGroup(store, eventNodeNumber, eventNumber, eventGroup, modeValue){
   if (eventNumber > 0){
     let eventIdentifier = decToHex(eventNodeNumber,4) + decToHex(eventNumber,4)
     if (store.state.layout.eventDetails[eventIdentifier] == undefined){
       // event doesn't exist
       store.setters.event_group(eventIdentifier, eventGroup)
-      console.log("new event: " + eventIdentifier + ' addEventGroup: ' + eventGroup)
+      write_import_log(store,`importEventGroup: new event: ${eventIdentifier} eventGroup: ${eventGroup}`)
     } else if ((store.state.layout.eventDetails[eventIdentifier].group == undefined) ||
       (store.state.layout.eventDetails[eventIdentifier].group.length < 1)){
-      // event name doesn't exist
-      store.setters.event_group(eventIdentifier, eventGroup)
-      console.log('Event: ' + eventIdentifier + ": addEventGroup: " + eventGroup + ' updated')
+      // event group doesn't exist - but only update if import has value
+      if ( (eventGroup != undefined)  && (eventGroup.length > 0) ){
+        store.setters.event_group(eventIdentifier, eventGroup)
+        write_import_log(store,`importEventGroup: event updated: ${eventIdentifier} eventGroup: ${eventGroup}`)
+      }
     } else  if (store.state.layout.eventDetails[eventIdentifier].group == eventGroup) {
-      console.log('Event: ' + eventIdentifier + ": addEventGroup: " + eventGroup + ' match')
+      write_import_log(store,`importEventGroup: event match: ${eventIdentifier} eventGroup: ${eventGroup}`)
       // do nothing
     } else {
       if (modeValue == "overwrite"){
         store.setters.event_group(eventIdentifier, eventGroup)
-        console.log('Event ' + eventIdentifier + ": addEventGroup: " + eventGroup + " overwrite")
+        write_import_log(store,`importEventGroup: event overwrite: ${eventIdentifier} eventGroup: ${eventGroup}`)
       } else {
-        console.log('Event ' + eventIdentifier + ": addEventGroup: " + eventGroup + " retain")
+        write_import_log(store,`importEventGroup: event retain: ${eventIdentifier}
+          existing eventGroup: ${store.state.layout.eventDetails[eventIdentifier].group}`)
       }
     }
   }
@@ -213,27 +227,30 @@ function addEventGroup(store, eventNodeNumber, eventNumber, eventGroup, modeValu
 
 //
 //
-function addEventColour(store, eventNodeNumber, eventNumber, eventColour, modeValue){
+function importEventColour(store, eventNodeNumber, eventNumber, eventColour, modeValue){
   if (eventNumber > 0){
     let eventIdentifier = decToHex(eventNodeNumber,4) + decToHex(eventNumber,4)
     if (store.state.layout.eventDetails[eventIdentifier] == undefined){
       // event doesn't exist
       store.setters.event_colour(eventIdentifier, eventColour)
-      console.log("new event: " + eventIdentifier + ' addEventColour: ' + eventColour)
+      write_import_log(store,`importEventColour: new event: ${eventIdentifier} eventColour: ${eventColour}`)
     } else if ((store.state.layout.eventDetails[eventIdentifier].colour == undefined) ||
       (store.state.layout.eventDetails[eventIdentifier].colour.length < 1)){
-      // event colour doesn't exist
-      store.setters.event_colour(eventIdentifier, eventColour)
-      console.log('Event: ' + eventIdentifier + ": addEventColour: " + eventColour + ' updated')
+      // event colour doesn't exist - but only update if import has value
+      if ( (eventColour != undefined)  && (eventColour.length > 0) ){
+        store.setters.event_colour(eventIdentifier, eventColour)
+        write_import_log(store,`importEventColour: event updated: ${eventIdentifier} eventColour: ${eventColour}`)
+      }
     } else  if (store.state.layout.eventDetails[eventIdentifier].colour == eventColour) {
-      console.log('Event: ' + eventIdentifier + ": addEventColour: " + eventColour + ' match')
+      write_import_log(store,`importEventColour: event match: ${eventIdentifier} eventColour: ${eventColour}`)
       // do nothing
     } else {
       if (modeValue == "overwrite"){
         store.setters.event_colour(eventIdentifier, eventColour)
-        console.log('Event ' + eventIdentifier + ": addEventColour: " + eventColour + " overwrite")
+        write_import_log(store,`importEventColour: event overwrite: ${eventIdentifier} eventColour: ${eventColour}`)
       } else {
-        console.log('Event ' + eventIdentifier + ": addEventColour: " + eventColour + " retain")
+        write_import_log(store,`importEventColour: event retain: ${eventIdentifier}
+          existing eventColour: ${store.state.layout.eventDetails[eventIdentifier].colour}`)
       }
     }
   }
@@ -241,28 +258,31 @@ function addEventColour(store, eventNodeNumber, eventNumber, eventColour, modeVa
 
 //
 //
-function addNodeName(store, nodeNumber, nodeName, modeValue){
+function importNodeName(store, nodeNumber, nodeName, modeValue){
   // not interested in node 0, so skip
   if (nodeNumber > 0){
     if (store.state.layout.nodeDetails[nodeNumber] == undefined){
       // node doesn't exist, so create it with name
       store.setters.node_name(nodeNumber, nodeName)
-      console.log("new node: " + nodeNumber + ": NodeName: " + nodeName)
+      write_import_log(store,`importNodeName: new node: ${nodeNumber} nodeName: ${nodeName}`)
     } else if ((store.state.layout.nodeDetails[nodeNumber].name == undefined ) ||
       (store.state.layout.nodeDetails[nodeNumber].name.length < 1 )){
-      // node not named, so name it
-      store.setters.node_name(nodeNumber, nodeName)
-      console.log('node ' + nodeNumber + ": addNodeName: " + nodeName + ' updated')
+      // node not named, so name it - but only update if import has value
+      if ( (nodeName != undefined)  && (nodeName.length > 0) ){
+        store.setters.node_name(nodeNumber, nodeName)
+        write_import_log(store,`importNodeName: node updated: ${nodeNumber} nodeName: ${nodeName}`)
+      }
     } else if (store.state.layout.nodeDetails[nodeNumber].name == nodeName) {
-      console.log('node ' + nodeNumber + ": addNodeName: " + nodeName + ' match')
+      write_import_log(store,`importNodeName: node match: ${nodeNumber} nodeName: ${nodeName}`)
       // do nothing
     } else {
       // stored name doesn't match import name
       if (modeValue == "overwrite"){
-        console.log('node ' + nodeNumber + ": addNodeName: " + nodeName + " no match - overwrite")
         store.setters.node_name(nodeNumber, nodeName)
+        write_import_log(store,`importNodeName: node overwrite: ${nodeNumber} nodeName: ${nodeName}`)
       } else {
-        console.log('node ' + nodeNumber + ": addNodeName: " + nodeName + " no match - retain")
+        write_import_log(store,`importNodeName: node retain: ${nodeNumber}
+          existing nodeName: ${store.state.layout.nodeDetails[nodeNumber].name}`)
       }
     }
   }
@@ -270,28 +290,32 @@ function addNodeName(store, nodeNumber, nodeName, modeValue){
 
 //
 //
-function addNodeGroup(store, nodeNumber, nodeGroup, modeValue){
+function importNodeGroup(store, nodeNumber, nodeGroup, modeValue){
   // not interested in node 0, so skip
   if (nodeNumber > 0){
     if (store.state.layout.nodeDetails[nodeNumber] == undefined){
       // node doesn't exist, so create it with group
       store.setters.node_group(nodeNumber, nodeGroup)
-      console.log("new node: " + nodeNumber + ": nodeGroup: " + nodeGroup)
+      write_import_log(store,`importNodeGroup: new node: ${nodeNumber} nodeGroup: ${nodeGroup}`)
     } else if ((store.state.layout.nodeDetails[nodeNumber].group == undefined ) ||
       (store.state.layout.nodeDetails[nodeNumber].group.length < 1 )){
-      // node not named, so name it
-      store.setters.node_group(nodeNumber, nodeGroup)
-      console.log('node ' + nodeNumber + ": nodeGroup: " + nodeGroup + ' updated')
+      // no nodeGroup - but only update if import has value
+      if ( (nodeGroup != undefined)  && (nodeGroup.length > 0) ){
+        store.setters.node_group(nodeNumber, nodeGroup)
+        write_import_log(store,`importNodeGroup: node updated: ${nodeNumber} nodeGroup: ${nodeGroup}`)
+      }
     } else if (store.state.layout.nodeDetails[nodeNumber].group == nodeGroup) {
-      console.log('node ' + nodeNumber + ": nodeGroup: " + nodeGroup + ' match')
+      utils.timeStampedLog('node ' + nodeNumber + ": nodeGroup: " + nodeGroup + ' match')
+      write_import_log(store,`importNodeGroup: node match: ${nodeNumber} nodeGroup: ${nodeGroup}`)
       // do nothing
     } else {
       // stored name doesn't match import name
       if (modeValue == "overwrite"){
-        console.log('node ' + nodeNumber + ": nodeGroup: " + nodeGroup + " no match - overwrite")
+        write_import_log(store,`importNodeGroup: node overwrite: ${nodeNumber} nodeGroup: ${nodeGroup}`)
         store.setters.node_group(nodeNumber, nodeGroup)
       } else {
-        console.log('node ' + nodeNumber + ": nodeGroup: " + nodeGroup + " no match - retain")
+        write_import_log(store,`importNodeGroup: node retain: ${nodeNumber}
+          existing nodeGroup: ${store.state.layout.nodeDetails[nodeNumber].group}`)
       }
     }
   }
@@ -299,28 +323,31 @@ function addNodeGroup(store, nodeNumber, nodeGroup, modeValue){
 
 //
 //
-function addNodeColour(store, nodeNumber, nodeColour, modeValue){
+function importNodeColour(store, nodeNumber, nodeColour, modeValue){
   // not interested in node 0, so skip
   if (nodeNumber > 0){
     if (store.state.layout.nodeDetails[nodeNumber] == undefined){
       // node doesn't exist, so create it with colour
       store.setters.node_colour(nodeNumber, nodeColour)
-      console.log("new node: " + nodeNumber + ": nodeColour: " + nodeColour)
+      write_import_log(store,`importNodeColour: new node: ${nodeNumber} nodeColour: ${nodeColour}`)
     } else if ((store.state.layout.nodeDetails[nodeNumber].colour == undefined ) ||
       (store.state.layout.nodeDetails[nodeNumber].colour.length < 1 )){
-      // node has no colour, so add it
-      store.setters.node_colour(nodeNumber, nodeColour)
-      console.log('node ' + nodeNumber + ": nodeColour: " + nodeColour + ' updated')
+      // no nodeColour - but only update if import has value
+      if ( (nodeColour != undefined)  && (nodeColour.length > 0) ){
+        store.setters.node_colour(nodeNumber, nodeColour)
+        write_import_log(store,`importNodeColour: node updated: ${nodeNumber} nodeColour: ${nodeColour}`)
+      }
     } else if (store.state.layout.nodeDetails[nodeNumber].colour == nodeColour) {
-      console.log('node ' + nodeNumber + ": nodeColour: " + nodeColour + ' match')
+      write_import_log(store,`importNodeColour: node match: ${nodeNumber} nodeColour: ${nodeColour}`)
       // do nothing
     } else {
       // stored colour doesn't match import colour
       if (modeValue == "overwrite"){
-        console.log('node ' + nodeNumber + ": nodeColour: " + nodeColour + " no match - overwrite")
+        write_import_log(store,`importNodeColour: node overwrite: ${nodeNumber} nodeColour: ${nodeColour}`)
         store.setters.node_colour(nodeNumber, nodeColour)
       } else {
-        console.log('node ' + nodeNumber + ": nodeColour: " + nodeColour + " no match - retain")
+        write_import_log(store,`importNodeColour: node retain: ${nodeNumber}
+          existing nodeColour: ${store.state.layout.nodeDetails[nodeNumber].colour}`)
       }
     }
   }
@@ -328,27 +355,31 @@ function addNodeColour(store, nodeNumber, nodeColour, modeValue){
 
 //
 //
-function addNodeModulename(store, nodeNumber, moduleName, modeValue){
+function importModulename(store, nodeNumber, moduleName, modeValue){
   // not interested in node 0, so skip
   if (nodeNumber > 0){
     if (store.state.layout.nodeDetails[nodeNumber] == undefined){
       // node doesn't exist, so create it with moduleName
       store.setters.node_moduleName(nodeNumber, moduleName)
-      console.log("new node: " + nodeNumber + ": moduleName: " + moduleName)
+      write_import_log(store,`importModulename: new node: ${nodeNumber} moduleName: ${moduleName}`)
     } else if ((store.state.layout.nodeDetails[nodeNumber].moduleName == undefined ) ||
       (store.state.layout.nodeDetails[nodeNumber].moduleName.length < 1 )){
-      store.setters.node_moduleName(nodeNumber, moduleName)
-      console.log('node ' + nodeNumber + ": moduleName: " + moduleName + ' updated')
+      // no moduleName - but only update if import has value
+      if ( (moduleName != undefined)  && (moduleName.length > 0) ){
+        store.setters.node_moduleName(nodeNumber, moduleName)
+        write_import_log(store,`importModulename: node updated: ${nodeNumber} moduleName: ${moduleName}`)
+      }
     } else if (store.state.layout.nodeDetails[nodeNumber].moduleName == moduleName) {
-      console.log('node ' + nodeNumber + ": moduleName: " + moduleName + ' match')
+      write_import_log(store,`importModulename: node match: ${nodeNumber} moduleName: ${moduleName}`)
       // do nothing
     } else {
       // stored name doesn't match import name
       if (modeValue == "overwrite"){
-        console.log('node ' + nodeNumber + ": moduleName: " + moduleName + " no match - overwrite")
+        write_import_log(store,`importModulename: node overwrite: ${nodeNumber} moduleName: ${moduleName}`)
         store.setters.node_moduleName(nodeNumber, moduleName)
       } else {
-        console.log('node ' + nodeNumber + ": moduleName: " + moduleName + " no match - retain")
+        write_import_log(store,`importModulename: node retain: ${nodeNumber}
+          existing moduleName: ${store.state.layout.nodeDetails[nodeNumber].moduleName}`)
       }
     }
   }
@@ -356,53 +387,34 @@ function addNodeModulename(store, nodeNumber, moduleName, modeValue){
 
 //
 //
-function addNodeChannelNameOld(store, nodeNumber, channelNumber, channelName, modeValue){
-  let existingChannelName = null
-  try {
-    existingChannelName = store.state.layout.nodeDetails[nodeNumber].channels[channelNumber].channelName
-  } catch {}
-  if ((existingChannelName == null) || (existingChannelName.length == 0)){
-    console.log('node ' + nodeNumber + ": channelName: " + channelName + " ChannelName not found - updated")
-    store.setters.node_channel_name(nodeNumber, channelNumber, channelName)
-  } else if (existingChannelName == channelName){
-    console.log('node ' + nodeNumber + ": channelName: " + channelName + " ChannelName match - do nothing")
-  } else {
-    // stored channel name doesn't match import channel name
-    if (modeValue == "overwrite"){
-      console.log('node ' + nodeNumber + ": channelName: " + channelName + " no match - overwrite")
-      store.setters.node_channel_name(nodeNumber, channelNumber, channelName)
-    } else {
-      console.log('node ' + nodeNumber + ": channelName: " + channelName + " no match - retain")
-    }
-  }
-}
-
-//
-//
-export function addNodeChannelName(store, nodeNumber, channelNumber, channelName, modeValue){
+export function importChannelName(store, nodeNumber, channelNumber, channelName, modeValue){
   let existingChannelName = null
   try {
     existingChannelName= store.state.layout.nodeDetails[nodeNumber].tokens['channel'].userNames[channelNumber]
   } catch {}
   if ((existingChannelName == null) || (existingChannelName.length == 0)){
-    console.log('node ' + nodeNumber + ": channelName: " + channelName + " ChannelName not found - updated")
-    store.setters.node_token_name(nodeNumber, 'channel', channelNumber, channelName)
+    // no channelName - but only update if import has value
+    if ( (channelName != undefined)  && (channelName.length > 0) ){
+      write_import_log(store,`importChannelName: node ${nodeNumber} channelName updated: ${channelName}`)
+      store.setters.node_token_name(nodeNumber, 'channel', channelNumber, channelName)
+    }
   } else if (existingChannelName == channelName){
-    console.log('node ' + nodeNumber + ": channelName: " + channelName + " ChannelName match - do nothing")
+    write_import_log(store,`importChannelName: node ${nodeNumber} channelName match: ${channelName}`)
   } else {
     // stored channel name doesn't match import channel name
     if (modeValue == "overwrite"){
-      console.log('node ' + nodeNumber + ": channelName: " + channelName + " no match - overwrite")
+      write_import_log(store,`importChannelName: node ${nodeNumber} channelName overwrite: ${channelName}`)
       store.setters.node_token_name(nodeNumber, 'channel', channelNumber, channelName)
     } else {
-      console.log('node ' + nodeNumber + ": channelName: " + channelName + " no match - retain")
+      write_import_log(store,`importChannelName: node ${nodeNumber} channelName retain:
+        existing channelName ${existingChannelName}`)
     }
   }
 }
 
 //
 //
-export function addNodeUserName(store, nodeNumber, tokenName, tokenNumber, userName, modeValue){
+export function importUserTokenName(store, nodeNumber, tokenName, tokenNumber, userName, modeValue){
   if (userName != undefined){
     if (userName.length >0){
       utils.timeStampedLog(`addNodeUserName:
@@ -417,18 +429,22 @@ export function addNodeUserName(store, nodeNumber, tokenName, tokenNumber, userN
         existingUserName= store.state.layout.nodeDetails[nodeNumber].tokens[tokenName].userNames[tokenNumber]
       } catch {}
       if ((existingUserName == null) || (existingUserName.length == 0)){
-        console.log(`node: ${nodeNumber} token: ${tokenName}${tokenNumber} userName: ${userName} not found - updated`)
-        store.setters.node_token_name(nodeNumber, tokenName, tokenNumber, userName)
+        // no userName - but only update if import has value
+        if ( (userName != undefined)  && (userName.length > 0) ){
+          write_import_log(store,`importUserTokenName: node ${nodeNumber} updated: token: ${tokenName}${tokenNumber} userName: ${userName}`)
+          store.setters.node_token_name(nodeNumber, tokenName, tokenNumber, userName)
+        }
       } else if (existingUserName == userName){
-        console.log(`node: ${nodeNumber} token: ${tokenName}${tokenNumber} userName: ${userName} match - do nothing`)
+        write_import_log(store,`importUserTokenName: node ${nodeNumber} match: token: ${tokenName}${tokenNumber} userName: ${userName}`)
       } else {
-        //console.log(`node: ${nodeNumber} token: ${tokenName}${tokenNumber} existingUserName ${existingUserName} length ${existingUserName.length}`)
+        //utils.timeStampedLog(`node: ${nodeNumber} token: ${tokenName}${tokenNumber} existingUserName ${existingUserName} length ${existingUserName.length}`)
         // stored channel name doesn't match import channel name
         if (modeValue == "overwrite"){
-          console.log(`node: ${nodeNumber} token: ${tokenName}${tokenNumber} userName: ${userName} no match - overwrite`)
+          write_import_log(store,`importUserTokenName: node ${nodeNumber} overwrite: token: ${tokenName}${tokenNumber} userName: ${userName}`)
           store.setters.node_token_name(nodeNumber, tokenName, tokenNumber, userName)
         } else {
-          console.log(`node: ${nodeNumber} token: ${tokenName}${tokenNumber} userName: ${userName} no match - retain`)
+          write_import_log(store,`importUserTokenName: node ${nodeNumber} retain: token: ${tokenName}${tokenNumber}
+            existing userName: ${existingUserName}`)
         }
       }
 
