@@ -7,6 +7,7 @@ Version 0.21.0
   Fixed add event in Events View
   Added support for colours to import
   Updated info for spreadsheet import for colours
+  Added import log to import dialog
 
 Version 0.20.0
   Fixed delete unused events
