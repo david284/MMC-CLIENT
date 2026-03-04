@@ -10,7 +10,7 @@ import * as utils from "components/functions/utils.js"
 //
 export function write_import_log(store, data){
   store.state.import_log.push(data)
-  utils.timeStampedLog(logPrefix + `: ${data}` )
+  //utils.timeStampedLog(logPrefix + `: ${data}` )
 }
 
 //
@@ -19,6 +19,7 @@ export function importFCU(file, store, modeValue) {
   //
   //
   var fcuConfig
+  write_import_log(store, 'import FCU: file size ' + file.byteLength)
   try{
     fcuConfig = convert.xml2js(file, { compact: true })
   } catch (err){
@@ -31,6 +32,7 @@ export function importFCU(file, store, modeValue) {
   // import nodes
   // ignore CAN_SW nodes
   try {
+    write_import_log(store,`import NODES`)
     if (Array.isArray(fcuConfig.MergModuleDataSet.userNodes)) {
       fcuConfig.MergModuleDataSet.userNodes.forEach( node => {
         if (node.moduleName._text != "CAN_SW"){
@@ -52,6 +54,7 @@ export function importFCU(file, store, modeValue) {
   // import events
   let eventRows = []
   try {
+    write_import_log(store,`import EVENTS`)
     if (Array.isArray(fcuConfig.MergModuleDataSet.userEvents)) {
       fcuConfig.MergModuleDataSet.userEvents.forEach( event => {
         if (event.eventValue._text !=0){
@@ -70,7 +73,7 @@ export function importFCU(file, store, modeValue) {
 //
 //
 export function importSPREADSHEET(file, store, modeValue) {
-  write_import_log(store, 'importSPREADSHEET: file size ' + file.byteLength)
+  write_import_log(store, 'import SPREADSHEET: file size ' + file.byteLength)
   let importedEvents = {}
   let importedNodes = {}
   let importedChannels = {}
@@ -82,15 +85,9 @@ export function importSPREADSHEET(file, store, modeValue) {
         //
         if (workbook.SheetNames[i].toUpperCase() == "SHORT_EVENTS"){
           importedEvents = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
-          utils.timeStampedLog(logPrefix + "importSPREADSHEET: workbook number of Short Events imported: " + importedEvents.length)
+          write_import_log(store,`import SHORT_EVENTS`)
+          utils.timeStampedLog(logPrefix + ": import SPREADSHEET: workbook number of Short Events imported: " + importedEvents.length)
           for ( let j=0; j < importedEvents.length; j++) {
-            if (importedEvents[j].eventNumber != undefined){
-              utils.timeStampedLog(logPrefix + `importSPREADSHEET: workbook events:
-                ${importedEvents[j].eventNumber}
-                ${importedEvents[j].eventName}
-                ${importedEvents[j].eventGroup}
-                ${importedEvents[j].eventColour}`)
-            }
             importEventName(store, 0, importedEvents[j].eventNumber, importedEvents[j].eventName, modeValue)
             importEventGroup(store, 0, importedEvents[j].eventNumber, importedEvents[j].eventGroup, modeValue)
             importEventColour(store, 0, importedEvents[j].eventNumber, importedEvents[j].eventColour, modeValue)
@@ -99,13 +96,9 @@ export function importSPREADSHEET(file, store, modeValue) {
         //
         if (workbook.SheetNames[i].toUpperCase() == "LONG_EVENTS"){
           importedEvents = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
-          utils.timeStampedLog(logPrefix + "importSPREADSHEET: workbook number of Long Events imported: " + importedEvents.length)
+          write_import_log(store,`import LONG_EVENTS`)
+          utils.timeStampedLog(logPrefix + ": import SPREADSHEET: workbook number of Long Events imported: " + importedEvents.length)
           for ( let j=0; j < importedEvents.length; j++) {
-            if (importedEvents[j].eventNumber != undefined){
-              utils.timeStampedLog(logPrefix + `importSPREADSHEET: workbook events:
-                ${importedEvents[j].eventName}
-                ${importedEvents[j].eventNodeNumber}:${importedEvents[j].eventNumber}`)
-            }
             importEventName(store, importedEvents[j].eventNodeNumber, importedEvents[j].eventNumber, importedEvents[j].eventName, modeValue)
             importEventGroup(store, importedEvents[j].eventNodeNumber, importedEvents[j].eventNumber, importedEvents[j].eventGroup, modeValue)
             importEventColour(store, importedEvents[j].eventNodeNumber, importedEvents[j].eventNumber, importedEvents[j].eventColour, modeValue)
@@ -114,10 +107,10 @@ export function importSPREADSHEET(file, store, modeValue) {
         //
         if (workbook.SheetNames[i].toUpperCase() == "NODES"){
           importedNodes = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
-          utils.timeStampedLog(logPrefix + "importSPREADSHEET: workbook number of Nodes imported: " + importedNodes.length)
+          write_import_log(store,`import NODES`)
+          utils.timeStampedLog(logPrefix + ": import SPREADSHEET: workbook number of Nodes imported: " + importedNodes.length)
           for ( let j=0; j < importedNodes.length; j++) {
             if(importedNodes[j].nodeNumber != undefined){
-              utils.timeStampedLog(logPrefix + `importSPREADSHEET: workbook Nodes: ${importedNodes[j].nodeName} ${importedNodes[j].nodeNumber}`)
               importNodeName(store, importedNodes[j].nodeNumber, importedNodes[j].nodeName, modeValue)
               importNodeGroup(store, importedNodes[j].nodeNumber, importedNodes[j].nodeGroup, modeValue)
               importNodeColour(store, importedNodes[j].nodeNumber, importedNodes[j].nodeColour, modeValue)
@@ -128,10 +121,10 @@ export function importSPREADSHEET(file, store, modeValue) {
         //
         if (workbook.SheetNames[i].toUpperCase() == "CHANNELS"){
           importedChannels = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
-          utils.timeStampedLog(logPrefix + "importSPREADSHEET: workbook number of Channels imported: " + importedChannels.length)
+          write_import_log(store,`import CHANNELS`)
+          utils.timeStampedLog(logPrefix + ": import SPREADSHEET: workbook number of Channels imported: " + importedChannels.length)
           for ( let j=0; j < importedChannels.length; j++) {
             if(importedChannels[j].channelNumber != undefined){
-              utils.timeStampedLog(logPrefix + `importSPREADSHEET: workbook Channels: channel ${importedChannels[j].channelNumber} ${importedChannels[j].channelName}`)
               importChannelName(store, importedChannels[j].nodeNumber, importedChannels[j].channelNumber, importedChannels[j].channelName, modeValue)
             }
           }
@@ -139,9 +132,9 @@ export function importSPREADSHEET(file, store, modeValue) {
         //
         if (workbook.SheetNames[i].toUpperCase() == "NAMES"){
           importedUserNames = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]])
-          utils.timeStampedLog(logPrefix + "importSPREADSHEET: workbook number of userNames imported: " + importedUserNames.length)
+          write_import_log(store,`import NAMES`)
+          utils.timeStampedLog(logPrefix + ": import SPREADSHEET: workbook number of userNames imported: " + importedUserNames.length)
           for ( let j=0; j < importedUserNames.length; j++) {
-            //utils.timeStampedLog(`importSPREADSHEET: NAMES: ${JSON.stringify(importedUserNames[j], null, " ")}`)
             importUserTokenName(
               store,
               importedUserNames[j].nodeNumber,
@@ -157,7 +150,7 @@ export function importSPREADSHEET(file, store, modeValue) {
     }
 
   } catch (err){
-    utils.timeStampedLog(logPrefix + ': importSPREADSHEET ' + err )
+    utils.timeStampedLog(logPrefix + ': import SPREADSHEET ' + err )
     store.eventBus.emit('GENERAL_MESSAGE_EVENT', "Spreadsheet import failed - check file is valid", err, 'warning', 0)
     throw err;
   }
@@ -417,12 +410,6 @@ export function importChannelName(store, nodeNumber, channelNumber, channelName,
 export function importUserTokenName(store, nodeNumber, tokenName, tokenNumber, userName, modeValue){
   if (userName != undefined){
     if (userName.length >0){
-      utils.timeStampedLog(`addNodeUserName:
-        ${tokenName}
-        ${tokenNumber}
-        ${userName}
-        ${modeValue}`)
-
       let existingUserName = null
       try {
         // check if layout data has an existing name
