@@ -5,6 +5,7 @@ import { EventBus } from 'quasar'
 import {NodeParameterNames} from "src/definitions/Text_NodeParameterNames"
 import * as utils from "components/functions/utils.js"
 import { getNumberOfChannels } from "components/functions/NodeFunctions"
+import packageInfo from './../../package.json';
 
 
 const eventBus = new EventBus()
@@ -1352,6 +1353,11 @@ socket.on("SERVER_STATUS", (data) => {
 socket.on("VERSION", (data) => {
   utils.timeStampedLog(logPrefix + `: RECEIVED VERSION ` + JSON.stringify(data))
   state.version = data
+  if (state.version.App != packageInfo.version){
+    let message = "Server version does not match client version"
+    let caption = `server: ${state.version.App} client: ${packageInfo.version}`
+    eventBus.emit('GENERAL_MESSAGE_EVENT', message, caption, 'warning', 0)
+  }
 })
 
 export default {

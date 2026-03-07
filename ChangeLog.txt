@@ -8,6 +8,7 @@ Version 0.21.0
   Added support for colours to import
   Updated info for spreadsheet import for colours
   Added import log to import dialog
+  Added client & server version match check
 
 Version 0.20.0
   Fixed delete unused events
