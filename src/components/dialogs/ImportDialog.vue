@@ -61,7 +61,9 @@
         </q-card-actions>
 
         <q-card-section>
-          import log
+          <div class="text-h6">
+            Import log
+          </div>
           <div v-for="item in store.state.import_log" :key="item">
             {{ item }}
           </div>
