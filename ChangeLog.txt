@@ -1,3 +1,6 @@
+Version 0.22.0
+  Don't show backup in nodes view if SLiM or offline
+
 Version 0.21.0
   Changed chip in backup column to clickable & renamed to backup if needed
   Added colour to node, event lists & export

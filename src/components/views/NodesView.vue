@@ -78,7 +78,7 @@
           <q-td key="backupStatus" :props="props">
             <q-chip v-if="(props.row.backup=='OK')" dense :color=props.row.backupColour>
               {{props.row.backup}}</q-chip>
-            <q-chip v-else dense clickable :color=props.row.backupColour @click="clickBackup(props.row.nodeNumber)">
+            <q-chip v-else-if="(props.row.backup=='Backup')" dense clickable :color=props.row.backupColour @click="clickBackup(props.row.nodeNumber)">
               {{props.row.backup}}</q-chip>
           </q-td>
           <q-td key="actions">
@@ -274,8 +274,10 @@ const update_rows = () => {
         output['mode'] = 'FLiM'
       } else if (node.flim == false) {
         output['mode'] = 'SLiM'
+        output['backup'] = ""               // don't show if SLiM
       } else {
         output['mode'] = 'unknown'
+        output['backup'] = ""               // don't show if unknown
       }
       output['events'] = node.eventCount
       output['spaceLeft'] = node.eventSpaceLeft
@@ -487,8 +489,20 @@ Click event handlers
 //
 const clickBackup = (nodeNumber) => {
   utils.timeStampedLog(logPrefix + `: clickBackup ` + nodeNumber)
-  selected_nodeNumber.value=nodeNumber
-  showNodeBackupDialog.value=true
+  if (store.state.nodes[nodeNumber].status){
+    selected_nodeNumber.value=nodeNumber
+    showNodeBackupDialog.value=true
+  } else {
+    const result = $q.notify({
+      message: `node is offline`,
+      timeout: 0,
+      position: 'center',
+      color: 'info',
+      actions: [
+        { label: 'dismiss' }
+      ]
+    })
+  }
 }
 
 //
