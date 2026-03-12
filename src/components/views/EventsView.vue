@@ -47,7 +47,6 @@
         :filter = "filter"
         row-key = "eventIdentifier"
         virtual-scroll
-        v-model:pagnation = "pagnation"
         :rows-per-page-options = "[0]"
         :virtual-scroll-sticky-size-start = "0"
         :visible-columns="visibleColumns"
@@ -133,7 +132,6 @@ const $q = useQuasar()
 const store = inject('store')
 const logPrefix = "EventsView"
 const filter = ref('')
-const pagnation = {rowsPerPage: 0}
 let displayEventTable = ref([])
 const showAddEventDialog = ref(false)
 const showNameEventDialog = ref(false)

@@ -346,6 +346,12 @@ const scrollFunc = () => {
 //
 store.eventBus.on('GENERAL_MESSAGE_EVENT', (message, caption, type, timeout) => {
   //utils.timeStampedLog(name + ': GENERAL_MESSAGE_EVENT ' + JSON.stringify(message))
+  // only show develop messages if develop flag set
+  if (type == "develop"){
+    if (store.getters.develop() == false){
+      return
+    }
+  }
   try{
     if ((timeout > 0) && (timeout <= 2000)){
       $q.notify({   // don't add a dismiss button

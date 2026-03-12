@@ -41,7 +41,6 @@
           :filter="filter"
           row-key="eventIdentifier"
           virtual-scroll
-          v-model:pagnation="pagnation"
           :rows-per-page-options="[0]"
           :virtual-scroll-sticky-size-start="0"
           :visible-columns="visibleColumns"
@@ -131,7 +130,6 @@ const store = inject('store')
 const logPrefix = "BusEventsView"
 const tab = ref('nodes')
 const filter = ref('')
-const pagnation = {rowsPerPage: 0}
 let displayEventList = ref()
 const showNameEventDialog = ref(false)
 const showSendEventDialog = ref(false)
