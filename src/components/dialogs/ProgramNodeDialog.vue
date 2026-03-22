@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model='model' persistent>
-    <q-card style="min-width: 800px">
+    <q-card style="min-width: 900px">
 
       <q-banner inline-actions style="min-height: 0;" class="bg-primary text-white dense no-padding">
         <div class="text-h6">
@@ -14,12 +14,10 @@
         </template>
       </q-banner>
 
-
-
-      <q-card style="height: 75vh;" class="q-pa-xs row scroll">
+      <q-card style="height: 75vh;" class="no-margin q-pa-xs row scroll">
 
         <!-- Start left card -->
-        <q-card flat style="width: 370px">
+        <q-card flat style="width: 350px">
 
           <q-card-section>
             <div class="text-h6">Select a file to upload</div>
@@ -63,8 +61,8 @@
         <!-- End left card -->
 
         <!-- Start right card -->
-        <q-card flat class="q-pa-sm" style="width: 370px">
-          <q-card-section v-if="(mode=='NORMAL')">
+        <q-card flat style="width: 500px">
+          <q-card-section v-if="(mode=='NORMAL')" class="no-margin q-py-xs q-px-none">
             <div class="text-h6">
               Node Module type: {{ store.state.nodes[nodeNumber].moduleName }}
               <br/>
@@ -73,7 +71,7 @@
             <br/>
           </q-card-section>
 
-          <q-card-section v-if="(mode=='BOOT')">
+          <q-card-section v-if="(mode=='BOOT')" class="no-margin q-py-xs q-px-none">
             <div class="text-h6">
               Program in boot mode
             </div>
@@ -102,7 +100,7 @@
             When finished, select a file again to restart.
           </div>
 
-          <q-card-section class="text-body1">
+          <q-card-section class="text-body1 no-margin q-py-xs q-px-none">
               <q-btn :disable=!enableProgram color="primary" label="Program" @click="clickProgram()" />
               {{ FIRMWARE_STATUS }}
           </q-card-section>
@@ -111,17 +109,6 @@
         <!-- End right card -->
 
       </q-card>
-
-<!--
-      <q-card-section class="row">
-        <q-card-actions align="left" class="text-primary">
-            <q-btn :disable=!enableProgram color="primary" label="Program" @click="clickProgram()" />
-          </q-card-actions>
-          <q-card align="center" flat class="text-h6" style="width: 370px">
-            {{ FIRMWARE_STATUS }}
-          </q-card>
-        </q-card-section>
- -->
 
       <q-card-section class="bg-info text-h6 text-white no-padding no-margin">
         <div>
@@ -155,7 +142,7 @@ import ProgramNodeInfoDialog from "components/dialogs/ProgramNodeInfoDialog"
 
 const $q = useQuasar()
 const store = inject('store')
-const name = "ProgramNodeDialog"
+const logPrefix = "ProgramNodeDialog"
 const enableProgram = ref(false)
 const uploadFile = ref(null)
 const programCONFIG = ref(false)
@@ -201,7 +188,7 @@ const model = computed({
 //
 //
 watch(model, () => {
-  //console.log(name + `: WATCH model: mode ` + props.mode)
+  //console.log(logPrefix + `: WATCH model: mode ` + props.mode)
   Title.value = "program node " + store.getters.node_name(props.nodeNumber)
   //
   clearAllSelections()
@@ -222,7 +209,7 @@ watch(model, () => {
 //
 watch(uploadFile, () => {
   if(uploadFile.value != null){
-    timeStampedLog(name + `: WATCH uploadFile ${uploadFile.value.name}`)
+    timeStampedLog(logPrefix + `: WATCH uploadFile ${uploadFile.value.name}`)
     store.methods.request_firmware_info(uploadFile.value)
   }
 })
@@ -263,7 +250,7 @@ watch (cpuTypeCheckIgnore, () => {
 // don't process event if dialog not visible
 store.eventBus.on('PROGRAM_NODE_PROGRESS', (text) => {
   if (model.value){
-    timeStampedLog(name + ': PROGRAM_NODE_PROGRESS event: ' + text)
+    timeStampedLog(logPrefix + ': PROGRAM_NODE_PROGRESS event: ' + text)
     progressText.value = text
     if (text.includes('FIRMWARE:')){
       const array = text.split('FIRMWARE:')
@@ -275,7 +262,7 @@ store.eventBus.on('PROGRAM_NODE_PROGRESS', (text) => {
 //
 //
 const clearAllSelections = () => {
-  timeStampedLog( name + `: clearFileSelected` )
+  timeStampedLog(logPrefix + `: clearFileSelected` )
   uploadFile.value = null
   showFileInfo.value = false
   enableProgram.value = false
@@ -288,6 +275,9 @@ const clearAllSelections = () => {
   programEEPROMCheckBoxDisabled.value = false
   cpuTypeCheckBoxDisabled.value = false
   bootModeCheckBoxDisabled.value = false
+  //
+  progressText.value = ""
+  FIRMWARE_STATUS.value = ""
 }
 
 
@@ -296,8 +286,8 @@ const clearAllSelections = () => {
 store.eventBus.on('FIRMWARE_INFO', (data) => {
   if (model.value){
     showFileInfo.value = false
-    timeStampedLog( name + `: FIRMWARE_INFO event: ${JSON.stringify(data)}` )
-    //timeStampedLog( name + `: FIRMWARE_INFO event: data ${data.valid}` )
+    timeStampedLog(logPrefix + `: FIRMWARE_INFO event: ${JSON.stringify(data)}` )
+    //timeStampedLog(logPrefix + `: FIRMWARE_INFO event: data ${data.valid}` )
     if (data.valid == true){
       let nodeCpuType = store.state.nodes[props.nodeNumber].parameters[9]
       let nodeModuleType = store.state.nodes[props.nodeNumber].parameters[3]
@@ -317,7 +307,7 @@ store.eventBus.on('FIRMWARE_INFO', (data) => {
       enableProgram.value=true
       // check matching CPU type
       if (nodeCpuType != undefined){
-        //timeStampedLog( name + `: FIRMWARE_INFO event: node ${props.nodeNumber} cpuTypes ${fileCpuType.value} ${nodeCpuType}` )
+        //timeStampedLog(logPrefix + `: FIRMWARE_INFO event: node ${props.nodeNumber} cpuTypes ${fileCpuType.value} ${nodeCpuType}` )
         if (fileCpuType.value != nodeCpuType){
           cpuTypeCheckIgnore.value = true
           cpuTypeCheckBoxDisabled.value = true
@@ -329,10 +319,10 @@ store.eventBus.on('FIRMWARE_INFO', (data) => {
             color: 'primary',
             actions: [
               { label: 'PROCEED', color: 'white', handler: async () => {
-                timeStampedLog( name + `: FIRMWARE_INFO event: PROCEED` )
+                timeStampedLog(logPrefix + `: FIRMWARE_INFO event: PROCEED` )
               } },
               { label: 'CANCEL', color: 'white', handler: () => {
-                timeStampedLog( name + `: FIRMWARE_INFO event: CANCEL` )
+                timeStampedLog(logPrefix + `: FIRMWARE_INFO event: CANCEL` )
                 clearAllSelections()
               } }
             ]
@@ -341,7 +331,7 @@ store.eventBus.on('FIRMWARE_INFO', (data) => {
       }
       // check matching module type
       if (nodeModuleType != undefined){
-        //timeStampedLog( name + `: FIRMWARE_INFO event: node ${props.nodeNumber} module Types ${data.moduleID} ${nodeModuleType}` )
+        //timeStampedLog(logPrefix + `: FIRMWARE_INFO event: node ${props.nodeNumber} module Types ${data.moduleID} ${nodeModuleType}` )
         if (data.moduleID != nodeModuleType){
           programEEPROM.value = true
           programEEPROMCheckBoxDisabled.value = true
@@ -353,10 +343,10 @@ store.eventBus.on('FIRMWARE_INFO', (data) => {
             color: 'primary',
             actions: [
               { label: 'PROCEED', color: 'white', handler: async () => {
-                timeStampedLog( name + `: FIRMWARE_INFO event: PROCEED` )
+                timeStampedLog(logPrefix + `: FIRMWARE_INFO event: PROCEED` )
               } },
               { label: 'CANCEL', color: 'white', handler: () => {
-                timeStampedLog( name + `: FIRMWARE_INFO event: CANCEL` )
+                timeStampedLog(logPrefix + `: FIRMWARE_INFO event: CANCEL` )
                 clearAllSelections()
               } }
             ]
@@ -369,15 +359,15 @@ store.eventBus.on('FIRMWARE_INFO', (data) => {
 
 
 onBeforeMount(() => {
-  //timeStampedLog( name + `: onBeforeMount node ${props.nodeNumber}` )
+  //timeStampedLog(logPrefix + `: onBeforeMount node ${props.nodeNumber}` )
 })
 
 onMounted(() => {
-  //timeStampedLog( name + `: onMounted node ${props.nodeNumber}` )
+  //timeStampedLog(logPrefix + `: onMounted node ${props.nodeNumber}` )
 })
 
 onUpdated(() =>{
-  //timeStampedLog( name + `: onUpdated node ${props.nodeNumber}` )
+  //timeStampedLog(logPrefix + `: onUpdated node ${props.nodeNumber}` )
 })
 
 
@@ -390,7 +380,7 @@ onUpdated(() =>{
 //
 //
 const clickInfo = () => {
-  console.log(name + `: clickInfo`)
+  console.log(logPrefix + `: clickInfo`)
   showInfoDialog.value = true
 }
 
@@ -403,19 +393,19 @@ const clickProgram = async () => {
   flags = cpuTypeCheckIgnore.value ? flags | 4 : flags & ~4   // ignore CPUTYPE
   flags = bootModeFlag.value ? flags | 8 : flags & ~8   // program in BOOTMODE
   cpuType = store.state.nodes[props.nodeNumber].parameters[9]
-  console.log(name + ": clickProgram: node: " + props.nodeNumber + ' cpuType: '+ cpuType +' flags: ' + flags)
+  console.log(logPrefix + ": clickProgram: node: " + props.nodeNumber + ' cpuType: '+ cpuType +' flags: ' + flags)
   FIRMWARE_STATUS.value = ''
   if (uploadFile.value){
     store.methods.program_node(props.nodeNumber, cpuType, flags, uploadFile.value)
   } else {
-    console.log(name + `: clickProgram: uploadFile no value `)
+    console.log(logPrefix + `: clickProgram: uploadFile no value `)
   }
 }
 
 //
 //
 const clickClose = async () => {
-  console.log(name + ': clickClose: flags: ' + flags)
+  console.log(logPrefix + ': clickClose: flags: ' + flags)
   model.value = false   // close the dialog
 }
 
