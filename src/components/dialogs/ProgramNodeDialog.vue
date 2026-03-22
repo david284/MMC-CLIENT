@@ -63,12 +63,11 @@
         <!-- Start right card -->
         <q-card flat style="width: 500px">
           <q-card-section v-if="(mode=='NORMAL')" class="no-margin q-py-xs q-px-none">
-            <div class="text-h6">
+            <div class="text-body1">
               Node Module type: {{ store.state.nodes[nodeNumber].moduleName }}
               <br/>
               Node CPU type: {{ store.state.nodes[nodeNumber].cpuName }} ({{ store.state.nodes[nodeNumber].parameters[9] }})
             </div>
-            <br/>
           </q-card-section>
 
           <q-card-section v-if="(mode=='BOOT')" class="no-margin q-py-xs q-px-none">
@@ -78,7 +77,6 @@
             <div class="text-body1">
               Note that in this mode the cpu type can't be checked
             </div>
-            <br/>
           </q-card-section>
 
           <div class="text-h6">
