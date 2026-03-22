@@ -16,8 +16,9 @@
 
 
 
-      <div class="q-pa-xs row">
+      <q-card style="height: 75vh;" class="q-pa-xs row scroll">
 
+        <!-- Start left card -->
         <q-card flat style="width: 370px">
 
           <q-card-section>
@@ -59,7 +60,9 @@
           </q-card-section>
 
         </q-card>
+        <!-- End left card -->
 
+        <!-- Start right card -->
         <q-card flat class="q-pa-sm" style="width: 370px">
           <q-card-section v-if="(mode=='NORMAL')">
             <div class="text-h6">
@@ -98,10 +101,18 @@
           <div class="text-body1">
             When finished, select a file again to restart.
           </div>
+
+          <q-card-section class="text-body1">
+              <q-btn :disable=!enableProgram color="primary" label="Program" @click="clickProgram()" />
+              {{ FIRMWARE_STATUS }}
+          </q-card-section>
+
         </q-card>
+        <!-- End right card -->
 
-      </div>
+      </q-card>
 
+<!--
       <q-card-section class="row">
         <q-card-actions align="left" class="text-primary">
             <q-btn :disable=!enableProgram color="primary" label="Program" @click="clickProgram()" />
@@ -110,8 +121,9 @@
             {{ FIRMWARE_STATUS }}
           </q-card>
         </q-card-section>
+ -->
 
-      <q-card-section class="bg-info text-h6 text-white">
+      <q-card-section class="bg-info text-h6 text-white no-padding no-margin">
         <div>
           Status: {{ progressText }}
         </div>
