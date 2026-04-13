@@ -117,6 +117,7 @@ export async function deleteAllEvents (store, nodeNumber){
     if (store.getters.node_useNENRD(nodeNumber) == true){
       requestAllEventsByNENRD(store, nodeNumber)
     }
+    store.setters.node_set_backup_required(nodeNumber, true)
   } catch (err){
     utils.timeStampedLog (name + `: deleteAllEvents ${err} `)
   }
@@ -162,6 +163,7 @@ export async function eventDelete (
     } catch (err){
       //utils.timeStampedLog (name + `: eventDelete: indexedEvents Delete ${err} `)
     }
+    store.setters.node_set_backup_required(nodeNumber, true)
   } catch (err) {
     utils.timeStampedLog (name + `: eventDelete ${err} `)
   }
