@@ -1236,6 +1236,8 @@ socket.on("MATCHING_MDF_LIST", (location, nodeNumber, list) => {
   if (state.server.nodes[nodeNumber] == undefined){state.server.nodes[nodeNumber] = {} }
   state.server.nodes[nodeNumber][location + '_MDF_List'] = list
   state.MDFupdateTimestamp = Date.now()
+  // send event, doesn't need data as it's been stored
+  eventBus.emit('MATCHING_MDF_LIST')
 })
 
 //

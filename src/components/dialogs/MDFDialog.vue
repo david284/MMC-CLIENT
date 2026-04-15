@@ -146,14 +146,13 @@
 
 import {inject, onBeforeMount, onMounted, onUpdated, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
-import {sleep} from "components/functions/utils.js"
+import * as utils from "components/functions/utils.js"
 import MDFDownloadDialog from "components/dialogs/MDFDownloadDialog"
 import MDFUploadDialog from "components/dialogs/MDFUploadDialog"
-import * as utils from "components/functions/utils.js"
 
 const $q = useQuasar()
 const store = inject('store')
-const name = 'MDFDialog'
+const logPrefix = 'MDFDialog'
 const showMDFDownloadDialog = ref(false)
 const showMDFUploadDialog = ref(false)
 const export_filename = ref()
@@ -176,7 +175,7 @@ const model = computed({
 
 // model changes when Dialog opened & closed
 watch(model, () => {
-  //console.log(name + `: WATCH model`)
+  //utils.timeStampedLog(logPrefix + `: WATCH model`)
   showModuleDescriptor.value = false
   update_SYSTEM_rows()
   update_USER_rows()
@@ -189,7 +188,7 @@ const MDFupdateTimestamp = computed(() =>{
 })
 
 watch(MDFupdateTimestamp, () => {
-  //console.log(name + `: WATCH: MDFupdateTimestamp`)
+  //utils.timeStampedLog(logPrefix + `: WATCH: MDFupdateTimestamp`)
   update_SYSTEM_rows()
   update_USER_rows()
   getModuleDescriptorFilename()
@@ -200,7 +199,7 @@ const server_node = computed(() =>{
   return store.state.server.nodes[props.nodeNumber]
 })
 watch(server_node, () => {
-  //console.log(name + `: WATCH: server_node`)
+  //utils.timeStampedLog(logPrefix + `: WATCH: server_node`)
   update_SYSTEM_rows()
   update_USER_rows()
 })
@@ -215,7 +214,7 @@ const getModuleDescriptorFilename = () => {
       moduleDescriptorLocation.value = store.state.nodeDescriptors[props.nodeNumber].moduleDescriptorLocation
     }
   } catch {
-    //console.log(name + `: getModuleDescriptorFilename: no filename for node ` + props.nodeNumber)
+    //utils.timeStampedLog(logPrefix + `: getModuleDescriptorFilename: no filename for node ` + props.nodeNumber)
   }
 }
 
@@ -236,8 +235,8 @@ const userColumns = [
 
 
 const update_SYSTEM_rows = async () => {
-//  await sleep(500)
-  //console.log(name + `: update_SYSTEM_rows`)
+  //  await utils.sleep(500)
+  //utils.timeStampedLog(logPrefix + `: update_SYSTEM_rows`)
   if (server_node.value != undefined){
     systemRows.value = []
     if (server_node.value.SYSTEM_MDF_List != undefined){
@@ -252,8 +251,8 @@ const update_SYSTEM_rows = async () => {
 
 
 const update_USER_rows = async () => {
-//  await sleep(500)
-  //console.log(name + `: update_USER_rows`)
+  //await utils.sleep(500)
+  //utils.timeStampedLog(logPrefix + `: update_USER_rows`)
   if (server_node.value != undefined){
     userRows.value = []
     if (server_node.value.USER_MDF_List != undefined){
@@ -280,10 +279,16 @@ const update_USER_rows = async () => {
 }
 
 const refresh_user_list = async () =>{
-  await sleep(500)
+  await utils.sleep(500)
   store.methods.request_matching_mdf_list(props.nodeNumber, "USER")
 }
 
+
+store.eventBus.on('MATCHING_MDF_LIST', () => {
+  //utils.timeStampedLog(logPrefix + ': MATCHING_MDF_LIST')
+  update_SYSTEM_rows()
+  update_USER_rows()
+})
 
 
 
@@ -306,7 +311,7 @@ Click event handlers
 
 
 const clickDelete = (filename) => {
-  console.log(name + `: clickDelete ` + filename)
+  utils.timeStampedLog(logPrefix + `: clickDelete ` + filename)
   const result = $q.notify({
     message: 'Are you sure you want to delete file ' + filename,
     timeout: 0,
@@ -322,12 +327,12 @@ const clickDelete = (filename) => {
 }
 
 const clickToggleModuleDescriptor = () => {
-  console.log(name + `: clickToggleModuleDescriptor`)
+  utils.timeStampedLog(logPrefix + `: clickToggleModuleDescriptor`)
   showModuleDescriptor.value = showModuleDescriptor.value ? false : true
 }
 
 const clickSystemDownload = (filename) => {
-  console.log(name + `: clickSystemDownload`)
+  utils.timeStampedLog(logPrefix + `: clickSystemDownload`)
   store.methods.request_MDF_export('SYSTEM', filename)
   export_filename.value = filename
   showMDFDownloadDialog.value = true
@@ -335,7 +340,7 @@ const clickSystemDownload = (filename) => {
 
 
 const clickUserDownload = (filename) => {
-  console.log(name + `: clickUserDownload`)
+  utils.timeStampedLog(logPrefix + `: clickUserDownload`)
   store.methods.request_MDF_export('USER', filename)
   export_filename.value = filename
   showMDFDownloadDialog.value = true
@@ -343,7 +348,7 @@ const clickUserDownload = (filename) => {
 
 
 const clickUpload = () => {
-  console.log(name + `: clickUpload`)
+  utils.timeStampedLog(logPrefix + `: clickUpload`)
   showMDFUploadDialog.value = true
 }
 
