@@ -285,9 +285,11 @@ const refresh_user_list = async () =>{
 
 
 store.eventBus.on('MATCHING_MDF_LIST', () => {
-  //utils.timeStampedLog(logPrefix + ': MATCHING_MDF_LIST')
-  update_SYSTEM_rows()
-  update_USER_rows()
+  if (model.value == true){
+    //utils.timeStampedLog(logPrefix + ': MATCHING_MDF_LIST')
+    update_SYSTEM_rows()
+    update_USER_rows()
+  }
 })
 
 
