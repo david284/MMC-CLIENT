@@ -1,3 +1,6 @@
+Version 0.22.2
+  Upversion to match server
+
 Version 0.22.0
   Don't show backup in nodes view if SLiM or offline
   Added 'develop' type of GENERAL_MESSAGE_EVENT
