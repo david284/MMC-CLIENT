@@ -1,5 +1,6 @@
 Version 0.23.3
-
+  Merged PR #14 Add package lock file
+  Merged PR #15 create GitHub action for lint
 
 Version 0.23.2
   Upversion to match server
