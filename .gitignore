@@ -2,7 +2,6 @@
 .thumbs.db
 node_modules
 .vscode
-package-lock.json
 documents/User_Layouts/exports
 
 # Quasar core related directories

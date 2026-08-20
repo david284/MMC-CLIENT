@@ -7,7 +7,7 @@ This is the web front end to the MMC-SERVER backend
 ## Install the dependencies
 
 ```bash
-npm install
+npm ci
 ```
 
 ## Start the app in development mode (hot-code reloading, error reporting, etc.)
