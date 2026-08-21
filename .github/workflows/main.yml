@@ -1,0 +1,5 @@
+name: dummy file
+on:
+  push:
+    branches:
+      - '*'
