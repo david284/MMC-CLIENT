@@ -1,0 +1,95 @@
+name: Release
+
+on:
+  # Real releases are triggered by version tags.
+  push:
+    tags:
+      - 'v*.*.*'
+
+  # Allows the release build to be tested manually from any branch.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ci:
+    name: CI
+    uses: ./.github/workflows/ci-common.yml
+
+  release:
+    name: Build and release
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Version validation only makes sense for a tag-triggered release.
+      - name: Validate release version
+        if: github.ref_type == 'tag'
+        shell: bash
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+
+          echo "Tag version:     ${TAG_VERSION}"
+          echo "Package version: ${PACKAGE_VERSION}"
+
+          if [[ ! "${TAG_VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-beta\.[0-9]+)?$ ]]; then
+            echo "::error::Invalid release tag: ${GITHUB_REF_NAME}"
+            exit 1
+          fi
+
+          if [[ "${TAG_VERSION}" != "${PACKAGE_VERSION}" ]]; then
+            echo "::error::Tag version does not match package.json version"
+            exit 1
+          fi
+
+      - name: Build client
+        run: npm run build
+
+      # For manual test runs, retain the build as a workflow artifact.
+      - name: Upload test build
+        if: github.ref_type != 'tag'
+        uses: actions/upload-artifact@v7
+        with:
+          name: MMC-CLIENT-test-build
+          path: dist/spa/
+          if-no-files-found: error
+
+      # Everything below here is only performed for an actual release tag.
+      - name: Create release archive
+        if: github.ref_type == 'tag'
+        run: |
+          cd dist/spa
+          zip -r "../../MMC-CLIENT-${GITHUB_REF_NAME}.zip" .
+
+      - name: Create GitHub release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == *-beta.* ]]; then
+            gh release create "${GITHUB_REF_NAME}" \
+              "MMC-CLIENT-${GITHUB_REF_NAME}.zip" \
+              --title "MMC-CLIENT ${GITHUB_REF_NAME}" \
+              --generate-notes \
+              --prerelease
+          else
+            gh release create "${GITHUB_REF_NAME}" \
+              "MMC-CLIENT-${GITHUB_REF_NAME}.zip" \
+              --title "MMC-CLIENT ${GITHUB_REF_NAME}" \
+              --generate-notes
+          fi
