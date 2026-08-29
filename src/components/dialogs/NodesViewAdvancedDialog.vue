@@ -88,7 +88,7 @@ import * as utils from "components/functions/utils.js"
 import nodeParametersDialog from "components/dialogs/NodeParametersDialog"
 import { date, useQuasar, scroll } from 'quasar'
 import {NodeParametersLoaded} from "components/functions/NodeFunctions.js"
-import programNodeDialog from "components/dialogs/programNodeDialog"
+import programNodeDialog from "components/dialogs/ProgramNodeDialog"
 import WaitingOnBusTrafficDialog from "components/dialogs/WaitingOnBusTrafficDialog";
 
 
