@@ -9,6 +9,7 @@
 /* eslint-env node */
 const ESLintPlugin = require("eslint-webpack-plugin");
 const { configure } = require("quasar/wrappers");
+const Sass = require("sass");
 
 module.exports = configure(function (ctx) {
   return {
@@ -67,6 +68,16 @@ module.exports = configure(function (ctx) {
         chain
           .plugin("eslint-webpack-plugin")
           .use(ESLintPlugin, [{ extensions: ["js", "vue"] }]);
+      },
+
+      scssLoaderOptions: {
+        implementation: Sass,
+        api: "modern",
+      },
+
+      sassLoaderOptions: {
+        implementation: Sass,
+        api: "modern",
       },
     },
 
