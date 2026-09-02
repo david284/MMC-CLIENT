@@ -151,9 +151,9 @@ import {inject, onBeforeMount, onMounted, computed, watch, ref} from "vue";
 import { date, useQuasar, scroll } from 'quasar'
 import * as utils from "components/functions/utils.js"
 import MDFDialog from "components/dialogs/MDFDialog"
-import programNodeDialog from "components/dialogs/programNodeDialog"
+import programNodeDialog from "components/dialogs/ProgramNodeDialog"
 import NodeBackupAndRestoreDialog from "components/dialogs/NodeBackupAndRestoreDialog"
-import setCanIdDialog from "components/dialogs/setCanIdDialog"
+import setCanIdDialog from "components/dialogs/SetCanIdDialog"
 import cbusLib from "cbuslibrary"
 
 const $q = useQuasar()
