@@ -1,6 +1,7 @@
 Version 0.23.3
   Merged PR #14 Add package lock file
   Merged PR #15 create GitHub action for lint
+  renamed logic operator index to EventIndex, also added identical Slot operator
 
 Version 0.23.2
   Upversion to match server

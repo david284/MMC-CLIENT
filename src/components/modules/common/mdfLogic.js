@@ -41,10 +41,18 @@ export class mdfLogic {
     //
     // event index operator
     //
-    var INDEXoperator = function(){
+    var EventIndexOperator = function(){
       return this.eventIndex
     }.bind(this);
-    jsonLogic.add_operation("index", INDEXoperator);
+    jsonLogic.add_operation("eventindex", EventIndexOperator);
+
+    //
+    // slot operator
+    //
+    var SLOToperator = function(){
+      return this.eventIndex
+    }.bind(this);
+    jsonLogic.add_operation("slot", SLOToperator);
 
     //
     // node parameter operators
