@@ -109,13 +109,25 @@ describe('mfdLogic Test', () => {
   //
   //
   each([
-    [{ "==" : [ {"index":null}, 4] }, true],
-    [{ "==" : [ {"index":null}, 5] }, false]
-  ]).test('INDEX test %s %s', (expression, expected) => {
-    utils.timeStampedLog (name + `: INDEX test BEGIN ${JSON.stringify(expression)} ${expected}`)
+    [{ "==" : [ {"EventIndex":null}, 4] }, true],
+    [{ "==" : [ {"EventIndex":null}, 5] }, false]
+  ]).test('EventIndex test %s %s', (expression, expected) => {
+    utils.timeStampedLog (name + `: EventIndex test BEGIN ${JSON.stringify(expression)} ${expected}`)
     let eventIndex = 4
     expect(myLogic.evaluate(mock_store, nodeNumber, expression, '11112222', eventIndex)).toBe(expected)
-    utils.timeStampedLog (name + ": INDEX test END")
+    utils.timeStampedLog (name + ": EventIndex test END")
+  });
+
+  //
+  //
+  each([
+    [{ "==" : [ {"slot":null}, 4] }, true],
+    [{ "==" : [ {"slot":null}, 5] }, false]
+  ]).test('Slot test %s %s', (expression, expected) => {
+    utils.timeStampedLog (name + `: Slot test BEGIN ${JSON.stringify(expression)} ${expected}`)
+    let eventIndex = 4
+    expect(myLogic.evaluate(mock_store, nodeNumber, expression, '11112222', eventIndex)).toBe(expected)
+    utils.timeStampedLog (name + ": Slot test END")
   });
 
 
